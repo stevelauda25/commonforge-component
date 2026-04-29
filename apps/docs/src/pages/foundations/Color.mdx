@@ -1,0 +1,63 @@
+<PageHeader
+  title="Color"
+  description="Semantic tokens for surface, text, border, accents, and feedback states. All values come from @pod/tokens."
+/>
+
+## Backgrounds
+
+<SwatchGrid>
+  <Swatch bg="bg-canvas"  name="canvas"  value="page background" />
+  <Swatch bg="bg-surface" name="surface" value="cards, inputs" />
+  <Swatch bg="bg-raised"  name="raised"  value="popovers, tooltips" />
+  <Swatch bg="bg-muted"   name="muted"   value="ghost-button hover, chips" />
+</SwatchGrid>
+
+## Text
+
+<SwatchGrid>
+  <Swatch bg="bg-text-primary"   name="text-primary"   value="primary text" />
+  <Swatch bg="bg-text-secondary" name="text-secondary" value="secondary text" />
+  <Swatch bg="bg-text-muted"     name="text-muted"     value="muted / hint text" />
+  <Swatch bg="bg-text-disabled"  name="text-disabled"  value="disabled labels" />
+</SwatchGrid>
+
+## Borders
+
+<SwatchGrid>
+  <Swatch bg="bg-border-subtle"  name="border-subtle"  value="hairline" />
+  <Swatch bg="bg-border-default" name="border-default" value="default border" />
+  <Swatch bg="bg-border-strong"  name="border-strong"  value="strong / hover border" />
+  <Swatch bg="bg-border-focus"   name="border-focus"   value="focus ring" />
+</SwatchGrid>
+
+## Accent — POD brand green
+
+<SwatchGrid>
+  <Swatch bg="bg-accent"        name="accent"         value="default" />
+  <Swatch bg="bg-accent-hover"  name="accent-hover"   value="hover" />
+  <Swatch bg="bg-accent-active" name="accent-active"  value="active" />
+  <Swatch bg="bg-accent-subtle" name="accent-subtle"  value="subtle (badges)" />
+</SwatchGrid>
+
+## Feedback
+
+<SwatchGrid>
+  <Swatch bg="bg-danger"  name="danger"  value="errors, destructive" />
+  <Swatch bg="bg-warning" name="warning" value="warnings" />
+  <Swatch bg="bg-success" name="success" value="success states" />
+  <Swatch bg="bg-info"    name="info"    value="informational" />
+</SwatchGrid>
+
+## Light vs dark
+
+Switch the theme toggle in the topbar — every swatch above re-paints from the `.dark` overrides defined in `@pod/tokens/theme.css`. Components consume the same Tailwind class names; the variables swap underneath.
+
+## Usage
+
+```tsx
+<div className="bg-surface text-text-primary border border-border-default">
+  Token-driven container
+</div>
+```
+
+Never embed hex values in components or MDX. If you need a color that isn't in the semantic set, propose a new token rather than reaching for a primitive.

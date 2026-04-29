@@ -1,0 +1,19 @@
+{
+  "name": "pod-design-system-test",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Small design system test environment for POD — sprint-style scope.",
+  "packageManager": "pnpm@9.7.0",
+  "scripts": {
+    "dev": "pnpm -F docs dev",
+    "build": "pnpm -F docs build",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "clean": "rm -rf node_modules **/node_modules **/dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}

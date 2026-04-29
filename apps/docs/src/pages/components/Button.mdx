@@ -1,0 +1,140 @@
+import { ChevronLeft, ChevronRight, Copy } from 'lucide-react';
+import { Button } from '@pod/ui';
+
+<PageHeader
+  title="Button"
+  description="Primary action element. Three variants (primary, outline, error) across four sizes, with optional icon-only mode."/>
+
+<PreviewCard>
+  <Button
+    leftIcon={<ChevronLeft className="h-4 w-4" />}
+    rightIcon={<ChevronRight className="h-4 w-4" />}
+  >
+    Button
+  </Button>
+</PreviewCard>
+
+```tsx
+import { Button } from '@pod/ui';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+<Button
+  leftIcon={<ChevronLeft className="h-4 w-4" />}
+  rightIcon={<ChevronRight className="h-4 w-4" />}
+>
+  Button
+</Button>
+```
+
+## Variants
+
+<PreviewCard>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button variant="primary">Primary</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="error">Error</Button>
+  </div>
+</PreviewCard>
+
+```tsx
+<Button variant="primary">Primary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="error">Error</Button>
+```
+
+## Sizes
+
+<PreviewCard>
+  <div className="flex items-end gap-3">
+    <Button size="xs">XSmall</Button>
+    <Button size="sm">Small</Button>
+    <Button size="md">Medium</Button>
+    <Button size="lg">Large</Button>
+  </div>
+</PreviewCard>
+
+```tsx
+<Button size="xs">XSmall</Button>
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
+```
+
+## States
+
+Default → hover → disabled. Hover styling is built in via Tailwind; the disabled prop greys the button and blocks pointer events.
+
+<PreviewCard>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button variant="primary">Default</Button>
+    <Button variant="primary" disabled>Disabled</Button>
+    <Button variant="outline">Default</Button>
+    <Button variant="outline" disabled>Disabled</Button>
+    <Button variant="error">Default</Button>
+    <Button variant="error" disabled>Disabled</Button>
+  </div>
+</PreviewCard>
+
+## Icon only
+
+Set `iconOnly` to render a square button. Always pair with `aria-label` so screen readers announce the action.
+
+<PreviewCard>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button variant="primary" iconOnly size="xs" aria-label="Copy"><Copy className="h-3.5 w-3.5" /></Button>
+    <Button variant="primary" iconOnly size="sm" aria-label="Copy"><Copy className="h-4 w-4" /></Button>
+    <Button variant="primary" iconOnly size="md" aria-label="Copy"><Copy className="h-4 w-4" /></Button>
+    <Button variant="primary" iconOnly size="lg" aria-label="Copy"><Copy className="h-5 w-5" /></Button>
+    <Button variant="outline" iconOnly size="md" aria-label="Copy"><Copy className="h-4 w-4" /></Button>
+    <Button variant="error" iconOnly size="md" aria-label="Delete"><Copy className="h-4 w-4" /></Button>
+  </div>
+</PreviewCard>
+
+```tsx
+<Button variant="primary" iconOnly aria-label="Copy">
+  <Copy className="h-4 w-4" />
+</Button>
+```
+
+## Loading
+
+<PreviewCard>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button loading>Saving…</Button>
+    <Button variant="outline" loading>Saving…</Button>
+    <Button variant="error" loading>Deleting…</Button>
+  </div>
+</PreviewCard>
+
+```tsx
+<Button loading>Saving…</Button>
+```
+
+## Props
+
+| Prop        | Type                                  | Default     | Notes |
+|-------------|---------------------------------------|-------------|-------|
+| `variant`   | `'primary' \| 'outline' \| 'error'`   | `'primary'` | Visual style |
+| `size`      | `'xs' \| 'sm' \| 'md' \| 'lg'`        | `'md'`      | Height: 28 / 32 / 36 / 40 |
+| `iconOnly`  | `boolean`                             | `false`     | Square button — children should be the icon. Requires `aria-label`. |
+| `loading`   | `boolean`                             | `false`     | Replaces leftIcon with spinner, sets `aria-busy`, disables clicks |
+| `leftIcon`  | `ReactNode`                           | —           | Hidden from AT (`aria-hidden`) |
+| `rightIcon` | `ReactNode`                           | —           | Ignored when `iconOnly` is true |
+| `disabled`  | `boolean`                             | `false`     | Visually greyed, blocks pointer events |
+| `children`  | `ReactNode`                           | —           | Label, or the icon when `iconOnly` is true |
+| `type`      | `'button' \| 'submit' \| 'reset'`     | `'button'`  | Defaults to `'button'` to prevent accidental form submits |
+
+Extends all native `<button>` HTMLAttributes.
+
+## Accessibility
+
+- Native `<button>` under the hood — keyboard, screen-reader, and form behavior comes for free.
+- `iconOnly`: consumer must pass `aria-label`. Decorative icons inside `leftIcon` / `rightIcon` are `aria-hidden`.
+- Loading: `aria-busy="true"` + disabled pointer events so repeated clicks are impossible.
+- Focus ring: `:focus-visible` only — no ring on mouse click.
+
+## Things to watch
+
+- Loading state replaces `leftIcon` but keeps children visible. If you rely on the icon for meaning, your label should still stand alone.
+- For form submits, remember to pass `type="submit"` — the component defaults to `type="button"`.
+- `iconOnly` without `aria-label` is a hard accessibility bug. Lint rules will not catch this — code review will.

@@ -1,0 +1,40 @@
+<PageHeader
+  title="Radius"
+  description="Corner radii defined as CSS variables in @pod/tokens/theme.css and exposed as Tailwind classes."
+/>
+
+<PreviewCard>
+  <div className="flex flex-wrap items-end gap-6">
+    {[
+      { cls: 'rounded-sm', name: 'sm', size: '4px' },
+      { cls: 'rounded-md', name: 'md', size: '6px' },
+      { cls: 'rounded-lg', name: 'lg', size: '8px' },
+      { cls: 'rounded-xl', name: 'xl', size: '12px' },
+      { cls: 'rounded-full', name: 'full', size: '9999px' },
+    ].map((r) => (
+      <div key={r.name} className="flex flex-col items-center gap-2">
+        <div className={`h-14 w-14 bg-accent ${r.cls}`} />
+        <span className="font-mono text-xs">{r.cls}</span>
+        <span className="text-[11px] text-text-muted">{r.size}</span>
+      </div>
+    ))}
+  </div>
+</PreviewCard>
+
+## Tokens
+
+| Token        | Value   | Class           |
+|--------------|---------|-----------------|
+| `--radius-sm`   | `4px`   | `rounded-sm`    |
+| `--radius-md`   | `6px`   | `rounded-md`    |
+| `--radius-lg`   | `8px`   | `rounded-lg`    |
+| `--radius-xl`   | `12px`  | `rounded-xl`    |
+| `--radius-full` | `9999px`| `rounded-full`  |
+
+## Usage
+
+```tsx
+<div className="rounded-lg border border-border-default bg-surface p-4">
+  Standard card
+</div>
+```

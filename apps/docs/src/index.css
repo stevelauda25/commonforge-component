@@ -1,0 +1,52 @@
+@import '@pod/tokens/theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: theme('fontFamily.sans');
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+html, body {
+  background-color: rgb(var(--color-bg-canvas));
+  color: rgb(var(--color-text-primary));
+}
+
+.mdx-content {
+  max-width: 64rem;
+  padding: 2.5rem 2rem;
+}
+.mdx-content h1 { font-size: 1.875rem; font-weight: 600; margin-bottom: 0.5rem; }
+.mdx-content h2 { font-size: 1.25rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 0.75rem; scroll-margin-top: 5rem; }
+.mdx-content h3 { font-size: 1rem;     font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.5rem;  scroll-margin-top: 5rem; }
+.mdx-content p  { margin: 0.75rem 0; line-height: 1.6; color: rgb(var(--color-text-secondary)); }
+.mdx-content table { border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
+.mdx-content th, .mdx-content td {
+  border: 1px solid rgb(var(--color-border-default));
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.mdx-content th { background: rgb(var(--color-bg-muted)); font-weight: 600; }
+.mdx-content pre {
+  background: rgb(var(--color-bg-muted));
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  font-size: 0.8125rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.mdx-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.mdx-content pre code [data-line] { display: block; }
+
+/* Shiki dual-theme: hide dark by default, show in dark mode */
+html:not(.dark) .mdx-content code[data-theme='dark'],
+html:not(.dark) .mdx-content pre[data-theme='dark'] { display: none; }
+html.dark .mdx-content code[data-theme='light'],
+html.dark .mdx-content pre[data-theme='light'] { display: none; }

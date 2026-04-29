@@ -1,0 +1,42 @@
+<PageHeader
+  title="Spacing"
+  description="Tailwind's default 4px-based spacing scale. POD does not redefine the scale — only its semantic application."
+/>
+
+## Scale samples
+
+The visible bars below correspond to Tailwind classes `w-1`, `w-2`, … `w-12`. Each unit = 4px.
+
+<PreviewCard>
+  <div className="flex flex-col gap-2 text-sm">
+    {[1, 2, 3, 4, 6, 8, 10, 12].map((n) => (
+      <div key={n} className="flex items-center gap-3">
+        <span className="w-12 font-mono text-xs text-text-muted">w-{n}</span>
+        <div className="h-4 bg-accent" style={{ width: `${n * 4}px` }} />
+        <span className="text-xs text-text-muted">{n * 4}px</span>
+      </div>
+    ))}
+  </div>
+</PreviewCard>
+
+## Common usage
+
+| Class         | Pixels | Use case |
+|---------------|--------|----------|
+| `gap-1`       | 4      | tight icon ↔ label gap |
+| `gap-2`       | 8      | default form-control gap |
+| `gap-3`       | 12     | between buttons |
+| `gap-4`       | 16     | between sections |
+| `p-3`         | 12     | card padding (compact) |
+| `p-4`         | 16     | card padding (default) |
+| `p-6`         | 24     | page section padding |
+| `px-8`        | 32     | wide horizontal padding |
+
+## Usage
+
+```tsx
+<div className="flex items-center gap-2 p-4">
+  <Icon className="h-4 w-4" />
+  <span>Label</span>
+</div>
+```

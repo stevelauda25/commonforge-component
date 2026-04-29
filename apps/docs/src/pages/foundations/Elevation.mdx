@@ -1,0 +1,39 @@
+<PageHeader
+  title="Elevation"
+  description="Shadows defined in @pod/tokens/theme.css. Light-mode and dark-mode values are swapped in by the .dark scope."
+/>
+
+<PreviewCard>
+  <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+    {[
+      { cls: 'shadow-sm', name: 'sm', use: 'subtle separation' },
+      { cls: 'shadow-md', name: 'md', use: 'cards / popovers' },
+      { cls: 'shadow-lg', name: 'lg', use: 'modals / drawers' },
+    ].map((s) => (
+      <div key={s.name} className="flex flex-col items-center gap-3">
+        <div className={`h-20 w-20 rounded-md bg-surface border border-border-subtle ${s.cls}`} />
+        <span className="font-mono text-xs">{s.cls}</span>
+        <span className="text-[11px] text-text-muted">{s.use}</span>
+      </div>
+    ))}
+  </div>
+</PreviewCard>
+
+## Tokens
+
+| Token         | Class       | Use case |
+|---------------|-------------|----------|
+| `--shadow-sm` | `shadow-sm` | hairline lift; thin separator effect |
+| `--shadow-md` | `shadow-md` | cards, popovers, dropdowns |
+| `--shadow-lg` | `shadow-lg` | modals, drawers — high-lift surfaces |
+
+## Brand glow
+
+POD's primary button uses two extra brand-tinted shadows:
+
+| Token                          | Class                   | Where it's used |
+|--------------------------------|-------------------------|-----------------|
+| `--shadow-glow-accent-inset`   | `shadow-glow-accent-inset` | inset top-edge highlight on `<Button variant="primary">` |
+| `--shadow-glow-accent-text`    | (CSS-only)              | text-shadow halo on the same button |
+
+Switch the theme — the shadow tokens scale up in dark mode for legibility on the dark canvas.
