@@ -24,7 +24,7 @@ html, body {
 .mdx-content h1 { font-size: 1.875rem; font-weight: 600; margin-bottom: 0.5rem; }
 .mdx-content h2 { font-size: 1.25rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 0.75rem; scroll-margin-top: 5rem; }
 .mdx-content h3 { font-size: 1rem;     font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.5rem;  scroll-margin-top: 5rem; }
-.mdx-content p  { margin: 0.75rem 0; line-height: 1.6; color: rgb(var(--color-text-secondary)); }
+.mdx-content > p { margin: 0.75rem 0; line-height: 1.6; color: rgb(var(--color-text-secondary)); }
 .mdx-content table { border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
 .mdx-content th, .mdx-content td {
   border: 1px solid rgb(var(--color-border-default));
