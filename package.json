@@ -8,7 +8,10 @@
     "dev": "pnpm -F docs dev",
     "build": "pnpm -F docs build",
     "typecheck": "pnpm -r --parallel typecheck",
-    "clean": "rm -rf node_modules **/node_modules **/dist"
+    "clean": "rm -rf node_modules **/node_modules **/dist",
+    "figma:check": "node scripts/figma/check.mjs",
+    "figma:bless": "node scripts/figma/bless.mjs",
+    "figma:discover": "node scripts/figma/discover.mjs"
   },
   "devDependencies": {
     "tsup": "^8.5.1",
