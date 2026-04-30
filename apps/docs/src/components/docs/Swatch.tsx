@@ -1,4 +1,4 @@
-import { cn } from '@pod/ui';
+import { cn } from 'pod-test-ui';
 
 interface SwatchProps {
   /** Tailwind background class (e.g. `bg-accent`). */

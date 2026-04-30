@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
-import preset from '@pod/tokens/tailwind-preset';
+import preset from 'pod-test-tokens/tailwind-preset';
 
 export default {
   presets: [preset],

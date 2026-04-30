@@ -13,8 +13,8 @@ pnpm dev   # docs at http://localhost:5174
 ## Use
 
 ```tsx
-import { Button } from '@pod/ui';
-import '@pod/tokens/theme.css';
+import { Button } from 'pod-test-ui';
+import 'pod-test-tokens/theme.css';
 
 <Button>Click me</Button>
 ```
@@ -22,7 +22,7 @@ import '@pod/tokens/theme.css';
 Wire the Tailwind preset in your app's `tailwind.config.ts`:
 
 ```ts
-import preset from '@pod/tokens/tailwind-preset';
+import preset from 'pod-test-tokens/tailwind-preset';
 
 export default {
   presets: [preset],

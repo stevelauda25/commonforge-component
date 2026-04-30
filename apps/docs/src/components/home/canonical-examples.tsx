@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@pod/ui';
+import { Button } from 'pod-test-ui';
 
 export function ButtonExample() {
   return (

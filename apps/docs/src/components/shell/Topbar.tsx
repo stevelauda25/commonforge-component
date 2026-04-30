@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Menu } from 'lucide-react';
-import { Button } from '@pod/ui';
+import { Button } from 'pod-test-ui';
 import { ThemeToggle } from './ThemeToggle.js';
 
 interface Props {
