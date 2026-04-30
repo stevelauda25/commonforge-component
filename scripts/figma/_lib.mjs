@@ -163,7 +163,7 @@ function nodeFingerprint(node) {
     primaryAxisAlignItems: node.primaryAxisAlignItems,
     counterAxisAlignItems: node.counterAxisAlignItems,
     effects: simplifyEffects(node.effects),
-    boundVariables: node.boundVariables,
+    bindings: simplifyBindings(node.boundVariables),
     childCount: (node.children || []).length,
     childNames: (node.children || []).map((c) => `${c.type}:${c.name}`),
   };
@@ -178,8 +178,20 @@ function simplifyFills(fills) {
       : undefined,
     opacity: f.opacity,
     visible: f.visible,
-    boundVar: f.boundVariables?.color?.id,
   }));
+}
+
+function simplifyBindings(boundVariables) {
+  if (!boundVariables || typeof boundVariables !== 'object') return undefined;
+  const result = {};
+  for (const [key, value] of Object.entries(boundVariables)) {
+    if (Array.isArray(value)) {
+      result[key] = value.map((v) => v?.id?.replace(/^VariableID:/, '') || null);
+    } else if (value && typeof value === 'object' && value.id) {
+      result[key] = value.id.replace(/^VariableID:/, '');
+    }
+  }
+  return Object.keys(result).length > 0 ? result : undefined;
 }
 
 function simplifyEffects(effects) {
@@ -221,6 +233,28 @@ export function diffSummaries(oldSum, newSum) {
 
 function compareNode(a, b, prefix = '') {
   const changes = [];
+
+  // Both arrays → compare element-wise so we get fills[0].color, not full JSON
+  if (Array.isArray(a) && Array.isArray(b)) {
+    const len = Math.max(a.length, b.length);
+    for (let i = 0; i < len; i++) {
+      const av = a[i];
+      const bv = b[i];
+      const path = `${prefix}[${i}]`;
+      if (JSON.stringify(av) === JSON.stringify(bv)) continue;
+      if (
+        av !== null && bv !== null &&
+        typeof av === 'object' && typeof bv === 'object'
+      ) {
+        changes.push(...compareNode(av, bv, path));
+      } else {
+        changes.push({ path, before: av, after: bv });
+      }
+    }
+    return changes;
+  }
+
+  // Both objects → compare key-wise
   const keys = new Set([...Object.keys(a || {}), ...Object.keys(b || {})]);
   for (const key of keys) {
     const path = prefix ? `${prefix}.${key}` : key;
@@ -228,8 +262,8 @@ function compareNode(a, b, prefix = '') {
     const bv = b?.[key];
     if (JSON.stringify(av) === JSON.stringify(bv)) continue;
     if (
-      typeof av === 'object' && av !== null && !Array.isArray(av) &&
-      typeof bv === 'object' && bv !== null && !Array.isArray(bv)
+      av !== null && bv !== null &&
+      typeof av === 'object' && typeof bv === 'object'
     ) {
       changes.push(...compareNode(av, bv, path));
     } else {
