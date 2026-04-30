@@ -4,7 +4,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -13,6 +13,7 @@ export const repoRoot = resolve(__dirname, '..', '..');
 
 export const MANIFEST_PATH  = resolve(repoRoot, '.figma', 'manifest.json');
 export const SNAPSHOT_PATH  = resolve(repoRoot, '.figma', 'snapshots.json');
+export const STATE_DIR      = resolve(repoRoot, '.figma', 'state');
 
 export function loadEnv() {
   const path = resolve(repoRoot, '.env.local');
@@ -115,7 +116,142 @@ export async function hashComponent(env, nodeId) {
 
   const canonical = canonicalize(subtree);
   const hash = createHash('sha256').update(canonical).digest('hex');
-  return { hash, varCount: varIds.size, canonical };
+  return { hash, varCount: varIds.size, canonical, subtree };
+}
+
+/**
+ * Build a compact "fingerprint" of a Component Set's variants for diffing.
+ * Output: { variants: { variantName: { props } }, structure: {...} }
+ *
+ * Each variant captures only the properties that meaningfully describe its
+ * visual: fills, strokes, effects, padding, cornerRadius, layoutSizing,
+ * variable bindings, and child layer count. Volatile fields are stripped.
+ */
+export function summarize(subtree) {
+  const summary = {
+    type: subtree.type,
+    name: subtree.name,
+    variants: {},
+    nonVariantNodes: [],
+  };
+
+  if (subtree.type === 'COMPONENT_SET') {
+    for (const variant of subtree.children || []) {
+      summary.variants[variant.name] = nodeFingerprint(variant);
+    }
+  } else {
+    summary.nonVariantNodes.push(nodeFingerprint(subtree));
+  }
+
+  return summary;
+}
+
+function nodeFingerprint(node) {
+  return {
+    type: node.type,
+    fills: simplifyFills(node.fills),
+    strokes: simplifyFills(node.strokes),
+    strokeWeight: node.strokeWeight,
+    cornerRadius: node.cornerRadius,
+    rectangleCornerRadii: node.rectangleCornerRadii,
+    paddingLeft: node.paddingLeft,
+    paddingRight: node.paddingRight,
+    paddingTop: node.paddingTop,
+    paddingBottom: node.paddingBottom,
+    itemSpacing: node.itemSpacing,
+    layoutMode: node.layoutMode,
+    primaryAxisAlignItems: node.primaryAxisAlignItems,
+    counterAxisAlignItems: node.counterAxisAlignItems,
+    effects: simplifyEffects(node.effects),
+    boundVariables: node.boundVariables,
+    childCount: (node.children || []).length,
+    childNames: (node.children || []).map((c) => `${c.type}:${c.name}`),
+  };
+}
+
+function simplifyFills(fills) {
+  if (!fills || !Array.isArray(fills)) return undefined;
+  return fills.map((f) => ({
+    type: f.type,
+    color: f.color
+      ? `rgb(${Math.round((f.color.r || 0) * 255)}, ${Math.round((f.color.g || 0) * 255)}, ${Math.round((f.color.b || 0) * 255)}, a=${f.color.a ?? 1})`
+      : undefined,
+    opacity: f.opacity,
+    visible: f.visible,
+    boundVar: f.boundVariables?.color?.id,
+  }));
+}
+
+function simplifyEffects(effects) {
+  if (!effects || !Array.isArray(effects)) return undefined;
+  return effects.map((e) => ({
+    type: e.type,
+    radius: e.radius,
+    spread: e.spread,
+    visible: e.visible,
+    color: e.color
+      ? `rgba(${Math.round((e.color.r || 0) * 255)},${Math.round((e.color.g || 0) * 255)},${Math.round((e.color.b || 0) * 255)},${e.color.a ?? 1})`
+      : undefined,
+  }));
+}
+
+/**
+ * Compute a human-readable diff between two summaries (old → new).
+ * Returns { added: [...], removed: [...], modified: [{ variant, changes: [...] }] }.
+ */
+export function diffSummaries(oldSum, newSum) {
+  const out = { added: [], removed: [], modified: [] };
+  const oldVariants = oldSum.variants || {};
+  const newVariants = newSum.variants || {};
+
+  for (const name of Object.keys(newVariants)) {
+    if (!(name in oldVariants)) {
+      out.added.push(name);
+    } else {
+      const changes = compareNode(oldVariants[name], newVariants[name]);
+      if (changes.length > 0) out.modified.push({ variant: name, changes });
+    }
+  }
+  for (const name of Object.keys(oldVariants)) {
+    if (!(name in newVariants)) out.removed.push(name);
+  }
+
+  return out;
+}
+
+function compareNode(a, b, prefix = '') {
+  const changes = [];
+  const keys = new Set([...Object.keys(a || {}), ...Object.keys(b || {})]);
+  for (const key of keys) {
+    const path = prefix ? `${prefix}.${key}` : key;
+    const av = a?.[key];
+    const bv = b?.[key];
+    if (JSON.stringify(av) === JSON.stringify(bv)) continue;
+    if (
+      typeof av === 'object' && av !== null && !Array.isArray(av) &&
+      typeof bv === 'object' && bv !== null && !Array.isArray(bv)
+    ) {
+      changes.push(...compareNode(av, bv, path));
+    } else {
+      changes.push({ path, before: av, after: bv });
+    }
+  }
+  return changes;
+}
+
+export function loadState(slug) {
+  try {
+    const path = resolve(STATE_DIR, `${slug}.json`);
+    return JSON.parse(readFileSync(path, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+export function saveState(slug, summary) {
+  if (!existsSync(STATE_DIR)) mkdirSync(STATE_DIR, { recursive: true });
+  const path = resolve(STATE_DIR, `${slug}.json`);
+  writeFileSync(path, JSON.stringify(summary, null, 2) + '\n', 'utf8');
 }
 
 export function loadManifest() {

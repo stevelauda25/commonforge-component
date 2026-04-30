@@ -14,6 +14,8 @@ import {
   loadManifest,
   loadSnapshots,
   saveSnapshots,
+  saveState,
+  summarize,
 } from './_lib.mjs';
 
 async function main() {
@@ -51,14 +53,15 @@ async function main() {
 
   for (const comp of target) {
     process.stdout.write(`Hashing ${comp.slug}…  `);
-    const { hash, varCount } = await hashComponent(env, comp.nodeId);
+    const { hash, varCount, subtree } = await hashComponent(env, comp.nodeId);
     snapshots.components[comp.slug] = {
       hash,
       varCount,
       syncedAt: now,
       nodeId: comp.nodeId,
     };
-    console.log(`${hash.slice(0, 12)}…  (${varCount} vars)`);
+    saveState(comp.slug, summarize(subtree));
+    console.log(`${hash.slice(0, 12)}…  (${varCount} vars, state saved)`);
   }
 
   snapshots.version = 1;
