@@ -12,9 +12,38 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Run Claude with a trivial prompt
+
+      - name: Write MCP config (Figma via figma-developer-mcp)
+        env:
+          FIGMA_API_KEY: ${{ secrets.FIGMA_PAT }}
+        run: |
+          cat > "$RUNNER_TEMP/mcp-config.json" <<JSON
+          {
+            "mcpServers": {
+              "figma": {
+                "command": "npx",
+                "args": ["-y", "figma-developer-mcp", "--stdio"],
+                "env": {
+                  "FIGMA_API_KEY": "${FIGMA_API_KEY}"
+                }
+              }
+            }
+          }
+          JSON
+          # Verify the file was written (without echoing secret)
+          jq 'del(.mcpServers.figma.env)' "$RUNNER_TEMP/mcp-config.json"
+
+      - name: Run Claude with Figma MCP mounted
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          prompt: "List the files in scripts/figma/ and report their byte sizes. End with the line: PREFLIGHT-1-PASSED"
-          claude_args: --max-turns 3
+          prompt: |
+            Call the figma MCP tool `get_figma_data` with these arguments:
+              fileKey: ${{ secrets.FIGMA_FILE_KEY }}
+              nodeId: 267:355
+              depth: 1
+
+            From the response, report the node's name and type in one sentence.
+            Then end your reply with this exact line on its own:
+            PREFLIGHT-2-PASSED
+          claude_args: --mcp-config "$RUNNER_TEMP/mcp-config.json" --max-turns 8 --allowedTools "mcp__figma__get_figma_data"
