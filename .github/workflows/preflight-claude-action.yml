@@ -2,6 +2,10 @@ name: preflight-claude-action
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   hello:
     runs-on: ubuntu-latest
