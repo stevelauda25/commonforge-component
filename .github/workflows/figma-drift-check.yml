@@ -1,0 +1,42 @@
+name: figma-drift-check
+
+# Daily lightweight drift detector. Does NOT invoke Claude (no subscription
+# quota burn). When drift is detected, the workflow fails — the red badge +
+# email notification tells the dev to run /sync-figma locally.
+#
+# Companion to figma-sync.yml (which runs Claude in CI for designer/webhook
+# triggered automation). This workflow is the default daily heartbeat.
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 02:00 UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Detect Figma drift
+        env:
+          FIGMA_PAT: ${{ secrets.FIGMA_PAT }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+        run: |
+          printf 'FIGMA_PAT=%s\nFIGMA_FILE_KEY=%s\n' "$FIGMA_PAT" "$FIGMA_FILE_KEY" > .env.local
+          # check.mjs exits 1 when drift detected — fails the workflow.
+          # That failure is the notification: GitHub emails repo watchers,
+          # red badge appears in Actions tab.
+          node scripts/figma/check.mjs
