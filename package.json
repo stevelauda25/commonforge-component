@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "pnpm -F docs dev",
     "build": "pnpm -F pod-test-tokens build && pnpm -F pod-test-ui build && pnpm -F docs build",
-    "build:debug": "echo '=== pwd ===' && pwd && echo '=== files ===' && ls && echo '=== workspace.yaml ===' && cat pnpm-workspace.yaml || echo 'NOT FOUND'",
+    "build:debug": "pwd && ls pnpm-workspace.yaml && pnpm -F pod-test-tokens build && pnpm -F pod-test-ui build && pnpm -F docs build",
     "typecheck": "pnpm -r --parallel typecheck",
     "clean": "rm -rf node_modules **/node_modules **/dist"
   },
