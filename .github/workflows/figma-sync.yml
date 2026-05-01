@@ -1,0 +1,66 @@
+name: figma-sync
+on:
+  workflow_dispatch:
+    inputs:
+      slugs:
+        description: "Comma-separated slugs to sync (default: auto-detect drift)"
+        required: false
+        default: ""
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.7.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Identify which slugs to sync
+        id: drift
+        env:
+          FIGMA_PAT: ${{ secrets.FIGMA_PAT }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+        run: |
+          # _lib.mjs reads .env.local; synthesize from secrets.
+          printf 'FIGMA_PAT=%s\nFIGMA_FILE_KEY=%s\n' "$FIGMA_PAT" "$FIGMA_FILE_KEY" > .env.local
+
+          if [ -n "${{ inputs.slugs }}" ]; then
+            FLAT=$(echo '${{ inputs.slugs }}' | tr ',' ' ' | xargs)
+            echo "slugs=$FLAT" >> "$GITHUB_OUTPUT"
+            echo "source=manual-input" >> "$GITHUB_OUTPUT"
+          else
+            DRIFTED=$(node scripts/figma/check.mjs --slugs-only || true)
+            FLAT=$(echo "$DRIFTED" | tr '\n' ' ' | xargs)
+            echo "slugs=$FLAT" >> "$GITHUB_OUTPUT"
+            echo "source=drift-detected" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Exit early if nothing to do
+        if: steps.drift.outputs.slugs == ''
+        run: |
+          echo "::notice::No drift detected and no manual slugs specified. Exiting clean."
+          echo "NO_OP=true" >> "$GITHUB_ENV"
+
+      - name: Show plan
+        if: env.NO_OP != 'true'
+        run: |
+          echo "::notice::Will sync slugs: ${{ steps.drift.outputs.slugs }} (source: ${{ steps.drift.outputs.source }})"
+          echo "## Sync plan" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Slugs:** \`${{ steps.drift.outputs.slugs }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Source:** ${{ steps.drift.outputs.source }}" >> "$GITHUB_STEP_SUMMARY"
