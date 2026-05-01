@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { cn } from '@pod/ui';
+import { cn } from 'pod-test-ui';
 
 interface Heading {
   id: string;
@@ -27,7 +27,8 @@ export function TableOfContents() {
 
   useEffect(() => {
     if (headings.length === 0) return;
-    setActiveId(headings[0].id);
+    const first = headings[0];
+    if (first) setActiveId(first.id);
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -35,9 +36,8 @@ export function TableOfContents() {
           .sort(
             (a, b) => a.boundingClientRect.top - b.boundingClientRect.top,
           );
-        if (visible.length > 0) {
-          setActiveId(visible[0].target.id);
-        }
+        const top = visible[0];
+        if (top) setActiveId(top.target.id);
       },
       { rootMargin: '-80px 0px -70% 0px', threshold: 0 },
     );
