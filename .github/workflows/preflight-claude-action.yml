@@ -47,4 +47,4 @@ jobs:
             From the response, report the node's name and type in one sentence.
             Then end your reply with this exact line on its own:
             PREFLIGHT-2-PASSED
-          claude_args: --mcp-config ${{ runner.temp }}/mcp-config.json --max-turns 8
+          claude_args: --mcp-config ${{ runner.temp }}/mcp-config.json --max-turns 8 --dangerously-skip-permissions
