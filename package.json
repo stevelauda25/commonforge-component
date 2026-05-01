@@ -6,8 +6,8 @@
   "packageManager": "pnpm@9.7.0",
   "scripts": {
     "dev": "pnpm -F docs dev",
-    "build": "pnpm -F pod-test-tokens build && pnpm -F pod-test-ui build && pnpm -F docs build",
-    "build:debug": "pwd && ls pnpm-workspace.yaml && pnpm -F pod-test-tokens build && pnpm -F pod-test-ui build && pnpm -F docs build",
+    "build": "pnpm -r build",
+    "build:debug": "ls -la apps/docs/node_modules | grep -E 'pod|^l' | head && pnpm -r build",
     "typecheck": "pnpm -r --parallel typecheck",
     "clean": "rm -rf node_modules **/node_modules **/dist"
   },
