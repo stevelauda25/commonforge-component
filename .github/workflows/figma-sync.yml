@@ -9,7 +9,8 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   sync:
@@ -104,3 +105,97 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "**Claude exit status:** \`${{ steps.claude-sync.outcome }}\`" >> "$GITHUB_STEP_SUMMARY"
+
+      # ─── Task 8: Validation gates (non-fatal) ──────────────────────────────
+      - name: Rebuild affected packages
+        if: env.NO_OP != 'true'
+        continue-on-error: true
+        id: rebuild
+        run: |
+          pnpm -F pod-test-tokens build
+          pnpm -F pod-test-ui build
+
+      - name: Typecheck
+        if: env.NO_OP != 'true'
+        continue-on-error: true
+        id: typecheck
+        run: pnpm typecheck
+
+      - name: Build docs
+        if: env.NO_OP != 'true'
+        continue-on-error: true
+        id: build
+        run: pnpm -F docs build
+
+      - name: Validation summary
+        if: env.NO_OP != 'true'
+        run: |
+          echo "## Validation results" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Rebuild: ${{ steps.rebuild.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Typecheck: ${{ steps.typecheck.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Build: ${{ steps.build.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.rebuild.outcome }}" != "success" ] || \
+             [ "${{ steps.typecheck.outcome }}" != "success" ] || \
+             [ "${{ steps.build.outcome }}" != "success" ]; then
+            echo "VALIDATION_FAILED=true" >> "$GITHUB_ENV"
+          fi
+
+      # ─── Task 9: Open PR ───────────────────────────────────────────────────
+      - name: Strip .env.local before commit
+        if: env.NO_OP != 'true'
+        run: |
+          # synthesized in 'Identify which slugs' step; never commit
+          rm -f .env.local
+
+      - name: Check for changes
+        if: env.NO_OP != 'true'
+        id: changes
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Sync ran but produced no file changes. Skipping PR."
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            git status --short
+          fi
+
+      - name: Open PR
+        if: env.NO_OP != 'true' && steps.changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: figma-sync/${{ github.run_id }}
+          base: main
+          title: "Figma sync: ${{ steps.drift.outputs.slugs }}"
+          commit-message: |
+            chore(figma-sync): apply Figma changes for ${{ steps.drift.outputs.slugs }}
+
+            Triggered by: ${{ steps.drift.outputs.source }}
+            Run: ${{ github.run_id }}
+          body: |
+            ## Figma sync — run ${{ github.run_id }}
+
+            **Triggered by:** ${{ steps.drift.outputs.source }}
+            **Components synced:** `${{ steps.drift.outputs.slugs }}`
+
+            ### Validation
+            - Rebuild: ${{ steps.rebuild.outcome }}
+            - Typecheck: ${{ steps.typecheck.outcome }}
+            - Build: ${{ steps.build.outcome }}
+
+            ### Preview
+            🔗 Vercel will comment with the preview URL when the build completes.
+
+            ### How to merge
+            1. Open the preview URL.
+            2. Walk through the affected component pages.
+            3. Confirm visual matches Figma.
+            4. Merge.
+
+            ---
+            *If checks failed:* the diff still represents Claude's attempt.
+            Either fix issues directly on this branch and push, or close the PR
+            and run `/sync-figma <slug>` locally to investigate.
+          labels: |
+            figma-sync
+            ${{ env.VALIDATION_FAILED == 'true' && 'figma-sync-broken' || '' }}
