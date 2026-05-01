@@ -1,0 +1,3296 @@
+{
+  "type": "COMPONENT_SET",
+  "name": "button",
+  "variants": {
+    "Type=Primary, State=Default, Size=Large, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 10,
+      "paddingRight": 10,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1232",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1232",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:853"
+        ],
+        "strokes": [
+          "16:900"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Default, Size=Large, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 10,
+      "paddingRight": 10,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1232",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1232",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1208"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Default, Size=Large, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 10,
+      "paddingRight": 10,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1232",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1232",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1843"
+        ],
+        "strokes": [
+          "17:1844"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Default, Size=Medium, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:853"
+        ],
+        "strokes": [
+          "16:900"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Default, Size=Medium, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1208"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Default, Size=Medium, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1843"
+        ],
+        "strokes": [
+          "17:1844"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Default, Size=Small, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "strokes": [
+          "16:900"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Default, Size=Small, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "strokes": [
+          "17:1208"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Default, Size=Small, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "17:1843"
+        ],
+        "strokes": [
+          "17:1844"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Default, Size=XSmall, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "16:853"
+        ],
+        "strokes": [
+          "16:900"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Default, Size=XSmall, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1234",
+        "strokes": [
+          "17:1208"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Default, Size=XSmall, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "17:1843"
+        ],
+        "strokes": [
+          "17:1844"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Default, Size=Large, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:853"
+        ],
+        "strokes": [
+          "16:900"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Default, Size=Large, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1208"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Default, Size=Large, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1843"
+        ],
+        "strokes": [
+          "17:1844"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Default, Size=Medium, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:853"
+        ],
+        "strokes": [
+          "16:900"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Default, Size=Medium, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1208"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Default, Size=Medium, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1843"
+        ],
+        "strokes": [
+          "17:1844"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Default, Size=Small, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "16:853"
+        ],
+        "strokes": [
+          "16:900"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Default, Size=Small, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "strokes": [
+          "17:1208"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Default, Size=Small, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "17:1843"
+        ],
+        "strokes": [
+          "17:1844"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Default, Size=XSmall, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 4,
+      "paddingRight": 4,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1234",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1234",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "16:853"
+        ],
+        "strokes": [
+          "16:900"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Default, Size=XSmall, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 4,
+      "paddingRight": 4,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1234",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1234",
+        "paddingBottom": "10:1234",
+        "strokes": [
+          "17:1208"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Default, Size=XSmall, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 4,
+      "paddingRight": 4,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1234",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1234",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "17:1843"
+        ],
+        "strokes": [
+          "17:1844"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Hover, Size=Large, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 10,
+      "paddingRight": 10,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1232",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1232",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:854"
+        ],
+        "strokes": [
+          "16:905"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Hover, Size=Large, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 10,
+      "paddingRight": 10,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1232",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1232",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1211"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Hover, Size=Large, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 10,
+      "paddingRight": 10,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1232",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1232",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1847"
+        ],
+        "strokes": [
+          "17:1848"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Hover, Size=Medium, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:854"
+        ],
+        "strokes": [
+          "16:905"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Hover, Size=Medium, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1211"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Hover, Size=Medium, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1847"
+        ],
+        "strokes": [
+          "17:1848"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Hover, Size=Small, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "16:854"
+        ],
+        "strokes": [
+          "16:905"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Hover, Size=Small, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "strokes": [
+          "17:1211"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Hover, Size=Small, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "17:1847"
+        ],
+        "strokes": [
+          "17:1848"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Hover, Size=XSmall, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "16:854"
+        ],
+        "strokes": [
+          "16:905"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Hover, Size=XSmall, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1234",
+        "strokes": [
+          "17:1211"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Hover, Size=XSmall, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "17:1847"
+        ],
+        "strokes": [
+          "17:1848"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Hover, Size=Large, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:854"
+        ],
+        "strokes": [
+          "16:905"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Hover, Size=Large, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1211"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Hover, Size=Large, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1847"
+        ],
+        "strokes": [
+          "17:1848"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Hover, Size=Medium, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:854"
+        ],
+        "strokes": [
+          "16:905"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Hover, Size=Medium, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1211"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Hover, Size=Medium, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1847"
+        ],
+        "strokes": [
+          "17:1848"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Hover, Size=Small, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "16:854"
+        ],
+        "strokes": [
+          "16:905"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Hover, Size=Small, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "strokes": [
+          "17:1211"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Hover, Size=Small, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "17:1847"
+        ],
+        "strokes": [
+          "17:1848"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Hover, Size=XSmall, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(21, 128, 61, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(22, 163, 74, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 4,
+      "paddingRight": 4,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1234",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1234",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "16:854"
+        ],
+        "strokes": [
+          "16:905"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Hover, Size=XSmall, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 4,
+      "paddingRight": 4,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1234",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1234",
+        "paddingBottom": "10:1234",
+        "strokes": [
+          "17:1211"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Hover, Size=XSmall, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(153, 27, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(185, 28, 28, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 4,
+      "paddingRight": 4,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "radius": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        },
+        {
+          "type": "INNER_SHADOW",
+          "radius": 12,
+          "spread": 4,
+          "visible": true,
+          "color": "rgba(194,255,203,0.25)"
+        }
+      ],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1234",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1234",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "17:1847"
+        ],
+        "strokes": [
+          "17:1848"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Disabled, Size=Large, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 10,
+      "paddingRight": 10,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1232",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1232",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:895"
+        ],
+        "strokes": [
+          "16:899"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Disabled, Size=Large, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 10,
+      "paddingRight": 10,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1232",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1232",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1225"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Disabled, Size=Large, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(38, 13, 14, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(127, 29, 29, a=1)",
+          "visible": false
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 10,
+      "paddingRight": 10,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1232",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1232",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1851"
+        ],
+        "strokes": [
+          "17:1852"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Disabled, Size=Medium, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:895"
+        ],
+        "strokes": [
+          "16:899"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Disabled, Size=Medium, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1225"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Disabled, Size=Medium, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(38, 13, 14, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(127, 29, 29, a=1)",
+          "visible": false
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1851"
+        ],
+        "strokes": [
+          "17:1852"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Disabled, Size=Small, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "16:895"
+        ],
+        "strokes": [
+          "16:899"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Disabled, Size=Small, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "strokes": [
+          "17:1225"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Disabled, Size=Small, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(38, 13, 14, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(127, 29, 29, a=1)",
+          "visible": false
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "17:1851"
+        ],
+        "strokes": [
+          "17:1852"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Disabled, Size=XSmall, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "16:895"
+        ],
+        "strokes": [
+          "16:899"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Outline, State=Disabled, Size=XSmall, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1234",
+        "strokes": [
+          "17:1225"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Error, State=Disabled, Size=XSmall, Icon Only=False": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(38, 13, 14, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(127, 29, 29, a=1)",
+          "visible": false
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "17:1851"
+        ],
+        "strokes": [
+          "17:1852"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:li:chevron-left",
+        "FRAME:Text",
+        "INSTANCE:li:chevron-right"
+      ]
+    },
+    "Type=Primary, State=Disabled, Size=Large, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:895"
+        ],
+        "strokes": [
+          "16:899"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Disabled, Size=Large, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1225"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Disabled, Size=Large, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(38, 13, 14, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(127, 29, 29, a=1)",
+          "visible": false
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 10,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1851"
+        ],
+        "strokes": [
+          "17:1852"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Disabled, Size=Medium, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "16:895"
+        ],
+        "strokes": [
+          "16:899"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Disabled, Size=Medium, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "strokes": [
+          "17:1225"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Disabled, Size=Medium, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(38, 13, 14, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(127, 29, 29, a=1)",
+          "visible": false
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 8,
+      "paddingBottom": 8,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1236",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1236",
+        "fills": [
+          "17:1851"
+        ],
+        "strokes": [
+          "17:1852"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Disabled, Size=Small, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "16:895"
+        ],
+        "strokes": [
+          "16:899"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Disabled, Size=Small, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "strokes": [
+          "17:1225"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Disabled, Size=Small, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(38, 13, 14, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(127, 29, 29, a=1)",
+          "visible": false
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 6,
+      "paddingRight": 6,
+      "paddingTop": 6,
+      "paddingBottom": 6,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1227",
+        "paddingTop": "10:1227",
+        "paddingRight": "10:1227",
+        "paddingBottom": "10:1227",
+        "fills": [
+          "17:1851"
+        ],
+        "strokes": [
+          "17:1852"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Primary, State=Disabled, Size=XSmall, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(11, 33, 21, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 4,
+      "paddingRight": 4,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1234",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1234",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "16:895"
+        ],
+        "strokes": [
+          "16:899"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Outline, State=Disabled, Size=XSmall, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 4,
+      "paddingRight": 4,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1234",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1234",
+        "paddingBottom": "10:1234",
+        "strokes": [
+          "17:1225"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    },
+    "Type=Error, State=Disabled, Size=XSmall, Icon Only=True": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(38, 13, 14, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(127, 29, 29, a=1)",
+          "visible": false
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "paddingLeft": 4,
+      "paddingRight": 4,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 2,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "16:816",
+        "paddingLeft": "10:1234",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1234",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "17:1851"
+        ],
+        "strokes": [
+          "17:1852"
+        ]
+      },
+      "childCount": 1,
+      "childNames": [
+        "INSTANCE:li:copy"
+      ]
+    }
+  },
+  "nonVariantNodes": []
+}
