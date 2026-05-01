@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "pnpm -F docs dev",
     "build": "pnpm -r build",
-    "build:debug": "echo '=== pnpm version ===' && pnpm -v && echo '=== apps/docs/node_modules ===' && ls -la apps/docs/node_modules | grep -iE 'pod|@pod' && echo '=== @pod content ===' && ls -la apps/docs/node_modules/@pod 2>/dev/null || echo 'no @pod' && echo '=== root packages dir ===' && ls -la packages/ && pnpm -r build",
+    "build:debug": "pnpm -r build",
     "typecheck": "pnpm -r --parallel typecheck",
     "clean": "rm -rf node_modules **/node_modules **/dist"
   },
