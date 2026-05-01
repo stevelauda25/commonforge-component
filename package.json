@@ -6,7 +6,8 @@
   "packageManager": "pnpm@9.7.0",
   "scripts": {
     "dev": "pnpm -F docs dev",
-    "build": "pnpm -F docs build",
+    "build": "pnpm -F pod-test-tokens build && pnpm -F pod-test-ui build && pnpm -F docs build",
+    "build:debug": "pnpm -F pod-test-tokens build && pnpm -F pod-test-ui build && echo '=== ui dist ===' && ls packages/ui/dist | head && echo '=== docs node_modules pod ===' && ls -la apps/docs/node_modules | grep pod && pnpm -F docs build",
     "typecheck": "pnpm -r --parallel typecheck",
     "clean": "rm -rf node_modules **/node_modules **/dist"
   },
