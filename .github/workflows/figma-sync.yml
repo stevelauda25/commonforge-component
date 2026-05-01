@@ -64,3 +64,43 @@ jobs:
           echo "## Sync plan" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Slugs:** \`${{ steps.drift.outputs.slugs }}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Source:** ${{ steps.drift.outputs.source }}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Write MCP config (Figma via figma-developer-mcp)
+        if: env.NO_OP != 'true'
+        env:
+          FIGMA_API_KEY: ${{ secrets.FIGMA_PAT }}
+        run: |
+          cat > "$RUNNER_TEMP/mcp-config.json" <<JSON
+          {
+            "mcpServers": {
+              "figma": {
+                "command": "npx",
+                "args": ["-y", "figma-developer-mcp", "--stdio"],
+                "env": {
+                  "FIGMA_API_KEY": "${FIGMA_API_KEY}"
+                }
+              }
+            }
+          }
+          JSON
+
+      - name: Run /sync-figma for drifted slugs
+        if: env.NO_OP != 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: "true"
+          prompt: "/sync-figma ${{ steps.drift.outputs.slugs }}"
+          claude_args: --mcp-config ${{ runner.temp }}/mcp-config.json --max-turns 30 --dangerously-skip-permissions
+        continue-on-error: true
+        id: claude-sync
+
+      - name: Inspect what Claude changed
+        if: env.NO_OP != 'true'
+        run: |
+          echo "## Files changed by Claude" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          git status --porcelain >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Claude exit status:** \`${{ steps.claude-sync.outcome }}\`" >> "$GITHUB_STEP_SUMMARY"
