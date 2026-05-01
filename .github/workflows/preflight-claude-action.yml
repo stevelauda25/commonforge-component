@@ -37,6 +37,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: "true"
           prompt: |
             Call the figma MCP tool `get_figma_data` with these arguments:
               fileKey: ${{ secrets.FIGMA_FILE_KEY }}
@@ -46,4 +47,4 @@ jobs:
             From the response, report the node's name and type in one sentence.
             Then end your reply with this exact line on its own:
             PREFLIGHT-2-PASSED
-          claude_args: --mcp-config "$RUNNER_TEMP/mcp-config.json" --max-turns 8 --allowedTools "mcp__figma__get_figma_data"
+          claude_args: --mcp-config ${{ runner.temp }}/mcp-config.json --max-turns 8
