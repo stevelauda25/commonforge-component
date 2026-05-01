@@ -11,6 +11,6 @@ jobs:
       - name: Run Claude with a trivial prompt
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: "List the files in scripts/figma/ and report their byte sizes. End with the line: PREFLIGHT-1-PASSED"
           claude_args: --max-turns 3
