@@ -14,6 +14,7 @@ export const repoRoot = resolve(__dirname, '..', '..');
 export const MANIFEST_PATH  = resolve(repoRoot, '.figma', 'manifest.json');
 export const SNAPSHOT_PATH  = resolve(repoRoot, '.figma', 'snapshots.json');
 export const STATE_DIR      = resolve(repoRoot, '.figma', 'state');
+export const VARIABLES_PATH = resolve(repoRoot, '.figma', 'variables.json');
 
 export function loadEnv() {
   const path = resolve(repoRoot, '.env.local');
@@ -271,6 +272,64 @@ function compareNode(a, b, prefix = '') {
     }
   }
   return changes;
+}
+
+/**
+ * Load `.figma/variables.json` — name→value mapping populated by /sync-figma
+ * via MCP get_variable_defs. Returns an enriched lookup helper.
+ */
+export function loadVariableDictionary() {
+  let data;
+  try {
+    data = JSON.parse(readFileSync(VARIABLES_PATH, 'utf8'));
+  } catch {
+    return {
+      hasData: false,
+      nameForValue: () => null,
+      nameForBoundId: () => null,
+    };
+  }
+  const variables = data.variables || {};
+
+  // Build value → [names] reverse index
+  const byValue = new Map();
+  for (const [name, value] of Object.entries(variables)) {
+    if (typeof value !== 'string') continue;
+    const norm = value.toLowerCase();
+    if (!byValue.has(norm)) byValue.set(norm, []);
+    byValue.get(norm).push(name);
+  }
+
+  // Pick best name candidate based on path heuristic
+  function pickByPath(candidates, hint) {
+    if (candidates.length === 0) return null;
+    if (candidates.length === 1) return candidates[0];
+    if (hint) {
+      const filtered = candidates.filter((n) => n.includes(hint));
+      if (filtered.length > 0) {
+        // Shortest = least-suffixed = most "default"
+        return filtered.sort((a, b) => a.length - b.length)[0];
+      }
+    }
+    return candidates.sort((a, b) => a.length - b.length)[0];
+  }
+
+  return {
+    hasData: true,
+    /** Look up token name by resolved value (hex / number string). */
+    nameForValue(value, hint) {
+      if (value == null) return null;
+      const v = String(value).toLowerCase();
+      const cands = byValue.get(v);
+      if (!cands) return null;
+      return pickByPath(cands, hint);
+    },
+    /** Look up token name from a bound ID by going through state's resolved value. */
+    nameForBoundId(_boundId, resolvedValue, hint) {
+      // We don't have direct ID→name mapping (Pro tier limit). Fall back to value lookup.
+      return this.nameForValue(resolvedValue, hint);
+    },
+  };
 }
 
 export function loadState(slug) {

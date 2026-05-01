@@ -49,6 +49,28 @@ Call these MCP tools:
 The reference code from step 3 is a **suggestion**. POD has its own
 conventions (see [CLAUDE.md](CLAUDE.md) → "Common edits — patterns").
 
+### 2.5 FULL REPLACE `.figma/variables.json` from MCP get_variable_defs
+
+**Replace** (do not merge) the `variables` key with the result of
+`get_variable_defs` (which returns `{ name: value }`). Also bump `syncedAt`
+to current ISO time. Why full replace, not merge:
+
+- Designer renames/deletes Figma variables over time. Merge would leave
+  stale entries (e.g. `blue/600` lingering after designer removed it),
+  causing wrong name resolution in future diffs.
+- Figma's `get_variable_defs` for the Component Set returns the **complete**
+  set of variables that subtree references — so it's authoritative for that
+  component.
+
+This dictionary is what `check.mjs` uses to enrich diff output — so a binding
+change from `id 16:853` shows as `components/button/surface-primary (id 16:853)`
+instead of just the raw ID.
+
+> **Multi-component note**: when we add more components to the manifest,
+> single shared `variables.json` will lose tokens from other components on
+> each sync. Refactor to per-component files at that point:
+> `.figma/variables/<slug>.json`. For now (button-only) single file is fine.
+
 ### 3. Detect anomalies (don't block on them)
 
 Flag for the report (but proceed):

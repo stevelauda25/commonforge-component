@@ -15,8 +15,11 @@
 
 import {
   diffSummaries, figmaUrl, getFileName, hashComponent, loadEnv,
-  loadManifest, loadSnapshots, loadState, relativeTime, summarize,
+  loadManifest, loadSnapshots, loadState, loadVariableDictionary,
+  relativeTime, summarize,
 } from './_lib.mjs';
+
+const vars = loadVariableDictionary();
 
 import {
   c, card, changeLine, parseRgb, rgbToHex, ruleHeavy, ruleLight,
@@ -238,7 +241,7 @@ function renderDetail({ drifted, inSync, errors }) {
         const m = d.diff.modified[i];
         console.log('    ' + c.yellow('~') + ' ' + c.bold(m.variant));
         for (const ch of m.changes) {
-          console.log(formatChange(ch));
+          console.log(formatChange(ch, m.changes));
         }
         if (i < d.diff.modified.length - 1) console.log();
       }
@@ -283,12 +286,23 @@ function formatChangeCounts(diff) {
  *   paddingLeft              → "padding left"   + px
  *   cornerRadius             → "corner radius"  + px
  */
-function formatChange(ch) {
+function formatChange(ch, siblingChanges) {
   const indent = '        ';
   const { label, formatValueFn } = describePath(ch.path);
 
-  const beforeStr = formatValueFn(ch.before);
-  const afterStr  = formatValueFn(ch.after);
+  // Find sibling resolved color for binding lookup
+  // e.g. for path "bindings.fills[0]", look for sibling "fills[0].color"
+  let siblingValue = null;
+  if (ch.path.startsWith('bindings.fills') || ch.path.startsWith('bindings.strokes')) {
+    const idx = ch.path.match(/\[(\d+)\]/)?.[1];
+    const which = ch.path.includes('fills') ? 'fills' : 'strokes';
+    const siblingPath = `${which}[${idx}].color`;
+    const sib = siblingChanges?.find((s) => s.path === siblingPath);
+    if (sib) siblingValue = { before: sib.before, after: sib.after };
+  }
+
+  const beforeStr = formatValueFn(ch.before, ch.path, siblingValue?.before);
+  const afterStr  = formatValueFn(ch.after, ch.path, siblingValue?.after);
 
   return indent + c.cyan(label.padEnd(22)) + beforeStr + c.dim('  →  ') + afterStr;
 }
@@ -356,15 +370,29 @@ function friendlyBinding(rest) {
   return aliases[rest] || `${rest} binding`;
 }
 
-function colorValue(v) {
+function colorValue(v, pathHint) {
   if (typeof v !== 'string') return scalarValue(v);
   const rgb = parseRgb(v);
   if (!rgb) return c.dim(String(v));
-  return swatch(v) + ' ' + c.bold(rgbToHex(rgb));
+  const hex = rgbToHex(rgb);
+  const hint = pathHint && pathHint.includes('strokes') ? 'stroke' : 'surface';
+  const tokenName = vars.nameForValue(hex, hint);
+  const suffix = tokenName ? ' ' + c.dim(`(${tokenName})`) : '';
+  return swatch(v) + ' ' + c.bold(hex) + suffix;
 }
 
-function variableValue(v) {
+function variableValue(v, pathHint, siblingValue) {
   if (v === undefined || v === null) return c.dim('∅');
+  // siblingValue = resolved color/value from the parallel fills/strokes change.
+  // If we have it, look up the token name. Otherwise just show the bound ID.
+  if (siblingValue) {
+    const hint = pathHint && pathHint.includes('strokes') ? 'stroke' : 'surface';
+    const rgb = parseRgb(siblingValue);
+    if (rgb) {
+      const tokenName = vars.nameForBoundId(v, rgbToHex(rgb), hint);
+      if (tokenName) return c.bold(tokenName) + ' ' + c.dim(`(id ${v})`);
+    }
+  }
   return c.bold(String(v));
 }
 
