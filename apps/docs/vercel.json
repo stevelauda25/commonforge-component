@@ -1,6 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
-  "buildCommand": "cd ../.. && pnpm -F pod-test-tokens build && pnpm -F pod-test-ui build && pnpm -F docs build",
-  "outputDirectory": "dist"
-}
