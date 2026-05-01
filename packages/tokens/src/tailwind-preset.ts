@@ -69,6 +69,10 @@ export const preset: Partial<Config> = {
 
         // Neutral overlay (for modal scrims etc.)
         overlay: rgbVar('overlay'),
+
+        // Experimental — Figma-introduced primitives, see theme.css block
+        'experiment-blue':           rgbVar('experiment-blue'),
+        'experiment-primary-hover':  rgbVar('experiment-primary-hover'),
       },
 
       borderRadius: {

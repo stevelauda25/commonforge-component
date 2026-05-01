@@ -30,6 +30,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     'bg-accent-hover text-accent-fg ' +
     'outline outline-1 outline-accent [outline-offset:-1px] ' +
     'shadow-glow-accent-inset ' +
+    'hover:bg-experiment-primary-hover ' +
     'hover:shadow-glow-accent-inset-strong ' +
     'active:bg-accent-active',
   outline:
@@ -89,6 +90,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           focusRing,
           variantClasses[variant],
           iconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
+          // Experimental: Primary/Default/Large uses Figma's blue/500 (sourced from sync-figma).
+          // Targeted override only — does NOT affect other primary sizes.
+          variant === 'primary' && size === 'lg' && !iconOnly &&
+            '!bg-experiment-blue !outline-experiment-blue',
           className,
         )}
         {...rest}
