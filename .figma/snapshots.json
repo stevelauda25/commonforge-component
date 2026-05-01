@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "syncedAt": "2026-05-01T01:01:14.512Z",
+  "syncedAt": "2026-05-01T03:56:06.740Z",
   "components": {
     "button": {
-      "hash": "e4576e607b92851009b47fdfea5eda789e60077c74266063e931777fbc31c283",
-      "varCount": 37,
-      "syncedAt": "2026-05-01T01:01:14.512Z",
+      "hash": "9dc7ad35b08e873b4391f02dcff56c19a19f033454be6a743d28e27ca0b7fd3c",
+      "varCount": 39,
+      "syncedAt": "2026-05-01T03:56:06.740Z",
       "nodeId": "267:355"
     }
   }

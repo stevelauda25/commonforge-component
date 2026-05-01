@@ -1,0 +1,79 @@
+name: Client Smoke Test
+
+# Verify that pod-test-ui + pod-test-tokens published to npm actually work
+# in a real consumer setup (client-test/). Runs on every release tag, weekly,
+# and on demand.
+
+on:
+  push:
+    tags: ['v*']        # fires after /publish creates a tag
+  schedule:
+    - cron: '0 6 * * 1' # Monday 06:00 UTC weekly drift catch
+  workflow_dispatch: {}
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: client-test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Pull latest pod-test-* from npm registry
+        run: |
+          echo "→ Forcing fresh install of pod-test-ui + pod-test-tokens at latest"
+          npm install pod-test-ui@latest pod-test-tokens@latest --save
+          echo ""
+          echo "→ Versions now installed:"
+          node -p "require('pod-test-ui/package.json').version"
+          node -p "require('pod-test-tokens/package.json').version"
+
+      - name: Install client-test deps
+        run: npm install
+
+      - name: Build (typecheck + vite build)
+        run: npm run build
+
+      - name: Verify build artifacts
+        run: |
+          test -f dist/index.html
+          test -d dist/assets
+          # CSS must include theme tokens (sanity check tailwind preset wired up)
+          grep -q "color-bg-canvas\|color-accent" dist/assets/*.css
+          # JS bundle must include component code
+          grep -q "Button\|Checkbox" dist/assets/*.js
+          echo "✓ Build artifacts look healthy"
+          du -sh dist/
+
+      - name: Upload dist on failure (for forensic)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-test-dist-failed
+          path: client-test/dist
+          retention-days: 7
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const ref = context.ref || 'unknown';
+            const run = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              title: `Client smoke test failed (${ref})`,
+              body:  `pod-test-* latest from npm broke client-test build.\n\nRun: ${run}\n\nLikely causes:\n- Token rename / removal\n- Component API breaking change\n- Peer dep mismatch\n\nReproduce locally: \`cd client-test && npm install pod-test-ui@latest pod-test-tokens@latest && npm run build\``,
+              labels: ['bug', 'smoke-test'],
+            });

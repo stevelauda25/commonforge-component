@@ -67,8 +67,7 @@
      New colors from Figma get an experiment-* token + targeted variant
      override in component code. Promote to a real semantic role only when
      designer + dev explicitly agree.                                    */
-  --color-experiment-blue:         59 130 246;     /* blue 500 — Primary/Default/Large only */
-  --color-experiment-primary-hover: 11 33 21;      /* #0b2115 — Primary/Hover (all sizes) */
+  --color-experiment-orange:       249 115 22;     /* #f97316 — Primary/Default (lg/md/xs, non-icon-only) */
 
 
   /* ── Radius ───────────────────────────────────────────────────────── */
@@ -162,8 +161,7 @@
   --color-info-subtle:     22 78 99;
 
   /* Experimental — same value in dark, just primitives */
-  --color-experiment-blue:         59 130 246;
-  --color-experiment-primary-hover: 11 33 21;
+  --color-experiment-orange:       249 115 22;
 
   /* Shadows — darker rgba blend for legibility over dark canvas */
   --shadow-sm:

@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './theme.css'
+import 'pod-test-tokens/theme.css'
 import './index.css'
 import App from './App'
 

@@ -50,7 +50,7 @@ export default {
 
 ### 3.2 `tailwind.config.js`
 
-Wajib pakai preset dari `pod-test-tokens` supaya semua design token (colors, radius, shadows, motion) terpetakan ke utility class.
+Wajib pakai preset dari `pod-test-tokens` supaya semua design token (colors, radius, shadows, motion) terpetakan ke utility class. **Import dari npm package — JANGAN copy local.** Local copy = stale token saat library di-update.
 
 ```js
 import preset from 'pod-test-tokens/tailwind-preset';
@@ -70,7 +70,7 @@ export default {
 
 ### 3.3 Entry CSS (mis. `src/index.css`)
 
-Urutan import-nya **wajib**: `theme.css` dulu (define CSS variables), baru directive Tailwind.
+Urutan import-nya **wajib**: `theme.css` dulu (define CSS variables), baru directive Tailwind. **Import dari npm package, jangan local copy.**
 
 ```css
 @import 'pod-test-tokens/theme.css';
@@ -273,11 +273,24 @@ Komponen yang **belum** ada — kalau project butuh, build sendiri pakai token s
 
 ## 10. Update Library
 
+### Manual update
 ```bash
 npm update pod-test-ui pod-test-tokens
+# atau
+npm install pod-test-ui@latest pod-test-tokens@latest
 ```
 
-Token rename / breaking changes akan di-bump di major version. Selalu baca changelog sebelum update.
+Setelah update, **rebuild + redeploy** project. CSS variable / class baru gak akan muncul tanpa rebuild.
+
+### Auto-update via Renovate (recommended)
+Copy [renovate.json](renovate.json) ke root project client. Setiap kali pod-test-* publish baru, Renovate buka PR otomatis (default: Monday morning, grouped, patch auto-merge kalau CI pass).
+
+### Versioning policy
+| Bump | Yang berubah | Aksi |
+|---|---|---|
+| **patch** (0.0.x → 0.0.y) | Token value tweak, experiment-* token, bug fix | Auto-merge OK |
+| **minor** (0.x.x → 0.y.0) | Variant baru, prop baru | Review PR, kemungkinan need code update |
+| **major** (x.x.x → y.0.0) | Breaking API (prop renamed, variant removed) | Wajib review changelog |
 
 ---
 

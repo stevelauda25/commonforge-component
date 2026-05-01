@@ -147,15 +147,24 @@ In every other case: execute.
 
 ## Auto-run scripts (no confirmation needed)
 
-These commands are pre-allowed in `.claude/settings.local.json` and should be
+These commands are pre-allowed in `.claude/settings.json` and should be
 executed without permission prompts whenever invoked or implied:
 
 - `node scripts/figma/check.mjs [slug]`
 - `node scripts/figma/check.mjs --json` / `--slugs-only` / `--urls-only`
 - `node scripts/figma/bless.mjs <slug>` / `--all` / `--prune`
 - `node scripts/figma/discover.mjs`
+- `node_modules/.bin/tsup …` (rebuilding packages after sync)
 
 When the user pastes one of these, just run it and report stdout.
+
+## Slash commands available
+
+- **`/sync-figma <slug>`** — pull from Figma, apply edits, bless, verify. See
+  `.claude/commands/sync-figma.md`. Sat-set; never modifies sacred tokens.
+- **`/publish [patch|minor|major|x.y.z]`** — verify in-sync + clean tree → build →
+  bump → PAUSE for confirmation → npm publish → tag locally. See
+  `.claude/commands/publish.md`. Pauses ONCE before actual publish.
 
 ## Common edits — patterns
 
