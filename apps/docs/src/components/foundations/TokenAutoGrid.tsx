@@ -105,7 +105,7 @@ export function TokenAutoGrid({
           {kind === 'radius' ? (
             <div className={`h-14 w-14 bg-accent ${t.className}`} />
           ) : (
-            <div className={`h-20 w-20 rounded-lg bg-canvas ${t.className}`} />
+            <div className={`h-20 w-20 rounded-lg border border-border-default bg-canvas ${t.className}`} />
           )}
           <code className="font-mono text-[11px] text-text-secondary text-center break-all">
             {t.className}
@@ -115,10 +115,16 @@ export function TokenAutoGrid({
     </div>
   );
 
-  // Shadow preview: wrap in muted panel with EXTRA bottom padding so the
-  // largest shadows (foundation-3xl: 72px reach) don't get clipped.
+  // Shadow preview: own wrapper with white bg (max contrast for subtle Figma
+  // shadows) and EXTRA bottom padding (foundation-3xl reaches 72px below
+  // swatch). Self-contained — DON'T wrap with PreviewCard since its
+  // overflow-hidden clips large shadows.
   if (isShadow) {
-    return <div className="rounded-xl bg-muted/60 px-8 pt-12 pb-20">{inner}</div>;
+    return (
+      <div className="my-6 rounded-lg border border-border-default bg-canvas px-8 pt-12 pb-24">
+        {inner}
+      </div>
+    );
   }
   return inner;
 }

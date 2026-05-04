@@ -13,6 +13,8 @@ This is `client-test` — a React + Vite + TypeScript application that consumes 
 
 These packages are the **single source of truth** for visual design. They are token-driven, dark-mode-aware, and accessibility-aware. Treat them as production primitives — never re-implement what they provide.
 
+> **Hard rule:** Every screen, page, or fragment generated in this project MUST be composed from `pod-test-ui` components and `pod-test-tokens` semantic classes. No native `<button>`, no hex codes, no ad-hoc styling. If a primitive doesn't exist (Modal, Tabs, etc.) → see Rule 10.
+
 ---
 
 ## Stack — Locked
@@ -23,20 +25,20 @@ These packages are the **single source of truth** for visual design. They are to
 | TypeScript | `^6.x` | `strict: true`, `noEmit: true` (Vite handles compilation) |
 | Vite | `^8.x` | Dev server & build |
 | **Tailwind CSS** | **`^3.4.x` (v3 ONLY)** | See "Tailwind Rules" below |
-| `pod-test-ui` | `^0.0.1` | Workspace consumer |
-| `pod-test-tokens` | `^0.0.1` | Workspace consumer |
+| `pod-test-ui` | `^0.1.0` | Workspace consumer — pin to latest minor |
+| `pod-test-tokens` | `^0.1.0` | Workspace consumer — pin to latest minor |
 | `lucide-react` | latest | Icon set — bundled by `pod-test-ui` |
 
 ---
 
 ## CORE RULES (Non-negotiable)
 
-### Rule 1 — Always Use Library Components
+### Rule 1 — Always Use Library Components (PAKEM, ZERO EXCEPTION)
 
-When a UI need maps to an existing primitive in `pod-test-ui`, use it. No exceptions.
+When generating ANY UI — a screen, a card, a form, a single row — your first move is: **map the request to existing `pod-test-ui` primitives**. If a primitive maps, use it. No exceptions, no "just this once for prototype", no "let me hardcode quickly".
 
 ```tsx
-// ✅ ALWAYS
+// ✅ ALWAYS — start every page from these imports
 import { Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
 
 <Button variant="primary">Save</Button>
@@ -44,11 +46,25 @@ import { Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
 <SearchInput value={q} onValueChange={setQ} />
 <Tooltip content="Hint"><Button iconOnly leftIcon={<X />} aria-label="Close" /></Tooltip>
 
-// ❌ NEVER — even for "quick" UI
+// ❌ NEVER — even for "quick" UI, even for "just a prototype"
 <button className="bg-green-600 text-white px-4 py-2 rounded">Save</button>
 <input type="checkbox" />
 <input type="search" />
 ```
+
+**Coverage map** (component → POD primitive):
+
+| Asked for | Use this |
+|---|---|
+| Button, action, CTA, submit, link-styled-as-button | `<Button>` (variant: primary/outline/error) |
+| Checkbox, multi-select, "select all", agree to terms | `<Checkbox>` |
+| Search, filter input, query, find | `<SearchInput>` |
+| Tooltip, hover help, keyboard-shortcut hint, icon explanation | `<Tooltip>` |
+| Native `<button>` | ❌ Never. Always `<Button>`. |
+| Native `<input type="checkbox">` | ❌ Never. Always `<Checkbox>`. |
+| Native `<input type="search">` | ❌ Never. Always `<SearchInput>`. |
+
+If you find yourself writing `<button>`, `<input>`, or any styled `<div>` that *acts like* a button/input/checkbox/tooltip — STOP. Replace with the POD primitive.
 
 ### Rule 2 — Always Use Semantic Tokens
 
@@ -71,13 +87,22 @@ Color, radius, shadow, motion: all values come from token classes. Hex codes, `r
 - **Backgrounds:** `canvas`, `surface`, `raised`, `muted`
 - **Text:** `text-primary`, `text-secondary`, `text-muted`, `text-disabled`, `text-inverse`
 - **Borders:** `border-subtle`, `border-default`, `border-strong`, `border-focus`
-- **Accent:** `accent`, `accent-hover`, `accent-active`, `accent-fg`, `accent-subtle`
+- **Accent:** `accent`, `accent-hover`, `accent-active`, `accent-fg`, `accent-subtle` *(brand — sacred, never override)*
 - **Feedback:** `danger`, `warning`, `success`, `info` (each has `-hover`, `-active`, `-fg`, `-subtle`)
-- **Radius:** `rounded-sm | md | lg | xl | full`
-- **Shadow:** `shadow-sm | md | lg`, plus `shadow-glow-accent-inset[-strong]`, `shadow-glow-danger-inset[-strong]`
+- **Radius:** `rounded-none | xxs | xs | sm | md | lg | xl | 2xl | 3xl | 4xl | full`
+  *(scale matches Figma foundation node — values: 0/2/4/6/8/10/12/16/20/24/9999px)*
+- **Shadow (foundation drop):** `shadow-foundation-xs | sm | md | lg | xl | 2xl | 3xl`
+  *(canonical scale — replaces legacy `shadow-sm/md/lg` which were removed in 0.1.0)*
+- **Shadow (brand glow):** `shadow-glow-accent-inset[-strong]`, `shadow-glow-danger-inset[-strong]`, `shadow-glow-accent-text`
 - **Motion:** `duration-fast | base | slow`, `ease-standard | emphasized | press`
+- **Experimental** *(Figma-introduced primitives, time-bounded — promote or remove later)*:
+  `bg-experiment-orange`, `bg-experiment-zinc-700`, `bg-experiment-primary-test`
 
 Tokens are stored as `R G B` triples — opacity modifiers work: `bg-canvas/80`, `text-accent/50`, `border-border-default/30`.
+
+**Removed in 0.1.0 (DO NOT use even if you remember them):**
+- `shadow-sm` / `shadow-md` / `shadow-lg` (the un-prefixed legacy set) — migrate to `shadow-foundation-sm / md / lg`.
+  Old `sm` mapped to `foundation-xs`; old `md` to `foundation-md`; old `lg` to `foundation-lg`.
 
 ### Rule 3 — Never Write `dark:` Variants
 
@@ -253,6 +278,9 @@ When reviewing existing code (yours or others') in this project, flag and fix an
 - ✗ `defaultChecked` / uncontrolled `<Checkbox>` or `<SearchInput>`
 - ✗ Subpath imports: `pod-test-ui/dist/...`
 - ✗ Re-implementing `Button`, `Checkbox`, `SearchInput`, or `Tooltip`
+- ✗ Legacy shadow classes (`shadow-sm`, `shadow-md`, `shadow-lg`) — removed in 0.1.0, migrate to `shadow-foundation-*`
+- ✗ Inventing radius keys (`rounded-2.5xl`, `rounded-huge`) — only the documented scale is real
+- ✗ Touching `experiment-*` tokens for "production" UI — those are time-bounded experiments, not stable primitives
 
 ---
 

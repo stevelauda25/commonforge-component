@@ -40,6 +40,51 @@ sync, you're being slow. Cut.
 - If `$ARGUMENTS` is `<fileKey>:<nodeId>` → use as-is.
 - If empty → list manifest slugs and ask user. Resume on their reply.
 
+### 0.5 FIRST-SYNC GUARD — MANDATORY (this is where you previously fucked up)
+
+Before anything else, decide: is this a **first-sync** for the slug?
+
+A sync is FIRST-SYNC when EITHER condition holds:
+1. The slug was just added via `/new-item` and has never been synced
+2. `packages/ui/src/<slug>/<slug>.tsx` exists but was hand-written / pre-dates the
+   Figma node entering tracking (i.e. code was authored without ever consulting
+   `get_design_context`)
+
+If FIRST-SYNC → **FULL PATH is mandatory** (skip FAST PATH entirely). You MUST:
+
+1. Pull `get_design_context` AND `get_screenshot`.
+2. Read the design_context output **line by line** and audit existing code against it. Every:
+   - `rounded-[Npx]` in design_context → map to the EXACT POD radius token
+     (`xxs=2, xs=4, sm=6, md=8, lg=10, xl=12, 2xl=16, 3xl=20, 4xl=24`).
+     If you used `rounded-sm` when Figma says `rounded-[4px]` — that's `rounded-xs`. Fix it.
+   - `bg-[var(--xxx)]` in design_context → trace to the right semantic token.
+     `--background/bg-white` is **NOT** `accent`. `--icon/icon-black` is **NOT** `accent-fg`.
+     Inverted-neutral patterns map to `text-primary` / `canvas`, not brand colors.
+   - `size-[Npx]` / icon `inset-[X%]` → match dimensions exactly. Lucide
+     `h-3 w-3` (12px) for an icon Figma sized at ~7px = wrong. Use `h-2.5 w-2.5`.
+   - Every variant branch in design_context (Hover, Focused, Disabled, etc.)
+     → confirm code has matching state styles. Missing inner-box / shadow /
+     border-ring effects count as drift.
+3. **Default assumption: existing code is wrong.** It was written before Figma
+   was ground truth. Trust `get_design_context` over `cn(...)` chains.
+
+**Do not bless** until visual audit passes. `bless` only freezes the variable
+hash — it does NOT validate visual fidelity. `check.mjs IN SYNC` after a
+first-sync without visual audit is a LIE waiting to be discovered by the user.
+
+**Forbidden rationalizations:**
+- ❌ "Existing code uses `accent`, probably the designer meant brand color" — NO.
+  Figma is ground truth. Read what it says, not what feels semantically clean.
+- ❌ "`rounded-sm` is close enough to 4px" — NO. 6px vs 4px is a 50% radius
+  delta. User WILL notice.
+- ❌ "I'll skip get_design_context, the variables tell me everything" — NO.
+  Variables tell you colors. design_context tells you geometry, structure, states.
+- ❌ "Bless first, fix visuals later" — NO. Bless is a commitment that the
+  current code matches Figma. If it doesn't, you're publishing a lie.
+
+If NOT first-sync (slug has been synced visually before, drift is just token
+swap on already-correct code) → FAST PATH from step 2 is fine.
+
 ### 1. Gather drift context
 
 Run:
@@ -53,13 +98,15 @@ scope your edits — you don't need to regenerate untouched variants.
 
 ### 2. Pull Figma context — FAST PATH vs FULL PATH
 
-**FAST PATH (default for token-only drift)** — only call:
+**FAST PATH (default for token-only drift on already-validated code)** — only call:
 
 1. `mcp__claude_ai_Figma__get_variable_defs` — to enrich variables.json
 
 Skip metadata/screenshot/design_context. Drift output from step 1 already
 tells you which variants and properties changed. You don't need rendered
 code or pixel reference for token swaps.
+
+**FAST PATH IS BANNED IF FIRST-SYNC GUARD (step 0.5) TRIPPED.** No exceptions.
 
 **FULL PATH (only when needed)** — call all 4 MCP tools:
 
@@ -158,12 +205,196 @@ override.
 | `packages/tokens/src/theme.css` | Add `--color-experiment-*` (both modes). DO NOT modify sacred tokens. |
 | `packages/tokens/src/tailwind-preset.ts` | Expose new `experiment-*` as utility class. |
 | `packages/ui/src/<slug>/<slug>.tsx` | Add ONE-LINE override scoped to exact (variant, size) Figma changed. |
-| `apps/docs/src/pages/components/<Pascal>.mdx` | Only if variants/sizes/props changed (rare in token-only sync). |
-| `apps/docs/src/lib/routes.ts` | Brand-new component only. |
+| `apps/docs/src/pages/components/<Pascal>.mdx` | Auto-create if missing (see step 5.5). Only edit existing if variants/sizes/props changed (rare). |
+| `apps/docs/src/lib/routes.ts` | Brand-new component → auto-add (see step 5.5). Or flip `planned` → `ready`. |
 
 **Granular rule:** if Figma drift says `Type=Primary, Size=Large` only —
 your override matches `variant === 'primary' && size === 'lg'` only. No
 broader scope. No "while we're at it, let me also update Medium". No.
+
+### 5.5 Auto-create docs MDX if missing
+
+After applying code edits, check if the docs page for this slug exists.
+If not, scaffold it from a template — every new component must be visible
+in the docs site, no orphan tracked components.
+
+**Detect slug type from manifest entry:**
+- Slug starts with `foundation-*` → foundation page (uses `TokenAutoGrid`).
+- Otherwise → regular component (uses `<Component>`, `PageHeader`, etc).
+
+**Where to write:**
+
+| Slug type | MDX path |
+|---|---|
+| Component | `apps/docs/src/pages/components/<PascalCase>.mdx` |
+| Foundation (`foundation-radius` / `foundation-shadows` / etc.) | Likely already exists at `apps/docs/src/pages/foundations/<Name>.mdx`. Don't auto-create — manually managed. |
+
+**PascalCase derivation:** `search-input` → `SearchInput`, `tooltip` → `Tooltip`,
+`button` → `Button`. Use lowercase slug split by `-`, capitalize each word.
+
+**Manifest override** — manifest entry can specify `docsName` and `docsRoute`
+to override the default mapping. Use this when Figma node name differs from
+codebase docs convention:
+
+```json
+{
+  "slug": "search",
+  "nodeId": "2346:404",
+  "status": "ready",
+  "docsName": "SearchInput",        // → SearchInput.mdx, not Search.mdx
+  "docsRoute": "/components/search-input"  // → match existing route entry
+}
+```
+
+When checking if MDX exists, prefer `manifest.docsName` over PascalCase(slug).
+When inserting/updating routes.ts entry, prefer `manifest.docsRoute` over
+default `/components/<slug>`.
+
+**Component MDX — MANDATORY STRUCTURE.**
+
+The `ON THIS PAGE` TOC is auto-built from `<h2>` (`##`) headings. Every component
+docs page **must** render the same skeleton so the TOC is consistent across all
+components — no orphan pages, no missing sections.
+
+**Required `##` sections — IN THIS ORDER, NO EXCEPTIONS:**
+
+1. (Hero preview, NO `##` heading — opens the page)
+2. `## Variants` — required IF component has visual variants. Show every variant from `get_metadata`.
+3. `## Sizes` — required IF component has size prop. Show every size.
+4. `## States` — required IF component has interaction states (hover, disabled, error, loading, etc.). Show every state.
+5. `## Props` — **ALWAYS REQUIRED.** Table extracted from `<PascalName>Props` TS interface.
+6. `## Accessibility` — **ALWAYS REQUIRED.** Bullet list covering: keyboard, ARIA, screen reader, focus management.
+7. `## Things to watch` — **ALWAYS REQUIRED.** Caveats, common pitfalls, gotchas, edge cases. Min 2 bullets.
+
+**Component-specific extra sections** (insert BEFORE `## Props`, after `## States`):
+- Button → `## Icon only`, `## Loading`
+- Input/Form fields → `## With description`, `## Error`
+- Anything Figma shows as a distinct configuration mode
+
+**Forbidden:**
+- ❌ Skipping `## Accessibility` because "the component is simple"
+- ❌ Skipping `## Things to watch` because "no caveats come to mind" — there are ALWAYS caveats
+- ❌ Reordering sections (TOC consistency = mental model consistency)
+- ❌ Using `###` for what should be `##` (only `##` shows in TOC)
+- ❌ Empty section with `<!-- TODO -->` placeholder shipped to docs site
+- ❌ Hero preview without code block underneath (every preview MUST be paired with a copyable `tsx` block)
+
+**Pattern for every preview block** — preview + code block, always:
+
+```mdx
+<PreviewCard>
+  <Component prop="x" />
+</PreviewCard>
+
+\`\`\`tsx
+<Component prop="x" />
+\`\`\`
+```
+
+The `tsx` block must be copy-pastable as-is. No pseudo-code, no `...` truncation.
+
+**Template (write only if file doesn't exist):**
+
+```mdx
+import { <PascalName> } from 'pod-test-ui';
+
+<PageHeader
+  title="<Display Name>"
+  description="<one-line description derived from get_design_context or get_metadata>"
+  status="ready"
+/>
+
+<PreviewCard>
+  <<PascalName>>Default</<PascalName>>
+</PreviewCard>
+
+\`\`\`tsx
+<<PascalName>>Default</<PascalName>>
+\`\`\`
+
+## Variants
+
+<PreviewCard>
+  <div className="flex flex-wrap gap-3">
+    {/* one <PascalName> per variant from get_metadata */}
+  </div>
+</PreviewCard>
+
+\`\`\`tsx
+<<PascalName> variant="primary" />
+<<PascalName> variant="outline" />
+\`\`\`
+
+## Sizes
+
+<PreviewCard>
+  <div className="flex flex-wrap items-end gap-3">
+    {/* one <PascalName> per size */}
+  </div>
+</PreviewCard>
+
+\`\`\`tsx
+<<PascalName> size="sm" />
+<<PascalName> size="md" />
+\`\`\`
+
+## States
+
+<PreviewCard>
+  <div className="flex flex-wrap items-end gap-3">
+    {/* default, hover (described in copy), disabled, error/loading if applicable */}
+  </div>
+</PreviewCard>
+
+## Props
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| (extracted from <PascalName>Props — every prop, every type) |
+
+Extends all native `<element>` HTMLAttributes (omit overridden ones).
+
+## Accessibility
+
+- Native `<element>` under the hood — keyboard / form / SR comes for free.
+- ARIA: which attributes are auto-set, which require consumer.
+- Focus: visible ring on `:focus-visible`, never on click.
+- (More bullets per component reality.)
+
+## Things to watch
+
+- Edge case 1 (e.g. controlled-only API, no internal state).
+- Edge case 2 (e.g. `iconOnly` requires `aria-label`).
+- (Min 2 bullets. Be specific — "be careful" is not a caveat.)
+```
+
+**Route registration:**
+
+After creating MDX, ensure `apps/docs/src/lib/routes.ts` has an entry:
+
+```ts
+{
+  path: '/components/<slug>',
+  label: '<Display Name>',
+  category: 'component',
+  status: 'ready',
+  description: '<one-line>',
+  load: () => import('../pages/components/<PascalName>.mdx')
+}
+```
+
+If entry already exists with `status: 'planned'` → flip to `'ready'`.
+If entry doesn't exist → insert under the `// Components — ready` block.
+
+**Fill TODO placeholders only if you have data:**
+- get_metadata returns variant property keys → list them in `## Variants`.
+- get_design_context may return prop info → put in Props table.
+- Don't invent. Leave `TODO` if no source — user fills later.
+
+**Do NOT auto-create:**
+- Foundation MDX (`foundations/Radius.mdx`, `foundations/Elevation.mdx`) —
+  manually maintained, use `TokenAutoGrid` already.
+- Sidebar entries — `routes.ts` is the source; sidebar reads from it.
 
 ### 6+7. Build + Bless — SINGLE BATCHED BASH
 

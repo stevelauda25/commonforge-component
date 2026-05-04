@@ -68,6 +68,7 @@
      override in component code. Promote to a real semantic role only when
      designer + dev explicitly agree.                                    */
   --color-experiment-orange:       249 115 22;     /* #f97316 — Primary/Default (lg/md/xs, non-icon-only) */
+  --color-experiment-primary-test: 31 113 255;     /* #1f71ff — Figma primary-test-500, applied to Primary/Default/Large non-icon-only */
 
 
   /* ── Radius ───────────────────────────────────────────────────────── */
@@ -90,10 +91,10 @@
      shadow-sm/md/lg removed; old usages migrated to foundation-* equivalents
      (sm→xs, md→m, lg→lg). */
   --shadow-foundation-xs:  0 2px 2px 0 rgb(0 0 0 / 0.08);
-  --shadow-foundation-s:
+  --shadow-foundation-sm:
     0 4px 4px 0 rgb(0 0 0 / 0.08),
     0 2px 2px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-m:
+  --shadow-foundation-md:
     0 4px 8px 0 rgb(0 0 0 / 0.08),
     0 2px 4px 0 rgb(0 0 0 / 0.04);
   --shadow-foundation-lg:
@@ -184,15 +185,16 @@
 
   /* Experimental — same value in dark, just primitives */
   --color-experiment-zinc-700:     28 28 31;
+  --color-experiment-primary-test: 31 113 255;     /* #1f71ff */
 
   /* Foundation shadows — IDENTICAL values across modes per Figma intent.
      Designer specified single alpha (0.08 / 0.04) that doesn't change between
      light and dark modes. Shadows in dark mode are intentionally subtle. */
   --shadow-foundation-xs:  0 2px 2px 0 rgb(0 0 0 / 0.08);
-  --shadow-foundation-s:
+  --shadow-foundation-sm:
     0 4px 4px 0 rgb(0 0 0 / 0.08),
     0 2px 2px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-m:
+  --shadow-foundation-md:
     0 4px 8px 0 rgb(0 0 0 / 0.08),
     0 2px 4px 0 rgb(0 0 0 / 0.04);
   --shadow-foundation-lg:

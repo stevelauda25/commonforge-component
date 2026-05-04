@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "slug": "checkbox",
+  "fileKey": "TCd9exLXTUMciyw1VqnPSK",
+  "nodeId": "2351:151",
+  "syncedAt": "2026-05-04T16:30:00Z",
+  "comment": "Checkbox component variables. Auto-populated by /sync-figma checkbox via MCP get_variable_defs. FULL REPLACE on each sync.",
+  "variables": {
+    "background/bg-soft": "#3a3a3d",
+    "background/bg-dark": "#111113",
+    "background/bg-white": "#fafafa",
+    "icon/icon-black": "#09090b",
+    "background/bg-subtle": "#7c7e84",
+    "background/bg-white-subtle": "#f4f4f5",
+    "alpha/alpha-white-10": "#ffffff1a",
+    "background/bg-disabled": "#1c1c1f",
+    "icon/icon-soft": "#3a3a3d"
+  }
+}

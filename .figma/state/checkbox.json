@@ -1,0 +1,150 @@
+{
+  "type": "COMPONENT_SET",
+  "name": "checkbox",
+  "variants": {
+    "📌 State=Default, 🟢 Active=Off, ❓ Indeterminate=Off": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "RECTANGLE:box"
+      ]
+    },
+    "📌 State=Default, 🟢 Active=On, ❓ Indeterminate=Off": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "VECTOR:Check"
+      ]
+    },
+    "📌 State=Default, 🟢 Active=Off, ❓ Indeterminate=On": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "VECTOR:Subtract"
+      ]
+    },
+    "📌 State=Hover, 🟢 Active=Off, ❓ Indeterminate=Off": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "RECTANGLE:box"
+      ]
+    },
+    "📌 State=Hover, 🟢 Active=On, ❓ Indeterminate=Off": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "VECTOR:Check"
+      ]
+    },
+    "📌 State=Hover, 🟢 Active=Off, ❓ Indeterminate=On": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "VECTOR:Subtract"
+      ]
+    },
+    "📌 State=Focused, 🟢 Active=Off, ❓ Indeterminate=Off": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "RECTANGLE:box"
+      ]
+    },
+    "📌 State=Focused, 🟢 Active=On, ❓ Indeterminate=Off": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "VECTOR:Check"
+      ]
+    },
+    "📌 State=Focused, 🟢 Active=Off, ❓ Indeterminate=On": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "VECTOR:Subtract"
+      ]
+    },
+    "📌 State=Disabled, 🟢 Active=Off, ❓ Indeterminate=Off": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 1,
+      "childNames": [
+        "RECTANGLE:bg"
+      ]
+    },
+    "📌 State=Disabled, 🟢 Active=On, ❓ Indeterminate=Off": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "VECTOR:Check"
+      ]
+    },
+    "📌 State=Disabled, 🟢 Active=Off, ❓ Indeterminate=On": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "effects": [],
+      "childCount": 2,
+      "childNames": [
+        "RECTANGLE:bg",
+        "VECTOR:Subtract"
+      ]
+    }
+  },
+  "nonVariantNodes": []
+}

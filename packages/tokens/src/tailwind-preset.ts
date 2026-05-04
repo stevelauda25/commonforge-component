@@ -71,7 +71,8 @@ export const preset: Partial<Config> = {
         overlay: rgbVar('overlay'),
 
         // Experimental — Figma-introduced primitives, see theme.css block
-        'experiment-zinc-700': rgbVar('experiment-zinc-700'),
+        'experiment-zinc-700':     rgbVar('experiment-zinc-700'),
+        'experiment-primary-test': rgbVar('experiment-primary-test'),
       },
 
       borderRadius: {
@@ -91,8 +92,8 @@ export const preset: Partial<Config> = {
       boxShadow: {
         // Foundation scale from Figma — canonical drop-shadow scale
         'foundation-xs':  'var(--shadow-foundation-xs)',
-        'foundation-s':   'var(--shadow-foundation-s)',
-        'foundation-m':   'var(--shadow-foundation-m)',
+        'foundation-sm':  'var(--shadow-foundation-sm)',
+        'foundation-md':  'var(--shadow-foundation-md)',
         'foundation-lg':  'var(--shadow-foundation-lg)',
         'foundation-xl':  'var(--shadow-foundation-xl)',
         'foundation-2xl': 'var(--shadow-foundation-2xl)',

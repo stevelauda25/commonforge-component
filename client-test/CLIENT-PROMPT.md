@@ -6,6 +6,8 @@
 
 Kamu bertugas mengintegrasikan **design system POD** (`pod-test-ui` + `pod-test-tokens`) ke dalam project React client ini. Library ini adalah projection dari Figma — komponen-komponennya udah token-driven, dark-mode-ready, dan accessibility-aware.
 
+> **Hard rule (PAKEM):** SETIAP halaman, komponen, atau fragment baru yang lo generate di project ini WAJIB pakai `pod-test-ui` + `pod-test-tokens`. Tidak ada native `<button>`, tidak ada hex code, tidak ada custom CSS warna. Kalau primitif yang dibutuhkan belum ada di library (Modal/Tabs/Toast/dll) — build local component yang masih konsumsi token system yang sama. Jangan pernah re-style ulang `<button>` atau `<input>` mentah.
+
 ## 1. Persyaratan Stack Wajib
 
 Sebelum apapun, **verifikasi project client memenuhi syarat ini**:
@@ -235,11 +237,18 @@ Pakai sebagai kelas Tailwind: `bg-canvas`, `text-text-muted`, `border-border-def
 **Backgrounds:** `canvas`, `surface`, `raised`, `muted`
 **Text:** `text-primary`, `text-secondary`, `text-muted`, `text-disabled`, `text-inverse`
 **Borders:** `border-subtle`, `border-default`, `border-strong`, `border-focus`
-**Accent:** `accent`, `accent-hover`, `accent-active`, `accent-fg`, `accent-subtle`
+**Accent (sacred — jangan override):** `accent`, `accent-hover`, `accent-active`, `accent-fg`, `accent-subtle`
 **Feedback:** `danger`, `warning`, `success`, `info` (masing-masing punya `-hover`, `-active`, `-fg`, `-subtle`)
-**Radius:** `rounded-sm | md | lg | xl | full`
-**Shadows:** `shadow-sm | md | lg`, plus `shadow-glow-accent-inset`, `shadow-glow-accent-inset-strong`, `shadow-glow-danger-inset`, `shadow-glow-danger-inset-strong`
+**Radius:** `rounded-none | xxs | xs | sm | md | lg | xl | 2xl | 3xl | 4xl | full`
+  → values: `0 / 2 / 4 / 6 / 8 / 10 / 12 / 16 / 20 / 24 / 9999px` (match Figma foundation node)
+**Shadows (foundation drop):** `shadow-foundation-xs | sm | md | lg | xl | 2xl | 3xl`
+  → canonical scale, satu-satunya yang dipakai di komponen produksi
+**Shadows (brand glow):** `shadow-glow-accent-inset`, `shadow-glow-accent-inset-strong`, `shadow-glow-danger-inset`, `shadow-glow-danger-inset-strong`, `shadow-glow-accent-text`
 **Motion:** `duration-fast | base | slow`, `ease-standard | emphasized | press`
+**Experimental:** `bg-experiment-orange`, `bg-experiment-zinc-700`, `bg-experiment-primary-test`
+  → time-bounded Figma experiments, jangan pakai untuk UI baru kecuali memang lagi A/B test
+
+> **Removed di 0.1.0:** legacy `shadow-sm` / `shadow-md` / `shadow-lg` (yang non-`foundation-`-prefixed) udah dihapus. Migrasi: `sm → foundation-xs`, `md → foundation-md`, `lg → foundation-lg`. Kalau editor kasih autocomplete `shadow-sm` — itu warning, bukan token valid.
 
 ## 8. Verifikasi Setup Berhasil
 

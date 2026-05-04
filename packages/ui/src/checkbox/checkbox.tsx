@@ -70,11 +70,11 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             onChange={(event) => onCheckedChange?.(event.target.checked)}
             className={cn(
               'peer appearance-none shrink-0',
-              'h-4 w-4 rounded-sm border',
+              'h-4 w-4 rounded-xs border',
               'transition-colors duration-fast ease-standard',
-              'bg-surface border-border-strong',
-              'checked:bg-accent checked:border-accent',
-              'indeterminate:bg-accent indeterminate:border-accent',
+              'bg-muted border-border-strong',
+              'checked:bg-text-primary checked:border-text-primary',
+              'indeterminate:bg-text-primary indeterminate:border-text-primary',
               'hover:border-text-secondary',
               'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border-strong',
               error && 'border-danger hover:border-danger',
@@ -87,13 +87,13 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               aria-hidden="true"
               className={cn(
                 'pointer-events-none absolute inset-0 flex items-center justify-center',
-                'text-accent-fg',
+                'text-canvas',
               )}
             >
               {isIndeterminate ? (
-                <Minus className="h-3 w-3" strokeWidth={3} />
+                <Minus className="h-2.5 w-2.5" strokeWidth={3.5} />
               ) : (
-                <Check className="h-3 w-3" strokeWidth={3} />
+                <Check className="h-2.5 w-2.5" strokeWidth={3.5} />
               )}
             </span>
           )}

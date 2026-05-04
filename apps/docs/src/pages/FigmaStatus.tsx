@@ -231,9 +231,18 @@ function InSyncCard({ comp }: { comp: ComponentStatus }) {
   );
 }
 
+type Tab = 'component' | 'foundation';
+
+const isFoundation = (slug: string) => slug.startsWith('foundation-');
+
+function partitionByTab(items: ComponentStatus[], tab: Tab) {
+  return items.filter((c) => (tab === 'foundation' ? isFoundation(c.slug) : !isFoundation(c.slug)));
+}
+
 export default function FigmaStatus() {
   const [status, setStatus] = useState<DriftStatus | null>(null);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState<Tab>('component');
 
   const load = (live = false) => {
     setLoading(true);
@@ -251,6 +260,20 @@ export default function FigmaStatus() {
   };
 
   useEffect(() => { load(true); }, []);
+
+  const tabCounts = {
+    component: {
+      total: (status?.drifted.filter((c) => !isFoundation(c.slug)).length ?? 0) + (status?.inSync.filter((c) => !isFoundation(c.slug)).length ?? 0),
+      drift: status?.drifted.filter((c) => !isFoundation(c.slug)).length ?? 0,
+    },
+    foundation: {
+      total: (status?.drifted.filter((c) => isFoundation(c.slug)).length ?? 0) + (status?.inSync.filter((c) => isFoundation(c.slug)).length ?? 0),
+      drift: status?.drifted.filter((c) => isFoundation(c.slug)).length ?? 0,
+    },
+  };
+
+  const drifted = status ? partitionByTab(status.drifted, tab) : [];
+  const inSync = status ? partitionByTab(status.inSync, tab) : [];
 
   return (
     <div className="mx-auto max-w-5xl px-8 py-10">
@@ -286,24 +309,57 @@ export default function FigmaStatus() {
 
       {!loading && status && (
         <div className="space-y-6">
-          {status.drifted.length > 0 && (
+          <div role="tablist" aria-label="Tracked Figma items" className="flex items-center gap-1 border-b border-border-default">
+            {(['component', 'foundation'] as const).map((t) => {
+              const active = tab === t;
+              const c = tabCounts[t];
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setTab(t)}
+                  className={`relative -mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+                    active
+                      ? 'border-accent text-text-primary'
+                      : 'border-transparent text-text-muted hover:text-text-primary'
+                  }`}
+                >
+                  <span className="capitalize">{t === 'component' ? 'Components' : 'Foundations'}</span>
+                  <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${
+                    active ? 'bg-accent/15 text-accent' : 'bg-muted text-text-muted'
+                  }`}>
+                    {c.total}
+                  </span>
+                  {c.drift > 0 && (
+                    <span className="inline-flex items-center rounded-full bg-warning/15 px-1.5 py-0.5 text-[10px] font-semibold text-warning tabular-nums">
+                      {c.drift} drift
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {drifted.length > 0 && (
             <section>
               <h2 className="text-sm font-semibold uppercase tracking-wide text-warning mb-3">
-                Drifted ({status.drifted.length})
+                Drifted ({drifted.length})
               </h2>
               <div className="space-y-3">
-                {status.drifted.map((c) => <DriftedCard key={c.slug} comp={c} />)}
+                {drifted.map((c) => <DriftedCard key={c.slug} comp={c} />)}
               </div>
             </section>
           )}
 
-          {status.inSync.length > 0 && (
+          {inSync.length > 0 && (
             <section>
               <h2 className="text-sm font-semibold uppercase tracking-wide text-success mb-3">
-                In sync ({status.inSync.length})
+                In sync ({inSync.length})
               </h2>
               <div className="space-y-2">
-                {status.inSync.map((c) => <InSyncCard key={c.slug} comp={c} />)}
+                {inSync.map((c) => <InSyncCard key={c.slug} comp={c} />)}
               </div>
             </section>
           )}
@@ -323,10 +379,16 @@ export default function FigmaStatus() {
             </section>
           )}
 
-          {status.drifted.length === 0 && status.errors.length === 0 && (
+          {drifted.length === 0 && inSync.length === 0 && (
+            <div className="rounded-xl border border-dashed border-border-default p-8 text-center text-text-muted">
+              <p className="text-sm">No {tab === 'component' ? 'components' : 'foundations'} tracked yet.</p>
+            </div>
+          )}
+
+          {drifted.length === 0 && inSync.length > 0 && (
             <div className="rounded-xl border border-success/30 bg-success/10 p-6 text-center">
               <Check size={32} className="mx-auto mb-2 text-success" />
-              <p className="font-medium text-success">All tracked components are in sync.</p>
+              <p className="font-medium text-success">All tracked {tab === 'component' ? 'components' : 'foundations'} are in sync.</p>
             </div>
           )}
         </div>

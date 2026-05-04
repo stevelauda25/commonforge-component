@@ -1,20 +1,20 @@
 <PageHeader
   title="Elevation"
-  description="Drop shadows + brand glows. Defined in pod-test-tokens/theme.css. Light + dark mode values swap via the .dark scope. Auto-rendered from preset."
+  description="Drop shadows + brand glows. Defined in pod-test-tokens/theme.css. Values match Figma node 2352:159 exactly. Auto-rendered from preset."
 />
 
 POD has two shadow groups:
 
 - **Drop shadows** — the elevation ramp `shadow-foundation-*`, matched 1:1
-  to Figma's `shadows/shadow-*` tokens.
+  to Figma's `shadows/shadow-*` tokens. Note: the Figma scale is intentionally
+  subtle (alpha 0.08 / 0.04) — `xs` and `s` look similar; `2xl`/`3xl`
+  extend far beyond the swatch.
 - **Brand glow** — `shadow-glow-accent-*` and `shadow-glow-danger-*` baked
   into the primary/error button states. Sacred — never modified by sync.
 
 ## Drop shadows
 
-<PreviewCard>
-  <TokenAutoGrid kind="shadow" filter="foundation" />
-</PreviewCard>
+<TokenAutoGrid kind="shadow" filter="foundation" />
 
 <TokenAutoGrid kind="shadow" filter="foundation" variant="table" />
 
@@ -23,7 +23,7 @@ POD has two shadow groups:
 <div className="rounded-lg bg-canvas shadow-foundation-xs">…</div>
 
 // Card / popover
-<div className="rounded-lg bg-canvas shadow-foundation-m p-4">…</div>
+<div className="rounded-lg bg-canvas shadow-foundation-md p-4">…</div>
 
 // Floating dropdown
 <div className="rounded-xl bg-raised shadow-foundation-lg p-4">…</div>
@@ -52,7 +52,7 @@ sync — they define POD's brand identity.
 
 ## Source of truth
 
-Values live in [`packages/tokens/src/theme.css`](https://github.com/) under
+Values defined in [`packages/tokens/src/theme.css`](https://github.com/) under
 `/* ── Shadows ── */` and `/* ── Glow effects ── */`. Exposed via
 [`packages/tokens/src/tailwind-preset.ts`](https://github.com/) `boxShadow`.
 This page reads from the preset directly — adding a new shadow there shows

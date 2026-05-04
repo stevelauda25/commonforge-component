@@ -7,7 +7,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(21, 128, 61, a=1)"
+          "color": "rgb(31, 113, 255, a=1)"
         }
       ],
       "strokes": [
@@ -41,7 +41,7 @@
         "paddingRight": "10:1232",
         "paddingBottom": "10:1236",
         "fills": [
-          "16:853"
+          "2304:159"
         ],
         "strokes": [
           "17:1851"

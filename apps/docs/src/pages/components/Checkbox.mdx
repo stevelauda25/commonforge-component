@@ -1,5 +1,103 @@
+import { useState } from 'react';
+import { Checkbox } from 'pod-test-ui';
+
 <PageHeader
   title="Checkbox"
-  description="Multi-select boolean input. Supports an indeterminate state for select-all parents."/>
+  description="Multi-select boolean input. Three values — off, on, indeterminate — with optional label, description, and error message."/>
 
-<EmptyComponentState />
+<PreviewCard>
+  <Checkbox checked={true} onCheckedChange={() => {}} label="I agree to the terms" />
+</PreviewCard>
+
+```tsx
+import { Checkbox } from 'pod-test-ui';
+
+<Checkbox checked={true} onCheckedChange={setChecked} label="I agree to the terms" />
+```
+
+## States
+
+Off, on, and indeterminate. Use `'indeterminate'` for "some children selected" parents in tree-style multi-selects.
+
+<PreviewCard>
+  <div className="flex flex-col gap-3">
+    <Checkbox checked={false} onCheckedChange={() => {}} label="Off" />
+    <Checkbox checked={true} onCheckedChange={() => {}} label="On" />
+    <Checkbox checked="indeterminate" onCheckedChange={() => {}} label="Indeterminate" />
+    <Checkbox checked={true} onCheckedChange={() => {}} disabled label="Disabled (on)" />
+    <Checkbox checked={false} onCheckedChange={() => {}} disabled label="Disabled (off)" />
+  </div>
+</PreviewCard>
+
+```tsx
+<Checkbox checked={false} onCheckedChange={setChecked} label="Off" />
+<Checkbox checked={true} onCheckedChange={setChecked} label="On" />
+<Checkbox checked="indeterminate" onCheckedChange={setChecked} label="Indeterminate" />
+```
+
+## With description
+
+<PreviewCard>
+  <Checkbox
+    checked={true}
+    onCheckedChange={() => {}}
+    label="Email notifications"
+    description="Get a daily digest at 8am of activity in your workspaces."
+  />
+</PreviewCard>
+
+```tsx
+<Checkbox
+  checked={emailOn}
+  onCheckedChange={setEmailOn}
+  label="Email notifications"
+  description="Get a daily digest at 8am of activity in your workspaces."
+/>
+```
+
+## Error
+
+<PreviewCard>
+  <Checkbox
+    checked={false}
+    onCheckedChange={() => {}}
+    label="Accept terms"
+    error="You must accept the terms to continue."
+  />
+</PreviewCard>
+
+```tsx
+<Checkbox
+  checked={accepted}
+  onCheckedChange={setAccepted}
+  label="Accept terms"
+  error={!accepted ? 'You must accept the terms to continue.' : undefined}
+/>
+```
+
+## Props
+
+| Prop              | Type                                | Default | Notes |
+|-------------------|-------------------------------------|---------|-------|
+| `checked`         | `boolean \| 'indeterminate'`        | —       | Required. `'indeterminate'` renders the minus glyph. |
+| `onCheckedChange` | `(checked: boolean) => void`        | —       | Fired on user toggle. Indeterminate always transitions to `true`. |
+| `label`           | `ReactNode`                         | —       | Renders as a `<label>` linked via `htmlFor`. |
+| `description`     | `ReactNode`                         | —       | Hidden when `error` is set. Linked via `aria-describedby`. |
+| `error`           | `string`                            | —       | Sets `aria-invalid` and replaces the description. |
+| `disabled`        | `boolean`                           | `false` | Greys out and blocks pointer events. |
+| `id`              | `string`                            | auto    | Auto-generated when omitted; needed when wiring custom labels. |
+
+Extends all native `<input type="checkbox">` HTMLAttributes (minus `type`, `checked`, `onChange`, `size`).
+
+## Accessibility
+
+- Native `<input type="checkbox">` — keyboard, screen-reader, and form participation come for free.
+- `indeterminate` is set via the DOM property (the attribute doesn't exist) — handled internally via a `useEffect`.
+- `error` sets `aria-invalid="true"` and is announced via `aria-describedby`.
+- Always pair with a `label` (visible) or `aria-label` (when intentionally label-less).
+
+## Things to watch
+
+- `onCheckedChange` receives a `boolean`. The `'indeterminate'` value is display-only; user clicks always commit to `true` or `false`.
+- The component is fully controlled — there's no internal state. Always pass `checked` and update it from `onCheckedChange`.
+- For "select all" parent rows, derive `checked` from children: `all → true`, `some → 'indeterminate'`, `none → false`.

@@ -160,12 +160,17 @@ When the user pastes one of these, just run it and report stdout.
 
 ## Slash commands available
 
+- **`/new-item <figma-url>`** — BOOTSTRAP a new Figma node into tracking.
+  Parses URL → adds to manifest → pulls variables → blesses snapshot. Run
+  this once per new component/foundation page. Then `/sync-figma <slug>`
+  for ongoing work. See `.claude/commands/new-item.md`.
 - **`/sync-figma <slug>`** — pull from Figma, apply edits, bless, verify. See
   `.claude/commands/sync-figma.md`. Sat-set; never modifies sacred tokens.
-  Also refreshes `.figma/variables.json` dictionary.
-- **`/refresh-vars [slug]`** — lightweight: ONLY refresh `.figma/variables.json`
-  via MCP. No code changes, no bless. Use when `check.mjs` shows raw IDs
-  you want resolved to names. See `.claude/commands/refresh-vars.md`.
+  Also refreshes `.figma/variables/<slug>.json` dictionary. Requires slug
+  to exist in manifest (use /new-item first if it doesn't).
+- **`/refresh-vars [slug]`** — lightweight: ONLY refresh
+  `.figma/variables/<slug>.json` via MCP. No code changes, no bless. Use
+  when `check.mjs` shows raw IDs you want resolved to names.
 - **`/publish [patch|minor|major|x.y.z]`** — verify in-sync + clean tree → build →
   bump → PAUSE for confirmation → npm publish → tag locally. See
   `.claude/commands/publish.md`. Pauses ONCE before actual publish.
