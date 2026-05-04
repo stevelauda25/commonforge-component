@@ -1,0 +1,53 @@
+{
+  "drifted": [
+    {
+      "slug": "button",
+      "nodeId": "267:355",
+      "url": "https://www.figma.com/design/TCd9exLXTUMciyw1VqnPSK/POD-Design-System-%5B1.1%5D?node-id=267-355",
+      "reason": "design changed",
+      "lastSync": "2026-05-01T10:31:50.985Z",
+      "diff": {
+        "added": [],
+        "removed": [],
+        "modified": [
+          {
+            "variant": "Type=Primary, State=Default, Size=Large, Icon Only=False",
+            "changes": [
+              {
+                "path": "fills[0].color",
+                "before": "rgb(234, 88, 12, a=1)",
+                "after": "rgb(21, 128, 61, a=1)"
+              },
+              {
+                "path": "bindings.fills[0]",
+                "before": "2274:284",
+                "after": "16:853"
+              }
+            ]
+          },
+          {
+            "variant": "Type=Primary, State=Default, Size=Small, Icon Only=False",
+            "changes": [
+              {
+                "path": "fills[0].color",
+                "before": "rgb(234, 88, 12, a=1)",
+                "after": "rgb(21, 128, 61, a=1)"
+              },
+              {
+                "path": "bindings.fills[0]",
+                "before": "2274:284",
+                "after": "16:853"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "inSync": [],
+  "errors": [],
+  "file": {
+    "key": "TCd9exLXTUMciyw1VqnPSK",
+    "name": "POD Design System [1.1]"
+  }
+}

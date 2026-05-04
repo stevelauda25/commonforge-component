@@ -71,21 +71,43 @@
 
 
   /* ── Radius ───────────────────────────────────────────────────────── */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 12px;
+  /* All values match Figma node 2352:3173 exactly (verified via MCP). */
+  --radius-none: 0px;
+  --radius-xxs:  2px;
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:   10px;
+  --radius-xl:   12px;
+  --radius-2xl:  16px;
+  --radius-3xl:  20px;
+  --radius-4xl:  24px;
   --radius-full: 9999px;
 
   /* ── Shadows ──────────────────────────────────────────────────────── */
-  --shadow-sm:
-    0 1px 2px 0 rgb(0 0 0 / 0.04);
-  --shadow-md:
-    0 2px 4px -1px rgb(0 0 0 / 0.06),
-    0 4px 8px -2px rgb(0 0 0 / 0.08);
-  --shadow-lg:
-    0 8px 16px -4px rgb(0 0 0 / 0.08),
-    0 16px 32px -8px rgb(0 0 0 / 0.12);
+  /* Foundation drop-shadow scale (matches Figma's shadows/shadow-* tokens).
+     This IS the canonical scale — use these for everything. Legacy
+     shadow-sm/md/lg removed; old usages migrated to foundation-* equivalents
+     (sm→xs, md→m, lg→lg). */
+  --shadow-foundation-xs:  0 2px 2px 0 rgb(0 0 0 / 0.08);
+  --shadow-foundation-s:
+    0 4px 4px 0 rgb(0 0 0 / 0.08),
+    0 2px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-foundation-m:
+    0 4px 8px 0 rgb(0 0 0 / 0.08),
+    0 2px 4px 0 rgb(0 0 0 / 0.04);
+  --shadow-foundation-lg:
+    0 8px 12px 0 rgb(0 0 0 / 0.08),
+    0 4px 8px 0 rgb(0 0 0 / 0.04);
+  --shadow-foundation-xl:
+    0 16px 20px 0 rgb(0 0 0 / 0.08),
+    0 12px 16px 0 rgb(0 0 0 / 0.04);
+  --shadow-foundation-2xl:
+    0 24px 32px 0 rgb(0 0 0 / 0.08),
+    0 20px 24px 0 rgb(0 0 0 / 0.04);
+  --shadow-foundation-3xl:
+    0 32px 40px 0 rgb(0 0 0 / 0.08),
+    0 24px 32px 0 rgb(0 0 0 / 0.04);
 
   /* ── Glow effects (brand) ─────────────────────────────────────────── */
   /* Inset highlight on primary button (default state) — pale green @ 25% */
@@ -161,15 +183,28 @@
   --color-info-subtle:     22 78 99;
 
   /* Experimental — same value in dark, just primitives */
-  --color-experiment-orange:       249 115 22;
+  --color-experiment-zinc-700:     28 28 31;
 
-  /* Shadows — darker rgba blend for legibility over dark canvas */
-  --shadow-sm:
-    0 1px 2px 0 rgb(0 0 0 / 0.4);
-  --shadow-md:
-    0 2px 4px -1px rgb(0 0 0 / 0.5),
-    0 4px 8px -2px rgb(0 0 0 / 0.5);
-  --shadow-lg:
-    0 8px 16px -4px rgb(0 0 0 / 0.6),
-    0 16px 32px -8px rgb(0 0 0 / 0.7);
+  /* Foundation shadows — IDENTICAL values across modes per Figma intent.
+     Designer specified single alpha (0.08 / 0.04) that doesn't change between
+     light and dark modes. Shadows in dark mode are intentionally subtle. */
+  --shadow-foundation-xs:  0 2px 2px 0 rgb(0 0 0 / 0.08);
+  --shadow-foundation-s:
+    0 4px 4px 0 rgb(0 0 0 / 0.08),
+    0 2px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-foundation-m:
+    0 4px 8px 0 rgb(0 0 0 / 0.08),
+    0 2px 4px 0 rgb(0 0 0 / 0.04);
+  --shadow-foundation-lg:
+    0 8px 12px 0 rgb(0 0 0 / 0.08),
+    0 4px 8px 0 rgb(0 0 0 / 0.04);
+  --shadow-foundation-xl:
+    0 16px 20px 0 rgb(0 0 0 / 0.08),
+    0 12px 16px 0 rgb(0 0 0 / 0.04);
+  --shadow-foundation-2xl:
+    0 24px 32px 0 rgb(0 0 0 / 0.08),
+    0 20px 24px 0 rgb(0 0 0 / 0.04);
+  --shadow-foundation-3xl:
+    0 32px 40px 0 rgb(0 0 0 / 0.08),
+    0 24px 32px 0 rgb(0 0 0 / 0.04);
 }

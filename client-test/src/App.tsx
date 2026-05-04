@@ -126,7 +126,7 @@ function Hero() {
 
       <div className="mx-auto max-w-7xl px-6 pb-24 pt-16 md:pb-32 md:pt-24">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border-default bg-surface px-3 py-1 text-xs text-text-muted shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border-default bg-surface px-3 py-1 text-xs text-text-muted shadow-foundation-xs">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inset-0 animate-ping rounded-full bg-success/60" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
@@ -168,7 +168,7 @@ function Hero() {
 
           <form
             onSubmit={subscribe}
-            className="mt-12 flex w-full max-w-md flex-col gap-3 rounded-xl border border-border-default bg-surface/60 p-5 text-left shadow-sm backdrop-blur"
+            className="mt-12 flex w-full max-w-md flex-col gap-3 rounded-xl border border-border-default bg-surface/60 p-5 text-left shadow-foundation-xs backdrop-blur"
           >
             <div className="flex flex-col gap-1">
               <h2 className="text-sm font-semibold text-text-primary">

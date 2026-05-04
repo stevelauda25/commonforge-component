@@ -17,6 +17,20 @@ Anomalies are footnotes in the report. They are not veto reasons. Single
 variant changing color → still update accent tokens to match. New token
 that "looks experimental" → still wire it through. Drop the second-guessing.
 
+## Speed budget — TARGET: < 30 seconds, < 6KB tokens
+
+Most syncs are token-level (color/binding swaps). For those:
+
+- **FAST PATH** for MCP (1 call instead of 4). See step 2.
+- **Skip variables.json refresh** if all binding IDs already in cache. See step 2.5.
+- **Single batched bash** for build+bless+verify+restart. See step 6+7.
+- **Use Edit (not Write)** for incremental file changes — Write entire files only
+  if reformulating from scratch.
+- **Skip orphan walkthrough** if `grep "experiment-"` returns 0 matches.
+
+If you find yourself doing 5+ separate bash calls or 10+ file edits for one
+sync, you're being slow. Cut.
+
 ## Steps (run in order, don't ask between)
 
 ### 0. Resolve target
@@ -37,39 +51,69 @@ node scripts/figma/check.mjs <slug>
 Capture which variants drifted and the property-level changes. Use this to
 scope your edits — you don't need to regenerate untouched variants.
 
-### 2. Pull Figma context (in parallel where possible)
+### 2. Pull Figma context — FAST PATH vs FULL PATH
 
-Call these MCP tools:
+**FAST PATH (default for token-only drift)** — only call:
 
-1. `mcp__claude_ai_Figma__get_metadata` — node name, type, structure
-2. `mcp__claude_ai_Figma__get_variable_defs` — all variables the node uses
-3. `mcp__claude_ai_Figma__get_design_context` — reference React+Tailwind code
-4. `mcp__claude_ai_Figma__get_screenshot` — visual reference
+1. `mcp__claude_ai_Figma__get_variable_defs` — to enrich variables.json
 
-The reference code from step 3 is a **suggestion**. POD has its own
-conventions (see [CLAUDE.md](CLAUDE.md) → "Common edits — patterns").
+Skip metadata/screenshot/design_context. Drift output from step 1 already
+tells you which variants and properties changed. You don't need rendered
+code or pixel reference for token swaps.
 
-### 2.5 FULL REPLACE `.figma/variables.json` from MCP get_variable_defs
+**FULL PATH (only when needed)** — call all 4 MCP tools:
 
-**Replace** (do not merge) the `variables` key with the result of
-`get_variable_defs` (which returns `{ name: value }`). Also bump `syncedAt`
-to current ISO time. Why full replace, not merge:
+1. `mcp__claude_ai_Figma__get_metadata`
+2. `mcp__claude_ai_Figma__get_variable_defs`
+3. `mcp__claude_ai_Figma__get_design_context`
+4. `mcp__claude_ai_Figma__get_screenshot`
 
-- Designer renames/deletes Figma variables over time. Merge would leave
-  stale entries (e.g. `blue/600` lingering after designer removed it),
-  causing wrong name resolution in future diffs.
-- Figma's `get_variable_defs` for the Component Set returns the **complete**
-  set of variables that subtree references — so it's authoritative for that
-  component.
+Use FULL PATH only when:
+- Brand-new component (no existing code to reference)
+- Drift involves structural change (variant added/removed, layer shape changed)
+- You're unsure how to render the change in code
 
-This dictionary is what `check.mjs` uses to enrich diff output — so a binding
-change from `id 16:853` shows as `components/button/surface-primary (id 16:853)`
-instead of just the raw ID.
+For routine color/binding changes: **FAST PATH wins**. Skips ~5KB of MCP output
+and 3 seconds.
 
-> **Multi-component note**: when we add more components to the manifest,
-> single shared `variables.json` will lose tokens from other components on
-> each sync. Refactor to per-component files at that point:
-> `.figma/variables/<slug>.json`. For now (button-only) single file is fine.
+### 2.5 Update `.figma/variables/<slug>.json` — per-component, only if needed
+
+**Skip this step if** the drift output (step 1) shows binding IDs that
+ALREADY appear in the dictionary. No new IDs = no new tokens = cache fresh.
+
+**Otherwise**, FULL REPLACE `.figma/variables/<slug>.json` (per-component
+file) with the result of `get_variable_defs`. Also bump `syncedAt`.
+
+Per-component files prevent foundation tokens (radius/shadow) from being
+overwritten when /sync-figma button refreshes button-scoped variables.
+`_lib.mjs loadVariableDictionary()` merges ALL files in `.figma/variables/`.
+
+File schema:
+
+```json
+{
+  "version": 1,
+  "slug": "button",
+  "fileKey": "TCd9exLXTUMciyw1VqnPSK",
+  "nodeId": "267:355",
+  "syncedAt": "2026-05-02T00:00:00Z",
+  "variables": { "name": "value", ... }
+}
+```
+
+**Why full replace per-component (not merge globally)**:
+- Designer renames/deletes Figma variables. Merge keeps stale entries.
+- get_variable_defs(slug) returns complete set for that subtree.
+
+This dictionary is what `check.mjs` uses to enrich diff output — so a
+binding ID shows as `components/button/surface-primary (id 16:853)`
+instead of raw `16:853`.
+
+> **Foundation tokens note**: radius/shadow tokens are stored in
+> `.figma/variables/foundation-radius.json` and `foundation-shadows.json`
+> respectively. They're manually maintained (not tied to a specific
+> Component Set) — refresh them only if designer changes the foundation
+> scale, via `/sync-figma foundation-radius` or `foundation-shadows`.
 
 ### 3. Detect anomalies (don't block on them)
 
@@ -121,47 +165,61 @@ override.
 your override matches `variant === 'primary' && size === 'lg'` only. No
 broader scope. No "while we're at it, let me also update Medium". No.
 
-### 6. Rebuild packages (if any .tsx or theme.css changed)
+### 6+7. Build + Bless — SINGLE BATCHED BASH
 
-`packages/ui` and `packages/tokens` ship `dist/` (built via `tsup`), not raw
-source. The docs site reads from `dist/`. So if you touched any of:
-
-- `packages/ui/src/<slug>/<slug>.tsx`
-- `packages/tokens/src/theme.css`
-- `packages/tokens/src/tailwind-preset.ts`
-
-…rebuild before bless:
+Combine rebuild + bless + verify into ONE bash invocation. Reduces 3-4
+round-trips into 1 call:
 
 ```bash
-cd packages/tokens && ../../node_modules/.bin/tsup src/index.ts src/tailwind-preset.ts --format cjs,esm --dts --clean
-cd ../ui && ../../node_modules/.bin/tsup
+cd packages/tokens && ../../node_modules/.bin/tsup src/index.ts src/tailwind-preset.ts --format cjs,esm --dts --clean 2>&1 | tail -2 && \
+cd ../ui && ../../node_modules/.bin/tsup 2>&1 | tail -2 && \
+cd ../.. && node scripts/figma/bless.mjs <slug> 2>&1 | tail -2 && \
+node scripts/figma/check.mjs <slug> 2>&1 | tail -5
 ```
 
-Or, if `pnpm` is on PATH: `pnpm -F pod-test-tokens build && pnpm -F pod-test-ui build`.
+Skip rebuild ONLY if changes are limited to `apps/docs/` (MDX/route files).
 
-Skip rebuild ONLY if changes are limited to `apps/docs/` (MDX, route files) —
-those are bundled by the docs Vite directly.
+Auto-bless is **mandatory, no exceptions**. The user reverts via
+`git checkout --` if wrong.
 
-### 7. Auto-bless (MANDATORY, NO EXCEPTIONS)
+### 8. Verify (already done in step 6+7 batch — just check output)
 
-After edits + rebuild, run:
+The batched bash above ran `check.mjs <slug>`. Confirm output shows
+`● IN SYNC`. If still drifts, you missed a property — investigate.
 
+**Edge case — "DRIFTED + Changes: no changes":**
+Hash differs but diffSummaries finds nothing. Means subtree changed in a
+field NOT captured by `summarize()` (layer reorder, blend mode, `locked`
+flag, etc). No code action needed — just bless to update baseline:
 ```bash
 node scripts/figma/bless.mjs <slug>
 ```
+Safe because semantic visible properties are unchanged.
 
-This refreshes the snapshot baseline. The user reverts via `git checkout --`
-if wrong. **Bless every time.** No "skip if brand-shift", no "skip if caution",
-no "wait for designer confirmation". Just bless.
-
-### 8. Verify
+**Orphan check (FAST):**
 
 ```bash
-node scripts/figma/check.mjs <slug>
+grep -E "experiment-[a-z0-9-]+" packages/ui/src/<slug>/<slug>.tsx | head -10
 ```
 
-Should now report `IN SYNC`. If it still drifts, you missed a property —
-investigate, don't move on.
+For each `experiment-*` keyword found, confirm the corresponding Figma
+state still uses that color. Skip orphan check if zero matches.
+
+If orphans detected → remove the override line in the same bash batch
+above (re-run build + bless after removing).
+
+### 8.5 Restart docs dev server — only if dist changed
+
+If you ran the build batch above (step 6+7), restart vite. Otherwise skip.
+
+```bash
+lsof -ti :5174 :5175 :5176 :5177 2>/dev/null | xargs -r kill 2>/dev/null && \
+sleep 1 && \
+rm -rf apps/docs/node_modules/.vite && \
+cd apps/docs && ./node_modules/.bin/vite
+```
+
+Run in background. Report new port + "hard refresh (Cmd+Shift+R)" to user.
 
 ### 9. Report — six lines max, no fluff
 

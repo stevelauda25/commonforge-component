@@ -1,40 +1,43 @@
 <PageHeader
   title="Radius"
-  description="Corner radii defined as CSS variables in pod-test-tokens/theme.css and exposed as Tailwind classes."
+  description="Corner radius scale, defined as CSS variables in pod-test-tokens/theme.css and exposed as Tailwind utility classes."
 />
 
+The radius scale matches Figma's `radius-*` tokens. Adding a new token to
+the preset automatically surfaces it below — no manual edit needed.
+
+## Preview
+
 <PreviewCard>
-  <div className="flex flex-wrap items-end gap-6">
-    {[
-      { cls: 'rounded-sm', name: 'sm', size: '4px' },
-      { cls: 'rounded-md', name: 'md', size: '6px' },
-      { cls: 'rounded-lg', name: 'lg', size: '8px' },
-      { cls: 'rounded-xl', name: 'xl', size: '12px' },
-      { cls: 'rounded-full', name: 'full', size: '9999px' },
-    ].map((r) => (
-      <div key={r.name} className="flex flex-col items-center gap-2">
-        <div className={`h-14 w-14 bg-accent ${r.cls}`} />
-        <span className="font-mono text-xs">{r.cls}</span>
-        <span className="text-[11px] text-text-muted">{r.size}</span>
-      </div>
-    ))}
-  </div>
+  <TokenAutoGrid kind="radius" />
 </PreviewCard>
 
 ## Tokens
 
-| Token        | Value   | Class           |
-|--------------|---------|-----------------|
-| `--radius-sm`   | `4px`   | `rounded-sm`    |
-| `--radius-md`   | `6px`   | `rounded-md`    |
-| `--radius-lg`   | `8px`   | `rounded-lg`    |
-| `--radius-xl`   | `12px`  | `rounded-xl`    |
-| `--radius-full` | `9999px`| `rounded-full`  |
+<TokenAutoGrid kind="radius" variant="table" />
 
 ## Usage
 
+Reach for `rounded-md` for standard cards/inputs, `rounded-lg` for buttons,
+`rounded-full` for pills/avatars. Avoid hardcoded `rounded-[6px]` — pick the
+nearest scale step instead.
+
 ```tsx
+// ✓ Standard card
 <div className="rounded-lg border border-border-default bg-surface p-4">
-  Standard card
+  Card content
 </div>
+
+// ✓ Pill / avatar
+<span className="rounded-full bg-accent-subtle px-3 py-1 text-xs">label</span>
+
+// ✗ Don't hardcode
+<div className="rounded-[7px]">…</div>   // pick rounded-sm or rounded-md
 ```
+
+## Source of truth
+
+The values live in [`packages/tokens/src/theme.css`](https://github.com/) (under `/* ── Radius ── */`)
+and are exposed via [`packages/tokens/src/tailwind-preset.ts`](https://github.com/) under `borderRadius`.
+When syncing from Figma via `/sync-figma foundation-radius`, those two files
+update — and this page picks them up automatically at runtime.

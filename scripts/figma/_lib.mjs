@@ -4,7 +4,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -14,6 +14,8 @@ export const repoRoot = resolve(__dirname, '..', '..');
 export const MANIFEST_PATH  = resolve(repoRoot, '.figma', 'manifest.json');
 export const SNAPSHOT_PATH  = resolve(repoRoot, '.figma', 'snapshots.json');
 export const STATE_DIR      = resolve(repoRoot, '.figma', 'state');
+export const VARIABLES_DIR  = resolve(repoRoot, '.figma', 'variables');
+// Legacy single-file path — checked as fallback if variables/ dir doesn't exist
 export const VARIABLES_PATH = resolve(repoRoot, '.figma', 'variables.json');
 
 export function loadEnv() {
@@ -235,18 +237,21 @@ export function diffSummaries(oldSum, newSum) {
 function compareNode(a, b, prefix = '') {
   const changes = [];
 
-  // Both arrays → compare element-wise so we get fills[0].color, not full JSON
-  if (Array.isArray(a) && Array.isArray(b)) {
-    const len = Math.max(a.length, b.length);
+  // Either side is an array → element-wise (treat non-array as empty array).
+  // This handles new fills[] appearing where old had nothing — we recurse
+  // into the new element instead of dumping the whole object as a leaf.
+  if (Array.isArray(a) || Array.isArray(b)) {
+    const aArr = Array.isArray(a) ? a : [];
+    const bArr = Array.isArray(b) ? b : [];
+    const len = Math.max(aArr.length, bArr.length);
     for (let i = 0; i < len; i++) {
-      const av = a[i];
-      const bv = b[i];
+      const av = aArr[i];
+      const bv = bArr[i];
       const path = `${prefix}[${i}]`;
       if (JSON.stringify(av) === JSON.stringify(bv)) continue;
-      if (
-        av !== null && bv !== null &&
-        typeof av === 'object' && typeof bv === 'object'
-      ) {
+      const aIsObj = av && typeof av === 'object';
+      const bIsObj = bv && typeof bv === 'object';
+      if (aIsObj || bIsObj) {
         changes.push(...compareNode(av, bv, path));
       } else {
         changes.push({ path, before: av, after: bv });
@@ -255,17 +260,18 @@ function compareNode(a, b, prefix = '') {
     return changes;
   }
 
-  // Both objects → compare key-wise
-  const keys = new Set([...Object.keys(a || {}), ...Object.keys(b || {})]);
+  // Object key-wise (treat non-object as empty object).
+  const aObj = (a && typeof a === 'object') ? a : {};
+  const bObj = (b && typeof b === 'object') ? b : {};
+  const keys = new Set([...Object.keys(aObj), ...Object.keys(bObj)]);
   for (const key of keys) {
     const path = prefix ? `${prefix}.${key}` : key;
-    const av = a?.[key];
-    const bv = b?.[key];
+    const av = aObj[key];
+    const bv = bObj[key];
     if (JSON.stringify(av) === JSON.stringify(bv)) continue;
-    if (
-      av !== null && bv !== null &&
-      typeof av === 'object' && typeof bv === 'object'
-    ) {
+    const aIsObj = av && typeof av === 'object';
+    const bIsObj = bv && typeof bv === 'object';
+    if (aIsObj || bIsObj) {
       changes.push(...compareNode(av, bv, path));
     } else {
       changes.push({ path, before: av, after: bv });
@@ -275,21 +281,58 @@ function compareNode(a, b, prefix = '') {
 }
 
 /**
- * Load `.figma/variables.json` — name→value mapping populated by /sync-figma
- * via MCP get_variable_defs. Returns an enriched lookup helper.
+ * Load variable dictionary — name→value mapping for diff enrichment.
+ *
+ * Reads from `.figma/variables/<slug>.json` (per-component files) and merges
+ * all of them. Falls back to legacy `.figma/variables.json` single-file if dir
+ * is empty/missing.
+ *
+ * Per-component split prevents foundation tokens (radius/shadow) from being
+ * overwritten when /sync-figma button refreshes button-scoped variables.
  */
 export function loadVariableDictionary() {
-  let data;
+  const variables = {};
+
+  // Try per-component dir first (preferred)
+  let dirEntries = [];
   try {
-    data = JSON.parse(readFileSync(VARIABLES_PATH, 'utf8'));
+    if (existsSync(VARIABLES_DIR)) {
+      dirEntries = readdirSync(VARIABLES_DIR).filter((f) => f.endsWith('.json'));
+    }
   } catch {
+    /* empty */
+  }
+
+  if (dirEntries.length > 0) {
+    for (const file of dirEntries) {
+      try {
+        const data = JSON.parse(readFileSync(resolve(VARIABLES_DIR, file), 'utf8'));
+        Object.assign(variables, data.variables || {});
+      } catch {
+        /* skip malformed file */
+      }
+    }
+  } else {
+    // Fallback: legacy single file
+    try {
+      const data = JSON.parse(readFileSync(VARIABLES_PATH, 'utf8'));
+      Object.assign(variables, data.variables || {});
+    } catch {
+      return {
+        hasData: false,
+        nameForValue: () => null,
+        nameForBoundId: () => null,
+      };
+    }
+  }
+
+  if (Object.keys(variables).length === 0) {
     return {
       hasData: false,
       nameForValue: () => null,
       nameForBoundId: () => null,
     };
   }
-  const variables = data.variables || {};
 
   // Build value → [names] reverse index
   const byValue = new Map();

@@ -1,12 +1,30 @@
 {
   "version": 1,
-  "syncedAt": "2026-05-01T10:31:50.985Z",
+  "syncedAt": "2026-05-04T08:17:47.818Z",
   "components": {
     "button": {
-      "hash": "d07df61c1d936f61a2911e7ebab382b97d6d6dcc7369ea0ecdc287f8ca723cc6",
+      "hash": "c524bf2c2cab9aff16e4868770de872e9298ae96403ec0ce99005ddeeb6dad26",
       "varCount": 39,
-      "syncedAt": "2026-05-01T10:31:50.985Z",
+      "syncedAt": "2026-05-04T08:14:43.143Z",
       "nodeId": "267:355"
+    },
+    "search": {
+      "hash": "20973ffa83bf2d4ea669932ef26954900b734bcd94be6c5e4d4849947fa8e8bc",
+      "varCount": 13,
+      "syncedAt": "2026-05-04T08:17:47.818Z",
+      "nodeId": "2346:404"
+    },
+    "foundation-radius": {
+      "hash": "51d5b7fdc011c15deaccc1947375c01698a934707d3ef37386a7468af017e8af",
+      "varCount": 43,
+      "syncedAt": "2026-05-04T08:14:43.143Z",
+      "nodeId": "2352:3173"
+    },
+    "foundation-shadows": {
+      "hash": "0bd41ca615d490e2bfc1106ad45db8e49bd307eac255f65d42c0e8111f28db74",
+      "varCount": 23,
+      "syncedAt": "2026-05-04T08:14:43.143Z",
+      "nodeId": "2352:159"
     }
   }
 }

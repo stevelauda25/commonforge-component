@@ -7,7 +7,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(234, 88, 12, a=1)"
+          "color": "rgb(21, 128, 61, a=1)"
         }
       ],
       "strokes": [
@@ -41,7 +41,7 @@
         "paddingRight": "10:1232",
         "paddingBottom": "10:1236",
         "fills": [
-          "2274:284"
+          "16:853"
         ],
         "strokes": [
           "17:1851"
@@ -289,7 +289,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(234, 88, 12, a=1)"
+          "color": "rgb(21, 128, 61, a=1)"
         }
       ],
       "strokes": [
@@ -323,7 +323,7 @@
         "paddingRight": "10:1227",
         "paddingBottom": "10:1227",
         "fills": [
-          "2274:284"
+          "16:853"
         ],
         "strokes": [
           "17:1851"
@@ -1055,7 +1055,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(21, 128, 61, a=1)"
+          "color": "rgb(153, 27, 27, a=1)"
         }
       ],
       "strokes": [
@@ -1096,7 +1096,7 @@
         "paddingRight": "10:1232",
         "paddingBottom": "10:1236",
         "fills": [
-          "16:854"
+          "17:1843"
         ],
         "strokes": [
           "16:905"
@@ -1111,7 +1111,12 @@
     },
     "Type=Outline, State=Hover, Size=Large, Icon Only=False": {
       "type": "COMPONENT",
-      "fills": [],
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(28, 28, 31, a=1)"
+        }
+      ],
       "strokes": [
         {
           "type": "SOLID",
@@ -1142,6 +1147,9 @@
         "paddingTop": "10:1236",
         "paddingRight": "10:1232",
         "paddingBottom": "10:1236",
+        "fills": [
+          "13:1340"
+        ],
         "strokes": [
           "17:1211"
         ]
@@ -1217,7 +1225,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(21, 128, 61, a=1)"
+          "color": "rgb(153, 27, 27, a=1)"
         }
       ],
       "strokes": [
@@ -1258,7 +1266,7 @@
         "paddingRight": "10:1236",
         "paddingBottom": "10:1236",
         "fills": [
-          "16:854"
+          "17:1843"
         ],
         "strokes": [
           "16:905"
@@ -1273,7 +1281,12 @@
     },
     "Type=Outline, State=Hover, Size=Medium, Icon Only=False": {
       "type": "COMPONENT",
-      "fills": [],
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(28, 28, 31, a=1)"
+        }
+      ],
       "strokes": [
         {
           "type": "SOLID",
@@ -1304,6 +1317,9 @@
         "paddingTop": "10:1236",
         "paddingRight": "10:1236",
         "paddingBottom": "10:1236",
+        "fills": [
+          "13:1340"
+        ],
         "strokes": [
           "17:1211"
         ]
@@ -1379,7 +1395,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(21, 128, 61, a=1)"
+          "color": "rgb(153, 27, 27, a=1)"
         }
       ],
       "strokes": [
@@ -1420,7 +1436,7 @@
         "paddingRight": "10:1227",
         "paddingBottom": "10:1227",
         "fills": [
-          "16:854"
+          "17:1843"
         ],
         "strokes": [
           "16:905"
@@ -1435,7 +1451,12 @@
     },
     "Type=Outline, State=Hover, Size=Small, Icon Only=False": {
       "type": "COMPONENT",
-      "fills": [],
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(28, 28, 31, a=1)"
+        }
+      ],
       "strokes": [
         {
           "type": "SOLID",
@@ -1466,6 +1487,9 @@
         "paddingTop": "10:1227",
         "paddingRight": "10:1227",
         "paddingBottom": "10:1227",
+        "fills": [
+          "13:1340"
+        ],
         "strokes": [
           "17:1211"
         ]
@@ -1541,7 +1565,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(21, 128, 61, a=1)"
+          "color": "rgb(153, 27, 27, a=1)"
         }
       ],
       "strokes": [
@@ -1582,7 +1606,7 @@
         "paddingRight": "10:1227",
         "paddingBottom": "10:1234",
         "fills": [
-          "16:854"
+          "17:1843"
         ],
         "strokes": [
           "16:905"
@@ -1597,7 +1621,12 @@
     },
     "Type=Outline, State=Hover, Size=XSmall, Icon Only=False": {
       "type": "COMPONENT",
-      "fills": [],
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(28, 28, 31, a=1)"
+        }
+      ],
       "strokes": [
         {
           "type": "SOLID",
@@ -1628,6 +1657,9 @@
         "paddingTop": "10:1234",
         "paddingRight": "10:1227",
         "paddingBottom": "10:1234",
+        "fills": [
+          "13:1340"
+        ],
         "strokes": [
           "17:1211"
         ]

@@ -1,39 +1,59 @@
 <PageHeader
   title="Elevation"
-  description="Shadows defined in pod-test-tokens/theme.css. Light-mode and dark-mode values are swapped in by the .dark scope."
+  description="Drop shadows + brand glows. Defined in pod-test-tokens/theme.css. Light + dark mode values swap via the .dark scope. Auto-rendered from preset."
 />
 
+POD has two shadow groups:
+
+- **Drop shadows** — the elevation ramp `shadow-foundation-*`, matched 1:1
+  to Figma's `shadows/shadow-*` tokens.
+- **Brand glow** — `shadow-glow-accent-*` and `shadow-glow-danger-*` baked
+  into the primary/error button states. Sacred — never modified by sync.
+
+## Drop shadows
+
 <PreviewCard>
-  <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-    {[
-      { cls: 'shadow-sm', name: 'sm', use: 'subtle separation' },
-      { cls: 'shadow-md', name: 'md', use: 'cards / popovers' },
-      { cls: 'shadow-lg', name: 'lg', use: 'modals / drawers' },
-    ].map((s) => (
-      <div key={s.name} className="flex flex-col items-center gap-3">
-        <div className={`h-20 w-20 rounded-md bg-surface border border-border-subtle ${s.cls}`} />
-        <span className="font-mono text-xs">{s.cls}</span>
-        <span className="text-[11px] text-text-muted">{s.use}</span>
-      </div>
-    ))}
-  </div>
+  <TokenAutoGrid kind="shadow" filter="foundation" />
 </PreviewCard>
 
-## Tokens
+<TokenAutoGrid kind="shadow" filter="foundation" variant="table" />
 
-| Token         | Class       | Use case |
-|---------------|-------------|----------|
-| `--shadow-sm` | `shadow-sm` | hairline lift; thin separator effect |
-| `--shadow-md` | `shadow-md` | cards, popovers, dropdowns |
-| `--shadow-lg` | `shadow-lg` | modals, drawers — high-lift surfaces |
+```tsx
+// Subtle inline lift
+<div className="rounded-lg bg-canvas shadow-foundation-xs">…</div>
 
-## Brand glow
+// Card / popover
+<div className="rounded-lg bg-canvas shadow-foundation-m p-4">…</div>
 
-POD's primary button uses two extra brand-tinted shadows:
+// Floating dropdown
+<div className="rounded-xl bg-raised shadow-foundation-lg p-4">…</div>
 
-| Token                          | Class                   | Where it's used |
-|--------------------------------|-------------------------|-----------------|
-| `--shadow-glow-accent-inset`   | `shadow-glow-accent-inset` | inset top-edge highlight on `<Button variant="primary">` |
-| `--shadow-glow-accent-text`    | (CSS-only)              | text-shadow halo on the same button |
+// Modal / drawer
+<div className="rounded-xl bg-raised shadow-foundation-xl p-6">…</div>
 
-Switch the theme — the shadow tokens scale up in dark mode for legibility on the dark canvas.
+// Modal-over-modal (rare)
+<div className="shadow-foundation-2xl">…</div>
+```
+
+## Brand glow (sacred)
+
+Inset highlights baked into Primary/Error buttons. **Never** modified by
+sync — they define POD's brand identity.
+
+<TokenAutoGrid kind="shadow" filter="glow" variant="table" />
+
+```tsx
+// Already wired into <Button variant="primary"> — don't apply manually
+// unless you're rolling a custom primitive.
+<button className="bg-accent-hover shadow-glow-accent-inset hover:shadow-glow-accent-inset-strong">
+  Primary
+</button>
+```
+
+## Source of truth
+
+Values live in [`packages/tokens/src/theme.css`](https://github.com/) under
+`/* ── Shadows ── */` and `/* ── Glow effects ── */`. Exposed via
+[`packages/tokens/src/tailwind-preset.ts`](https://github.com/) `boxShadow`.
+This page reads from the preset directly — adding a new shadow there shows
+up here automatically.

@@ -71,21 +71,33 @@ export const preset: Partial<Config> = {
         overlay: rgbVar('overlay'),
 
         // Experimental — Figma-introduced primitives, see theme.css block
-        'experiment-orange':  rgbVar('experiment-orange'),
+        'experiment-zinc-700': rgbVar('experiment-zinc-700'),
       },
 
       borderRadius: {
-        sm:  'var(--radius-sm)',
-        md:  'var(--radius-md)',
-        lg:  'var(--radius-lg)',
-        xl:  'var(--radius-xl)',
+        none: 'var(--radius-none)',
+        xxs:  'var(--radius-xxs)',
+        xs:   'var(--radius-xs)',
+        sm:   'var(--radius-sm)',
+        md:   'var(--radius-md)',
+        lg:   'var(--radius-lg)',
+        xl:   'var(--radius-xl)',
+        '2xl':'var(--radius-2xl)',
+        '3xl':'var(--radius-3xl)',
+        '4xl':'var(--radius-4xl)',
         full: 'var(--radius-full)',
       },
 
       boxShadow: {
-        sm: 'var(--shadow-sm)',
-        md: 'var(--shadow-md)',
-        lg: 'var(--shadow-lg)',
+        // Foundation scale from Figma — canonical drop-shadow scale
+        'foundation-xs':  'var(--shadow-foundation-xs)',
+        'foundation-s':   'var(--shadow-foundation-s)',
+        'foundation-m':   'var(--shadow-foundation-m)',
+        'foundation-lg':  'var(--shadow-foundation-lg)',
+        'foundation-xl':  'var(--shadow-foundation-xl)',
+        'foundation-2xl': 'var(--shadow-foundation-2xl)',
+        'foundation-3xl': 'var(--shadow-foundation-3xl)',
+        // Brand glows (sacred — never modified by sync)
         'glow-accent-inset':        'var(--shadow-glow-accent-inset)',
         'glow-accent-inset-strong': 'var(--shadow-glow-accent-inset-strong)',
         'glow-danger-inset':        'var(--shadow-glow-danger-inset)',

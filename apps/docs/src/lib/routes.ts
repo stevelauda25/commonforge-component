@@ -15,6 +15,7 @@ export interface RouteEntry {
 export const routes: RouteEntry[] = [
   { path: '/',                 label: 'Home',            category: 'top', load: () => import('../pages/Home.js') },
   { path: '/getting-started',  label: 'Getting Started', category: 'top', load: () => import('../pages/GettingStarted.mdx') },
+  { path: '/figma-status',     label: 'Figma Status',    category: 'top', load: () => import('../pages/FigmaStatus.js') },
 
   // Foundations
   { path: '/foundations/color',      label: 'Color',      category: 'foundation', load: () => import('../pages/foundations/Color.mdx') },

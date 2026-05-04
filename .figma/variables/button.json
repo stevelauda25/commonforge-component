@@ -1,8 +1,8 @@
 {
   "version": 1,
   "fileKey": "TCd9exLXTUMciyw1VqnPSK",
-  "syncedAt": "2026-05-01T05:00:00Z",
-  "comment": "Auto-populated by /sync-figma via MCP get_variable_defs. Maps variable name → resolved value. Used by check.mjs to enrich diff output with token names. FULL REPLACE on each sync — Figma vars are authoritative; stale entries get pruned.",
+  "syncedAt": "2026-05-01T13:00:00Z",
+  "comment": "Auto-populated by /sync-figma via MCP get_variable_defs. Maps variable name → resolved value. Used by check.mjs to enrich diff output with token names. FULL REPLACE on each sync.",
   "variables": {
     "components/button/icon-primary": "#fafafa",
     "components/button/text-primary": "#fafafa",
@@ -37,7 +37,7 @@
     "components/button/text-error-disabled": "#3a3a3d",
     "components/button/surface-error-disabled": "#260d0e",
     "components/button/stroke-error-disabled": "#7f1d1d",
-    "orange/600": "#ea580c",
+    "zinc/700": "#1c1c1f",
     "padding-3xs": "2",
     "padding-2xs": "4",
     "paading-xs": "6",

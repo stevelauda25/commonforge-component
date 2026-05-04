@@ -37,6 +37,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     'outline outline-1 outline-border-default [outline-offset:-1px] ' +
     'hover:text-text-primary hover:shadow-glow-accent-inset ' +
     'active:text-text-primary active:shadow-glow-accent-inset',
+  // Note: Outline hover bg → see experiment-zinc-700 override in className composition below.
   error:
     'bg-danger-hover text-danger-fg ' +
     'outline outline-1 outline-danger [outline-offset:-1px] ' +
@@ -89,10 +90,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           focusRing,
           variantClasses[variant],
           iconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
-          // Experimental: Primary/Default/{lg,md,xs} uses Figma's #f97316 (sourced from sync-figma).
-          // Scoped to non-icon-only, sizes lg/md/xs only — Small still uses standard accent.
-          variant === 'primary' && !iconOnly && (size === 'lg' || size === 'md' || size === 'xs') &&
-            '!bg-experiment-orange !outline-experiment-orange',
+          // Experimental: Outline/Hover bg = #1c1c1f (zinc/700) for non-icon-only sizes.
+          variant === 'outline' && !iconOnly &&
+            'hover:bg-experiment-zinc-700',
+          // Primary/Hover bg = danger-hover (#991b1b) for non-icon-only sizes (sourced from sync-figma).
+          variant === 'primary' && !iconOnly &&
+            'hover:bg-danger-hover',
           className,
         )}
         {...rest}

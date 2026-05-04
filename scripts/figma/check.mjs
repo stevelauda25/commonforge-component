@@ -78,7 +78,8 @@ async function main() {
     if (snap.hash !== current.hash) {
       const oldState = loadState(comp.slug);
       const newSummary = summarize(current.subtree);
-      const diff = oldState ? diffSummaries(oldState, newSummary) : null;
+      const rawDiff = oldState ? diffSummaries(oldState, newSummary) : null;
+      const diff = rawDiff ? enrichDiff(rawDiff) : null;
       drifted.push({ slug: comp.slug, nodeId: comp.nodeId, url, reason: 'design changed', lastSync: snap.syncedAt, diff });
     } else {
       inSync.push({ slug: comp.slug, nodeId: comp.nodeId, url, lastSync: snap.syncedAt });
@@ -406,6 +407,90 @@ function scalarValue(v) {
   // Add px suffix for known scalars
   if (typeof v === 'number') return c.bold(String(v)) + c.dim('px');
   return c.bold(String(v));
+}
+
+// ─── Server-side diff enrichment for --json output (UI consumes) ──────────
+
+function enrichDiff(diff) {
+  return {
+    added:    diff.added,
+    removed:  diff.removed,
+    modified: diff.modified.map((m) => ({
+      variant: m.variant,
+      changes: m.changes
+        .filter((ch) => !isTrivialChange(ch))
+        .map((ch) => enrichChange(ch)),
+    })),
+  };
+}
+
+function isTrivialChange(ch) {
+  // fills[0].type changing from undefined to "SOLID" is noise — fills[0].color
+  // captures the meaningful change.
+  if (/^(fills|strokes)\[\d+\]\.(type|visible|opacity)$/.test(ch.path)) {
+    if (ch.before === undefined && (ch.after === 'SOLID' || ch.after === true || ch.after === 1)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function enrichChange(ch) {
+  const { kind, label } = describePathForUI(ch.path);
+  return {
+    path:    ch.path,
+    before:  ch.before,
+    after:   ch.after,
+    label,
+    kind,
+    beforeDisplay: enrichValue(ch.before, ch.path, kind),
+    afterDisplay:  enrichValue(ch.after,  ch.path, kind),
+  };
+}
+
+function describePathForUI(path) {
+  if (/^(fills|strokes)\[\d+\]\.color$/.test(path)) {
+    return { kind: 'color', label: path.startsWith('fills') ? 'fill color' : 'stroke color' };
+  }
+  if (/^bindings\.fills\[\d+\]$/.test(path))   return { kind: 'binding', label: 'fill binding' };
+  if (/^bindings\.strokes\[\d+\]$/.test(path)) return { kind: 'binding', label: 'stroke binding' };
+  if (/^bindings\.\w+$/.test(path)) {
+    const rest = path.replace(/^bindings\./, '');
+    return { kind: 'binding', label: `${rest} binding` };
+  }
+  if (/^(fills|strokes)\[\d+\]\.(opacity|visible|type)$/.test(path)) {
+    const part = path.split('.').pop();
+    const prefix = path.startsWith('fills') ? 'fill' : 'stroke';
+    return { kind: 'scalar', label: `${prefix} ${part}` };
+  }
+  const aliases = {
+    cornerRadius: 'corner radius', strokeWeight: 'stroke weight',
+    paddingLeft: 'padding left', paddingRight: 'padding right',
+    paddingTop: 'padding top', paddingBottom: 'padding bottom',
+    itemSpacing: 'item spacing', layoutMode: 'layout mode',
+    primaryAxisAlignItems: 'main-axis align', counterAxisAlignItems: 'cross-axis align',
+    childCount: 'child count',
+  };
+  if (aliases[path]) return { kind: 'scalar', label: aliases[path] };
+  return { kind: 'scalar', label: path };
+}
+
+function enrichValue(value, path, kind) {
+  if (value === undefined || value === null) return { kind: 'empty' };
+  if (kind === 'color' && typeof value === 'string') {
+    const rgb = parseRgb(value);
+    if (rgb) {
+      const hex = rgbToHex(rgb);
+      const hint = path.includes('strokes') ? 'stroke' : 'surface';
+      const name = vars.nameForValue(hex, hint);
+      return { kind: 'color', hex, css: `rgb(${rgb.r},${rgb.g},${rgb.b})`, name: name || null };
+    }
+  }
+  if (kind === 'binding' && typeof value === 'string') {
+    return { kind: 'binding', id: value };
+  }
+  if (typeof value === 'object') return { kind: 'object', json: JSON.stringify(value) };
+  return { kind: 'scalar', text: String(value) };
 }
 
 main().catch((err) => {
