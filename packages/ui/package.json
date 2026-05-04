@@ -1,6 +1,6 @@
 {
   "name": "pod-test-ui",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -44,7 +44,7 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "pod-test-tokens": "0.0.2",
+    "pod-test-tokens": "0.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "clsx": "^2.1.1",
     "lucide-react": "^0.428.0",
