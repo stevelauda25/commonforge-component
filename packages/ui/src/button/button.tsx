@@ -30,6 +30,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     'bg-accent-hover text-accent-fg ' +
     'outline outline-1 outline-accent [outline-offset:-1px] ' +
     'shadow-glow-accent-inset ' +
+    'hover:bg-accent-hover ' +
     'hover:shadow-glow-accent-inset-strong ' +
     'active:bg-accent-active',
   outline:
@@ -47,9 +48,9 @@ const variantClasses: Record<ButtonVariant, string> = {
 
 const sizeClasses: Record<ButtonSize, string> = {
   xs: 'h-7 px-2 text-xs rounded-lg gap-1',
-  sm: 'h-8 px-2.5 text-sm rounded-lg gap-1.5',
-  md: 'h-9 px-2.5 text-sm rounded-lg gap-2',
-  lg: 'h-10 px-3 text-base rounded-lg gap-2',
+  sm: 'h-8 px-2.5 text-sm rounded-lg gap-1',
+  md: 'h-9 px-2.5 text-sm rounded-lg gap-1',
+  lg: 'h-10 px-3 text-base rounded-lg gap-1.5',
 };
 
 const iconOnlySizeClasses: Record<ButtonSize, string> = {
@@ -89,6 +90,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           focusRing,
           variantClasses[variant],
           iconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
+          variant === 'primary' && (size === 'sm' || size === 'xs') && '!outline-experiment-stroke-dark',
+          variant === 'outline' && 'hover:!bg-experiment-zinc-700',
           className,
         )}
         {...rest}

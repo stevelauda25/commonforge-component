@@ -1,17 +1,29 @@
 {
-  "name": "@pod/tokens",
+  "name": "pod-test-tokens",
   "version": "0.0.1",
-  "private": true,
-  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
     "./theme.css": "./src/theme.css",
-    "./tailwind-preset": "./src/tailwind-preset.ts"
+    "./tailwind-preset": {
+      "types": "./dist/tailwind-preset.d.ts",
+      "import": "./dist/tailwind-preset.mjs",
+      "require": "./dist/tailwind-preset.js"
+    }
   },
   "files": [
-    "src"
+    "dist",
+    "src/theme.css"
   ],
   "scripts": {
+    "build": "tsup src/index.ts src/tailwind-preset.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts src/tailwind-preset.ts --format cjs,esm --dts --watch",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {

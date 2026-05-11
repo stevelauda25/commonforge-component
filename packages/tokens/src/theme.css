@@ -62,6 +62,14 @@
   /* ── Overlays ─────────────────────────────────────────────────────── */
   --color-overlay: 0 0 0;           /* used with /alpha */
 
+  /* ── Experimental (Figma-introduced colors not in brand system) ─────
+     Brand semantic tokens (accent-*, danger-*) are NEVER touched by sync.
+     New colors from Figma get an experiment-* token + targeted variant
+     override in component code. Promote to a real semantic role only when
+     designer + dev explicitly agree.                                    */
+  --color-experiment-stroke-dark: 38 13 14;     /* Figma: surface-error-disabled (#260d0e) on Primary/Default stroke (Sm/Xs only) */
+  --color-experiment-zinc-700:    28 28 31;     /* Figma: zinc/700 (#1c1c1f) — Outline/Hover fill (all sizes) */
+
   /* ── Radius ───────────────────────────────────────────────────────── */
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -151,6 +159,10 @@
   --color-info-default:    6 182 212;
   --color-info-fg:         9 9 11;
   --color-info-subtle:     22 78 99;
+
+  /* Experimental — same values in dark, not theme-aware (yet) */
+  --color-experiment-stroke-dark: 38 13 14;
+  --color-experiment-zinc-700:    28 28 31;
 
   /* Shadows — darker rgba blend for legibility over dark canvas */
   --shadow-sm:

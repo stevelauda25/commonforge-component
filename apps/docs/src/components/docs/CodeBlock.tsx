@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
-import { cn } from '@pod/ui';
+import { cn } from 'pod-test-ui';
 
 type Props = React.HTMLAttributes<HTMLPreElement> & {
   'data-language'?: string;

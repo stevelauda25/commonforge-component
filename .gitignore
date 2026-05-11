@@ -5,3 +5,9 @@ dist
 .vite
 .turbo
 .cache
+.superpowers
+
+# Secrets — NEVER commit
+.env
+.env.local
+.env.*.local

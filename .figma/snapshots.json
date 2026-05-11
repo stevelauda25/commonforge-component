@@ -1,12 +1,24 @@
 {
   "version": 1,
-  "syncedAt": "2026-05-01T04:56:04.437Z",
+  "syncedAt": "2026-05-11T06:58:37.560Z",
   "components": {
     "button": {
-      "hash": "a8f441ae5c7de92f5f475d6602ec459e3c911ae0da9fb0419ee6aa701ec04d35",
-      "varCount": 38,
-      "syncedAt": "2026-05-01T04:56:04.437Z",
+      "hash": "d0cc20bb63884a1ed218353270188dacfc126784a4b74f3164c7819a5bb4548c",
+      "varCount": 39,
+      "syncedAt": "2026-05-11T06:58:37.560Z",
       "nodeId": "267:355"
+    },
+    "checkbox": {
+      "hash": "41539d9e7cbcd633329147419735b6527f621a92933406dcff3c3c2cac8c7747",
+      "varCount": 9,
+      "syncedAt": "2026-05-11T05:44:52.665Z",
+      "nodeId": "2351:151"
+    },
+    "search-input": {
+      "hash": "20973ffa83bf2d4ea669932ef26954900b734bcd94be6c5e4d4849947fa8e8bc",
+      "varCount": 13,
+      "syncedAt": "2026-05-11T05:44:52.665Z",
+      "nodeId": "2346:404"
     }
   }
 }

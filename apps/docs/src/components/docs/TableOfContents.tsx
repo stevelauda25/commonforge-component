@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { cn } from '@pod/ui';
+import { cn } from 'pod-test-ui';
 
 interface Heading {
   id: string;

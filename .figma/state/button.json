@@ -295,7 +295,7 @@
       "strokes": [
         {
           "type": "SOLID",
-          "color": "rgb(22, 163, 74, a=1)"
+          "color": "rgb(38, 13, 14, a=1)"
         }
       ],
       "strokeWeight": 1,
@@ -322,8 +322,11 @@
         "paddingTop": "10:1227",
         "paddingRight": "10:1227",
         "paddingBottom": "10:1227",
+        "fills": [
+          "16:853"
+        ],
         "strokes": [
-          "16:900"
+          "17:1851"
         ]
       },
       "childCount": 3,
@@ -433,7 +436,7 @@
       "strokes": [
         {
           "type": "SOLID",
-          "color": "rgb(22, 163, 74, a=1)"
+          "color": "rgb(38, 13, 14, a=1)"
         }
       ],
       "strokeWeight": 1,
@@ -464,7 +467,7 @@
           "16:853"
         ],
         "strokes": [
-          "16:900"
+          "17:1851"
         ]
       },
       "childCount": 3,
@@ -1108,7 +1111,12 @@
     },
     "Type=Outline, State=Hover, Size=Large, Icon Only=False": {
       "type": "COMPONENT",
-      "fills": [],
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(28, 28, 31, a=1)"
+        }
+      ],
       "strokes": [
         {
           "type": "SOLID",
@@ -1139,6 +1147,9 @@
         "paddingTop": "10:1236",
         "paddingRight": "10:1232",
         "paddingBottom": "10:1236",
+        "fills": [
+          "13:1340"
+        ],
         "strokes": [
           "17:1211"
         ]
@@ -1270,7 +1281,12 @@
     },
     "Type=Outline, State=Hover, Size=Medium, Icon Only=False": {
       "type": "COMPONENT",
-      "fills": [],
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(28, 28, 31, a=1)"
+        }
+      ],
       "strokes": [
         {
           "type": "SOLID",
@@ -1301,6 +1317,9 @@
         "paddingTop": "10:1236",
         "paddingRight": "10:1236",
         "paddingBottom": "10:1236",
+        "fills": [
+          "13:1340"
+        ],
         "strokes": [
           "17:1211"
         ]
@@ -1432,7 +1451,12 @@
     },
     "Type=Outline, State=Hover, Size=Small, Icon Only=False": {
       "type": "COMPONENT",
-      "fills": [],
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(28, 28, 31, a=1)"
+        }
+      ],
       "strokes": [
         {
           "type": "SOLID",
@@ -1463,6 +1487,9 @@
         "paddingTop": "10:1227",
         "paddingRight": "10:1227",
         "paddingBottom": "10:1227",
+        "fills": [
+          "13:1340"
+        ],
         "strokes": [
           "17:1211"
         ]
@@ -1594,7 +1621,12 @@
     },
     "Type=Outline, State=Hover, Size=XSmall, Icon Only=False": {
       "type": "COMPONENT",
-      "fills": [],
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(28, 28, 31, a=1)"
+        }
+      ],
       "strokes": [
         {
           "type": "SOLID",
@@ -1625,6 +1657,9 @@
         "paddingTop": "10:1234",
         "paddingRight": "10:1227",
         "paddingBottom": "10:1234",
+        "fills": [
+          "13:1340"
+        ],
         "strokes": [
           "17:1211"
         ]

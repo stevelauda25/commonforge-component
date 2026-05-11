@@ -69,6 +69,12 @@ export const preset: Partial<Config> = {
 
         // Neutral overlay (for modal scrims etc.)
         overlay: rgbVar('overlay'),
+
+        // Experimental — Figma-introduced colors not yet promoted to brand
+        experiment: {
+          'stroke-dark': rgbVar('experiment-stroke-dark'),
+          'zinc-700':    rgbVar('experiment-zinc-700'),
+        },
       },
 
       borderRadius: {

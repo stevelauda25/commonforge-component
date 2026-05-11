@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { cn } from '@pod/ui';
+import { cn } from 'pod-test-ui';
 import type { RouteEntry } from '../../lib/routes.js';
 import { canonicalExamples } from './canonical-examples.js';
 

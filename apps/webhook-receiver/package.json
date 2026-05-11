@@ -1,0 +1,18 @@
+{
+  "name": "webhook-receiver",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Figma LIBRARY_PUBLISH webhook receiver. Verifies passcode, dispatches repository_dispatch to GitHub.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@octokit/auth-app": "^7.1.1",
+    "@octokit/request": "^9.1.3"
+  },
+  "devDependencies": {
+    "@vercel/node": "^5.0.0",
+    "typescript": "^5.5.3"
+  }
+}

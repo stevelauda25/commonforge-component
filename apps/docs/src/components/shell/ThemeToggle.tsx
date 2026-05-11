@@ -1,5 +1,5 @@
 import { Moon, Sun } from 'lucide-react';
-import { Button } from '@pod/ui';
+import { Button } from 'pod-test-ui';
 import { useTheme } from '../../lib/theme.js';
 
 export function ThemeToggle() {

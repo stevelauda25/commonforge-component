@@ -6,6 +6,16 @@
       "slug": "button",
       "nodeId": "267:355",
       "status": "ready"
+    },
+    {
+      "slug": "checkbox",
+      "nodeId": "2351:151",
+      "status": "ready"
+    },
+    {
+      "slug": "search-input",
+      "nodeId": "2346:404",
+      "status": "ready"
     }
   ]
 }
