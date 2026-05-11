@@ -93,9 +93,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           // Experimental: Outline/Hover bg = #1c1c1f (zinc/700) for non-icon-only sizes.
           variant === 'outline' && !iconOnly &&
             'hover:bg-experiment-zinc-700',
-          // Experimental: Primary/Default/Large non-icon-only bg = #1f71ff (primary-test-500). Single Figma variant.
-          variant === 'primary' && size === 'lg' && !iconOnly &&
-            '!bg-experiment-primary-test',
+          // NOTE: Figma had primary-test-500 (#1f71ff) override on Primary/Default/Large
+          // variant. Removed 2026-05-11 — consumer feedback: experiment should NOT
+          // affect production rendering until designer promotes it explicitly.
+          // Token `--color-experiment-primary-test` retained in theme.css for future
+          // opt-in use; just no active override here.
           className,
         )}
         {...rest}
