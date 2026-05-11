@@ -10,3 +10,14 @@ dist
 .env
 .env.local
 .env.*.local
+
+# Per-user AI agent / IDE configs (never standardized across team)
+.claude/scheduled_tasks.lock
+.codex/
+.cursor/
+.gemini/
+.vscode/
+.zed/
+.mcp.json
+opencode.json
+config/
