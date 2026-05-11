@@ -93,9 +93,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           // Experimental: Outline/Hover bg = #1c1c1f (zinc/700) for non-icon-only sizes.
           variant === 'outline' && !iconOnly &&
             'hover:bg-experiment-zinc-700',
-          // Primary/Hover bg = danger-hover (#991b1b) for non-icon-only sizes (sourced from sync-figma).
-          variant === 'primary' && !iconOnly &&
-            'hover:bg-danger-hover',
           // Experimental: Primary/Default/Large non-icon-only bg = #1f71ff (primary-test-500). Single Figma variant.
           variant === 'primary' && size === 'lg' && !iconOnly &&
             '!bg-experiment-primary-test',

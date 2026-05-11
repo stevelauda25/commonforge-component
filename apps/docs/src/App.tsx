@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import { Agentation } from 'agentation';
 import { Sidebar } from './components/shell/Sidebar.js';
 import { SidebarDrawer } from './components/shell/SidebarDrawer.js';
 import { Topbar } from './components/shell/Topbar.js';
@@ -19,6 +20,7 @@ export default function App() {
           <Outlet />
         </main>
       </div>
+      {import.meta.env.DEV && <Agentation />}
     </div>
   );
 }

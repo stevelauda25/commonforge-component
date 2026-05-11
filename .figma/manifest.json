@@ -30,6 +30,13 @@
       "status": "ready",
       "docsName": "Elevation",
       "docsRoute": "/foundations/elevation"
+    },
+    {
+      "slug": "foundation-spacing",
+      "nodeId": "2360:239",
+      "status": "ready",
+      "docsName": "Spacing",
+      "docsRoute": "/foundations/spacing"
     }
   ]
 }

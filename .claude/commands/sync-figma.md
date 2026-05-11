@@ -131,6 +131,32 @@ ALREADY appear in the dictionary. No new IDs = no new tokens = cache fresh.
 **Otherwise**, FULL REPLACE `.figma/variables/<slug>.json` (per-component
 file) with the result of `get_variable_defs`. Also bump `syncedAt`.
 
+**Mandatory post-process — Font family safety coerce (idempotent):**
+
+Before writing the variables file, run this sed-style transform on EVERY value:
+
+```
+Font(family: "SF Pro", ...)  →  Font(family: "Inter", ...)
+Font(family: "SF-Pro", ...)  →  Font(family: "Inter", ...)
+```
+
+**Status (2026-05-11):** Designer has migrated Figma composites to Inter. This
+rule is currently a **no-op** in practice — every sync passes through unchanged.
+
+**Why we keep it as a guard:** If designer accidentally introduces SF Pro again
+in a new composite token, the rule catches it before it pollutes the snapshot
+dictionary. Cost = zero (idempotent string scan). Benefit = standardization
+enforcement at sync-time.
+
+When you can finally delete this rule: after 6 weeks with zero coercion triggers
+(track via grep below), the safety guard isn't earning its keep. Until then, keep.
+
+Track via:
+
+```bash
+grep -r "SF Pro\|SF-Pro" .figma/variables/  # should be empty post-coercion
+```
+
 Per-component files prevent foundation tokens (radius/shadow) from being
 overwritten when /sync-figma button refreshes button-scoped variables.
 `_lib.mjs loadVariableDictionary()` merges ALL files in `.figma/variables/`.
@@ -197,6 +223,46 @@ Walk every Figma variable and decide:
 If you ever find yourself thinking "should I just update accent-default to
 match Figma's blue?" — STOP. The answer is no. Always experiment-* + targeted
 override.
+
+#### Sacred token namespace map — ENFORCEABLE BOUNDARY
+
+Each sacred namespace has a STRICT semantic role. Cross-namespace mapping is
+**FORBIDDEN**, even when hex values coincidentally look similar.
+
+| Figma variable prefix | ONLY maps to | NEVER maps to |
+|---|---|---|
+| `components/<x>/surface-primary*` | `accent-default`, `accent-hover`, `accent-active`, `accent-subtle` | `danger-*`, `warning-*`, `success-*`, `info-*` |
+| `components/<x>/text-primary*` / `icon-primary*` | `accent-fg`, `text-text-*` | `danger-fg`, sacred siblings |
+| `components/<x>/surface-error*` | `danger-default`, `danger-hover`, `danger-active`, `danger-subtle` | `accent-*`, `warning-*` |
+| `components/<x>/surface-secondary*` / `text-secondary*` | `text-text-secondary`, `bg-surface`, `bg-muted` | sacred brand namespaces |
+
+**Why this matters (a real incident, 2026-05-11):**
+
+A previous sync mapped `components/button/surface-primary-hover` (Figma value
+`#15803d`, which equals `accent-hover` value) to `hover:bg-danger-hover`
+(`#991b1b`, completely different color, wrong namespace). Result: primary
+button hover rendered MAROON in production. The mistake passed code review
+because the override "looked like a one-line surgical fix" — but it crossed
+the accent → danger boundary. Sacred token boundaries are about SEMANTIC role,
+not just protecting hex values.
+
+**Decision protocol when uncertain:**
+
+1. Read the Figma variable name. Identify its semantic role (`primary` →
+   accent namespace; `error` → danger namespace; `secondary` → neutral).
+2. Pick the POD token from the SAME namespace. Never reach across.
+3. If the Figma hex doesn't match any accent-* / danger-* / etc value, that
+   means it's a NEW color — go to `experiment-*` rule above.
+4. If you ever type `hover:bg-danger-*` while editing a `variant === 'primary'`
+   override (or `hover:bg-accent-*` for `variant === 'error'`), STOP. Re-read
+   step 4. That edit is the symptom of a namespace violation.
+
+**Grep-able guard** — run before commit:
+
+```bash
+grep -nE "variant === 'primary'.*danger-|variant === 'error'.*accent-" packages/ui/src/**/*.tsx
+# Expected output: empty. Any match = namespace violation.
+```
 
 ### 5. Apply edits — granular, one shot
 

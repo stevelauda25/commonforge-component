@@ -1,17 +1,17 @@
 {
   "version": 1,
-  "syncedAt": "2026-05-04T09:52:07.955Z",
+  "syncedAt": "2026-05-11T13:22:44.947Z",
   "components": {
     "button": {
-      "hash": "a681a37a65a1df2c7348916ea3607790ea3f385b69db3c0ef7c83465605b0511",
+      "hash": "37ea52971afccd831de2112e44020a43ac31d7f1d1111ad4338e7f83dd08de92",
       "varCount": 40,
-      "syncedAt": "2026-05-04T09:52:07.955Z",
+      "syncedAt": "2026-05-11T13:22:44.947Z",
       "nodeId": "267:355"
     },
     "search": {
-      "hash": "20973ffa83bf2d4ea669932ef26954900b734bcd94be6c5e4d4849947fa8e8bc",
+      "hash": "5cf03b8a99a7d654c56cf1820cc1f4b2ba9499cd87f1d457c2b9a24333c7a47c",
       "varCount": 13,
-      "syncedAt": "2026-05-04T08:17:47.818Z",
+      "syncedAt": "2026-05-11T13:22:01.568Z",
       "nodeId": "2346:404"
     },
     "foundation-radius": {
@@ -27,10 +27,16 @@
       "nodeId": "2352:159"
     },
     "checkbox": {
-      "hash": "41539d9e7cbcd633329147419735b6527f621a92933406dcff3c3c2cac8c7747",
+      "hash": "2302beb7333c12d6d995a9f9fbd19757af1a22182e3aa20cc16e0a5c1f2276e6",
       "varCount": 9,
-      "syncedAt": "2026-05-04T09:28:39.343Z",
+      "syncedAt": "2026-05-11T13:17:36.629Z",
       "nodeId": "2351:151"
+    },
+    "foundation-spacing": {
+      "hash": "c1dba83794063f4deded73cbb480e8fd02e2d88ab4031697065cc0c101e0bf61",
+      "varCount": 43,
+      "syncedAt": "2026-05-04T12:49:49.928Z",
+      "nodeId": "2360:239"
     }
   }
 }

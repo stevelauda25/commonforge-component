@@ -7,13 +7,13 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(31, 113, 255, a=1)"
+          "color": "rgb(21, 128, 61, a=1)"
         }
       ],
       "strokes": [
         {
           "type": "SOLID",
-          "color": "rgb(38, 13, 14, a=1)"
+          "color": "rgb(22, 163, 74, a=1)"
         }
       ],
       "strokeWeight": 1,
@@ -41,10 +41,10 @@
         "paddingRight": "10:1232",
         "paddingBottom": "10:1236",
         "fills": [
-          "2304:159"
+          "16:853"
         ],
         "strokes": [
-          "17:1851"
+          "16:900"
         ]
       },
       "childCount": 3,
@@ -1055,7 +1055,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(153, 27, 27, a=1)"
+          "color": "rgb(21, 128, 61, a=1)"
         }
       ],
       "strokes": [
@@ -1096,7 +1096,7 @@
         "paddingRight": "10:1232",
         "paddingBottom": "10:1236",
         "fills": [
-          "17:1843"
+          "16:854"
         ],
         "strokes": [
           "16:905"
@@ -1225,7 +1225,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(153, 27, 27, a=1)"
+          "color": "rgb(21, 128, 61, a=1)"
         }
       ],
       "strokes": [
@@ -1266,7 +1266,7 @@
         "paddingRight": "10:1236",
         "paddingBottom": "10:1236",
         "fills": [
-          "17:1843"
+          "16:854"
         ],
         "strokes": [
           "16:905"
@@ -1395,7 +1395,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(153, 27, 27, a=1)"
+          "color": "rgb(21, 128, 61, a=1)"
         }
       ],
       "strokes": [
@@ -1436,7 +1436,7 @@
         "paddingRight": "10:1227",
         "paddingBottom": "10:1227",
         "fills": [
-          "17:1843"
+          "16:854"
         ],
         "strokes": [
           "16:905"
@@ -1565,7 +1565,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(153, 27, 27, a=1)"
+          "color": "rgb(21, 128, 61, a=1)"
         }
       ],
       "strokes": [
@@ -1606,7 +1606,7 @@
         "paddingRight": "10:1227",
         "paddingBottom": "10:1234",
         "fills": [
-          "17:1843"
+          "16:854"
         ],
         "strokes": [
           "16:905"

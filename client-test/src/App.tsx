@@ -9,6 +9,9 @@ import {
   Zap,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Agentation } from 'agentation';
+import { AddIncomeForm } from './components/AddIncomeForm.js';
+import { enrichAgentationOutput } from './lib/pod-agentation.js';
 
 function ThemeToggle() {
   const [dark, setDark] = useState(false);
@@ -94,7 +97,7 @@ function Header() {
 
 function Hero() {
   const [email, setEmail] = useState('');
-  const [agree, setAgree] = useState<boolean | 'indeterminate'>(false);
+  const [agree, setAgree] = useState<boolean | 'indeterminate'>(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | undefined>();
 
@@ -222,6 +225,25 @@ export default function App() {
     <div className="min-h-screen bg-canvas text-text-primary">
       <Header />
       <Hero />
+      <AddIncomeForm />
+      {import.meta.env.DEV && (
+        <Agentation
+          onCopy={(_markdown) => {
+            // No-op — copyToClipboard handles the default. We override below.
+          }}
+          copyToClipboard={false}
+          onSubmit={(_output, annotations) => {
+            const enriched = enrichAgentationOutput(annotations);
+            navigator.clipboard.writeText(enriched);
+            console.info('[POD-Agentation] Enriched output copied:', enriched);
+          }}
+          onAnnotationAdd={(annotation) => {
+            // Also copy single annotation enriched on add — convenience for owner workflow.
+            const enriched = enrichAgentationOutput([annotation]);
+            navigator.clipboard.writeText(enriched);
+          }}
+        />
+      )}
     </div>
   );
 }

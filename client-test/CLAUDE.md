@@ -265,6 +265,76 @@ Refer to `CLIENT-PROMPT.md` in this directory. It is the canonical setup guide (
 
 ---
 
+## Source of Truth Hierarchy (BACA SEBELUM EKSEKUSI APA PUN)
+
+Library versi-versi bisa berbeda. File ini (`CLAUDE.md`) bisa stale. **Untuk daftar component, prop, token, dan rule yang aktual di versi terinstall:**
+
+```bash
+cat node_modules/pod-test-ui/AGENTS.md
+```
+
+File itu di-ship dalam tarball npm. Setiap `npm update pod-test-ui` di project ini, manifest itu auto-update. Tidak perlu manual edit CLAUDE.md ini saat library rilis component baru.
+
+**Priority order saat ada konflik info:**
+
+1. `node_modules/pod-test-ui/AGENTS.md` — ground truth (versi-spesifik, auto-sync)
+2. `node_modules/pod-test-ui/dist/index.d.ts` — TS exports (kalau AGENTS.md missing/stale)
+3. `CLAUDE.md` (this file) — rule generik consumer-side (stack, dark mode, dll)
+4. `CLIENT-PROMPT.md` — setup detail (Tailwind v3, PostCSS, dll)
+5. `COMPONENT-RECIPES.md` — pattern siap pakai
+6. External web docs — paling terakhir, sering stale
+
+**Aturan praktisnya:**
+
+- Saat user minta "pakai component X" → cek dulu `AGENTS.md` apakah X ada.
+- Saat user mention token name → cek dulu `AGENTS.md` token list — yang tertulis di file ini bisa basi.
+- Saat `npm update` di-jalankan → cukup re-baca `AGENTS.md`, gak perlu manual sync CLAUDE.md.
+
+---
+
+## Agentation Feedback Flow
+
+This project has `agentation` (visual feedback overlay) wired into `App.tsx`. Owner non-dev klik element di browser → tulis intent → output disalin ke clipboard sudah ter-enrich dengan POD context lewat `src/lib/pod-agentation.ts`.
+
+**Saat user paste output agentation ke kamu**, output-nya akan punya format:
+
+```markdown
+# Agentation Feedback — POD-enriched
+
+You are editing a project that uses **POD Design System** (...)
+**Hard rules** (zero exceptions — see `client-test/CLAUDE.md`):
+- Every UI change must use POD primitives + semantic tokens.
+- ...
+
+---
+
+### Annotation: Button
+**User intent:** ganti ke outline
+
+**POD context:** Target is `<Button>` from `pod-test-ui` (a tracked primitive).
+→ Edit MUST keep this as `<Button>`. Don't replace with native `<button>`/`<input>`.
+→ Available props/variants: see `node_modules/pod-test-ui/AGENTS.md`.
+
+**Location:** `body > main > section > div > button`
+**Current classes:** `...`
+```
+
+**Cara handle:**
+
+1. Parse intent dari `**User intent:**` line — natural language seperti "ganti ke outline", "warna lebih lembut", "tambah icon kanan", dll.
+2. **Cek `POD context` line:**
+   - Kalau target POD primitive → translate intent ke prop change pada element existing. Don't rebuild from scratch.
+   - Kalau target local component → translate ke className/prop change pakai POD tokens (no hex).
+3. **Cek `node_modules/pod-test-ui/AGENTS.md`** untuk:
+   - Daftar variant/size yang valid untuk component itu
+   - Token names untuk styling adjustment
+4. **Gunakan intent map** di AGENTS.md untuk natural language → API call. Misal "ganti ke outline" → `variant="outline"` (POD pakai "outline", bukan "secondary").
+5. Locate file → pakai `Location` (DOM path) + `nearbyText` + `Current classes` untuk grep file source. Agentation tidak kasih file path eksplisit; kamu cari sendiri via grep di `src/`.
+6. Apply minimum edit. Don't refactor surrounding code unless intent mengharuskan.
+7. Report ke user: file yang di-edit + line, dan terjemahan intent → API change (misal "intent 'ganti ke outline' → `variant='outline'` di Button.tsx:42").
+
+---
+
 ## Common Mistakes to Watch For
 
 When reviewing existing code (yours or others') in this project, flag and fix any of these:

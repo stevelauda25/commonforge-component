@@ -4,7 +4,7 @@
   "fileKey": "TCd9exLXTUMciyw1VqnPSK",
   "nodeId": "267:355",
   "syncedAt": "2026-05-04T17:00:00Z",
-  "comment": "Auto-populated by /sync-figma button via MCP get_variable_defs. FULL REPLACE on each sync.",
+  "comment": "Auto-populated by /sync-figma button via MCP get_variable_defs. FULL REPLACE on each sync. Refreshed 2026-05-11 — Figma now reports Inter natively (designer migration complete), auto-coerce rule is no-op.",
   "variables": {
     "components/button/icon-primary": "#fafafa",
     "components/button/text-primary": "#fafafa",
@@ -41,6 +41,7 @@
     "components/button/stroke-error-disabled": "#7f1d1d",
     "primary-test-500": "#1f71ff",
     "zinc/700": "#1c1c1f",
+    "zinc/950": "#09090b",
     "padding-3xs": "2",
     "padding-2xs": "4",
     "paading-xs": "6",
@@ -48,7 +49,8 @@
     "padding-m": "10",
     "radius-m": "8",
     "radius-lg": "10",
-    "text-sm/medium": "Font(family: \"SF Pro\", style: Medium, size: 14, weight: 510, lineHeight: 20, letterSpacing: 0)",
+    "text-sm/medium": "Font(family: \"Inter\", style: Medium, size: 14, weight: 500, lineHeight: 20, letterSpacing: 0)",
+    "heading/heading-sm": "Font(family: \"Inter\", style: Medium, size: 16, weight: 500, lineHeight: 24, letterSpacing: 0)",
     "button-inner-shadow": "Effect(type: INNER_SHADOW, color: #C2FFCB40, offset: (0, 0), radius: 4, spread: 0)",
     "button-hover": "Effect(type: INNER_SHADOW, color: #C2FFCB40, offset: (0, 0), radius: 4, spread: 0); Effect(type: INNER_SHADOW, color: #C2FFCB40, offset: (0, 0), radius: 12, spread: 4)"
   }
