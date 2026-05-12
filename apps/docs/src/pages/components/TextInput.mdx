@@ -1,12 +1,28 @@
 import { useState } from 'react';
 import { TextInput } from 'pod-test-ui';
-import { Circle } from 'lucide-react';
+import { Circle, Mail, Search } from 'lucide-react';
 
 <PageHeader
   title="Text Input"
   description="Single-line text field with label, hint, and error support."
   status="ready"
 />
+
+## Installation
+
+### Barrel
+
+```tsx
+import { TextInput } from 'pod-test-ui';
+```
+
+### Granular
+
+```tsx
+import { TextInput } from 'pod-test-ui/text-input';
+```
+
+## Usage
 
 <PreviewCard>
   <TextInput
@@ -22,9 +38,6 @@ import { Circle } from 'lucide-react';
 </PreviewCard>
 
 ```tsx
-import { TextInput } from 'pod-test-ui';
-import { Circle } from 'lucide-react';
-
 <TextInput
   label="Label"
   required
@@ -37,9 +50,35 @@ import { Circle } from 'lucide-react';
 />
 ```
 
-## Size
+## Examples
 
-Two sizes: `md` (default, 12px padding) and `sm` (8px padding). Input text size stays constant; only padding shifts.
+### Variants
+
+Five semantic variants — each sets the HTML `type`, default adornments, and placeholder. `default` is bare; `password` includes a show/hide toggle; `date` uses native `type="date"`; `phone` and `amount` render visual dropdown stubs for country / currency (real selection lands when the Select primitive ships).
+
+<PreviewCard>
+  <div className="flex flex-col gap-4 w-[300px]">
+    <TextInput variant="default" label="Default" placeholder="Placeholder text..." />
+    <TextInput variant="password" label="Password" />
+    <TextInput variant="phone" label="Phone Number" />
+    <TextInput variant="date" label="Date" />
+    <TextInput variant="amount" label="Amount" />
+  </div>
+</PreviewCard>
+
+```tsx
+<TextInput variant="default"  label="Default"      placeholder="Placeholder text..." />
+<TextInput variant="password" label="Password" />
+<TextInput variant="phone"    label="Phone Number" />
+<TextInput variant="date"     label="Date" />
+<TextInput variant="amount"   label="Amount" />
+```
+
+Pass `leftIcon` or `rightIcon` to override the variant's default adornments. Pass `placeholder` to override the default placeholder.
+
+### Sizes
+
+Two sizes from Figma: `md` (12px padding) and `sm` (8px padding). Input text size is constant; only padding shifts.
 
 <PreviewCard>
   <div className="flex flex-col gap-4 w-[300px]">
@@ -53,14 +92,15 @@ Two sizes: `md` (default, 12px padding) and `sm` (8px padding). Input text size 
 <TextInput label="Small"  size="sm" placeholder="Placeholder text..." />
 ```
 
-## States
+### States
+
+Static states: `placeholder`, `filled`, `disabled`. Interactive states (`hover`, `focused`) are driven by the browser.
 
 <PreviewCard>
   <div className="flex flex-col gap-4 w-[300px]">
     <TextInput label="Placeholder" placeholder="Enter text..." />
     <TextInput label="Filled" defaultValue="Hello world" />
     <TextInput label="Disabled" placeholder="Cannot edit" disabled />
-    <TextInput label="Error" defaultValue="bad input" error="This field is invalid." />
   </div>
 </PreviewCard>
 
@@ -68,75 +108,170 @@ Two sizes: `md` (default, 12px padding) and `sm` (8px padding). Input text size 
 <TextInput label="Placeholder" placeholder="Enter text..." />
 <TextInput label="Filled" defaultValue="Hello world" />
 <TextInput label="Disabled" placeholder="Cannot edit" disabled />
-<TextInput label="Error" defaultValue="bad input" error="This field is invalid." />
 ```
 
-## With description
+### Destructive (Error)
 
-Label supports a sublabel string and an info icon via `labelInfo`.
+Setting `error` replaces the hint, switches the border to `danger`, and sets `aria-invalid`.
 
 <PreviewCard>
   <div className="flex flex-col gap-4 w-[300px]">
-    <TextInput label="Email" sublabel="(Optional)" placeholder="you@example.com" />
-    <TextInput label="API Key" labelInfo placeholder="sk-..." hint="Find this in your dashboard settings." />
+    <TextInput
+      label="Email"
+      defaultValue="not-an-email"
+      error="Enter a valid email address."
+    />
+    <TextInput
+      label="Username"
+      size="sm"
+      defaultValue="ab"
+      error="Must be at least 3 characters."
+    />
   </div>
 </PreviewCard>
 
 ```tsx
-<TextInput label="Email" sublabel="(Optional)" placeholder="you@example.com" />
-<TextInput label="API Key" labelInfo placeholder="sk-..." hint="Find this in your dashboard settings." />
+<TextInput label="Email" defaultValue="not-an-email" error="Enter a valid email address." />
+<TextInput label="Username" size="sm" defaultValue="ab" error="Must be at least 3 characters." />
 ```
 
-## Error
+### Label affordances
 
-Error message replaces the hint and applies destructive border styling.
+The label slot supports a required asterisk, a muted sublabel, and an optional info icon — each independent.
 
 <PreviewCard>
-  <TextInput
-    label="Username"
-    required
-    defaultValue="ab"
-    error="Username must be at least 3 characters."
-  />
+  <div className="flex flex-col gap-4 w-[300px]">
+    <TextInput label="Required" required placeholder="Required field" />
+    <TextInput label="Optional" sublabel="(Optional)" placeholder="Optional field" />
+    <TextInput label="With info" labelInfo placeholder="Has an info icon" />
+    <TextInput label="All three" required sublabel="(Optional)" labelInfo placeholder="..." />
+  </div>
 </PreviewCard>
 
 ```tsx
-<TextInput
-  label="Username"
-  required
-  defaultValue="ab"
-  error="Username must be at least 3 characters."
-/>
+<TextInput label="Required" required placeholder="Required field" />
+<TextInput label="Optional" sublabel="(Optional)" placeholder="Optional field" />
+<TextInput label="With info" labelInfo placeholder="Has an info icon" />
+<TextInput label="All three" required sublabel="(Optional)" labelInfo placeholder="..." />
 ```
 
-## Props
+### With icons
+
+`leftIcon` and `rightIcon` accept any `ReactNode`. They are decorative (`aria-hidden`).
+
+<PreviewCard>
+  <div className="flex flex-col gap-4 w-[300px]">
+    <TextInput label="Email" leftIcon={<Mail className="h-4 w-4" />} placeholder="you@pod.com" />
+    <TextInput label="Search" leftIcon={<Search className="h-4 w-4" />} placeholder="Search…" />
+  </div>
+</PreviewCard>
+
+```tsx
+<TextInput label="Email"  leftIcon={<Mail className="h-4 w-4" />}   placeholder="you@pod.com" />
+<TextInput label="Search" leftIcon={<Search className="h-4 w-4" />} placeholder="Search…" />
+```
+
+### Bare input (no label)
+
+`label` is optional — omit it for inline / compact layouts.
+
+<PreviewCard>
+  <div className="w-[300px]">
+    <TextInput placeholder="No label, just input" />
+  </div>
+</PreviewCard>
+
+```tsx
+<TextInput placeholder="No label, just input" />
+```
+
+### Input types
+
+Pass any HTML `type` (`text`, `email`, `password`, `number`, `url`, …). The visual stays consistent; the browser handles validation and keyboard semantics.
+
+<PreviewCard>
+  <div className="flex flex-col gap-4 w-[300px]">
+    <TextInput label="Email"    type="email"    placeholder="you@pod.com" />
+    <TextInput label="Password" type="password" placeholder="••••••••" />
+    <TextInput label="Number"   type="number"   placeholder="0" />
+  </div>
+</PreviewCard>
+
+```tsx
+<TextInput label="Email"    type="email"    placeholder="you@pod.com" />
+<TextInput label="Password" type="password" placeholder="••••••••" />
+<TextInput label="Number"   type="number"   placeholder="0" />
+```
+
+### Controlled
+
+Pass `value` + `onChange` for controlled mode.
+
+<PreviewCard>
+  <ControlledExample />
+</PreviewCard>
+
+```tsx
+function ControlledExample() {
+  const [value, setValue] = useState('');
+  return (
+    <TextInput
+      label="Controlled"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      hint={`Length: ${value.length}`}
+    />
+  );
+}
+```
+
+export function ControlledExample() {
+  const [value, setValue] = useState('');
+  return (
+    <div className="w-[300px]">
+      <TextInput
+        label="Controlled"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        hint={`Length: ${value.length}`}
+      />
+    </div>
+  );
+}
+
+## API Reference
 
 | Prop | Type | Default | Notes |
 |------|------|---------|-------|
 | `label` | `string` | — | Visible label text above the input. |
 | `required` | `boolean` | `false` | Shows a red asterisk next to the label. Also sets the native `required` attribute. |
-| `sublabel` | `string` | — | Grey text after the label, e.g. "(Optional)". |
+| `sublabel` | `string` | — | Muted text after the label, e.g. `"(Optional)"`. |
 | `labelInfo` | `boolean` | `false` | Renders a small info icon next to the label. |
 | `hint` | `string` | — | Help text below the input. Hidden when `error` is set. |
-| `error` | `string` | — | Error message — replaces hint, turns border red, sets `aria-invalid`. |
+| `error` | `string` | — | Error message — replaces `hint`, applies destructive border, sets `aria-invalid`. |
 | `leftIcon` | `ReactNode` | — | Icon slot before the input text. |
 | `rightIcon` | `ReactNode` | — | Icon slot after the input text. |
 | `size` | `'sm' \| 'md'` | `'md'` | Input padding size. `md` = 12px, `sm` = 8px. |
-| `type` | `string` | `'text'` | HTML input type (`text`, `email`, `password`, etc.). |
+| `variant` | `'default' \| 'password' \| 'phone' \| 'date' \| 'amount'` | `'default'` | Semantic variant — sets HTML type + default adornments + placeholder. |
+| `type` | `string` | `'text'` | HTML input type. Variant takes precedence for `password`/`phone`/`date`/`amount`. |
 | `disabled` | `boolean` | `false` | Disables the input and dims the container. |
 
 Extends all native `<input>` HTMLAttributes (minus `size` and `type` which are overridden).
 
 ## Accessibility
 
-- Native `<input>` under the hood — keyboard, form participation, and screen-reader support come for free.
-- `error` sets `aria-invalid="true"` and the error message is linked via `aria-describedby`.
-- `hint` is linked via `aria-describedby` when no error is present.
-- Focus ring uses `focus-within` on the container so clicking icons also activates the ring.
-- `leftIcon` / `rightIcon` are marked `aria-hidden` — they are decorative.
+### Label association
 
-## Things to watch
+When `label` is provided, the component generates an `id` (via `useId`) and renders the visible label tied to the `<input>`. Pass your own `id` to override.
 
-- This is a controlled-friendly but uncontrolled-compatible component. For controlled mode, pass `value` + `onChange` as usual.
-- `error` takes precedence over `hint` — when both are provided, only the error message renders and is linked to `aria-describedby`.
-- Icons are decorative (`aria-hidden`). If an icon conveys meaning (e.g. a status indicator), wrap it and add your own `aria-label` on the parent.
+### Error association
+
+`error` sets `aria-invalid="true"` on the input and links the error message via `aria-describedby`. When no error is present, `hint` is linked instead. Both cannot be active at once — `error` takes precedence.
+
+### Decorative icons
+
+`leftIcon`, `rightIcon`, and the `labelInfo` icon are `aria-hidden`. If an icon conveys meaning (e.g. a status indicator), wrap it and add your own `aria-label` on the parent.
+
+### Focus
+
+The container uses `focus-within` so clicking adjacent icons still activates the focus ring on the visible element.
