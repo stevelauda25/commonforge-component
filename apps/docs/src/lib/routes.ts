@@ -32,7 +32,6 @@ export const routes: RouteEntry[] = [
   { path: '/components/text-input',    label: 'Text Input',   category: 'component', status: 'ready',    description: 'Single-line text field with label, hint, and error support.', load: () => import('../pages/components/TextInput.mdx') },
 
   // Components — planned
-  { path: '/components/search-input', label: 'Search Input', category: 'component', status: 'planned', description: 'Filter / search text field.',     load: () => import('../pages/components/SearchInput.mdx') },
   { path: '/components/tooltip',      label: 'Tooltip',      category: 'component', status: 'planned', description: 'Contextual help on hover/focus.', load: () => import('../pages/components/Tooltip.mdx') },
   { path: '/components/badge',        label: 'Badge',        category: 'component', status: 'planned', description: 'Compact label for status, count, or category.', load: () => import('../pages/components/Badge.mdx') },
   { path: '/components/select',       label: 'Select',       category: 'component', status: 'planned', description: 'Dropdown picker for one of many options.',     load: () => import('../pages/components/Select.mdx') },

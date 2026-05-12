@@ -26,13 +26,12 @@
 |---|---|---|---|---|---|
 | `Button` | stable | `primary` · `outline` · `error` | `xs` · `sm` · `md` · `lg` | uncontrolled (default `type='button'`) | `/components/button` |
 | `Checkbox` | stable | — | — | **controlled only** (`checked` + `onCheckedChange`) | `/components/checkbox` |
-| `SearchInput` | stable | — | `sm` · `md` | **controlled only** (`value` + `onValueChange`) | `/components/search-input` |
 | `Tooltip` | stable | `default` · `info` · `warning` · `error` | — | n/a (wraps a focusable child) | `/components/tooltip` |
 
 **Utility export:** `cn(...args)` — Tailwind className composer dengan conflict resolution (`tailwind-merge` inside).
 
 ```tsx
-import { Button, Checkbox, SearchInput, Tooltip, cn } from 'pod-test-ui';
+import { Button, Checkbox, Tooltip, cn } from 'pod-test-ui';
 ```
 
 ## Component intent map (untuk natural-language → primitive)
@@ -47,7 +46,7 @@ Kalau user bilang… | Pakai…
 "loading button", "submitting" | `<Button loading>...</Button>` (auto-disabled + spinner)
 "checkbox", "multi-select", "select all", "agree to terms" | `<Checkbox>`
 "indeterminate", "partial select" | `<Checkbox checked="indeterminate">`
-"search", "filter input", "query box", "cari" | `<SearchInput>`
+"search", "filter input", "query box", "cari" | ❌ Belum ada. Build local.
 "tooltip", "hover help", "shortcut hint" | `<Tooltip>` (wraps a focusable element)
 "input text", "form field", "text box" | ❌ **Belum ada di pod-test-ui**. Build local pakai POD tokens (Rule 10 di consumer's CLAUDE.md)
 "modal", "dialog", "popup" | ❌ Belum ada. Build local.
@@ -99,7 +98,7 @@ Kalau user bilang… | Pakai…
 3. **Tidak ada `dark:` modifier.** Dark mode di-handle automatic by token swap saat `.dark` class aktif di `<html>`.
 4. **Tailwind v3 only.** Kalau muncul `@tailwindcss/postcss` di deps, refuse + suggest uninstall.
 5. **Sacred tokens never modified.** `accent-*`, `danger-*`, `warning-*`, `success-*`, `info-*`, `border-focus`, `shadow-glow-*-*` — tidak boleh diubah valuenya. Color baru → `experiment-<name>`.
-6. **Controlled-only components.** `Checkbox` dan `SearchInput` wajib pakai prop+callback. Tidak ada `defaultValue` / `defaultChecked`.
+6. **Controlled-only components.** `Checkbox` wajib pakai prop+callback. Tidak ada `defaultChecked`.
 7. **Tooltip target must be focusable.** Wrap `<Button>`, `<a>`, atau element dengan `tabIndex`. Tidak boleh wrap `<div>` / `<span>`.
 8. **Icon-only Button needs `aria-label`.** Tooltip content bukan accessible name.
 9. **Imports top-level.** `import { Button } from 'pod-test-ui'` — bukan subpath.

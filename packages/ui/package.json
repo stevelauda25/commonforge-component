@@ -20,11 +20,6 @@
       "import": "./dist/checkbox/index.mjs",
       "require": "./dist/checkbox/index.js"
     },
-    "./search-input": {
-      "types": "./dist/search-input/index.d.ts",
-      "import": "./dist/search-input/index.mjs",
-      "require": "./dist/search-input/index.js"
-    },
     "./text-input": {
       "types": "./dist/text-input/index.d.ts",
       "import": "./dist/text-input/index.mjs",

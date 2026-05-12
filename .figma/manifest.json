@@ -8,13 +8,6 @@
       "status": "ready"
     },
     {
-      "slug": "search",
-      "nodeId": "2346:404",
-      "status": "ready",
-      "docsName": "SearchInput",
-      "docsRoute": "/components/search-input"
-    },
-    {
       "slug": "checkbox",
       "nodeId": "2351:151",
       "status": "ready"
