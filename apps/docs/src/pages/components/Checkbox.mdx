@@ -3,39 +3,51 @@ import { Checkbox } from 'pod-test-ui';
 
 <PageHeader
   title="Checkbox"
-  description="Multi-select boolean input. Three values — off, on, indeterminate — with optional label, description, and error message."/>
+  description="Multi-select boolean input. Three values — off, on, indeterminate — with optional label, description, and error message."
+  status="ready"
+/>
+
+## Usage
 
 <PreviewCard>
-  <Checkbox checked={true} onCheckedChange={() => {}} label="I agree to the terms" />
+  <UsageExample />
 </PreviewCard>
 
 ```tsx
 import { Checkbox } from 'pod-test-ui';
 
-<Checkbox checked={true} onCheckedChange={setChecked} label="I agree to the terms" />
+const [accepted, setAccepted] = useState(false);
+
+<Checkbox checked={accepted} onCheckedChange={setAccepted} label="I agree to the terms" />
 ```
 
-## States
+## Examples
 
-Off, on, and indeterminate. Use `'indeterminate'` for "some children selected" parents in tree-style multi-selects.
+### States
+
+Off, on, and indeterminate. Use `'indeterminate'` for "some children selected" parents in tree-style multi-selects. `disabled` greys out the control and blocks pointer events — works in any state.
 
 <PreviewCard>
   <div className="flex flex-col gap-3">
     <Checkbox checked={false} onCheckedChange={() => {}} label="Off" />
     <Checkbox checked={true} onCheckedChange={() => {}} label="On" />
     <Checkbox checked="indeterminate" onCheckedChange={() => {}} label="Indeterminate" />
-    <Checkbox checked={true} onCheckedChange={() => {}} disabled label="Disabled (on)" />
     <Checkbox checked={false} onCheckedChange={() => {}} disabled label="Disabled (off)" />
+    <Checkbox checked={true} onCheckedChange={() => {}} disabled label="Disabled (on)" />
   </div>
 </PreviewCard>
 
 ```tsx
-<Checkbox checked={false} onCheckedChange={setChecked} label="Off" />
-<Checkbox checked={true} onCheckedChange={setChecked} label="On" />
+<Checkbox checked={false}         onCheckedChange={setChecked} label="Off" />
+<Checkbox checked={true}          onCheckedChange={setChecked} label="On" />
 <Checkbox checked="indeterminate" onCheckedChange={setChecked} label="Indeterminate" />
+<Checkbox checked={false} disabled label="Disabled (off)" />
+<Checkbox checked={true}  disabled label="Disabled (on)" />
 ```
 
-## With description
+### With description
+
+Help text under the label. Linked via `aria-describedby`.
 
 <PreviewCard>
   <Checkbox
@@ -55,7 +67,9 @@ Off, on, and indeterminate. Use `'indeterminate'` for "some children selected" p
 />
 ```
 
-## Error
+### Destructive (Error)
+
+Setting `error` replaces the description, switches the border to `danger`, and sets `aria-invalid`.
 
 <PreviewCard>
   <Checkbox
@@ -75,29 +89,98 @@ Off, on, and indeterminate. Use `'indeterminate'` for "some children selected" p
 />
 ```
 
-## Props
+### Bare (no label)
+
+Omit `label` and pass `aria-label` directly for inline / compact layouts (e.g. row selection in tables).
+
+<PreviewCard>
+  <Checkbox checked={true} onCheckedChange={() => {}} aria-label="Select row" />
+</PreviewCard>
+
+```tsx
+<Checkbox checked={selected} onCheckedChange={setSelected} aria-label="Select row" />
+```
+
+### Controlled
+
+The component is fully controlled — there's no internal state. Always pass `checked` and update it from `onCheckedChange`.
+
+<PreviewCard>
+  <ControlledExample />
+</PreviewCard>
+
+```tsx
+function ControlledExample() {
+  const [checked, setChecked] = useState(false);
+  return (
+    <Checkbox
+      checked={checked}
+      onCheckedChange={setChecked}
+      label="Subscribe to newsletter"
+      description={checked ? 'You are subscribed.' : 'Not subscribed.'}
+    />
+  );
+}
+```
+
+export function UsageExample() {
+  const [accepted, setAccepted] = useState(false);
+  return (
+    <Checkbox
+      checked={accepted}
+      onCheckedChange={setAccepted}
+      label="I agree to the terms"
+    />
+  );
+}
+
+export function ControlledExample() {
+  const [checked, setChecked] = useState(false);
+  return (
+    <Checkbox
+      checked={checked}
+      onCheckedChange={setChecked}
+      label="Subscribe to newsletter"
+      description={checked ? 'You are subscribed.' : 'Not subscribed.'}
+    />
+  );
+}
+
+## API Reference
 
 | Prop              | Type                                | Default | Notes |
 |-------------------|-------------------------------------|---------|-------|
-| `checked`         | `boolean \| 'indeterminate'`        | —       | Required. `'indeterminate'` renders the minus glyph. |
+| `checked`         | `boolean \| 'indeterminate'`        | —       | Required. `'indeterminate'` renders the minus glyph (display-only). |
 | `onCheckedChange` | `(checked: boolean) => void`        | —       | Fired on user toggle. Indeterminate always transitions to `true`. |
 | `label`           | `ReactNode`                         | —       | Renders as a `<label>` linked via `htmlFor`. |
-| `description`     | `ReactNode`                         | —       | Hidden when `error` is set. Linked via `aria-describedby`. |
-| `error`           | `string`                            | —       | Sets `aria-invalid` and replaces the description. |
-| `disabled`        | `boolean`                           | `false` | Greys out and blocks pointer events. |
-| `id`              | `string`                            | auto    | Auto-generated when omitted; needed when wiring custom labels. |
+| `description`     | `ReactNode`                         | —       | Help text under the label. Hidden when `error` is set. Linked via `aria-describedby`. |
+| `error`           | `string`                            | —       | Error message — replaces `description`, applies destructive border, sets `aria-invalid`. |
+| `disabled`        | `boolean`                           | `false` | Disables the input and dims the container. |
+| `id`              | `string`                            | auto    | Auto-generated via `useId` when omitted; needed when wiring custom labels. |
 
-Extends all native `<input type="checkbox">` HTMLAttributes (minus `type`, `checked`, `onChange`, `size`).
+Extends all native `<input type="checkbox">` HTMLAttributes (minus `type`, `checked`, `onChange`, `size`). Fully controlled — no internal state.
 
 ## Accessibility
 
-- Native `<input type="checkbox">` — keyboard, screen-reader, and form participation come for free.
-- `indeterminate` is set via the DOM property (the attribute doesn't exist) — handled internally via a `useEffect`.
-- `error` sets `aria-invalid="true"` and is announced via `aria-describedby`.
-- Always pair with a `label` (visible) or `aria-label` (when intentionally label-less).
+### Label association
 
-## Things to watch
+When `label` is provided, the component generates an `id` (via `useId`) and renders the visible label tied to the `<input>`. Pass your own `id` to override. For label-less usage, supply `aria-label` directly on the component.
 
-- `onCheckedChange` receives a `boolean`. The `'indeterminate'` value is display-only; user clicks always commit to `true` or `false`.
-- The component is fully controlled — there's no internal state. Always pass `checked` and update it from `onCheckedChange`.
-- For "select all" parent rows, derive `checked` from children: `all → true`, `some → 'indeterminate'`, `none → false`.
+### Indeterminate
+
+`indeterminate` is set via the DOM property (the HTML attribute doesn't exist) — handled internally via `useEffect`. The `onCheckedChange` callback always receives a `boolean`; the indeterminate value is display-only and user clicks commit to `true` or `false`.
+
+For "select all" parent rows, derive `checked` from children: `all → true`, `some → 'indeterminate'`, `none → false`.
+
+### Error association
+
+`error` sets `aria-invalid="true"` on the input and links the error message via `aria-describedby`. When no error is present, `description` is linked instead. Both cannot be active at once — `error` takes precedence.
+
+### Keyboard & screen readers
+
+Native `<input type="checkbox">` — keyboard, screen-reader, and form participation come for free.
+
+- **Space** — toggles the checkbox.
+- **Tab** / **Shift+Tab** — moves focus to the next / previous focusable element.
+
+Always pair with a `label` (visible) or `aria-label` (when intentionally label-less).
