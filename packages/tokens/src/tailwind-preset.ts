@@ -73,9 +73,8 @@ export const preset: Partial<Config> = {
         // Experimental — Figma-introduced primitives, see theme.css block
         'experiment-zinc-700':            rgbVar('experiment-zinc-700'),
         'experiment-primary-test':        rgbVar('experiment-primary-test'),
-        'experiment-input-stroke-default': rgbVar('experiment-input-stroke-default'),
-        'experiment-input-stroke-active':  rgbVar('experiment-input-stroke-active'),
-        'experiment-input-bg-focused':     rgbVar('experiment-input-bg-focused'),
+        'experiment-input-stroke-active': rgbVar('experiment-input-stroke-active'),
+        'experiment-input-bg-focused':    rgbVar('experiment-input-bg-focused'),
       },
 
       borderRadius: {

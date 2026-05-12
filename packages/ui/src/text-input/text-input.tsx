@@ -41,6 +41,35 @@ export interface TextInputProps
 const FOCUS_RING_GRAY  = 'focus-within:shadow-[0_0_0_2px_rgba(143,143,143,0.20)]';
 const FOCUS_RING_ERROR = 'focus-within:shadow-[0_0_0_2px_rgba(239,73,67,0.24)]';
 
+/* Per-variant input formatters. Strip invalid chars + apply mask. Idempotent. */
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 10);
+  if (digits.length === 0) return '';
+  if (digits.length <= 3) return `(${digits}`;
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+function formatDate(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 8);
+  if (digits.length === 0) return '';
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)} / ${digits.slice(2)}`;
+  return `${digits.slice(0, 2)} / ${digits.slice(2, 4)} / ${digits.slice(4)}`;
+}
+
+function formatAmount(raw: string): string {
+  let cleaned = raw.replace(/[^\d.]/g, '');
+  const firstDot = cleaned.indexOf('.');
+  if (firstDot !== -1) {
+    cleaned = cleaned.slice(0, firstDot + 1) + cleaned.slice(firstDot + 1).replace(/\./g, '');
+  }
+  const [integer = '', decimal = ''] = cleaned.split('.');
+  const formattedInt = integer.slice(0, 15).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  if (firstDot === -1) return formattedInt;
+  return `${formattedInt}.${decimal.slice(0, 2)}`;
+}
+
 function PasswordToggle({
   visible,
   onToggle,
@@ -118,6 +147,9 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       className,
       id,
       placeholder,
+      value: valueProp,
+      defaultValue,
+      onChange: onChangeProp,
       ...rest
     },
     ref,
@@ -130,6 +162,42 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
 
     const isCompound = variant === 'phone' || variant === 'amount';
     const paddingClass = size === 'sm' ? 'p-2' : 'p-3';
+
+    const formatter =
+      variant === 'phone'  ? formatPhone  :
+      variant === 'date'   ? formatDate   :
+      variant === 'amount' ? formatAmount :
+      null;
+
+    const isControlled = valueProp !== undefined;
+    const [internalValue, setInternalValue] = React.useState<string>(() => {
+      if (!formatter) return defaultValue !== undefined ? String(defaultValue) : '';
+      return defaultValue !== undefined ? formatter(String(defaultValue)) : '';
+    });
+
+    const valueProps = formatter
+      ? {
+          value: formatter(String(isControlled ? valueProp ?? '' : internalValue)),
+          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+            const formatted = formatter(e.target.value);
+            if (!isControlled) setInternalValue(formatted);
+            if (onChangeProp) {
+              e.target.value = formatted;
+              onChangeProp(e);
+            }
+          },
+        }
+      : {
+          value: valueProp,
+          defaultValue,
+          onChange: onChangeProp,
+        };
+
+    const inputMode: React.InputHTMLAttributes<HTMLInputElement>['inputMode'] =
+      variant === 'phone'  ? 'tel'      :
+      variant === 'date'   ? 'numeric'  :
+      variant === 'amount' ? 'decimal'  :
+      undefined;
 
     const reactId = React.useId?.() ?? '';
     const inputId = id ?? reactId;
@@ -177,7 +245,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
     const containerState = error
       ? cn('border-danger', FOCUS_RING_ERROR)
       : cn(
-          'border-experiment-input-stroke-default',
+          'border-border-default',
           'hover:border-experiment-input-stroke-active',
           'focus-within:border-experiment-input-stroke-active',
           'focus-within:bg-experiment-input-bg-focused',
@@ -233,7 +301,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
               />
               <div
                 className={cn(
-                  'flex flex-1 min-w-0 items-center gap-2 border-l border-experiment-input-stroke-default',
+                  'flex flex-1 min-w-0 items-center gap-2 border-l border-border-default',
                   paddingClass,
                 )}
               >
@@ -241,12 +309,14 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
                   ref={ref}
                   id={inputId}
                   type={effectiveType}
+                  inputMode={inputMode}
                   disabled={disabled}
                   placeholder={effectivePlaceholder}
                   aria-invalid={error ? true : undefined}
                   aria-describedby={errorId ?? hintId}
                   className={inputClassName}
                   {...rest}
+                  {...valueProps}
                 />
               </div>
             </>
@@ -256,7 +326,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             <>
               <div
                 className={cn(
-                  'flex flex-1 min-w-0 items-center gap-2 border-r border-experiment-input-stroke-default',
+                  'flex flex-1 min-w-0 items-center gap-2 border-r border-border-default',
                   paddingClass,
                 )}
               >
@@ -270,13 +340,14 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
                   ref={ref}
                   id={inputId}
                   type={effectiveType}
-                  inputMode="decimal"
+                  inputMode={inputMode}
                   disabled={disabled}
                   placeholder={effectivePlaceholder}
                   aria-invalid={error ? true : undefined}
                   aria-describedby={errorId ?? hintId}
                   className={inputClassName}
                   {...rest}
+                  {...valueProps}
                 />
               </div>
               <CompactSelectCell
@@ -299,12 +370,14 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
                 ref={ref}
                 id={inputId}
                 type={effectiveType}
+                inputMode={inputMode}
                 disabled={disabled}
                 placeholder={effectivePlaceholder}
                 aria-invalid={error ? true : undefined}
                 aria-describedby={errorId ?? hintId}
                 className={inputClassName}
                 {...rest}
+                {...valueProps}
               />
               {effectiveRightIcon && (
                 <span className="shrink-0 text-text-muted">
