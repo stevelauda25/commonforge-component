@@ -1,6 +1,6 @@
-import type { ComponentType } from 'react';
+import { useState, type ComponentType } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button, TextInput } from 'pod-test-ui';
+import { Button, Checkbox, TextInput } from 'pod-test-ui';
 
 export function ButtonExample() {
   return (
@@ -21,7 +21,19 @@ export function TextInputExample() {
   );
 }
 
+export function CheckboxExample() {
+  const [checked, setChecked] = useState<boolean>(true);
+  return (
+    <Checkbox
+      checked={checked}
+      onCheckedChange={setChecked}
+      label="Remember me"
+    />
+  );
+}
+
 export const canonicalExamples: Record<string, ComponentType> = {
   '/components/button': ButtonExample,
   '/components/text-input': TextInputExample,
+  '/components/checkbox': CheckboxExample,
 };
