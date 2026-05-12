@@ -1,0 +1,157 @@
+<PageHeader
+  title="Motion"
+  description="Animation primitives — durations + easing curves. Two axes only, picked deliberately so motion stays predictable across the system. Tokens map to Tailwind classes (duration-fast, ease-standard, …) and CSS variables (--duration-fast, --ease-standard, …)."
+/>
+
+<PreviewCard>
+  <div className="flex flex-col items-center gap-4 py-6">
+    <div className="relative h-3 w-64 overflow-hidden rounded-full bg-muted">
+      <div
+        className="absolute inset-y-0 left-0 w-full bg-accent animate-[motion-demo_2s_cubic-bezier(0.2,0,0,1)_infinite]"
+        style={{ animationDuration: '2s' }}
+      />
+    </div>
+    <code className="text-xs text-text-muted">duration-base · ease-standard</code>
+  </div>
+</PreviewCard>
+
+```tsx
+<div className="transition-colors duration-base ease-standard hover:bg-muted">
+  Hover me — that's POD motion.
+</div>
+```
+
+## Durations
+
+How long an animation runs. POD ships **3 tokens** to keep choice paralysis low. If you need a value not on the scale, the design probably needs review — not a new token.
+
+<MotionAutoGrid kind="duration" />
+
+**Picking the right duration:**
+
+| Use case | Token | Why |
+|---|---|---|
+| Hover color change, icon flip | `duration-fast` (120ms) | Below 150ms feels instant — perfect for micro-interactions |
+| Default UI transitions (most things) | `duration-base` (180ms) | Standard for state changes, button states, focus rings |
+| Layout shifts, panel slide, dialog open | `duration-slow` (240ms) | More deliberate — user notices the move, follows it |
+
+```tsx
+className="transition-colors duration-fast ease-standard"      /* hover */
+className="transition-[opacity,transform] duration-base ease-standard"  /* default */
+className="transition-[transform,opacity] duration-slow ease-emphasized"  /* dialog */
+```
+
+## Easing
+
+The curve of motion — how an animation starts, accelerates, decelerates. POD ships **3 curves**, each with a specific job. Click each demo to see the curve in action.
+
+<MotionAutoGrid kind="easing" />
+
+**Picking the right curve:**
+
+| Curve | Cubic-bezier | When to use |
+|---|---|---|
+| `ease-standard` | `(0.2, 0, 0, 1)` | **Default for everything.** Quick start, gentle finish — feels natural for state changes, color shifts, focus moves |
+| `ease-emphasized` | `(0.3, 0, 0.8, 0.15)` | Dramatic moments — dialog open, drawer expand, hero transitions. Slight overshoot effect |
+| `ease-press` | `(0.25, 1, 0.5, 1)` | Tactile feel — button press/release, tap feedback. Quick snap back |
+
+```tsx
+className="duration-base ease-standard"        /* default */
+className="duration-slow ease-emphasized"      /* dialog open */
+className="duration-fast ease-press"           /* active:scale-95 button press */
+```
+
+## Patterns
+
+Common interaction recipes — copy and paste, all token-driven, no magic numbers.
+
+### Color hover (most common)
+
+<PreviewCard>
+  <button className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-fg transition-colors duration-fast ease-standard hover:bg-accent-hover">
+    Hover me
+  </button>
+</PreviewCard>
+
+```tsx
+className="transition-colors duration-fast ease-standard hover:bg-accent-hover"
+```
+
+### Button press (tactile)
+
+<PreviewCard>
+  <button className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-fg transition-transform duration-fast ease-press active:scale-[0.96]">
+    Press me
+  </button>
+</PreviewCard>
+
+```tsx
+className="transition-transform duration-fast ease-press active:scale-[0.96]"
+```
+
+### Reveal / fade in
+
+<PreviewCard>
+  <details className="group rounded-lg border border-border-default bg-surface px-4 py-2">
+    <summary className="cursor-pointer text-sm font-medium text-text-primary">Click to reveal</summary>
+    <p className="mt-2 text-sm text-text-secondary opacity-0 transition-opacity duration-base ease-standard group-open:opacity-100">
+      Hidden content fades in.
+    </p>
+  </details>
+</PreviewCard>
+
+```tsx
+className="opacity-0 transition-opacity duration-base ease-standard group-open:opacity-100"
+```
+
+### Dialog open (emphasized)
+
+```tsx
+/* Trigger element: Radix Dialog Content */
+className="data-[state=open]:animate-in data-[state=closed]:animate-out
+           data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
+           data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
+           duration-slow ease-emphasized"
+```
+
+## Accessibility — `prefers-reduced-motion`
+
+Users who set OS-level "reduce motion" preference expect minimal animation. Honor it.
+
+POD components honor this implicitly via Tailwind's `motion-reduce:` modifier:
+
+```tsx
+className="transition-transform duration-base ease-standard motion-reduce:transition-none"
+```
+
+Or globally via CSS (optional, future foundation enhancement):
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+```
+
+**Rule of thumb:**
+- Color, opacity, focus ring transitions → safe to keep (no vestibular issues)
+- Position, scale, rotation transitions → reduce-motion should disable
+
+## Things to watch
+
+- **Don't combine motion tokens with arbitrary timing** (`duration-[173ms]`). If the scale doesn't fit, the design needs review, not a one-off magic number.
+- **Don't animate everything at once.** Pick ONE primary property to transition (color OR transform OR opacity). Animating 4 properties on hover = noisy.
+- **Reduced motion users exist.** Always test with `prefers-reduced-motion: reduce` enabled in DevTools (Render tab) — your motion should still convey meaning, just instantly.
+- **`ease-emphasized` is loud.** Use sparingly — for things that need user attention (dialog open, error appear). Default to `ease-standard`.
+- **Curves matter more than duration.** A 100ms `ease-press` reads completely different from a 100ms `linear`. When in doubt, change easing first, duration second.
+
+## What's NOT in POD (research notes — may add later)
+
+For reference if scale needs to grow:
+
+- `ease-decelerate` — `cubic-bezier(0, 0, 0.2, 1)` — for entering elements (slide in from edge)
+- `ease-accelerate` — `cubic-bezier(0.4, 0, 1, 1)` — for exiting elements (slide off to edge)
+- `ease-linear` — `cubic-bezier(0, 0, 1, 1)` — progress bars, infinite spinners
+- `duration-instant` (0ms) — skip animation entirely (rarely useful since `motion-reduce:` handles this)
+- `duration-slower` (320ms+) — major page transitions
+
+Material Design ships 12 durations + 4 easings. Carbon ships 6 + 5. POD's 3+3 is **deliberate minimalism** — adds friction only when designers reach for it, which keeps motion consistent across the product. Promote new tokens only when 2+ components have a real, non-redundant need.

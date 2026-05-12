@@ -39,15 +39,30 @@ export function loadEnv() {
   return env;
 }
 
-export async function figmaFetch(env, path) {
-  const res = await fetch(`https://api.figma.com${path}`, {
-    headers: { 'X-Figma-Token': env.FIGMA_PAT },
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Figma API ${res.status} ${res.statusText} for ${path}\n${body}`);
+export async function figmaFetch(env, path, opts = {}) {
+  const maxRetries = opts.maxRetries ?? 3;
+  let attempt = 0;
+  while (true) {
+    const res = await fetch(`https://api.figma.com${path}`, {
+      headers: { 'X-Figma-Token': env.FIGMA_PAT },
+    });
+    // 429 = rate limit. Respect Retry-After header if Figma sends one,
+    // otherwise exponential backoff capped at 30s.
+    if (res.status === 429 && attempt < maxRetries) {
+      const retryAfter = parseInt(res.headers.get('Retry-After') || '0', 10);
+      const waitMs = retryAfter > 0
+        ? retryAfter * 1000
+        : Math.min(2000 * Math.pow(2, attempt), 30_000);
+      await new Promise((r) => setTimeout(r, waitMs));
+      attempt++;
+      continue;
+    }
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Figma API ${res.status} ${res.statusText} for ${path}\n${body}`);
+    }
+    return res.json();
   }
-  return res.json();
 }
 
 function walkBoundVariables(node, sink) {
@@ -120,6 +135,54 @@ export async function hashComponent(env, nodeId) {
   const canonical = canonicalize(subtree);
   const hash = createHash('sha256').update(canonical).digest('hex');
   return { hash, varCount: varIds.size, canonical, subtree };
+}
+
+/**
+ * Bulk version — fetch many node subtrees in a SINGLE Figma API call.
+ * Figma's /nodes endpoint accepts comma-separated ids, returns all in one
+ * response. Massive rate-limit win: N components → 1 call (vs N calls).
+ *
+ * Chunks at 50 ids per request as safety margin (URL length + cost units).
+ * Returns Map<nodeId, { hash, varCount, canonical, subtree } | { error }>.
+ */
+export async function hashComponentsBulk(env, nodeIds) {
+  const result = new Map();
+  const CHUNK_SIZE = 50;
+  const chunks = [];
+  for (let i = 0; i < nodeIds.length; i += CHUNK_SIZE) {
+    chunks.push(nodeIds.slice(i, i + CHUNK_SIZE));
+  }
+
+  for (const chunk of chunks) {
+    const ids = chunk.join(',');
+    let nodesRes;
+    try {
+      nodesRes = await figmaFetch(
+        env,
+        `/v1/files/${env.FIGMA_FILE_KEY}/nodes?ids=${encodeURIComponent(ids)}`,
+      );
+    } catch (err) {
+      // Whole chunk failed (e.g. 429 after retries exhausted). Mark every
+      // node in this chunk as errored — partial result is better than total.
+      for (const nodeId of chunk) {
+        result.set(nodeId, { error: err.message });
+      }
+      continue;
+    }
+    for (const nodeId of chunk) {
+      const subtree = nodesRes.nodes[nodeId]?.document;
+      if (!subtree) {
+        result.set(nodeId, { error: `Node ${nodeId} not found in file ${env.FIGMA_FILE_KEY}` });
+        continue;
+      }
+      const varIds = new Set();
+      walkBoundVariables(subtree, varIds);
+      const canonical = canonicalize(subtree);
+      const hash = createHash('sha256').update(canonical).digest('hex');
+      result.set(nodeId, { hash, varCount: varIds.size, canonical, subtree });
+    }
+  }
+  return result;
 }
 
 /**

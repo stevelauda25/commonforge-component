@@ -50,3 +50,11 @@ html:not(.dark) .mdx-content code[data-theme='dark'],
 html:not(.dark) .mdx-content pre[data-theme='dark'] { display: none; }
 html.dark .mdx-content code[data-theme='light'],
 html.dark .mdx-content pre[data-theme='light'] { display: none; }
+
+/* Motion hero demo — bar fills then resets infinitely */
+@keyframes motion-demo {
+  0%   { transform: scaleX(0); transform-origin: left; }
+  50%  { transform: scaleX(1); transform-origin: left; }
+  50.1%{ transform: scaleX(1); transform-origin: right; }
+  100% { transform: scaleX(0); transform-origin: right; }
+}

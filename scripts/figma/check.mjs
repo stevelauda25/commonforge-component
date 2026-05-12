@@ -14,7 +14,7 @@
  */
 
 import {
-  diffSummaries, figmaUrl, getFileName, hashComponent, loadEnv,
+  diffSummaries, figmaUrl, getFileName, hashComponent, hashComponentsBulk, loadEnv,
   loadManifest, loadSnapshots, loadState, loadVariableDictionary,
   relativeTime, summarize,
 } from './_lib.mjs';
@@ -60,16 +60,29 @@ async function main() {
   const inSync = [];
   const errors = [];
 
-  for (const comp of manifest.components) {
-    if (isDetail && !targets.includes(comp.slug)) continue;
-    const snap = snapshots.components?.[comp.slug];
-    let current;
-    try {
-      current = await hashComponent(env, comp.nodeId);
-    } catch (err) {
-      errors.push({ slug: comp.slug, message: err.message });
+  // Filter to active set (detail mode hits subset of components).
+  const activeComps = manifest.components.filter(
+    (comp) => !isDetail || targets.includes(comp.slug),
+  );
+
+  // Bulk fetch: 1 Figma API call instead of N. Big rate-limit win,
+  // automatic chunking for >50 components.
+  const bulkResults = await hashComponentsBulk(
+    env,
+    activeComps.map((c) => c.nodeId),
+  );
+
+  for (const comp of activeComps) {
+    const current = bulkResults.get(comp.nodeId);
+    if (current?.error) {
+      errors.push({ slug: comp.slug, message: current.error });
       continue;
     }
+    if (!current?.hash) {
+      errors.push({ slug: comp.slug, message: 'No hash result for this node' });
+      continue;
+    }
+    const snap = snapshots.components?.[comp.slug];
     const url = figmaUrl(manifest.fileKey, comp.nodeId, fileName);
     if (!snap) {
       drifted.push({ slug: comp.slug, nodeId: comp.nodeId, url, reason: 'never blessed', lastSync: null, diff: null, neverBlessed: true });

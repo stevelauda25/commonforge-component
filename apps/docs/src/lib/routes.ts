@@ -23,6 +23,7 @@ export const routes: RouteEntry[] = [
   { path: '/foundations/spacing',    label: 'Spacing',    category: 'foundation', load: () => import('../pages/foundations/Spacing.mdx') },
   { path: '/foundations/radius',     label: 'Radius',     category: 'foundation', load: () => import('../pages/foundations/Radius.mdx') },
   { path: '/foundations/elevation',  label: 'Elevation',  category: 'foundation', load: () => import('../pages/foundations/Elevation.mdx') },
+  { path: '/foundations/motion',     label: 'Motion',     category: 'foundation', load: () => import('../pages/foundations/Motion.mdx') },
 
   // Components — ready
   { path: '/components/button',       label: 'Button',       category: 'component', status: 'ready',   description: 'Primary action element.',         load: () => import('../pages/components/Button.mdx') },

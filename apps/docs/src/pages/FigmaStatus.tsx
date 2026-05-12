@@ -233,21 +233,78 @@ function InSyncCard({ comp }: { comp: ComponentStatus }) {
 
 type Tab = 'component' | 'foundation';
 
+interface ManifestEntry {
+  slug: string;
+  nodeId: string;
+  status?: string;
+  docsName?: string;
+  docsRoute?: string;
+}
+
+interface Manifest {
+  version: number;
+  fileKey: string;
+  components: ManifestEntry[];
+}
+
 const isFoundation = (slug: string) => slug.startsWith('foundation-');
 
 function partitionByTab(items: ComponentStatus[], tab: Tab) {
   return items.filter((c) => (tab === 'foundation' ? isFoundation(c.slug) : !isFoundation(c.slug)));
 }
 
+function SkeletonCard() {
+  return (
+    <div className="rounded-xl border border-border-default bg-surface p-4 animate-pulse">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="h-6 w-20 rounded-full bg-muted" />
+          <div className="flex-1 space-y-2">
+            <div className="h-4 w-32 rounded bg-muted" />
+            <div className="h-3 w-48 rounded bg-muted opacity-60" />
+          </div>
+        </div>
+        <div className="h-8 w-8 rounded-lg bg-muted" />
+      </div>
+    </div>
+  );
+}
+
+function SkeletonSection({ count, accent }: { count: number; accent: 'success' | 'warning' }) {
+  return (
+    <section>
+      <h2 className={`text-sm font-semibold uppercase tracking-wide mb-3 ${accent === 'warning' ? 'text-warning' : 'text-success'}`}>
+        Loading ({count})
+      </h2>
+      <div className="space-y-2">
+        {Array.from({ length: count }).map((_, i) => <SkeletonCard key={i} />)}
+      </div>
+    </section>
+  );
+}
+
 export default function FigmaStatus() {
+  const [manifest, setManifest] = useState<Manifest | null>(null);
   const [status, setStatus] = useState<DriftStatus | null>(null);
   const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState<{ done: number; total: number }>({ done: 0, total: 0 });
   const [tab, setTab] = useState<Tab>('component');
+
+  // Stage 1: load manifest immediately (instant, local file via /api/figma-manifest)
+  // → render skeleton cards for structure. User sees layout, not blank loading text.
+  useEffect(() => {
+    fetch('/api/figma-manifest')
+      .then((r) => r.json())
+      .then((m: Manifest) => {
+        setManifest(m);
+        setProgress({ done: 0, total: m.components.length });
+      })
+      .catch(() => {});
+  }, []);
 
   const load = (live = false) => {
     setLoading(true);
-    // Live = hit the Vite endpoint that runs check.mjs fresh.
-    // Static = read the JSON file (snapshot from last `pnpm figma:status`).
+    setProgress((p) => ({ done: 0, total: p.total }));
     const url = live ? '/api/figma-check?t=' + Date.now() : '/figma-status.json?t=' + Date.now();
     fetch(url)
       .then((r) => r.json())
@@ -255,49 +312,111 @@ export default function FigmaStatus() {
         if (d.error) throw new Error(d.error);
         setStatus(d);
         setLoading(false);
+        setProgress((p) => ({ done: p.total, total: p.total }));
       })
       .catch(() => setLoading(false));
   };
 
   useEffect(() => { load(true); }, []);
 
-  const tabCounts = {
+  const tabCounts = manifest ? {
     component: {
-      total: (status?.drifted.filter((c) => !isFoundation(c.slug)).length ?? 0) + (status?.inSync.filter((c) => !isFoundation(c.slug)).length ?? 0),
+      total: manifest.components.filter((c) => !isFoundation(c.slug)).length,
       drift: status?.drifted.filter((c) => !isFoundation(c.slug)).length ?? 0,
     },
     foundation: {
-      total: (status?.drifted.filter((c) => isFoundation(c.slug)).length ?? 0) + (status?.inSync.filter((c) => isFoundation(c.slug)).length ?? 0),
+      total: manifest.components.filter((c) => isFoundation(c.slug)).length,
       drift: status?.drifted.filter((c) => isFoundation(c.slug)).length ?? 0,
     },
-  };
+  } : { component: { total: 0, drift: 0 }, foundation: { total: 0, drift: 0 } };
 
   const drifted = status ? partitionByTab(status.drifted, tab) : [];
   const inSync = status ? partitionByTab(status.inSync, tab) : [];
+
+  const manifestForTab = manifest?.components.filter((c) =>
+    tab === 'foundation' ? isFoundation(c.slug) : !isFoundation(c.slug)
+  ) ?? [];
+
+  // Render tab bar — always visible once manifest loaded (instant), so user
+  // sees structure even while drift check is running.
+  const tabBar = manifest ? (
+    <div role="tablist" aria-label="Tracked Figma items" className="flex items-center gap-1 border-b border-border-default">
+      {(['component', 'foundation'] as const).map((t) => {
+        const active = tab === t;
+        const c = tabCounts[t];
+        return (
+          <button
+            key={t}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => setTab(t)}
+            className={`relative -mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+              active
+                ? 'border-accent text-text-primary'
+                : 'border-transparent text-text-muted hover:text-text-primary'
+            }`}
+          >
+            <span className="capitalize">{t === 'component' ? 'Components' : 'Foundations'}</span>
+            <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${
+              active ? 'bg-accent/15 text-accent' : 'bg-muted text-text-muted'
+            }`}>
+              {c.total}
+            </span>
+            {c.drift > 0 && (
+              <span className="inline-flex items-center rounded-full bg-warning/15 px-1.5 py-0.5 text-[10px] font-semibold text-warning tabular-nums">
+                {c.drift} drift
+              </span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  ) : null;
 
   return (
     <div className="mx-auto max-w-5xl px-8 py-10">
       <div className="flex items-start justify-between gap-6 mb-8">
         <PageHeader
           title="Figma Sync Status"
-          description={status?.file ? `${status.file.name} (${status.file.key})` : 'Tracking drift between Figma and code'}
+          description={
+            status?.file
+              ? `${status.file.name} (${status.file.key})`
+              : manifest
+              ? `${manifest.components.length} tracked items · checking…`
+              : 'Tracking drift between Figma and code'
+          }
         />
         <div className="flex items-center gap-2 pt-2">
-          <Tooltip content="Run check.mjs against live Figma">
+          <Tooltip content="Run check.mjs against live Figma (cache 30s)">
             <Button
               variant="primary"
               size="sm"
-              leftIcon={<RefreshCw size={14} />}
+              leftIcon={<RefreshCw size={14} className={loading ? 'animate-spin' : undefined} />}
               onClick={() => load(true)}
               loading={loading}
             >
-              Check now
+              {loading ? 'Checking…' : 'Check now'}
             </Button>
           </Tooltip>
         </div>
       </div>
 
-      {loading && <div className="text-text-muted">Loading…</div>}
+      {/* Loading: manifest hadir → tampilkan tab + skeleton cards berdasarkan jumlah slug per tab.
+          Tidak ada manifest pula → fallback plain loading. */}
+      {loading && manifest && (
+        <div className="space-y-6">
+          {tabBar}
+          <SkeletonSection count={manifestForTab.length || 1} accent="success" />
+        </div>
+      )}
+
+      {loading && !manifest && (
+        <div className="text-text-muted text-sm flex items-center gap-2">
+          <RefreshCw size={14} className="animate-spin" />
+          Reading manifest…
+        </div>
+      )}
 
       {!loading && !status && (
         <div className="rounded-xl border border-dashed border-border-default p-8 text-center text-text-muted">
@@ -309,38 +428,15 @@ export default function FigmaStatus() {
 
       {!loading && status && (
         <div className="space-y-6">
-          <div role="tablist" aria-label="Tracked Figma items" className="flex items-center gap-1 border-b border-border-default">
-            {(['component', 'foundation'] as const).map((t) => {
-              const active = tab === t;
-              const c = tabCounts[t];
-              return (
-                <button
-                  key={t}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setTab(t)}
-                  className={`relative -mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
-                    active
-                      ? 'border-accent text-text-primary'
-                      : 'border-transparent text-text-muted hover:text-text-primary'
-                  }`}
-                >
-                  <span className="capitalize">{t === 'component' ? 'Components' : 'Foundations'}</span>
-                  <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${
-                    active ? 'bg-accent/15 text-accent' : 'bg-muted text-text-muted'
-                  }`}>
-                    {c.total}
-                  </span>
-                  {c.drift > 0 && (
-                    <span className="inline-flex items-center rounded-full bg-warning/15 px-1.5 py-0.5 text-[10px] font-semibold text-warning tabular-nums">
-                      {c.drift} drift
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+          {tabBar}
+
+          {status.file && (
+            <div className="text-xs text-text-muted">
+              File: <code className="text-text-secondary">{status.file.name}</code>
+              <span className="mx-2 text-text-disabled">·</span>
+              {tabCounts[tab].total} tracked in {tab === 'component' ? 'Components' : 'Foundations'}
+            </div>
+          )}
 
           {drifted.length > 0 && (
             <section>
