@@ -70,13 +70,14 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             onChange={(event) => onCheckedChange?.(event.target.checked)}
             className={cn(
               'peer appearance-none shrink-0',
-              'h-4 w-4 rounded-xs border',
+              'h-4 w-4 rounded-xs border-[1.5px]',
               'transition-colors duration-fast ease-standard',
-              'bg-muted border-border-strong',
-              'checked:bg-text-primary checked:border-text-primary',
-              'indeterminate:bg-text-primary indeterminate:border-text-primary',
-              'hover:border-text-secondary',
-              'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border-strong',
+              'bg-canvas border-experiment-cb-border shadow-foundation-xs',
+              'checked:bg-text-primary checked:border-text-primary checked:shadow-none',
+              'indeterminate:bg-text-primary indeterminate:border-text-primary indeterminate:shadow-none',
+              'hover:border-text-primary',
+              'disabled:bg-experiment-cb-disabled-bg disabled:border-experiment-cb-disabled-bg disabled:shadow-none disabled:cursor-not-allowed',
+              'disabled:hover:border-experiment-cb-disabled-bg',
               error && 'border-danger hover:border-danger',
               focusRing,
             )}
@@ -87,7 +88,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               aria-hidden="true"
               className={cn(
                 'pointer-events-none absolute inset-0 flex items-center justify-center',
-                'text-canvas',
+                'text-canvas peer-disabled:text-experiment-cb-disabled-icon',
               )}
             >
               {isIndeterminate ? (

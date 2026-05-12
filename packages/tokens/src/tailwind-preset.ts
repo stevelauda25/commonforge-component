@@ -75,6 +75,9 @@ export const preset: Partial<Config> = {
         'experiment-primary-test':        rgbVar('experiment-primary-test'),
         'experiment-input-stroke-active': rgbVar('experiment-input-stroke-active'),
         'experiment-input-bg-focused':    rgbVar('experiment-input-bg-focused'),
+        'experiment-cb-border':           rgbVar('experiment-cb-border'),
+        'experiment-cb-disabled-bg':      rgbVar('experiment-cb-disabled-bg'),
+        'experiment-cb-disabled-icon':    rgbVar('experiment-cb-disabled-icon'),
       },
 
       borderRadius: {

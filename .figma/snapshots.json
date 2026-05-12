@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "syncedAt": "2026-05-12T13:09:05.047Z",
+  "syncedAt": "2026-05-12T13:59:27.997Z",
   "components": {
     "button": {
       "hash": "37ea52971afccd831de2112e44020a43ac31d7f1d1111ad4338e7f83dd08de92",
@@ -21,9 +21,9 @@
       "nodeId": "2352:159"
     },
     "checkbox": {
-      "hash": "2302beb7333c12d6d995a9f9fbd19757af1a22182e3aa20cc16e0a5c1f2276e6",
-      "varCount": 9,
-      "syncedAt": "2026-05-11T13:17:36.629Z",
+      "hash": "a8483611866707db47acfbdbaefd0116261175093d290e519fd1ba5c7227f3d4",
+      "varCount": 7,
+      "syncedAt": "2026-05-12T13:59:27.997Z",
       "nodeId": "2351:151"
     },
     "foundation-spacing": {
