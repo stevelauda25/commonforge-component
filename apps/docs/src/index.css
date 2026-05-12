@@ -10,6 +10,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 html, body {
@@ -40,6 +41,12 @@ html, body {
   overflow-x: auto;
   margin: 1rem 0;
 }
+/* When pre is wrapped by CodeBlock, let the wrapper drive the visual chrome. */
+.mdx-content .code-block pre {
+  background: transparent;
+  border-radius: 0;
+  margin: 0;
+}
 .mdx-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -50,6 +57,30 @@ html:not(.dark) .mdx-content code[data-theme='dark'],
 html:not(.dark) .mdx-content pre[data-theme='dark'] { display: none; }
 html.dark .mdx-content code[data-theme='light'],
 html.dark .mdx-content pre[data-theme='light'] { display: none; }
+
+/* Shiki dual-theme: wire per-token CSS vars to actual color. */
+html:not(.dark) .mdx-content code span { color: var(--shiki-light); }
+html.dark      .mdx-content code span { color: var(--shiki-dark);  }
+
+/* PreviewCard + CodeBlock that immediately follows = one unified card.
+   rehype-pretty-code wraps <pre> in <figure data-rehype-pretty-code-figure>,
+   so the real sibling is <figure>, not .code-block. */
+.preview-card:has(+ .code-block),
+.preview-card:has(+ figure[data-rehype-pretty-code-figure]) {
+  margin-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.preview-card + .code-block,
+.preview-card + figure[data-rehype-pretty-code-figure] > .code-block {
+  margin-top: 0;
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.preview-card + figure[data-rehype-pretty-code-figure] {
+  margin: 0;
+}
 
 /* Motion hero demo — bar fills then resets infinitely */
 @keyframes motion-demo {

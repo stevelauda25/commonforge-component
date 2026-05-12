@@ -25,6 +25,11 @@
       "import": "./dist/search-input/index.mjs",
       "require": "./dist/search-input/index.js"
     },
+    "./text-input": {
+      "types": "./dist/text-input/index.d.ts",
+      "import": "./dist/text-input/index.mjs",
+      "require": "./dist/text-input/index.js"
+    },
     "./tooltip": {
       "types": "./dist/tooltip/index.d.ts",
       "import": "./dist/tooltip/index.mjs",

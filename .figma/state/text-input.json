@@ -1,0 +1,295 @@
+{
+  "type": "COMPONENT_SET",
+  "name": "text-input",
+  "variants": {
+    "Size=md, Type=Default, Destructive=False, State=Placeholder": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Frame 4",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=md, Type=Default, Destructive=True, State=Placeholder": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=sm, Type=Default, Destructive=True, State=Placeholder": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=sm, Type=Default, Destructive=False, State=Placeholder": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=md, Type=Default, Destructive=False, State=Hover": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=sm, Type=Default, Destructive=False, State=Hover": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=md, Type=Default, Destructive=False, State=Focused": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=md, Type=Default, Destructive=True, State=Focused": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=sm, Type=Default, Destructive=True, State=Focused": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=sm, Type=Default, Destructive=False, State=Focused": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=md, Type=Default, Destructive=False, State=Disabled": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=sm, Type=Default, Destructive=False, State=Disabled": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=md, Type=Default, Destructive=False, State=Filled": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=md, Type=Default, Destructive=True, State=Filled": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=sm, Type=Default, Destructive=True, State=Filled": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    },
+    "Size=sm, Type=Default, Destructive=False, State=Filled": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:Label [1.1]",
+        "FRAME:Basic",
+        "INSTANCE:Hint Text [1.1]"
+      ]
+    }
+  },
+  "nonVariantNodes": []
+}

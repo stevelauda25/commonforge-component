@@ -1,0 +1,142 @@
+import { useState } from 'react';
+import { TextInput } from 'pod-test-ui';
+import { Circle } from 'lucide-react';
+
+<PageHeader
+  title="Text Input"
+  description="Single-line text field with label, hint, and error support."
+  status="ready"
+/>
+
+<PreviewCard>
+  <TextInput
+    label="Label"
+    required
+    sublabel="(Optional)"
+    labelInfo
+    placeholder="Placeholder text..."
+    hint="This is a hint text to help user."
+    leftIcon={<Circle className="h-4 w-4" />}
+    rightIcon={<Circle className="h-4 w-4" />}
+  />
+</PreviewCard>
+
+```tsx
+import { TextInput } from 'pod-test-ui';
+import { Circle } from 'lucide-react';
+
+<TextInput
+  label="Label"
+  required
+  sublabel="(Optional)"
+  labelInfo
+  placeholder="Placeholder text..."
+  hint="This is a hint text to help user."
+  leftIcon={<Circle className="h-4 w-4" />}
+  rightIcon={<Circle className="h-4 w-4" />}
+/>
+```
+
+## Size
+
+Two sizes: `md` (default, 12px padding) and `sm` (8px padding). Input text size stays constant; only padding shifts.
+
+<PreviewCard>
+  <div className="flex flex-col gap-4 w-[300px]">
+    <TextInput label="Medium" size="md" placeholder="Placeholder text..." />
+    <TextInput label="Small"  size="sm" placeholder="Placeholder text..." />
+  </div>
+</PreviewCard>
+
+```tsx
+<TextInput label="Medium" size="md" placeholder="Placeholder text..." />
+<TextInput label="Small"  size="sm" placeholder="Placeholder text..." />
+```
+
+## States
+
+<PreviewCard>
+  <div className="flex flex-col gap-4 w-[300px]">
+    <TextInput label="Placeholder" placeholder="Enter text..." />
+    <TextInput label="Filled" defaultValue="Hello world" />
+    <TextInput label="Disabled" placeholder="Cannot edit" disabled />
+    <TextInput label="Error" defaultValue="bad input" error="This field is invalid." />
+  </div>
+</PreviewCard>
+
+```tsx
+<TextInput label="Placeholder" placeholder="Enter text..." />
+<TextInput label="Filled" defaultValue="Hello world" />
+<TextInput label="Disabled" placeholder="Cannot edit" disabled />
+<TextInput label="Error" defaultValue="bad input" error="This field is invalid." />
+```
+
+## With description
+
+Label supports a sublabel string and an info icon via `labelInfo`.
+
+<PreviewCard>
+  <div className="flex flex-col gap-4 w-[300px]">
+    <TextInput label="Email" sublabel="(Optional)" placeholder="you@example.com" />
+    <TextInput label="API Key" labelInfo placeholder="sk-..." hint="Find this in your dashboard settings." />
+  </div>
+</PreviewCard>
+
+```tsx
+<TextInput label="Email" sublabel="(Optional)" placeholder="you@example.com" />
+<TextInput label="API Key" labelInfo placeholder="sk-..." hint="Find this in your dashboard settings." />
+```
+
+## Error
+
+Error message replaces the hint and applies destructive border styling.
+
+<PreviewCard>
+  <TextInput
+    label="Username"
+    required
+    defaultValue="ab"
+    error="Username must be at least 3 characters."
+  />
+</PreviewCard>
+
+```tsx
+<TextInput
+  label="Username"
+  required
+  defaultValue="ab"
+  error="Username must be at least 3 characters."
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| `label` | `string` | — | Visible label text above the input. |
+| `required` | `boolean` | `false` | Shows a red asterisk next to the label. Also sets the native `required` attribute. |
+| `sublabel` | `string` | — | Grey text after the label, e.g. "(Optional)". |
+| `labelInfo` | `boolean` | `false` | Renders a small info icon next to the label. |
+| `hint` | `string` | — | Help text below the input. Hidden when `error` is set. |
+| `error` | `string` | — | Error message — replaces hint, turns border red, sets `aria-invalid`. |
+| `leftIcon` | `ReactNode` | — | Icon slot before the input text. |
+| `rightIcon` | `ReactNode` | — | Icon slot after the input text. |
+| `size` | `'sm' \| 'md'` | `'md'` | Input padding size. `md` = 12px, `sm` = 8px. |
+| `type` | `string` | `'text'` | HTML input type (`text`, `email`, `password`, etc.). |
+| `disabled` | `boolean` | `false` | Disables the input and dims the container. |
+
+Extends all native `<input>` HTMLAttributes (minus `size` and `type` which are overridden).
+
+## Accessibility
+
+- Native `<input>` under the hood — keyboard, form participation, and screen-reader support come for free.
+- `error` sets `aria-invalid="true"` and the error message is linked via `aria-describedby`.
+- `hint` is linked via `aria-describedby` when no error is present.
+- Focus ring uses `focus-within` on the container so clicking icons also activates the ring.
+- `leftIcon` / `rightIcon` are marked `aria-hidden` — they are decorative.
+
+## Things to watch
+
+- This is a controlled-friendly but uncontrolled-compatible component. For controlled mode, pass `value` + `onChange` as usual.
+- `error` takes precedence over `hint` — when both are provided, only the error message renders and is linked to `aria-describedby`.
+- Icons are decorative (`aria-hidden`). If an icon conveys meaning (e.g. a status indicator), wrap it and add your own `aria-label` on the parent.

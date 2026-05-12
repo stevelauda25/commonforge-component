@@ -29,6 +29,8 @@ export const routes: RouteEntry[] = [
   { path: '/components/button',       label: 'Button',       category: 'component', status: 'ready',   description: 'Primary action element.',         load: () => import('../pages/components/Button.mdx') },
   { path: '/components/checkbox',     label: 'Checkbox',     category: 'component', status: 'ready',   description: 'Multi-select boolean input.',     load: () => import('../pages/components/Checkbox.mdx') },
 
+  { path: '/components/text-input',    label: 'Text Input',   category: 'component', status: 'ready',    description: 'Single-line text field with label, hint, and error support.', load: () => import('../pages/components/TextInput.mdx') },
+
   // Components — planned
   { path: '/components/search-input', label: 'Search Input', category: 'component', status: 'planned', description: 'Filter / search text field.',     load: () => import('../pages/components/SearchInput.mdx') },
   { path: '/components/tooltip',      label: 'Tooltip',      category: 'component', status: 'planned', description: 'Contextual help on hover/focus.', load: () => import('../pages/components/Tooltip.mdx') },

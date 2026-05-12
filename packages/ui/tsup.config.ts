@@ -6,6 +6,7 @@ export default defineConfig({
     button: 'src/button/index.ts',
     checkbox: 'src/checkbox/index.ts',
     'search-input': 'src/search-input/index.ts',
+    'text-input': 'src/text-input/index.ts',
     tooltip: 'src/tooltip/index.ts',
   },
   format: ['cjs', 'esm'],

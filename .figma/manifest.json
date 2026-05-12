@@ -37,6 +37,11 @@
       "status": "ready",
       "docsName": "Spacing",
       "docsRoute": "/foundations/spacing"
+    },
+    {
+      "slug": "text-input",
+      "nodeId": "2386:6510",
+      "status": "ready"
     }
   ]
 }

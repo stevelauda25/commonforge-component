@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from 'pod-test-ui';
+import { Button, TextInput } from 'pod-test-ui';
 
 export function ButtonExample() {
   return (
@@ -13,6 +13,15 @@ export function ButtonExample() {
   );
 }
 
+export function TextInputExample() {
+  return (
+    <div className="w-full max-w-[220px]">
+      <TextInput label="Email" placeholder="you@pod.com" />
+    </div>
+  );
+}
+
 export const canonicalExamples: Record<string, ComponentType> = {
   '/components/button': ButtonExample,
+  '/components/text-input': TextInputExample,
 };
