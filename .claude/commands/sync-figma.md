@@ -464,12 +464,16 @@ If entry doesn't exist → insert under the `// Components — ready` block.
 
 ### 6+7. Build + Bless — SINGLE BATCHED BASH
 
-Combine rebuild + bless + verify into ONE bash invocation. Reduces 3-4
-round-trips into 1 call:
+Combine canvas-sync + rebuild + bless + verify into ONE bash invocation.
+Canvas-sync regenerates the playground manifest, tsup entries, package.json
+exports, and centernode runtime registry — keeps consumers (centernode,
+client-test) in sync without manual file edits.
 
 ```bash
 cd packages/tokens && ../../node_modules/.bin/tsup src/index.ts src/tailwind-preset.ts --format cjs,esm --dts --clean 2>&1 | tail -2 && \
-cd ../ui && ../../node_modules/.bin/tsup 2>&1 | tail -2 && \
+cd ../.. && node scripts/canvas/sync.mjs 2>&1 | tail -5 && \
+cd packages/ui && ../../node_modules/.bin/tsup 2>&1 | tail -2 && \
+../../apps/docs/node_modules/.bin/tailwindcss -c tailwind.config.ts -i styles/build.css -o dist/styles.css --minify 2>&1 | tail -2 && \
 cd ../.. && node scripts/figma/bless.mjs <slug> 2>&1 | tail -2 && \
 node scripts/figma/check.mjs <slug> 2>&1 | tail -5
 ```
@@ -510,11 +514,14 @@ above (re-run build + bless after removing).
 If you ran the build batch above (step 6+7), restart vite. Otherwise skip.
 
 ```bash
-lsof -ti :5174 :5175 :5176 :5177 2>/dev/null | xargs -r kill 2>/dev/null && \
+lsof -ti :5173 :5174 :5175 :5176 :5177 2>/dev/null | xargs -r kill 2>/dev/null && \
 sleep 1 && \
 rm -rf apps/docs/node_modules/.vite && \
 cd apps/docs && ./node_modules/.bin/vite
 ```
+
+Same logic available as standalone slash command `/restart-server` — use that
+when docs render doesn't update after edits outside `/sync-figma`.
 
 Run in background. Report new port + "hard refresh (Cmd+Shift+R)" to user.
 

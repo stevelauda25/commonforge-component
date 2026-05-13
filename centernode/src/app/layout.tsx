@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+// POD design system — tokens (CSS variables) + compiled Tailwind utilities.
+// Order matters: theme.css first (declares --color-* etc.), then styles.css
+// (utility classes that consume those vars).
+import "pod-test-tokens/theme.css";
+import "pod-test-ui/styles.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

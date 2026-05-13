@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo, createElement, Fragment } from "react";
+import { POD_SCOPE_NAMES, POD_SCOPE_VALUES, transformIfJSX } from "@/utils/podRuntime";
 const h = createElement;
 
 export default function LiveComponent({ code, componentName, props, registry }) {
@@ -9,9 +10,21 @@ export default function LiveComponent({ code, componentName, props, registry }) 
   useEffect(() => {
     try {
       const codeWithoutComments = code.replace(/\/\/.*|\/\*[\s\S]*?\*\//g, "").trim();
-      const isHtmlCode = codeWithoutComments.startsWith("<");
+      // HTML = starts with lowercase tag (`<div`, `<html`) or doctype (`<!DOCTYPE`).
+      // JSX  = starts with uppercase tag (`<Button`, `<MyCard`). Order matters:
+      // check JSX FIRST so it never falls through to the HTML iframe branch.
+      const isJsxSnippet = /^<[A-Z]/.test(codeWithoutComments);
+      const isHtmlCode = !isJsxSnippet && codeWithoutComments.startsWith("<");
       let executableCode = code;
       let targetName = componentName;
+
+      if (isJsxSnippet) {
+        executableCode = `function ${componentName || "Snippet"}() { return (\n${code}\n); }`;
+        targetName = componentName || "Snippet";
+      }
+
+      // Strip TypeScript types + transpile JSX to h() calls. No-op for plain h() code.
+      executableCode = transformIfJSX(executableCode);
 
       if (isHtmlCode) {
         const escapedHtml = code.replace(/`/g, "\\`").replace(/\$/g, "\\$");
@@ -117,13 +130,29 @@ export default function LiveComponent({ code, componentName, props, registry }) 
         targetName = "HtmlWrapper";
       }
 
-      // Build argument list: standard scope + all registered components
+      // Build argument list: standard scope + POD design system + all user-registered components.
+      // Strict-mode `new Function` rejects duplicate identifiers — if the user code
+      // declares `function Button() {}` or the registry already has a `Button`, we
+      // can't also inject POD's `Button` as a scope param. Filter conflicts out;
+      // user code wins (they explicitly shadowed POD).
       const registryNames = registry ? Object.keys(registry) : [];
       const registryValues = registry ? Object.values(registry) : [];
+      const userDeclaredNames = new Set([
+        ...registryNames,
+        ...Array.from(executableCode.matchAll(/function\s+([A-Z]\w*)\s*\(/g)).map((m) => m[1]),
+      ]);
+      const podScopeNames = [];
+      const podScopeValues = [];
+      for (let i = 0; i < POD_SCOPE_NAMES.length; i++) {
+        if (userDeclaredNames.has(POD_SCOPE_NAMES[i])) continue;
+        podScopeNames.push(POD_SCOPE_NAMES[i]);
+        podScopeValues.push(POD_SCOPE_VALUES[i]);
+      }
 
       // eslint-disable-next-line no-new-func
       const factory = new Function(
         "React", "h", "useState", "useEffect", "useRef", "useCallback", "useMemo", "Fragment",
+        ...podScopeNames,
         ...registryNames,
         `${executableCode}\nreturn typeof ${targetName} !== "undefined" ? ${targetName} : null;`
       );
@@ -131,6 +160,7 @@ export default function LiveComponent({ code, componentName, props, registry }) 
         { createElement, Fragment },
         h,
         useState, useEffect, useRef, useCallback, useMemo, Fragment,
+        ...podScopeValues,
         ...registryValues
       );
       if (typeof Comp !== "function") {

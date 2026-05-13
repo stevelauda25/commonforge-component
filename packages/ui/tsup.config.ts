@@ -3,10 +3,12 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: {
     index: 'src/index.ts',
-    button: 'src/button/index.ts',
-    checkbox: 'src/checkbox/index.ts',
+    'button': 'src/button/index.ts',
+    'checkbox': 'src/checkbox/index.ts',
+    'switch': 'src/switch/index.ts',
     'text-input': 'src/text-input/index.ts',
-    tooltip: 'src/tooltip/index.ts',
+    'tooltip': 'src/tooltip/index.ts',
+    canvas: 'src/canvas.ts',
   },
   format: ['cjs', 'esm'],
   dts: true,

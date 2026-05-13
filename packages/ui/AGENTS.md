@@ -8,11 +8,18 @@
 ```json
 {
   "package": "pod-test-ui",
-  "version": "0.1.1",
+  "version": "0.1.4",
   "manifest_version": 1,
-  "last_updated": "2026-05-11"
+  "last_updated": "2026-05-13"
 }
 ```
+
+**Changelog 0.1.3 → 0.1.4:**
+- New subpath: `pod-test-ui/canvas` — neutral manifest (component name, variants, sizes, defaultProps, examples) for playground / infinite-canvas tools to discover POD components.
+- New subpath: `pod-test-ui/styles.css` — compiled Tailwind utility bundle. For consumers that don't run their own Tailwind: `import 'pod-test-ui/styles.css'`. `@tailwind base` intentionally omitted to avoid leaking element-level preflight into host UI.
+- New component: `TextInput` — single-line text input, variants `default`, sizes `sm`/`md`/`lg`. See component table.
+- New component: `Switch` — controlled/uncontrolled boolean toggle (`sm` · `md`). NOTE: not yet in Figma source — experimental, may be revised once design lands.
+- Build pipeline: added `scripts/canvas/sync.mjs` codegen. Per-component metadata at `src/<dir>/canvas.ts` auto-aggregates to tsup/package.json/canvas manifest/centernode runtime.
 
 **Changelog 0.1.0 → 0.1.1:**
 - Fix: Primary button hover state no longer renders maroon (`bg-danger-hover` cross-namespace bug — accent and danger are separate sacred namespaces).
@@ -26,12 +33,28 @@
 |---|---|---|---|---|---|
 | `Button` | stable | `primary` · `outline` · `error` | `xs` · `sm` · `md` · `lg` | uncontrolled (default `type='button'`) | `/components/button` |
 | `Checkbox` | stable | — | — | **controlled only** (`checked` + `onCheckedChange`) | `/components/checkbox` |
+| `TextInput` | stable | `default` | `sm` · `md` · `lg` | controlled + uncontrolled (`defaultValue` / `value`) | `/components/text-input` |
 | `Tooltip` | stable | `default` · `info` · `warning` · `error` | — | n/a (wraps a focusable child) | `/components/tooltip` |
+| `Switch` | **experimental** (not in Figma yet) | — | `sm` · `md` | controlled + uncontrolled (`defaultChecked` / `checked` + `onCheckedChange`) | — |
 
 **Utility export:** `cn(...args)` — Tailwind className composer dengan conflict resolution (`tailwind-merge` inside).
 
+**Subpath imports (tree-shakable):**
 ```tsx
-import { Button, Checkbox, Tooltip, cn } from 'pod-test-ui';
+import { Button } from 'pod-test-ui/button';
+import { Checkbox } from 'pod-test-ui/checkbox';
+import { TextInput } from 'pod-test-ui/text-input';
+import { Switch } from 'pod-test-ui/switch';
+import { Tooltip } from 'pod-test-ui/tooltip';
+// Canvas/playground catalog (machine-readable manifest):
+import { canvasManifest } from 'pod-test-ui/canvas';
+// Compiled Tailwind utilities (for non-Tailwind consumers):
+import 'pod-test-ui/styles.css';
+```
+
+Or top-level umbrella (less ideal for tree-shaking):
+```tsx
+import { Button, Checkbox, TextInput, Tooltip, cn } from 'pod-test-ui';
 ```
 
 ## Component intent map (untuk natural-language → primitive)
@@ -46,7 +69,10 @@ Kalau user bilang… | Pakai…
 "loading button", "submitting" | `<Button loading>...</Button>` (auto-disabled + spinner)
 "checkbox", "multi-select", "select all", "agree to terms" | `<Checkbox>`
 "indeterminate", "partial select" | `<Checkbox checked="indeterminate">`
-"search", "filter input", "query box", "cari" | ❌ Belum ada. Build local.
+"search", "filter input", "query box", "cari" | `<TextInput leftIcon={<Search />} placeholder="…" />` (POD pakai TextInput, tidak ada primitive khusus SearchInput)
+"text input", "form field", "text field", "input box" | `<TextInput>`
+"text input dengan error", "validation error" | `<TextInput error="..." />`
+"switch", "toggle", "on/off" | `<Switch>` ⚠ experimental — confirm dengan designer kalau ini final
 "tooltip", "hover help", "shortcut hint" | `<Tooltip>` (wraps a focusable element)
 "input text", "form field", "text box" | ❌ **Belum ada di pod-test-ui**. Build local pakai POD tokens (Rule 10 di consumer's CLAUDE.md)
 "modal", "dialog", "popup" | ❌ Belum ada. Build local.

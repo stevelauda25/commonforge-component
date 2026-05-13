@@ -8,7 +8,7 @@ This file is **mandatory reading** before generating or editing any code in this
 
 This is `client-test` — a React + Vite + TypeScript application that consumes the **POD Design System** via two npm packages:
 
-- **`pod-test-ui`** — React components (`Button`, `Checkbox`, `SearchInput`, `Tooltip`)
+- **`pod-test-ui`** — React components (`Button`, `Checkbox`, `TextInput`, `Tooltip`, `Switch` [experimental])
 - **`pod-test-tokens`** — Design tokens (CSS variables + Tailwind preset)
 
 These packages are the **single source of truth** for visual design. They are token-driven, dark-mode-aware, and accessibility-aware. Treat them as production primitives — never re-implement what they provide.
@@ -39,17 +39,18 @@ When generating ANY UI — a screen, a card, a form, a single row — your first
 
 ```tsx
 // ✅ ALWAYS — start every page from these imports
-import { Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
+import { Button, Checkbox, TextInput, Tooltip, Switch } from 'pod-test-ui';
 
 <Button variant="primary">Save</Button>
 <Checkbox checked={x} onCheckedChange={setX} label="Agree" />
-<SearchInput value={q} onValueChange={setQ} />
+<TextInput value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…" />
 <Tooltip content="Hint"><Button iconOnly leftIcon={<X />} aria-label="Close" /></Tooltip>
+<Switch checked={on} onCheckedChange={setOn} />   {/* experimental */}
 
 // ❌ NEVER — even for "quick" UI, even for "just a prototype"
 <button className="bg-green-600 text-white px-4 py-2 rounded">Save</button>
 <input type="checkbox" />
-<input type="search" />
+<input type="text" />
 ```
 
 **Coverage map** (component → POD primitive):
@@ -58,11 +59,12 @@ import { Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
 |---|---|
 | Button, action, CTA, submit, link-styled-as-button | `<Button>` (variant: primary/outline/error) |
 | Checkbox, multi-select, "select all", agree to terms | `<Checkbox>` |
-| Search, filter input, query, find | `<SearchInput>` |
+| Text input, form field, search box, query input | `<TextInput>` (use `leftIcon={<Search />}` for search use case) |
 | Tooltip, hover help, keyboard-shortcut hint, icon explanation | `<Tooltip>` |
+| Toggle, on/off, enable feature | `<Switch>` ⚠ experimental — confirm with designer before shipping |
 | Native `<button>` | ❌ Never. Always `<Button>`. |
 | Native `<input type="checkbox">` | ❌ Never. Always `<Checkbox>`. |
-| Native `<input type="search">` | ❌ Never. Always `<SearchInput>`. |
+| Native `<input type="text">` / `<input type="search">` | ❌ Never. Always `<TextInput>`. |
 
 If you find yourself writing `<button>`, `<input>`, or any styled `<div>` that *acts like* a button/input/checkbox/tooltip — STOP. Replace with the POD primitive.
 
@@ -128,19 +130,26 @@ Verify by checking the generated CSS header — it must say `tailwindcss v3.x.x`
 
 ### Rule 5 — Controlled Components
 
-`Checkbox` and `SearchInput` are controlled-only. Always own their state.
+`Checkbox` is controlled-only. `TextInput` and `Switch` accept both controlled and uncontrolled patterns — but for forms with validation, prefer controlled.
 
 ```tsx
-// ✅ ALWAYS
+// ✅ ALWAYS (Checkbox = controlled only)
 const [checked, setChecked] = useState<boolean | 'indeterminate'>(false);
 <Checkbox checked={checked} onCheckedChange={setChecked} />
 
+// ✅ TextInput controlled (preferred for forms)
 const [query, setQuery] = useState('');
-<SearchInput value={query} onValueChange={setQuery} />
+<TextInput value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search…" />
 
-// ❌ NEVER — no defaultValue / uncontrolled mode
+// ✅ TextInput uncontrolled (OK for one-shot inputs)
+<TextInput defaultValue="" placeholder="Type here…" />
+
+// ✅ Switch — both patterns supported
+<Switch checked={on} onCheckedChange={setOn} />
+<Switch defaultChecked={true} />
+
+// ❌ NEVER — Checkbox does not accept defaultChecked
 <Checkbox defaultChecked />
-<SearchInput />
 ```
 
 ### Rule 6 — Tooltip Targets Must Be Focusable
@@ -192,11 +201,13 @@ Always import from the package root. Subpath imports work but are not the public
 
 ```tsx
 // ✅ ALWAYS
-import { Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
+import { Button, Checkbox, TextInput, Tooltip, Switch } from 'pod-test-ui';
 
-// ❌ NEVER
+// ❌ NEVER (private build artifact)
 import { Button } from 'pod-test-ui/dist/button';
-import { Button } from 'pod-test-ui/button';   // exists, but don't use
+
+// ⚠ Subpath imports work and are valid for tree-shaking, but top-level is the preferred public API:
+import { Button } from 'pod-test-ui/button';   // works, prefer top-level
 ```
 
 ### Rule 10 — When a Primitive Is Missing
@@ -341,13 +352,13 @@ When reviewing existing code (yours or others') in this project, flag and fix an
 
 - ✗ Hardcoded colors: `bg-[#…]`, `text-[#…]`, `style={{ color: '…' }}`
 - ✗ `dark:` modifiers anywhere
-- ✗ Native `<button>`, `<input type="checkbox">`, `<input type="search">` for new UI
+- ✗ Native `<button>`, `<input type="checkbox">`, `<input type="text">`, `<input type="search">` for new UI — use `<Button>`, `<Checkbox>`, `<TextInput>`
 - ✗ Tailwind v4 plugin (`@tailwindcss/postcss`) in `package.json`
 - ✗ `<Tooltip>` wrapping a non-focusable element
 - ✗ Icon-only `<Button>` without `aria-label`
-- ✗ `defaultChecked` / uncontrolled `<Checkbox>` or `<SearchInput>`
+- ✗ `defaultChecked` / uncontrolled `<Checkbox>` (Checkbox is controlled-only; TextInput / Switch DO accept uncontrolled, that's fine)
 - ✗ Subpath imports: `pod-test-ui/dist/...`
-- ✗ Re-implementing `Button`, `Checkbox`, `SearchInput`, or `Tooltip`
+- ✗ Re-implementing `Button`, `Checkbox`, `TextInput`, `Tooltip`, or `Switch`
 - ✗ Legacy shadow classes (`shadow-sm`, `shadow-md`, `shadow-lg`) — removed in 0.1.0, migrate to `shadow-foundation-*`
 - ✗ Inventing radius keys (`rounded-2.5xl`, `rounded-huge`) — only the documented scale is real
 - ✗ Touching `experiment-*` tokens for "production" UI — those are time-bounded experiments, not stable primitives

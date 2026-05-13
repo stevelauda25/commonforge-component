@@ -198,6 +198,25 @@ to expose as utility class.
 Use pre-registered MDX globals (`PageHeader`, `PreviewCard`, `PropsTable`,
 `StatusBadge`) — no import needed.
 
+**New component** (e.g. Switch) → create 3 files, then run canvas-sync:
+1. `packages/ui/src/switch/switch.tsx` — component code
+2. `packages/ui/src/switch/index.ts` — `export { Switch } from './switch.js';`
+3. `packages/ui/src/switch/canvas.ts` — exports `switchCanvas` ([CanvasComponent](packages/ui/src/canvas-types.ts)):
+   ```ts
+   import type { CanvasComponent } from '../canvas-types.js';
+   export const switchCanvas: CanvasComponent = {
+     name: 'Switch',
+     importFrom: 'pod-test-ui/switch',
+     variants: ['default'],
+     sizes: ['sm', 'md'],
+     defaultProps: { checked: false },
+   };
+   ```
+Then `node scripts/canvas/sync.mjs` (or `npm run build` in packages/ui).
+The script auto-updates: `tsup.config.ts` entries, `package.json` exports,
+`src/canvas.ts` aggregator, `centernode/src/utils/podRuntime.js`. Centernode
+sidebar picks it up automatically. No manual file edits needed.
+
 ## Verification (always run after sync)
 
 ```bash

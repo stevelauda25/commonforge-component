@@ -1,9 +1,105 @@
+// =============================================================
+// JSX-snippet helpers — used by canvas nodes that contain a single component
+// instance like `<Button variant="primary" size="md">Save changes</Button>`.
+// These are POD design-system instances, not user-defined components.
+// =============================================================
+
+const JSX_SNIPPET_RE = /^\s*<([A-Z]\w*)/;
+
+export function isJsxSnippet(code) {
+  const cleaned = code.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "").trim();
+  return JSX_SNIPPET_RE.test(cleaned);
+}
+
+export function extractJsxTag(code) {
+  const cleaned = code.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "").trim();
+  const m = cleaned.match(JSX_SNIPPET_RE);
+  return m ? m[1] : null;
+}
+
+/**
+ * Parse a JSX snippet against a canvasManifest entry. Returns a prop schema
+ * compatible with PropInput — known enum props (variant, size) get enum type
+ * with options from manifest; arbitrary attrs are strings/booleans/numbers;
+ * inner text becomes a `children` string prop.
+ */
+export function parseJsxSnippetSchema(code, manifestEntry) {
+  const schema = {};
+  const tag = extractJsxTag(code);
+  if (!tag) return schema;
+
+  // 1. Attributes — match  name="value"  name={literal}  name (boolean shorthand)
+  const attrRegex = /\s([a-zA-Z][\w-]*)(?:=("[^"]*"|'[^']*'|\{[^}]+\}))?/g;
+  // Limit search to the opening tag <Tag ...>
+  const openTagEnd = code.indexOf(">");
+  const openTag = openTagEnd > 0 ? code.slice(0, openTagEnd + 1) : code;
+  let m;
+  while ((m = attrRegex.exec(openTag)) !== null) {
+    const name = m[1];
+    if (name === tag) continue; // skip the tag name itself
+    const rawVal = m[2];
+    if (rawVal === undefined) {
+      // Boolean shorthand: `disabled` → true
+      schema[name] = { type: "boolean", default: true };
+      continue;
+    }
+    if (rawVal.startsWith("{")) {
+      // JS expression — try literal values
+      const inner = rawVal.slice(1, -1).trim();
+      if (inner === "true" || inner === "false") {
+        schema[name] = { type: "boolean", default: inner === "true" };
+      } else if (/^-?\d+(\.\d+)?$/.test(inner)) {
+        schema[name] = { type: "number", default: parseFloat(inner) };
+      } else {
+        schema[name] = { type: "string", default: inner };
+      }
+      continue;
+    }
+    // Quoted string
+    const str = rawVal.slice(1, -1);
+    schema[name] = { type: "string", default: str };
+  }
+
+  // 2. Inner text → children prop (only if simple text, not nested JSX)
+  const innerMatch = code.match(/>([^<]*?)<\/[A-Z]/);
+  if (innerMatch && innerMatch[1].trim()) {
+    schema.children = { type: "string", default: innerMatch[1].trim() };
+  }
+
+  // 3. Promote variant/size to enums via manifest
+  if (manifestEntry) {
+    if (schema.variant && manifestEntry.variants?.length) {
+      schema.variant = {
+        type: "enum",
+        options: manifestEntry.variants,
+        default: schema.variant.default,
+      };
+    }
+    if (schema.size && manifestEntry.sizes?.length) {
+      schema.size = {
+        type: "enum",
+        options: manifestEntry.sizes,
+        default: schema.size.default,
+      };
+    }
+  }
+
+  return schema;
+}
 
 // =============================================================
 export function parseSchemaFromCode(code) {
   // Strip comments first so we don't parse props from example code in comments
   let cleaned = code.replace(/\/\*[\s\S]*?\*\//g, "");
   cleaned = cleaned.replace(/\/\/[^\n]*/g, "");
+
+  // JSX snippet (component instance) — schema is handled by caller via
+  // parseJsxSnippetSchema(code, manifestEntry). We return {} here; the caller
+  // can detect JSX via isJsxSnippet() and provide the proper schema with
+  // enum metadata. This keeps parseSchemaFromCode side-effect free.
+  if (isJsxSnippet(cleaned)) {
+    return {};
+  }
 
   if (cleaned.trim().startsWith("<")) {
     const schema = {};
@@ -160,11 +256,41 @@ export function extractComponentName(code) {
 export function updateCodeWithProp(code, key, value) {
   let updated = code;
 
+  // 0. JSX snippet — update attributes inside `<Tag ...>` or replace children text.
+  // Detected by opening uppercase tag at the start.
+  if (isJsxSnippet(code)) {
+    if (key === "children") {
+      // Replace inner text: `>...old text...</Tag>` → `>new text</Tag>`
+      return code.replace(/>([^<]*)<\/([A-Z]\w*)>$/, `>${value}</$2>`);
+    }
+    // Boolean: presence-form attribute (`disabled` or `disabled={true}`)
+    if (typeof value === "boolean") {
+      // Remove all forms of this attr first
+      const stripped = code.replace(new RegExp(`\\s${key}(?:=(?:"[^"]*"|'[^']*'|\\{[^}]+\\}))?`, "g"), "");
+      if (!value) return stripped;
+      // Re-insert before closing `>` of opening tag
+      const m = stripped.match(/^(\s*<[A-Z]\w*\b)([^>]*)(>)/);
+      if (!m) return stripped;
+      return `${m[1]}${m[2]} ${key}={true}${m[3]}${stripped.slice(m[0].length)}`;
+    }
+    // String / number — replace existing attr or insert new
+    const attrRegex = new RegExp(`(\\s${key}=)("[^"]*"|'[^']*'|\\{[^}]+\\})`);
+    if (attrRegex.test(code)) {
+      const formatted = typeof value === "number" ? `{${value}}` : `"${value}"`;
+      return code.replace(attrRegex, `$1${formatted}`);
+    }
+    // Insert new attr before closing `>` of opening tag
+    const m = code.match(/^(\s*<[A-Z]\w*\b)([^>]*)(>)/);
+    if (!m) return code;
+    const formatted = typeof value === "number" ? `{${value}}` : `"${value}"`;
+    return `${m[1]}${m[2]} ${key}=${formatted}${m[3]}${code.slice(m[0].length)}`;
+  }
+
   // 1. Update CSS Variables: --key: value;
   if (key.startsWith("--")) {
     const cssVarRegex = new RegExp(`(${key}\\s*:\\s*)([^;]+)(;)`, "g");
     updated = updated.replace(cssVarRegex, `$1${value}$3`);
-  } 
+  }
   // 2. Update Template Variables: {{ key: "value" }} or {{ key }}
   else if (code.includes("{{")) {
     const textVarRegex = new RegExp(`(\\{\\{\\s*${key}\\s*)(:\\s*[^}]+)?(\\s*\\}\\})`, "g");

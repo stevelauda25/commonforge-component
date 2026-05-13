@@ -4,11 +4,13 @@ import {
   Plus, Download, Upload, Trash2, Copy, Code2, X, ZoomIn, ZoomOut, Maximize2,
   Sparkles, ChevronLeft, Check, MousePointer2, Hand, Palette,
   Smartphone, Tablet, Monitor, Frame, SlidersHorizontal, RotateCcw, FileCode, Info,
-  Layers, Ruler
+  Layers, Ruler, Package,
 } from "lucide-react";
 import { DEFAULT_TOKENS, FRAME_PRESETS, TEMPLATES, DEMO_CODE } from "@/constants/playground";
-import { parseSchemaFromCode, extractComponentName, updateCodeWithProp } from "@/utils/parser";
+import { parseSchemaFromCode, extractComponentName, updateCodeWithProp, isJsxSnippet, extractJsxTag, parseJsxSnippetSchema } from "@/utils/parser";
 import { tokensToCSS, tokensToTailwind, nodeToJSXFile, downloadFile } from "@/utils/exportHelpers";
+import { POD_SCOPE_NAMES, POD_SCOPE_VALUES, transformIfJSX, canvasManifest } from "@/utils/podRuntime";
+import { POD_DEFAULT_TOKENS, podTokensToCSS } from "@/utils/podTokens";
 import CodeEditor from "./CodeEditor";
 import LiveComponent from "./LiveComponent";
 import PropInput from "./PropInput";
@@ -17,8 +19,25 @@ import MeasureOverlay from "./MeasureOverlay";
 import ResizeHandles from "./ResizeHandles";
 import TokenEditor from "./TokenEditor";
 import SizeInput from "./SizeInput";
+import PodLibraryPanel from "./PodLibraryPanel";
 
 const h = createElement;
+
+// =============================================================
+// Inject `:root { --color-* }` overrides for POD design system tokens.
+// These override pod-test-tokens/theme.css at runtime, so every POD component
+// on the canvas (Button, Checkbox, TextInput…) reflects the change instantly.
+export function usePodTokensCSS(tokens) {
+  useEffect(() => {
+    let styleEl = document.getElementById("playground-pod-tokens");
+    if (!styleEl) {
+      styleEl = document.createElement("style");
+      styleEl.id = "playground-pod-tokens";
+      document.head.appendChild(styleEl);
+    }
+    styleEl.textContent = podTokensToCSS(tokens);
+  }, [tokens]);
+}
 
 // =============================================================
 export function useGlobalTokensCSS(tokens) {
@@ -73,7 +92,9 @@ export default function ComponentPlayground() {
   const [nodes, setNodes] = useState([]);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [globalTokens, setGlobalTokens] = useState(DEFAULT_TOKENS);
+  const [globalPodTokens, setGlobalPodTokens] = useState(POD_DEFAULT_TOKENS);
   const [tokensPanelOpen, setTokensPanelOpen] = useState(false);
+  const [tokensTab, setTokensTab] = useState("pod"); // "pod" | "legacy"
   const [inspectorTab, setInspectorTab] = useState("props");
   const [showSyntaxHint, setShowSyntaxHint] = useState(false);
 
@@ -96,18 +117,35 @@ export default function ComponentPlayground() {
   const registry = useMemo(() => {
     const reg = {};
     for (const node of nodes) {
+      // JSX snippet nodes (POD instances) — they USE a component, don't DEFINE one.
+      // Skip — they don't contribute to the registry.
+      if (isJsxSnippet(node.code)) continue;
       const name = extractComponentName(node.code);
       if (!name || name === "Component") continue; // skip generic / unnamed
       try {
+        const transformed = transformIfJSX(node.code);
+        // Skip POD scope params that would clash with a function declared in user code.
+        const userNames = new Set(
+          Array.from(transformed.matchAll(/function\s+([A-Z]\w*)\s*\(/g)).map((m) => m[1])
+        );
+        const podNames = [];
+        const podValues = [];
+        for (let i = 0; i < POD_SCOPE_NAMES.length; i++) {
+          if (userNames.has(POD_SCOPE_NAMES[i])) continue;
+          podNames.push(POD_SCOPE_NAMES[i]);
+          podValues.push(POD_SCOPE_VALUES[i]);
+        }
         // eslint-disable-next-line no-new-func
         const factory = new Function(
           "React", "h", "useState", "useEffect", "useRef", "useCallback", "useMemo", "Fragment",
-          `${node.code}\nreturn typeof ${name} !== "undefined" ? ${name} : null;`
+          ...podNames,
+          `${transformed}\nreturn typeof ${name} !== "undefined" ? ${name} : null;`
         );
         const Comp = factory(
           { createElement, Fragment },
           h,
-          useState, useEffect, useRef, useCallback, useMemo, Fragment
+          useState, useEffect, useRef, useCallback, useMemo, Fragment,
+          ...podValues,
         );
         if (typeof Comp === "function") {
           reg[name] = Comp;
@@ -121,6 +159,15 @@ export default function ComponentPlayground() {
   }, [nodesCodeSignature]);
 
   useGlobalTokensCSS(globalTokens);
+  usePodTokensCSS(globalPodTokens);
+
+  const updateGlobalPodToken = (category, key, value) => {
+    setGlobalPodTokens((prev) => ({
+      ...prev,
+      [category]: { ...(prev[category] || {}), [key]: value },
+    }));
+  };
+  const resetPodTokens = () => setGlobalPodTokens(POD_DEFAULT_TOKENS);
 
   useEffect(() => {
     (async () => {
@@ -129,7 +176,9 @@ export default function ComponentPlayground() {
         if (saved?.value) {
           const data = JSON.parse(saved.value);
           // Sanity: reset any node with broken customSize
-          const safeNodes = (data.nodes || []).map((n) => {
+          const safeNodes = (data.nodes || [])
+            .filter((n) => n.id !== "demo" && n.code !== DEMO_CODE)
+            .map((n) => {
             let wMode = "fixed";
             let hMode = "auto";
             let wVal = 400;
@@ -153,7 +202,9 @@ export default function ComponentPlayground() {
             }
             
             // Re-parse schema so new parser logic applies to old nodes
-            const reParsedSchema = parseSchemaFromCode(n.code);
+            const reParsedSchema = isJsxSnippet(n.code)
+              ? parseJsxSnippetSchema(n.code, canvasManifest.components.find((c) => c.name === extractJsxTag(n.code)))
+              : parseSchemaFromCode(n.code);
             const mergedProps = { ...n.props };
             for (const [k, v] of Object.entries(reParsedSchema)) {
               if (!(k in mergedProps)) mergedProps[k] = v.default;
@@ -173,33 +224,22 @@ export default function ComponentPlayground() {
           return;
         }
       } catch {}
-      const demoSchema = parseSchemaFromCode(DEMO_CODE);
-      const demoProps = {};
-      for (const [k, v] of Object.entries(demoSchema)) demoProps[k] = v.default;
-      const demoNode = {
-        id: "demo",
-        name: "Button",
-        code: DEMO_CODE,
-        schema: demoSchema,
-        props: demoProps,
-        customSize: { width: 400, widthMode: "auto", height: 200, heightMode: "auto" },
-        tokenOverrides: {},
-        x: 400,
-        y: 200,
-      };
-      setNodes([demoNode]);
-      setSelectedNodeId("demo");
+      // Empty canvas by default — user picks from POD Library or "Add component".
+      // No auto-spawn (DEMO_CODE removed; its `function Button` shadowed POD scope).
+      setNodes([]);
       setInitialized(true);
     })();
   }, []);
 
   useEffect(() => {
-    if (!initialized || nodes.length === 0) return;
+    if (!initialized) return;
     const t = setTimeout(async () => {
       try {
         await window.storage?.set("playground:v20", JSON.stringify({ nodes, globalTokens }));
-        setSaveStatus("saved");
-        setTimeout(() => setSaveStatus(""), 1500);
+        if (nodes.length > 0) {
+          setSaveStatus("saved");
+          setTimeout(() => setSaveStatus(""), 1500);
+        }
       } catch {}
     }, 800);
     return () => clearTimeout(t);
@@ -227,6 +267,31 @@ export default function ComponentPlayground() {
     setSelectedNodeId(id);
   };
 
+  // Spawn a node from a POD canvasManifest pick (variant × size cell or example).
+  // Emits a single-line JSX snippet — LiveComponent transpiles via sucrase at render.
+  const addPodNode = ({ componentName, code }) => {
+    const id = `n${Date.now()}`;
+    const cx = (-pan.x + (canvasRef.current?.clientWidth || 800) / 2) / zoom;
+    const cy = (-pan.y + (canvasRef.current?.clientHeight || 600) / 2) / zoom;
+    const manifestEntry = canvasManifest.components.find((c) => c.name === componentName);
+    const schema = parseJsxSnippetSchema(code, manifestEntry);
+    const props = {};
+    for (const [k, v] of Object.entries(schema)) props[k] = v.default;
+    const newNode = {
+      id,
+      name: `${componentName.toLowerCase()}-${nodes.length + 1}`,
+      code,
+      schema,
+      props,
+      customSize: { width: 240, widthMode: "auto", height: 80, heightMode: "auto" },
+      tokenOverrides: {},
+      x: cx - 80,
+      y: cy - 40,
+    };
+    setNodes([...nodes, newNode]);
+    setSelectedNodeId(id);
+  };
+
   const updateNode = (id, updates) => setNodes((p) => p.map((n) => n.id === id ? { ...n, ...updates } : n));
   const updateNodeProp = (id, k, v) => setNodes((p) => p.map((n) => {
     if (n.id === id) {
@@ -236,7 +301,9 @@ export default function ComponentPlayground() {
     return n;
   }));
   const updateNodeCode = (id, newCode) => {
-    const newSchema = parseSchemaFromCode(newCode);
+    const newSchema = isJsxSnippet(newCode)
+      ? parseJsxSnippetSchema(newCode, canvasManifest.components.find((c) => c.name === extractJsxTag(newCode)))
+      : parseSchemaFromCode(newCode);
     setNodes((p) => p.map((n) => {
       if (n.id !== id) return n;
       const newProps = { ...n.props };
@@ -589,6 +656,7 @@ export default function ComponentPlayground() {
       </header>
 
       <div className="flex-1 flex overflow-hidden relative">
+        <PodLibraryPanel manifest={canvasManifest} onAddPodNode={addPodNode} />
         {tokensPanelOpen && (
           <div className="w-[300px] border-r border-neutral-200 bg-white flex flex-col shrink-0 z-20">
             <div className="h-9 px-3 flex items-center gap-2 border-b border-neutral-200 bg-neutral-50/50">
@@ -598,11 +666,53 @@ export default function ComponentPlayground() {
                 <ChevronLeft className="w-3.5 h-3.5 text-neutral-500" />
               </button>
             </div>
+            <div className="flex border-b border-neutral-200 bg-neutral-50/50">
+              <button
+                onClick={() => setTokensTab("pod")}
+                className={`flex-1 px-3 py-2 text-[11px] font-semibold transition-colors ${
+                  tokensTab === "pod"
+                    ? "text-neutral-900 border-b-2 border-neutral-900 -mb-px"
+                    : "text-neutral-500 hover:text-neutral-700"
+                }`}
+              >
+                POD Design System
+              </button>
+              <button
+                onClick={() => setTokensTab("legacy")}
+                className={`flex-1 px-3 py-2 text-[11px] font-semibold transition-colors ${
+                  tokensTab === "legacy"
+                    ? "text-neutral-900 border-b-2 border-neutral-900 -mb-px"
+                    : "text-neutral-500 hover:text-neutral-700"
+                }`}
+              >
+                Component
+              </button>
+            </div>
             <div className="flex-1 overflow-y-auto p-4">
-              <TokenEditor tokens={globalTokens} onChange={updateGlobalToken} />
-              <div className="text-[10px] text-neutral-400 leading-relaxed pt-4 mt-4 border-t border-neutral-200">
-                In code: <span className="font-mono text-neutral-600">var(--token-colors-brand)</span>
-              </div>
+              {tokensTab === "pod" ? (
+                <>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] text-neutral-500">Live override of pod-test-tokens</span>
+                    <button
+                      onClick={resetPodTokens}
+                      className="text-[10px] text-neutral-500 hover:text-neutral-900 underline"
+                    >
+                      Reset all
+                    </button>
+                  </div>
+                  <TokenEditor tokens={globalPodTokens} onChange={updateGlobalPodToken} />
+                  <div className="text-[10px] text-neutral-400 leading-relaxed pt-4 mt-4 border-t border-neutral-200">
+                    In code: <span className="font-mono text-neutral-600">var(--color-accent-default)</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <TokenEditor tokens={globalTokens} onChange={updateGlobalToken} />
+                  <div className="text-[10px] text-neutral-400 leading-relaxed pt-4 mt-4 border-t border-neutral-200">
+                    In code: <span className="font-mono text-neutral-600">var(--token-colors-brand)</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -691,12 +801,14 @@ export default function ComponentPlayground() {
 
           {nodes.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="text-center">
+              <div className="text-center max-w-sm px-6">
                 <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-neutral-100 flex items-center justify-center">
-                  <FileCode className="w-5 h-5 text-neutral-400" />
+                  <Package className="w-5 h-5 text-neutral-400" />
                 </div>
-                <div className="text-sm text-neutral-600 font-medium mb-1">Canvas is empty</div>
-                <div className="text-[11px] text-neutral-400">Click "Add component" to get started</div>
+                <div className="text-sm text-neutral-700 font-medium mb-1">Canvas is empty</div>
+                <div className="text-[11px] text-neutral-500 leading-relaxed">
+                  Pick a component from the <span className="font-semibold text-neutral-700">POD Components</span> sidebar on the left.
+                </div>
               </div>
             </div>
           )}
@@ -857,11 +969,11 @@ export default function ComponentPlayground() {
                 {inspectorTab === "tokens" && (
                   <div className="flex-1 overflow-y-auto p-4">
                     <div className="text-[10px] text-neutral-500 leading-relaxed mb-4 p-2.5 bg-violet-50 border border-violet-100 rounded-md">
-                      Override global tokens for this component only. Click the reset icon to revert.
+                      Override tokens for this component only. Click the reset icon to revert.
                     </div>
                     <TokenEditor
                       tokens={selectedNode.tokenOverrides || {}}
-                      referenceTokens={globalTokens}
+                      referenceTokens={isJsxSnippet(selectedNode.code) ? globalPodTokens : globalTokens}
                       isOverride
                       onChange={(cat, key, val) => updateNodeTokenOverride(selectedNode.id, cat, key, val)}
                     />
