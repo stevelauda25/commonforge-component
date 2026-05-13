@@ -30,6 +30,7 @@ export const routes: RouteEntry[] = [
   { path: '/components/checkbox',     label: 'Checkbox',     category: 'component', status: 'ready',   description: 'Multi-select boolean input.',     load: () => import('../pages/components/Checkbox.mdx') },
 
   { path: '/components/text-input',    label: 'Text Input',   category: 'component', status: 'ready',    description: 'Single-line text field with label, hint, and error support.', load: () => import('../pages/components/TextInput.mdx') },
+  { path: '/components/search-input',  label: 'Search Input', category: 'component', status: 'ready',    description: 'Search field with default icon, ⌘K shortcut hint, and optional clear button.', load: () => import('../pages/components/SearchInput.mdx') },
 
   // Components — planned
   { path: '/components/tooltip',      label: 'Tooltip',      category: 'component', status: 'planned', description: 'Contextual help on hover/focus.', load: () => import('../pages/components/Tooltip.mdx') },

@@ -20,6 +20,11 @@
       "import": "./dist/checkbox.mjs",
       "require": "./dist/checkbox.js"
     },
+    "./search-input": {
+      "types": "./dist/search-input.d.ts",
+      "import": "./dist/search-input.mjs",
+      "require": "./dist/search-input.js"
+    },
     "./switch": {
       "types": "./dist/switch.d.ts",
       "import": "./dist/switch.mjs",

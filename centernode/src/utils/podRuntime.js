@@ -7,6 +7,7 @@
  */
 import { Button } from "pod-test-ui/button";
 import { Checkbox } from "pod-test-ui/checkbox";
+import { SearchInput } from "pod-test-ui/search-input";
 import { Switch } from "pod-test-ui/switch";
 import { TextInput } from "pod-test-ui/text-input";
 import { canvasManifest } from "pod-test-ui/canvas";
@@ -15,6 +16,7 @@ import { transform } from "sucrase";
 export const POD_COMPONENTS = {
   Button,
   Checkbox,
+  SearchInput,
   Switch,
   TextInput
 };

@@ -72,6 +72,29 @@ If FIRST-SYNC → **FULL PATH is mandatory** (skip FAST PATH entirely). You MUST
 hash — it does NOT validate visual fidelity. `check.mjs IN SYNC` after a
 first-sync without visual audit is a LIE waiting to be discovered by the user.
 
+**FIRST-SYNC variant matrix audit (only when component has >1 variant OR >2 sizes):**
+
+For Button-like components (3v × 4s × 3 states = 36 cells), inference is the
+common failure mode. Required ONLY on first-sync (existing-component routine
+sync stays FAST PATH, no audit overhead):
+
+1. From `get_design_context.COMPONENT_SET.children`, emit ONE row per
+   `(variant, state, size)` combo as a markdown table with columns:
+   `fill | stroke | radius | textColor | fontSize | fontWeight | padding | effects`.
+2. Trace each row to the generated `variantClasses[v]` + `sizeClasses[s]` +
+   state modifiers in your scaffolded `.tsx`. Resolve every Tailwind class
+   → theme.css → hex.
+3. Diff. Forbidden statements: "probably same as md", "all sizes share radius",
+   "outline hover is just a darker variant". Every row gets its own check.
+4. Per-variant overrides (e.g. `Primary/lg` = a non-brand color) → add
+   `experiment-<name>` token + targeted `variant === 'X' && size === 'Y'`
+   override. NEVER touch sacred tokens.
+5. Final report adds: `Variant matrix audited: N cells, M mismatches → fixed`.
+
+If you suspect drift in an already-validated component (user reports "looks
+wrong"), don't re-audit in `/sync-figma` — use `/verify-component <slug>` as
+a standalone audit instead. Keeps routine sync fast.
+
 **Forbidden rationalizations:**
 - ❌ "Existing code uses `accent`, probably the designer meant brand color" — NO.
   Figma is ground truth. Read what it says, not what feels semantically clean.
@@ -277,6 +300,12 @@ grep -nE "variant === 'primary'.*danger-|variant === 'error'.*accent-" packages/
 **Granular rule:** if Figma drift says `Type=Primary, Size=Large` only —
 your override matches `variant === 'primary' && size === 'lg'` only. No
 broader scope. No "while we're at it, let me also update Medium". No.
+
+> **Multi-variant fidelity audit** is folded into **step 0.5 FIRST-SYNC GUARD**
+> only — for new components being scaffolded from scratch. Routine sync of
+> already-validated code does NOT re-audit every cell (FAST PATH stays fast).
+> If you need to spot-check an existing component, use `/verify-component <slug>`
+> as a separate, user-triggered audit.
 
 ### 5.5 Auto-create docs MDX if missing
 

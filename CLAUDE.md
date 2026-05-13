@@ -70,6 +70,36 @@ whole accent system to match Figma's experiment". One drifted variant ≠ brand
 shift. Even ten drifted variants ≠ brand shift. Brand shift only happens when
 the user explicitly says "rebrand to <color>".
 
+### Multi-variant fidelity — applies ONLY when adding a new component
+
+**Trigger condition:** You're in FIRST-SYNC GUARD path (component just added
+via `/new-item`, or scaffolding code from scratch for a tracked component
+that had no prior `.tsx`). And the component has >1 variant OR >2 sizes.
+
+**Does NOT apply to:** routine `/sync-figma` runs on already-validated code
+(token swap, single-variant color change). Those stay FAST PATH — adding an
+audit there would bloat every sync and waste tokens. Use `/verify-component
+<slug>` standalone if you suspect drift in an existing component.
+
+**Why this matters at add-time only:** new components are scaffolded from
+zero. AI commonly infers patterns ("all sizes share radius", "outline hover
+is just darker") and misses per-variant overrides in Figma. Routine sync of
+already-correct code doesn't have this risk.
+
+**Add-time protocol** (Button = 3v × 4s × 3 states = 36 cells):
+
+1. From Figma `get_design_context.COMPONENT_SET.children`, emit a markdown
+   table — one row per `(variant, state, size)`. Columns: fill, stroke,
+   radius, textColor, fontSize, fontWeight, padding, effects.
+2. Map each row to `variantClasses[v]` + `sizeClasses[s]` + state modifiers
+   in your scaffolded `.tsx`. Resolve every class → hex.
+3. Diff cell by cell. Inference forbidden: "probably same as md", "all sizes
+   share radius", "outline hover is just darker".
+4. Per-variant overrides (e.g. `Primary/lg = #1f71ff` non-brand) → add
+   `experiment-<name>` token + targeted `variant === 'X' && size === 'Y'`
+   override. NEVER touch sacred brand tokens.
+5. State variants (hover/active/disabled/focus) = real audit rows.
+
 ### Granular execution
 
 Scope your edits to exactly what Figma changed. Read the `check.mjs` output

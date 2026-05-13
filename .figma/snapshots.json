@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "syncedAt": "2026-05-13T05:47:56.537Z",
+  "syncedAt": "2026-05-13T08:26:57.113Z",
   "components": {
     "button": {
       "hash": "bab2976cfad0226cc181208735aa896e9570fbf73ee734044cda564d8b05e5fe",
@@ -37,6 +37,12 @@
       "varCount": 21,
       "syncedAt": "2026-05-12T13:09:05.047Z",
       "nodeId": "2386:6510"
+    },
+    "search-input": {
+      "hash": "eb830d4ca788bbffd6c4b4655840d9795282cb56aacf3232c2ffbd57da92be8b",
+      "varCount": 16,
+      "syncedAt": "2026-05-13T08:26:57.113Z",
+      "nodeId": "2408:3610"
     }
   }
 }

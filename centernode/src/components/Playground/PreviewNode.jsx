@@ -112,9 +112,12 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
         ref={containerRef}
       >
         {/* Inner component wrapper — FIXED/FILL mode forces stretch.
-            AUTO mode just contains the component at its intrinsic size. */}
+            AUTO mode just contains the component at its intrinsic size.
+            `node.dark` flag scopes POD `.dark` CSS variables to this node,
+            and `bg-canvas` ensures transparent variants (e.g. Button outline)
+            sit on the dark canvas color instead of bleeding through. */}
         <div
-          className={`${wMode === "fixed" || isWidthFill ? "pg-stretch-child-w " : ""}${hMode === "fixed" || isHeightFill ? "pg-stretch-child-h" : ""}`}
+          className={`${wMode === "fixed" || isWidthFill ? "pg-stretch-child-w " : ""}${hMode === "fixed" || isHeightFill ? "pg-stretch-child-h " : ""}${node.dark ? "dark bg-canvas rounded-md" : ""}`}
           style={{
             ...(wMode === "fixed" || isWidthFill ? { width: "100%" } : {}),
             ...(hMode === "fixed" || isHeightFill ? { height: "100%" } : {}),

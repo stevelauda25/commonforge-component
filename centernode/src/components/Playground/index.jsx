@@ -269,7 +269,9 @@ export default function ComponentPlayground() {
 
   // Spawn a node from a POD canvasManifest pick (variant × size cell or example).
   // Emits a single-line JSX snippet — LiveComponent transpiles via sucrase at render.
-  const addPodNode = ({ componentName, code }) => {
+  // `dark` (bool) is locked at spawn-time: comes from sidebar's preview mode.
+  // Toggling sidebar later does NOT mutate already-placed nodes.
+  const addPodNode = ({ componentName, code, dark = false }) => {
     const id = `n${Date.now()}`;
     const cx = (-pan.x + (canvasRef.current?.clientWidth || 800) / 2) / zoom;
     const cy = (-pan.y + (canvasRef.current?.clientHeight || 600) / 2) / zoom;
@@ -285,6 +287,7 @@ export default function ComponentPlayground() {
       props,
       customSize: { width: 240, widthMode: "auto", height: 80, heightMode: "auto" },
       tokenOverrides: {},
+      dark, // per-node theme override (POD .dark scope on wrapper)
       x: cx - 80,
       y: cy - 40,
     };

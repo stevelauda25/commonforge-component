@@ -35,6 +35,11 @@
       "slug": "text-input",
       "nodeId": "2386:6510",
       "status": "ready"
+    },
+    {
+      "slug": "search-input",
+      "nodeId": "2408:3610",
+      "status": "ready"
     }
   ]
 }
