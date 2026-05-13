@@ -13,4 +13,13 @@ export const searchInputCanvas: CanvasComponent = {
     { label: 'No shortcut', props: { shortcutKeys: null } },
     { label: 'Disabled', props: { disabled: true } },
   ],
+  tokens: [
+    'bg-canvas',
+    'bg-muted',
+    'border-default',
+    'border-focus',
+    'danger-default',
+    'text-primary',
+    'text-muted',
+  ],
 };

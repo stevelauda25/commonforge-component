@@ -10,4 +10,12 @@ export const checkboxCanvas: CanvasComponent = {
     { label: 'Checked', props: { checked: true } },
     { label: 'Disabled', props: { disabled: true } },
   ],
+  tokens: [
+    'text-primary',
+    'bg-canvas',
+    'bg-muted',
+    'border-default',
+    'border-focus',
+    'accent-default',
+  ],
 };

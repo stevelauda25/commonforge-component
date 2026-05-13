@@ -19,6 +19,19 @@ export interface CanvasComponent {
   sizes: readonly string[];
   defaultProps: Record<string, unknown>;
   examples?: readonly CanvasExample[];
+  /**
+   * Allowlist of POD token KEYS (without the `--color-` prefix) that this
+   * component consumes regardless of variant — e.g. focus ring color used
+   * by every variant. Combined with `variantTokens` when filtering.
+   */
+  tokens?: readonly string[];
+  /**
+   * Per-variant token allowlist. The panel shows the union of
+   * `tokens` (common) + `variantTokens[currentVariant]` (variant-specific).
+   * Use this to scope tokens to what each variant ACTUALLY consumes —
+   * e.g. Primary uses `accent-*`, Error uses `danger-*`.
+   */
+  variantTokens?: Record<string, readonly string[]>;
 }
 
 export interface CanvasManifest {

@@ -19,12 +19,19 @@ export default function LiveComponent({ code, componentName, props, registry }) 
       let targetName = componentName;
 
       if (isJsxSnippet) {
+        // Wrap JSX snippet as a Component function, then transpile JSX → h().
         executableCode = `function ${componentName || "Snippet"}() { return (\n${code}\n); }`;
         targetName = componentName || "Snippet";
+        executableCode = transformIfJSX(executableCode);
+      } else if (!isHtmlCode) {
+        // User-authored function code (may contain inline JSX). Strip TS + JSX.
+        executableCode = transformIfJSX(executableCode);
       }
-
-      // Strip TypeScript types + transpile JSX to h() calls. No-op for plain h() code.
-      executableCode = transformIfJSX(executableCode);
+      // NOTE: HTML branch is intentionally skipped for transformIfJSX.
+      // The raw HTML contains `<html lang=…>`, `<meta charset=…>` etc. which
+      // JSX_HINT would falsely flag — sending it through Sucrase blows up
+      // because HTML is not valid JSX. HtmlWrapper builds an iframe via h()
+      // calls (no JSX inside), so transform is unnecessary anyway.
 
       if (isHtmlCode) {
         const escapedHtml = code.replace(/`/g, "\\`").replace(/\$/g, "\\$");

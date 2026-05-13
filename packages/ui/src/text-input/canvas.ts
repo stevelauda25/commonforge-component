@@ -10,4 +10,13 @@ export const textInputCanvas: CanvasComponent = {
     { label: 'With error', props: { error: 'Required field' } },
     { label: 'Disabled', props: { disabled: true } },
   ],
+  tokens: [
+    'bg-canvas',
+    'bg-muted',
+    'border-default',
+    'border-focus',
+    'danger-default',
+    'text-primary',
+    'text-muted',
+  ],
 };

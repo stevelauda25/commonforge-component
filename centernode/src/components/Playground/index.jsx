@@ -20,6 +20,7 @@ import ResizeHandles from "./ResizeHandles";
 import TokenEditor from "./TokenEditor";
 import SizeInput from "./SizeInput";
 import PodLibraryPanel from "./PodLibraryPanel";
+import ChangelogPopup from "./ChangelogPopup";
 
 const h = createElement;
 
@@ -97,6 +98,7 @@ export default function ComponentPlayground() {
   const [tokensTab, setTokensTab] = useState("pod"); // "pod" | "legacy"
   const [inspectorTab, setInspectorTab] = useState("props");
   const [showSyntaxHint, setShowSyntaxHint] = useState(false);
+  const [changelogOpen, setChangelogOpen] = useState(false);
 
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -521,6 +523,14 @@ export default function ComponentPlayground() {
           >
             <Info className="w-3.5 h-3.5" />
             Syntax
+          </button>
+          <button
+            onClick={() => setChangelogOpen(true)}
+            className="text-xs text-neutral-600 hover:bg-neutral-100 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors"
+            title="What's new in centernode"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            What's new
           </button>
           <button
             onClick={() => setTokensPanelOpen(!tokensPanelOpen)}
@@ -969,19 +979,52 @@ export default function ComponentPlayground() {
                   </div>
                 )}
 
-                {inspectorTab === "tokens" && (
-                  <div className="flex-1 overflow-y-auto p-4">
-                    <div className="text-[10px] text-neutral-500 leading-relaxed mb-4 p-2.5 bg-violet-50 border border-violet-100 rounded-md">
-                      Override tokens for this component only. Click the reset icon to revert.
+                {inspectorTab === "tokens" && (() => {
+                  // Scope tokens to those the SELECTED VARIANT of the POD component actually
+                  // consumes. Common tokens (entry.tokens) merge with variant-specific
+                  // (entry.variantTokens[currentVariant]). Fallback to full palette for
+                  // unknown components / non-JSX nodes.
+                  const isJsx = isJsxSnippet(selectedNode.code);
+                  const podRef = globalPodTokens;
+                  let refTokens = isJsx ? podRef : globalTokens;
+                  let scopeNote = null;
+                  if (isJsx) {
+                    const tag = extractJsxTag(selectedNode.code);
+                    const entry = canvasManifest.components.find((c) => c.name === tag);
+                    const hasAllowlist = entry?.tokens?.length || entry?.variantTokens;
+                    if (hasAllowlist) {
+                      const currentVariant = selectedNode.props?.variant;
+                      const common = entry.tokens || [];
+                      const variantSpecific = currentVariant && entry.variantTokens?.[currentVariant]
+                        ? entry.variantTokens[currentVariant]
+                        : [];
+                      const allowed = new Set([...common, ...variantSpecific]);
+                      const filteredColors = Object.fromEntries(
+                        Object.entries(podRef.colors || {}).filter(([k]) => allowed.has(k))
+                      );
+                      refTokens = { ...podRef, colors: filteredColors };
+                      scopeNote = currentVariant
+                        ? `${allowed.size} tokens · ${entry.name} / ${currentVariant}`
+                        : `${allowed.size} tokens · ${entry.name}`;
+                    }
+                  }
+                  return (
+                    <div className="flex-1 overflow-y-auto p-4">
+                      <div className="text-[10px] text-neutral-500 leading-relaxed mb-4 p-2.5 bg-violet-50 border border-violet-100 rounded-md">
+                        Override tokens for this component only. Click the reset icon to revert.
+                        {scopeNote && (
+                          <div className="mt-1 text-violet-700 font-medium">{scopeNote}</div>
+                        )}
+                      </div>
+                      <TokenEditor
+                        tokens={selectedNode.tokenOverrides || {}}
+                        referenceTokens={refTokens}
+                        isOverride
+                        onChange={(cat, key, val) => updateNodeTokenOverride(selectedNode.id, cat, key, val)}
+                      />
                     </div>
-                    <TokenEditor
-                      tokens={selectedNode.tokenOverrides || {}}
-                      referenceTokens={isJsxSnippet(selectedNode.code) ? globalPodTokens : globalTokens}
-                      isOverride
-                      onChange={(cat, key, val) => updateNodeTokenOverride(selectedNode.id, cat, key, val)}
-                    />
-                  </div>
-                )}
+                  );
+                })()}
               </div>
 
               <div className="border-t border-neutral-200 p-2 shrink-0">
@@ -1075,6 +1118,8 @@ export default function ComponentPlayground() {
           </div>
         </div>
       )}
+
+      <ChangelogPopup open={changelogOpen} onClose={() => setChangelogOpen(false)} />
     </div>
   );
 }

@@ -182,7 +182,6 @@ function ComponentRow({ component, onPick, defaultOpen = false, darkPreview = fa
 }
 
 export default function PodLibraryPanel({ manifest, onAddPodNode }) {
-  const [collapsed, setCollapsed] = useState(false);
   const [previewDark, setPreviewDark] = useState(false);
 
   const handlePick = (componentName, props) => {
@@ -197,22 +196,15 @@ export default function PodLibraryPanel({ manifest, onAddPodNode }) {
   return (
     <div className="w-[260px] bg-white border-r border-neutral-200 flex flex-col shrink-0">
       <div className="flex items-center gap-2 px-3 py-3 border-b border-neutral-200 shrink-0">
-        <button
-          type="button"
-          onClick={() => setCollapsed((v) => !v)}
-          className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-70 transition-opacity text-left"
-          title={collapsed ? "Expand" : "Collapse"}
-        >
-          <div className="w-6 h-6 rounded-md bg-neutral-900 text-white flex items-center justify-center shrink-0">
-            <Package className="w-3.5 h-3.5" />
+        <div className="w-6 h-6 rounded-md bg-neutral-900 text-white flex items-center justify-center shrink-0">
+          <Package className="w-3.5 h-3.5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[12px] font-semibold text-neutral-900 leading-tight">POD Components</div>
+          <div className="text-[10px] text-neutral-500 leading-tight mt-0.5">
+            {count} component{count === 1 ? "" : "s"} · v{manifest?.version ?? "?"}
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[12px] font-semibold text-neutral-900 leading-tight">POD Components</div>
-            <div className="text-[10px] text-neutral-500 leading-tight mt-0.5">
-              {count} component{count === 1 ? "" : "s"} · v{manifest?.version ?? "?"}
-            </div>
-          </div>
-        </button>
+        </div>
         <button
           type="button"
           onClick={() => setPreviewDark((v) => !v)}
@@ -226,32 +218,22 @@ export default function PodLibraryPanel({ manifest, onAddPodNode }) {
         >
           {previewDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
         </button>
-        <button
-          type="button"
-          onClick={() => setCollapsed((v) => !v)}
-          aria-label={collapsed ? "Expand panel" : "Collapse panel"}
-          className="shrink-0 w-5 h-7 flex items-center justify-center text-neutral-400 hover:text-neutral-700 transition-colors"
-        >
-          {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-        </button>
       </div>
 
-      {!collapsed && (
-        <div className="flex-1 overflow-y-auto">
-          {manifest?.components?.map((c, i) => (
-            <ComponentRow
-              key={c.name}
-              component={c}
-              onPick={handlePick}
-              defaultOpen={i === 0}
-              darkPreview={previewDark}
-            />
-          ))}
-          {count === 0 && (
-            <div className="p-4 text-[11px] text-neutral-500">No POD components available.</div>
-          )}
-        </div>
-      )}
+      <div className="flex-1 overflow-y-auto">
+        {manifest?.components?.map((c, i) => (
+          <ComponentRow
+            key={c.name}
+            component={c}
+            onPick={handlePick}
+            defaultOpen={i === 0}
+            darkPreview={previewDark}
+          />
+        ))}
+        {count === 0 && (
+          <div className="p-4 text-[11px] text-neutral-500">No POD components available.</div>
+        )}
+      </div>
 
       <div className="px-3 py-2 border-t border-neutral-100 text-[10px] text-neutral-400 shrink-0">
         from <span className="font-mono">pod-test-ui</span> · click to add
