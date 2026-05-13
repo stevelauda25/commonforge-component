@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "syncedAt": "2026-05-13T08:26:57.113Z",
+  "syncedAt": "2026-05-13T12:46:42.789Z",
   "components": {
     "button": {
       "hash": "bab2976cfad0226cc181208735aa896e9570fbf73ee734044cda564d8b05e5fe",
@@ -43,6 +43,12 @@
       "varCount": 16,
       "syncedAt": "2026-05-13T08:26:57.113Z",
       "nodeId": "2408:3610"
+    },
+    "dropdown": {
+      "hash": "a667240f42e299b1dcfcee58c64397b8fda78e8c8d517dbe9b6b34c284488076",
+      "varCount": 17,
+      "syncedAt": "2026-05-13T12:46:42.789Z",
+      "nodeId": "2415:2051"
     }
   }
 }

@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "slug": "dropdown",
+  "fileKey": "TCd9exLXTUMciyw1VqnPSK",
+  "nodeId": "2415:2051",
+  "syncedAt": "2026-05-13T13:00:00Z",
+  "comment": "Auto-populated by /new-item via MCP get_variable_defs. Source node = input-dropdown frame (the trigger). List items + menu compositions live as sibling nodes under canvas 1:362; track those separately if needed.",
+  "variables": {
+    "text/strong": "#fafafa",
+    "text-sm/regular": "Font(family: \"Inter\", style: Regular, size: 14, weight: 400, lineHeight: 20, letterSpacing: 0)",
+    "text/error": "#ef4444",
+    "text/soft": "#7c7e84",
+    "icon/soft": "#7c7e84",
+    "text-xs/regular": "Font(family: \"Inter\", style: Regular, size: 13, weight: 400, lineHeight: 18, letterSpacing: 0)",
+    "padding-s": "8",
+    "padding-lg": "12",
+    "radius-m": "8",
+    "bg/strong": "#09090b",
+    "stroke/strong": "#18181b",
+    "shadows/shadow-xs": "Effect(type: DROP_SHADOW, color: #00000014, offset: (0, 2), radius: 2, spread: 0)",
+    "padding-xs": "6",
+    "text-xs-mono/medium": "Font(family: \"IBM Plex Mono\", style: Medium, size: 13, weight: 500, lineHeight: 16, letterSpacing: 0)",
+    "padding-3xs": "2",
+    "padding-2xs": "4",
+    "radius-xs": "4",
+    "bg/soft": "#1c1c1f",
+    "padding-m": "10",
+    "icon/strong": "#fafafa",
+    "stroke/soft": "#3a3a3d",
+    "zinc/950": "#09090b"
+  }
+}

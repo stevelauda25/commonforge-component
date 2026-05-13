@@ -145,6 +145,24 @@ export const preset: Partial<Config> = {
         '2xl':['1.25rem',  { lineHeight: '1.75rem' }], // 20
         '3xl':['1.5rem',   { lineHeight: '2rem' }],    // 24
       },
+
+      // Motion keyframes — POD-defined, consumers get them via the preset.
+      // Pair with `--duration-*` and `--ease-*` CSS variables for token-driven motion.
+      keyframes: {
+        'menu-in': {
+          '0%':   { opacity: '0', transform: 'translateY(-4px) scale(0.98)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+        'fade-in': {
+          '0%':   { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+      animation: {
+        // Reveal popover/menu — quick scale + fade. ease-emphasized for slight overshoot feel.
+        'menu-in': 'menu-in var(--duration-base) var(--ease-emphasized) both',
+        'fade-in': 'fade-in var(--duration-fast) var(--ease-standard) both',
+      },
     },
   },
 };

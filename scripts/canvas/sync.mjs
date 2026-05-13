@@ -65,11 +65,24 @@ function discoverComponents() {
     const indexFile = path.join(UI_SRC, dir, 'index.ts');
     const canvasFile = path.join(UI_SRC, dir, 'canvas.ts');
     if (!fs.existsSync(indexFile)) continue;
+    // Parse canvas.ts for extraScope (cheap regex; canvas.ts is hand-edited TS).
+    let extraScope = [];
+    if (fs.existsSync(canvasFile)) {
+      const src = fs.readFileSync(canvasFile, 'utf8');
+      const m = src.match(/extraScope:\s*\[([^\]]+)\]/);
+      if (m) {
+        extraScope = m[1]
+          .split(',')
+          .map((s) => s.trim().replace(/^['"]|['"]$/g, ''))
+          .filter(Boolean);
+      }
+    }
     components.push({
       dir,                                  // e.g. "text-input"
       varName: `${kebabToCamel(dir)}Canvas`, // e.g. "textInputCanvas"
       componentName: kebabToPascal(dir),    // e.g. "TextInput"
       hasCanvasMeta: fs.existsSync(canvasFile),
+      extraScope,                           // e.g. ['DropdownMenu', 'DropdownItem']
     });
   }
   return components;
@@ -158,12 +171,16 @@ function writeCenternodeRuntime(components) {
 
   let imports = '';
   for (const c of withMeta) {
-    imports += `import { ${c.componentName} } from "pod-test-ui/${c.dir}";\n`;
+    const named = [c.componentName, ...c.extraScope].join(', ');
+    imports += `import { ${named} } from "pod-test-ui/${c.dir}";\n`;
   }
   imports += `import { canvasManifest } from "pod-test-ui/canvas";\n`;
   imports += `import { transform } from "sucrase";\n\n`;
 
-  const componentEntries = withMeta.map((c) => `  ${c.componentName}`).join(',\n');
+  // POD_COMPONENTS includes primary + all extraScope sub-primitives so composite
+  // snippets (function components) can reference DropdownMenu, DropdownItem, etc.
+  const allNames = withMeta.flatMap((c) => [c.componentName, ...c.extraScope]);
+  const componentEntries = allNames.map((n) => `  ${n}`).join(',\n');
   const podComponentsBlock = `export const POD_COMPONENTS = {\n${componentEntries}\n};\nexport { canvasManifest };\n\n`;
 
   const tail = `// JSX heuristics — match a tag opener like \`<Button\` or \`<div className\`.

@@ -7,6 +7,7 @@
  */
 import { Button } from "pod-test-ui/button";
 import { Checkbox } from "pod-test-ui/checkbox";
+import { Dropdown, DropdownMenu, DropdownItem, DropdownBadge } from "pod-test-ui/dropdown";
 import { SearchInput } from "pod-test-ui/search-input";
 import { Switch } from "pod-test-ui/switch";
 import { TextInput } from "pod-test-ui/text-input";
@@ -16,6 +17,10 @@ import { transform } from "sucrase";
 export const POD_COMPONENTS = {
   Button,
   Checkbox,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  DropdownBadge,
   SearchInput,
   Switch,
   TextInput

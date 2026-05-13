@@ -10,6 +10,14 @@
 export interface CanvasExample {
   label: string;
   props: Record<string, unknown>;
+  /**
+   * Optional raw JSX/TSX override. When set, playground tools spawn this code
+   * verbatim instead of building from props. Use for composite examples that
+   * need state hooks (e.g. wired Dropdown with menu items + open state).
+   * MUST be a single React component declaration (`function Foo() { ... }`)
+   * — Sucrase runtime expects this shape.
+   */
+  code?: string;
 }
 
 export interface CanvasComponent {
@@ -32,6 +40,14 @@ export interface CanvasComponent {
    * e.g. Primary uses `accent-*`, Error uses `danger-*`.
    */
   variantTokens?: Record<string, readonly string[]>;
+  /**
+   * Sub-primitives exported by this component's index.ts that must ALSO
+   * be in scope when consumers run composite snippets (function components
+   * that reference these names). E.g. Dropdown ships DropdownMenu, DropdownItem,
+   * DropdownBadge. Playground runtimes inject all of these into `new Function(...)`
+   * scope so composite `code` examples can use them without explicit imports.
+   */
+  extraScope?: readonly string[];
 }
 
 export interface CanvasManifest {

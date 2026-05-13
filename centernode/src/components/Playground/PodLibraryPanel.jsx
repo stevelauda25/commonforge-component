@@ -6,6 +6,7 @@ import { Checkbox as PodCheckbox } from "pod-test-ui/checkbox";
 import { TextInput as PodTextInput } from "pod-test-ui/text-input";
 import { SearchInput as PodSearchInput } from "pod-test-ui/search-input";
 import { Switch as PodSwitch } from "pod-test-ui/switch";
+import { Dropdown as PodDropdown } from "pod-test-ui/dropdown";
 
 const POD_PREVIEW = {
   Button: PodButton,
@@ -13,6 +14,7 @@ const POD_PREVIEW = {
   TextInput: PodTextInput,
   SearchInput: PodSearchInput,
   Switch: PodSwitch,
+  Dropdown: PodDropdown,
 };
 
 /**
@@ -28,12 +30,31 @@ const PREVIEW_HINTS = {
   TextInput:   { width: 200, scale: 0.9 },
   SearchInput: { width: 200, scale: 0.9 },
   Switch:      { scale: 1.05, padded: true },
+  Dropdown:    { width: 200, scale: 0.9 },
 };
+
+// Per-component preview adornments — sometimes the raw defaultProps don't
+// visually differentiate variants (e.g. Dropdown tags with empty array looks
+// identical to default). Inject sample data here so the sidebar shows the
+// variant's distinguishing visual.
+function decorateForPreview(name, props) {
+  if (name === "Dropdown" && props.variant === "tags" && !props.tags) {
+    return {
+      ...props,
+      tags: [
+        { value: "a", label: "LABEL" },
+        { value: "b", label: "LABEL" },
+      ],
+    };
+  }
+  return props;
+}
 
 function MiniPreview({ name, props }) {
   const Comp = POD_PREVIEW[name];
   if (!Comp) return null;
   const hint = PREVIEW_HINTS[name] || { scale: 1 };
+  const decorated = decorateForPreview(name, props);
   try {
     return (
       <div
@@ -46,7 +67,7 @@ function MiniPreview({ name, props }) {
             width: hint.width || undefined,
           }}
         >
-          <Comp {...props} />
+          <Comp {...decorated} />
         </div>
       </div>
     );
@@ -56,6 +77,14 @@ function MiniPreview({ name, props }) {
 }
 
 function variantPropsToJsx(componentName, props) {
+  // Special case: Dropdown spawns as a stateful composite so the trigger on
+  // canvas is actually clickable + shows a real menu popup. Variant (default/tags)
+  // controls inner menu style: single-select for default, multi-checkbox for tags.
+  // User can edit Code tab to customize.
+  if (componentName === "Dropdown") {
+    return buildDropdownComposite(props);
+  }
+
   const { children, ...rest } = props || {};
   const attrs = Object.entries(rest)
     .map(([k, v]) => {
@@ -70,6 +99,107 @@ function variantPropsToJsx(componentName, props) {
     return `<${componentName} ${attrs} />`;
   }
   return `<${componentName}${attrs ? ` ${attrs}` : ""}>${inner}</${componentName}>`;
+}
+
+function buildDropdownComposite(props) {
+  const v = props || {};
+  const variant = v.variant === "tags" ? "tags" : "default";
+  const size = v.size === "sm" ? "sm" : "md";
+  const label = v.label ?? "Label";
+  const placeholder = v.placeholder ?? "Select";
+  const hint = v.hint ?? "This is a hint text to help user.";
+  const sublabel = v.sublabel ?? "(Optional)";
+  const required = !!v.required;
+  const labelInfo = v.labelInfo === undefined ? true : !!v.labelInfo;
+  const error = v.error ?? "";
+  const disabled = !!v.disabled;
+
+  // Single composite that handles BOTH variants via conditional rendering.
+  // ALL props are destructured at the top → parseSchemaFromCode picks them up
+  // → Props panel renders editable controls per prop.
+  // `variantStyles` + `sizeStyles` are enum hints for the parser's detectEnum().
+  return `function InteractiveDropdown({
+  variant = "${variant}",
+  size = "${size}",
+  label = "${label}",
+  sublabel = "${sublabel}",
+  placeholder = "${placeholder}",
+  hint = "${hint}",
+  error = "${error}",
+  required = ${required},
+  labelInfo = ${labelInfo},
+  disabled = ${disabled},
+}) {
+  // Enum hints — parser detects these as variant/size pills in Props panel.
+  const variantStyles = { default: 'single', tags: 'multi' };
+  const sizeStyles = { sm: 'small', md: 'medium' };
+
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [tags, setTags] = useState([]);
+
+  const singleOptions = ['Option A', 'Option B', 'Option C'];
+  const tagOptions = [
+    { value: 'a', label: 'LABEL A' },
+    { value: 'b', label: 'LABEL B' },
+    { value: 'c', label: 'LABEL C' },
+  ];
+
+  const toggleTag = (val, lbl) => setTags((arr) =>
+    arr.some((t) => t.value === val)
+      ? arr.filter((t) => t.value !== val)
+      : [...arr, { value: val, label: lbl }]
+  );
+
+  return (
+    <div className="relative w-[260px]">
+      <Dropdown
+        variant={variant}
+        size={size}
+        label={label}
+        sublabel={sublabel || undefined}
+        required={required}
+        labelInfo={labelInfo}
+        placeholder={placeholder}
+        hint={hint || undefined}
+        error={error || undefined}
+        disabled={disabled}
+        open={open}
+        selectedLabel={variant === 'default' ? (selected ?? undefined) : undefined}
+        tags={variant === 'tags' ? tags : undefined}
+        onRemoveTag={variant === 'tags' ? ((val) => setTags((arr) => arr.filter((t) => t.value !== val))) : undefined}
+        onClick={() => setOpen((o) => !o)}
+      />
+      {open && variant === 'default' && (
+        <DropdownMenu className="absolute z-10 mt-1 w-full">
+          {singleOptions.map((opt) => (
+            <DropdownItem
+              key={opt}
+              selected={selected === opt}
+              showSelectedMark
+              onClick={() => { setSelected(opt); setOpen(false); }}
+            >
+              {opt}
+            </DropdownItem>
+          ))}
+        </DropdownMenu>
+      )}
+      {open && variant === 'tags' && (
+        <DropdownMenu className="absolute z-10 mt-1 w-full">
+          {tagOptions.map((opt) => (
+            <DropdownItem
+              key={opt.value}
+              leftAdornment={<Checkbox checked={tags.some((t) => t.value === opt.value)} onCheckedChange={() => {}} />}
+              onClick={() => toggleTag(opt.value, opt.label)}
+            >
+              {opt.label}
+            </DropdownItem>
+          ))}
+        </DropdownMenu>
+      )}
+    </div>
+  );
+}`;
 }
 
 function VariantCard({ name, label, props, onPick, title, darkPreview }) {
@@ -166,7 +296,7 @@ function ComponentRow({ component, onPick, defaultOpen = false, darkPreview = fa
                   <button
                     key={ex.label}
                     type="button"
-                    onClick={() => onPick(name, { ...defaultProps, ...ex.props })}
+                    onClick={() => onPick(name, { ...defaultProps, ...ex.props }, ex.code)}
                     className="text-[10px] px-2 py-1 rounded-md border border-neutral-200 bg-white text-neutral-700 hover:border-neutral-900 hover:bg-neutral-900 hover:text-white transition-colors"
                   >
                     {ex.label}
@@ -184,8 +314,10 @@ function ComponentRow({ component, onPick, defaultOpen = false, darkPreview = fa
 export default function PodLibraryPanel({ manifest, onAddPodNode }) {
   const [previewDark, setPreviewDark] = useState(false);
 
-  const handlePick = (componentName, props) => {
-    const code = variantPropsToJsx(componentName, props);
+  const handlePick = (componentName, props, overrideCode) => {
+    // If example provides a composite code snippet (function component with state),
+    // use it verbatim. Otherwise generate a single JSX trigger from props.
+    const code = overrideCode || variantPropsToJsx(componentName, props);
     // Lock spawn-time mode onto the node — toggling sidebar later doesn't
     // mutate already-placed nodes.
     onAddPodNode({ componentName, code, props, dark: previewDark });
