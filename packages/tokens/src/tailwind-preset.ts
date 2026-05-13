@@ -78,6 +78,7 @@ export const preset: Partial<Config> = {
         'experiment-cb-border':           rgbVar('experiment-cb-border'),
         'experiment-cb-disabled-bg':      rgbVar('experiment-cb-disabled-bg'),
         'experiment-cb-disabled-icon':    rgbVar('experiment-cb-disabled-icon'),
+        'experiment-primary-hover-dark':  rgbVar('experiment-primary-hover-dark'),
       },
 
       borderRadius: {

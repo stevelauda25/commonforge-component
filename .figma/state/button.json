@@ -1055,7 +1055,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(21, 128, 61, a=1)"
+          "color": "rgb(10, 102, 45, a=1)"
         }
       ],
       "strokes": [
@@ -1095,9 +1095,6 @@
         "paddingTop": "10:1236",
         "paddingRight": "10:1232",
         "paddingBottom": "10:1236",
-        "fills": [
-          "16:854"
-        ],
         "strokes": [
           "16:905"
         ]
@@ -1225,7 +1222,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(21, 128, 61, a=1)"
+          "color": "rgb(10, 102, 45, a=1)"
         }
       ],
       "strokes": [
@@ -1265,9 +1262,6 @@
         "paddingTop": "10:1236",
         "paddingRight": "10:1236",
         "paddingBottom": "10:1236",
-        "fills": [
-          "16:854"
-        ],
         "strokes": [
           "16:905"
         ]
@@ -1395,7 +1389,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(21, 128, 61, a=1)"
+          "color": "rgb(10, 102, 45, a=1)"
         }
       ],
       "strokes": [
@@ -1435,9 +1429,6 @@
         "paddingTop": "10:1227",
         "paddingRight": "10:1227",
         "paddingBottom": "10:1227",
-        "fills": [
-          "16:854"
-        ],
         "strokes": [
           "16:905"
         ]
@@ -1565,7 +1556,7 @@
       "fills": [
         {
           "type": "SOLID",
-          "color": "rgb(21, 128, 61, a=1)"
+          "color": "rgb(10, 102, 45, a=1)"
         }
       ],
       "strokes": [
@@ -1605,9 +1596,6 @@
         "paddingTop": "10:1234",
         "paddingRight": "10:1227",
         "paddingBottom": "10:1234",
-        "fills": [
-          "16:854"
-        ],
         "strokes": [
           "16:905"
         ]
