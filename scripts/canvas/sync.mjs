@@ -65,8 +65,11 @@ function discoverComponents() {
     const indexFile = path.join(UI_SRC, dir, 'index.ts');
     const canvasFile = path.join(UI_SRC, dir, 'canvas.ts');
     if (!fs.existsSync(indexFile)) continue;
-    // Parse canvas.ts for extraScope (cheap regex; canvas.ts is hand-edited TS).
+    // Parse canvas.ts for extraScope + name override (cheap regex; canvas.ts is hand-edited TS).
+    // The `name:` field is the actual React export — preferred over kebabToPascal(dir)
+    // when dir is plural but export is singular (badges→Badge, tabs→Tab).
     let extraScope = [];
+    let nameOverride = null;
     if (fs.existsSync(canvasFile)) {
       const src = fs.readFileSync(canvasFile, 'utf8');
       const m = src.match(/extraScope:\s*\[([^\]]+)\]/);
@@ -76,11 +79,13 @@ function discoverComponents() {
           .map((s) => s.trim().replace(/^['"]|['"]$/g, ''))
           .filter(Boolean);
       }
+      const nameMatch = src.match(/\bname:\s*['"]([A-Z][A-Za-z0-9]*)['"]/);
+      if (nameMatch) nameOverride = nameMatch[1];
     }
     components.push({
       dir,                                  // e.g. "text-input"
       varName: `${kebabToCamel(dir)}Canvas`, // e.g. "textInputCanvas"
-      componentName: kebabToPascal(dir),    // e.g. "TextInput"
+      componentName: nameOverride ?? kebabToPascal(dir), // e.g. "TextInput", or "Badge" from canvas.ts
       hasCanvasMeta: fs.existsSync(canvasFile),
       extraScope,                           // e.g. ['DropdownMenu', 'DropdownItem']
     });
