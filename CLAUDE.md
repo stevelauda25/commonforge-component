@@ -247,6 +247,28 @@ The script auto-updates: `tsup.config.ts` entries, `package.json` exports,
 `src/canvas.ts` aggregator, `centernode/src/utils/podRuntime.js`. Centernode
 sidebar picks it up automatically. No manual file edits needed.
 
+> **Important — centernode consumes pod-test-ui via npm, NOT file: link.**
+> Local edits to `packages/ui` show up in `apps/docs` instantly (pnpm
+> workspace) but **NOT in centernode**. To see component changes in
+> centernode (local OR Vercel), you must `/publish` a new npm version
+> first — that command bumps centernode/package.json automatically as
+> part of the release flow. See "Deploy targets" below.
+
+## Deploy targets — Vercel auto-deploy on push to main
+
+Three apps, one repo, each as its own Vercel project (different Root
+Directory). One `git push origin main` → all auto-rebuild in parallel.
+
+| App | Vercel project | Root Directory | Local dev source |
+|---|---|---|---|
+| `apps/docs` | `pod-docs.vercel.app` | `apps/docs` | pnpm workspace (file resolution, instant) |
+| `centernode` | `pod-centernode` (TBD URL) | `centernode` | npm version `pod-test-ui@^x.y.z` (needs republish to update) |
+| `client-test` | not deployed (local-only) | `client-test` | npm version (same caveat as centernode) |
+
+Each app has its own `vercel.json` with build commands. Don't override
+in dashboard — vercel.json wins. To update centernode/client-test with
+latest pod-test-ui changes: `/publish` (auto-bumps both consumers).
+
 ## Verification (always run after sync)
 
 ```bash

@@ -105,26 +105,53 @@ the first if second fails). Report exact error, let user resolve.
 ### 7. Git tag + commit (LOCAL ONLY — do NOT push)
 
 ```bash
-git add packages/tokens/package.json packages/ui/package.json package.json
+git add packages/tokens/package.json packages/ui/package.json package.json \
+        centernode/package.json centernode/package-lock.json \
+        client-test/package.json client-test/package-lock.json
 git commit -m "release: pod-test-{ui,tokens}@<new>"
 git tag v<new>
 ```
 
-**Never** `git push` automatically. User pushes manually.
+**Never** `git push` automatically. User pushes manually. (Note: step 8
+runs BEFORE step 7's git add — bump consumers first, then stage all
+together.)
 
-### 8. Report — six lines max
+### 8. Bump in-repo consumers (centernode + client-test)
+
+Both centernode and client-test consume the packages via npm versions
+(NOT file: link — see CLAUDE.md "Local dev caveat"). They need a manual
+bump after every publish so Vercel deploys + local dev pick up the new
+version.
+
+```bash
+# Update centernode/package.json
+#   "pod-test-tokens": "^<new>"
+#   "pod-test-ui":     "^<new>"
+cd centernode && npm install --legacy-peer-deps --no-fund --no-audit && cd ..
+
+# Update client-test/package.json (same pattern)
+cd client-test && npm install --legacy-peer-deps --no-fund --no-audit && cd ..
+```
+
+Add both `package.json` + `package-lock.json` files to the release commit
+(extend step 7's `git add`).
+
+If you skip this: local centernode still runs the OLD version, and Vercel
+deployments for centernode + client-test stay frozen on the old version
+until somebody manually bumps later.
+
+### 9. Report — six lines max
 
 ```
 ✓ Published
   pod-test-tokens@<new>  (was <old>)
   pod-test-ui@<new>      (was <old>)
+  centernode + client-test bumped to ^<new>
 
 Git: commit + tag v<new> created locally. NOT pushed.
 
 Next:
-  git push --follow-tags
-  Notify clients: npm update pod-test-ui pod-test-tokens
-  (or wait for their Renovate/Dependabot auto-PR)
+  git push --follow-tags     ← triggers Vercel auto-deploy for both apps
 ```
 
 ## Forbidden behaviors
