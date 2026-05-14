@@ -8,11 +8,26 @@
 ```json
 {
   "package": "pod-test-ui",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "manifest_version": 1,
   "last_updated": "2026-05-13"
 }
 ```
+
+**Changelog 0.1.4 → 0.1.5:**
+- New component: **`Dropdown`** — single-select or multi-tag trigger with label/hint/error/sublabel/labelInfo/required. Stateless: pair with `DropdownMenu` for popup. Variants `default` × `tags`, sizes `sm` · `md`. Figma source: `input-dropdown` (node `2415:2051`).
+- New sub-primitives shipped with Dropdown:
+  - **`DropdownMenu`** — popover container (`bg-canvas`, `border-default`, `shadow-foundation-lg`, scrollable, animates in via `animate-menu-in`).
+  - **`DropdownItem`** — single row. Props: `selected`, `disabled`, `destructive`, `error`, `leftAdornment`, `rightAdornment`, `showSelectedMark`.
+  - **`DropdownBadge`** — small leading badge with colored dot (9 colors: `green`/`blue`/`orange`/`lime`/`indigo`/`red`/`sky`/`purple`/`yellow`). For use as `<DropdownItem leftAdornment={<DropdownBadge label="CIRC" color="green" />}>`.
+- New motion utilities in `pod-test-tokens` preset:
+  - `animate-menu-in` — fade + scale-down reveal, `duration-base · ease-emphasized`. Auto-applied to `DropdownMenu`.
+  - `animate-fade-in` — opacity fade, `duration-fast · ease-standard`. For consumer popovers/tooltips.
+- `canvas.ts` schema additions (consumed by playground tools like centernode):
+  - `CanvasComponent.tokens` — common POD tokens this component consumes (filters Tokens panel scope).
+  - `CanvasComponent.variantTokens` — per-variant token allowlist (e.g. Button primary uses `accent-*`, Button error uses `danger-*`).
+  - `CanvasComponent.extraScope` — sub-primitives that must be in scope for composite examples (e.g. Dropdown ships `DropdownMenu`, `DropdownItem`, `DropdownBadge`).
+  - `CanvasExample.code` — raw JSX/TSX override for composite examples (function components with state).
 
 **Changelog 0.1.3 → 0.1.4:**
 - New subpath: `pod-test-ui/canvas` — neutral manifest (component name, variants, sizes, defaultProps, examples) for playground / infinite-canvas tools to discover POD components.
@@ -34,6 +49,8 @@
 | `Button` | stable | `primary` · `outline` · `error` | `xs` · `sm` · `md` · `lg` | uncontrolled (default `type='button'`) | `/components/button` |
 | `Checkbox` | stable | — | — | **controlled only** (`checked` + `onCheckedChange`) | `/components/checkbox` |
 | `TextInput` | stable | `default` | `sm` · `md` · `lg` | controlled + uncontrolled (`defaultValue` / `value`) | `/components/text-input` |
+| `SearchInput` | stable | `default` | `sm` · `md` | controlled + uncontrolled (`defaultValue` / `value`) — built-in ⌘K shortcut hint + optional clear button | `/components/search-input` |
+| `Dropdown` | stable | `default` · `tags` | `sm` · `md` | **stateless trigger** — consumer manages `open` + menu. Pair with `DropdownMenu` + `DropdownItem` | `/components/dropdown` |
 | `Tooltip` | stable | `default` · `info` · `warning` · `error` | — | n/a (wraps a focusable child) | `/components/tooltip` |
 | `Switch` | **experimental** (not in Figma yet) | — | `sm` · `md` | controlled + uncontrolled (`defaultChecked` / `checked` + `onCheckedChange`) | — |
 
@@ -44,6 +61,8 @@
 import { Button } from 'pod-test-ui/button';
 import { Checkbox } from 'pod-test-ui/checkbox';
 import { TextInput } from 'pod-test-ui/text-input';
+import { SearchInput } from 'pod-test-ui/search-input';
+import { Dropdown, DropdownMenu, DropdownItem, DropdownBadge } from 'pod-test-ui/dropdown';
 import { Switch } from 'pod-test-ui/switch';
 import { Tooltip } from 'pod-test-ui/tooltip';
 // Canvas/playground catalog (machine-readable manifest):
@@ -73,6 +92,9 @@ Kalau user bilang… | Pakai…
 "text input", "form field", "text field", "input box" | `<TextInput>`
 "text input dengan error", "validation error" | `<TextInput error="..." />`
 "switch", "toggle", "on/off" | `<Switch>` ⚠ experimental — confirm dengan designer kalau ini final
+"dropdown", "select", "picker", "combobox" | `<Dropdown>` (trigger) + `<DropdownMenu>` + `<DropdownItem>` (consumer manages `open` state)
+"multi-select", "multi-pick", "tags input" | `<Dropdown variant="tags" tags={[...]} onRemoveTag={...} />` + `<DropdownItem leftAdornment={<Checkbox .../>}>`
+"action menu", "context menu", "overflow menu" | `<Dropdown>` + `<DropdownMenu>` with `<DropdownItem leftAdornment={<Icon />}>` rows; destructive action = `<DropdownItem destructive>Delete</DropdownItem>`
 "tooltip", "hover help", "shortcut hint" | `<Tooltip>` (wraps a focusable element)
 "input text", "form field", "text box" | ❌ **Belum ada di pod-test-ui**. Build local pakai POD tokens (Rule 10 di consumer's CLAUDE.md)
 "modal", "dialog", "popup" | ❌ Belum ada. Build local.

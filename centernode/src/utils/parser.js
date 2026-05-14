@@ -302,11 +302,20 @@ export function updateCodeWithProp(code, key, value) {
       return `${start}: ${formattedValue}${end}`;
     });
   }
-  // 3. Update React Function Props: key = value
+  // 3. Update React function destructure defaults: `key = value` with whitespace
+  //    around `=` and terminated by `,` or `}` (the destructure boundary).
+  //    Requires ≥1 space around `=` so JSX attributes like `key={expr}` (no spaces)
+  //    don't get clobbered. Matches `key = "string"` / `key = 'string'` /
+  //    `key = true|false|null|undefined|number`.
   else {
-    const reactPropRegex = new RegExp(`(\\b${key}\\s*=\\s*)("([^"]*)"|'([^']*)'|([^,}]+))`, "g");
-    updated = updated.replace(reactPropRegex, (match, prefix, fullVal) => {
-      const formattedValue = typeof value === "string" ? `"${value}"` : value;
+    const destructureRegex = new RegExp(
+      `(\\b${key}\\s+=\\s+)` +
+        `("[^"]*"|'[^']*'|true|false|null|undefined|-?\\d+(?:\\.\\d+)?)` +
+        `(?=\\s*[,}\\n])`,
+      "g",
+    );
+    updated = updated.replace(destructureRegex, (_match, prefix) => {
+      const formattedValue = typeof value === "string" ? `"${value}"` : String(value);
       return `${prefix}${formattedValue}`;
     });
   }

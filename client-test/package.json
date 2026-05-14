@@ -13,8 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "pod-test-tokens": "^0.1.3",
-    "pod-test-ui": "^0.1.4",
+    "pod-test-tokens": "^0.1.4",
+    "pod-test-ui": "^0.1.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

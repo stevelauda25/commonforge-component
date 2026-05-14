@@ -278,7 +278,13 @@ export default function ComponentPlayground() {
     const cx = (-pan.x + (canvasRef.current?.clientWidth || 800) / 2) / zoom;
     const cy = (-pan.y + (canvasRef.current?.clientHeight || 600) / 2) / zoom;
     const manifestEntry = canvasManifest.components.find((c) => c.name === componentName);
-    const schema = parseJsxSnippetSchema(code, manifestEntry);
+    // Some POD examples ship a composite `function Foo({prop = "..."}) { ... }` snippet
+    // (e.g. Dropdown's interactive composite). For those, use parseSchemaFromCode which
+    // extracts destructured function params. For plain `<Component .../>` snippets,
+    // parseJsxSnippetSchema reads attrs + augments enums via manifest.
+    const schema = isJsxSnippet(code)
+      ? parseJsxSnippetSchema(code, manifestEntry)
+      : parseSchemaFromCode(code);
     const props = {};
     for (const [k, v] of Object.entries(schema)) props[k] = v.default;
     const newNode = {
