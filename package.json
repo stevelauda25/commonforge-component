@@ -6,13 +6,19 @@
   "packageManager": "pnpm@9.7.0",
   "scripts": {
     "dev": "pnpm -F docs dev",
-    "build": "pnpm -F docs build",
+    "build": "pnpm build:docs",
+    "build:packages": "pnpm -F pod-test-tokens build && pnpm -F pod-test-ui build",
+    "build:docs": "pnpm build:packages && pnpm figma:status && pnpm figma:manifest && pnpm -F docs build",
+    "build:centernode": "pnpm build:packages && cd centernode && npm install --no-fund --no-audit && npm run build",
+    "build:client": "cd client-test && npm install --no-fund --no-audit && npm run build",
+    "build:all": "pnpm build:docs && pnpm build:centernode && pnpm build:client",
     "typecheck": "pnpm -r --parallel typecheck",
     "clean": "rm -rf node_modules **/node_modules **/dist",
     "figma:check": "node scripts/figma/check.mjs",
     "figma:bless": "node scripts/figma/bless.mjs",
     "figma:discover": "node scripts/figma/discover.mjs",
-    "figma:status": "node scripts/figma/check.mjs --json > apps/docs/public/figma-status.json 2>/dev/null || echo '{\"drifted\":[],\"inSync\":[],\"errors\":[]}' > apps/docs/public/figma-status.json"
+    "figma:status": "node scripts/figma/check.mjs --json > apps/docs/public/figma-status.json 2>/dev/null || echo '{\"drifted\":[],\"inSync\":[],\"errors\":[]}' > apps/docs/public/figma-status.json",
+    "figma:manifest": "cp .figma/manifest.json apps/docs/public/figma-manifest.json"
   },
   "devDependencies": {
     "tsup": "^8.5.1",

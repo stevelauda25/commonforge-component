@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "fileKey": "TCd9exLXTUMciyw1VqnPSK",
+  "components": [
+    {
+      "slug": "button",
+      "nodeId": "267:355",
+      "status": "ready"
+    },
+    {
+      "slug": "checkbox",
+      "nodeId": "2351:151",
+      "status": "ready"
+    },
+    {
+      "slug": "foundation-radius",
+      "nodeId": "2352:3173",
+      "status": "ready"
+    },
+    {
+      "slug": "foundation-shadows",
+      "nodeId": "2352:159",
+      "status": "ready",
+      "docsName": "Elevation",
+      "docsRoute": "/foundations/elevation"
+    },
+    {
+      "slug": "foundation-spacing",
+      "nodeId": "2360:239",
+      "status": "ready",
+      "docsName": "Spacing",
+      "docsRoute": "/foundations/spacing"
+    },
+    {
+      "slug": "text-input",
+      "nodeId": "2386:6510",
+      "status": "ready"
+    },
+    {
+      "slug": "search-input",
+      "nodeId": "2408:3610",
+      "status": "ready"
+    },
+    {
+      "slug": "dropdown",
+      "nodeId": "2415:2051",
+      "status": "ready"
+    }
+  ]
+}

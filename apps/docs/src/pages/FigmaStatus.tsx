@@ -290,11 +290,13 @@ export default function FigmaStatus() {
   const [progress, setProgress] = useState<{ done: number; total: number }>({ done: 0, total: 0 });
   const [tab, setTab] = useState<Tab>('component');
 
-  // Stage 1: load manifest immediately (instant, local file via /api/figma-manifest)
-  // → render skeleton cards for structure. User sees layout, not blank loading text.
+  // Stage 1: load manifest. In dev, /api/figma-manifest is served by Vite middleware.
+  // In production, that route doesn't exist — fall back to /figma-manifest.json
+  // which is copied from .figma/manifest.json at build time (see figma:manifest script).
   useEffect(() => {
     fetch('/api/figma-manifest')
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('no api'))))
+      .catch(() => fetch('/figma-manifest.json').then((r) => r.json()))
       .then((m: Manifest) => {
         setManifest(m);
         setProgress({ done: 0, total: m.components.length });
@@ -302,12 +304,21 @@ export default function FigmaStatus() {
       .catch(() => {});
   }, []);
 
+  // load(live=true) → /api/figma-check (Vite dev middleware, runs check.mjs live).
+  // load(live=false) → /figma-status.json (static, generated at build via figma:status).
+  // In production, no Vite middleware exists → live fetch fails → fall back to static.
   const load = (live = false) => {
     setLoading(true);
     setProgress((p) => ({ done: 0, total: p.total }));
-    const url = live ? '/api/figma-check?t=' + Date.now() : '/figma-status.json?t=' + Date.now();
-    fetch(url)
-      .then((r) => r.json())
+    const primary = live ? '/api/figma-check?t=' + Date.now() : '/figma-status.json?t=' + Date.now();
+    fetch(primary)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('no api'))))
+      .catch(() =>
+        // If live API not available (production), fall back to static.
+        live
+          ? fetch('/figma-status.json?t=' + Date.now()).then((r) => r.json())
+          : Promise.reject(new Error('static missing')),
+      )
       .then((d) => {
         if (d.error) throw new Error(d.error);
         setStatus(d);
@@ -317,7 +328,8 @@ export default function FigmaStatus() {
       .catch(() => setLoading(false));
   };
 
-  useEffect(() => { load(true); }, []);
+  // Dev → live check. Production → static (set at build time).
+  useEffect(() => { load(import.meta.env.DEV); }, []);
 
   const tabCounts = manifest ? {
     component: {

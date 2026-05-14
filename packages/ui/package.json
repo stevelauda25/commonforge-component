@@ -57,10 +57,10 @@
     "AGENTS.md"
   ],
   "scripts": {
-    "build": "npm run canvas:sync && tsup && npm run build:css",
-    "build:css": "tailwindcss -c tailwind.config.ts -i styles/build.css -o dist/styles.css --minify",
+    "build": "pnpm run canvas:sync && pnpm exec tsup && pnpm run build:css",
+    "build:css": "pnpm exec tailwindcss -c tailwind.config.ts -i styles/build.css -o dist/styles.css --minify",
     "canvas:sync": "node ../../scripts/canvas/sync.mjs",
-    "dev": "tsup --watch",
+    "dev": "pnpm exec tsup --watch",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
