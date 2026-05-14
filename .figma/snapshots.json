@@ -1,24 +1,54 @@
 {
   "version": 1,
-  "syncedAt": "2026-05-11T06:58:37.560Z",
+  "syncedAt": "2026-05-13T12:46:42.789Z",
   "components": {
     "button": {
-      "hash": "d0cc20bb63884a1ed218353270188dacfc126784a4b74f3164c7819a5bb4548c",
-      "varCount": 39,
-      "syncedAt": "2026-05-11T06:58:37.560Z",
+      "hash": "bab2976cfad0226cc181208735aa896e9570fbf73ee734044cda564d8b05e5fe",
+      "varCount": 40,
+      "syncedAt": "2026-05-13T05:47:56.537Z",
       "nodeId": "267:355"
     },
+    "foundation-radius": {
+      "hash": "51d5b7fdc011c15deaccc1947375c01698a934707d3ef37386a7468af017e8af",
+      "varCount": 43,
+      "syncedAt": "2026-05-04T08:14:43.143Z",
+      "nodeId": "2352:3173"
+    },
+    "foundation-shadows": {
+      "hash": "0bd41ca615d490e2bfc1106ad45db8e49bd307eac255f65d42c0e8111f28db74",
+      "varCount": 23,
+      "syncedAt": "2026-05-04T08:14:43.143Z",
+      "nodeId": "2352:159"
+    },
     "checkbox": {
-      "hash": "41539d9e7cbcd633329147419735b6527f621a92933406dcff3c3c2cac8c7747",
-      "varCount": 9,
-      "syncedAt": "2026-05-11T05:44:52.665Z",
+      "hash": "a8483611866707db47acfbdbaefd0116261175093d290e519fd1ba5c7227f3d4",
+      "varCount": 7,
+      "syncedAt": "2026-05-12T13:59:27.997Z",
       "nodeId": "2351:151"
     },
+    "foundation-spacing": {
+      "hash": "c1dba83794063f4deded73cbb480e8fd02e2d88ab4031697065cc0c101e0bf61",
+      "varCount": 43,
+      "syncedAt": "2026-05-04T12:49:49.928Z",
+      "nodeId": "2360:239"
+    },
+    "text-input": {
+      "hash": "037a5885ac3694f6c25f358b4530bf6f79fa7c0a857b3cd56ee07cdeb0560cba",
+      "varCount": 21,
+      "syncedAt": "2026-05-12T13:09:05.047Z",
+      "nodeId": "2386:6510"
+    },
     "search-input": {
-      "hash": "20973ffa83bf2d4ea669932ef26954900b734bcd94be6c5e4d4849947fa8e8bc",
-      "varCount": 13,
-      "syncedAt": "2026-05-11T05:44:52.665Z",
-      "nodeId": "2346:404"
+      "hash": "eb830d4ca788bbffd6c4b4655840d9795282cb56aacf3232c2ffbd57da92be8b",
+      "varCount": 16,
+      "syncedAt": "2026-05-13T08:26:57.113Z",
+      "nodeId": "2408:3610"
+    },
+    "dropdown": {
+      "hash": "a667240f42e299b1dcfcee58c64397b8fda78e8c8d517dbe9b6b34c284488076",
+      "varCount": 17,
+      "syncedAt": "2026-05-13T12:46:42.789Z",
+      "nodeId": "2415:2051"
     }
   }
 }

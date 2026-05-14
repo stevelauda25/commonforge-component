@@ -23,25 +23,25 @@ export function CodeBlock({ className, children, ...rest }: Props) {
   };
 
   return (
-    <div className="code-block group relative my-4 overflow-hidden rounded-md border border-border-default bg-muted">
-      {language && (
-        <span className="absolute left-3 top-2 text-[10px] font-mono uppercase tracking-wider text-text-muted">
-          {language}
+    <div className="code-block relative my-4 overflow-hidden rounded-md border border-border-default bg-surface">
+      <div className="flex items-center justify-between border-b border-border-default px-3 py-2">
+        <span className="text-[10px] font-mono uppercase tracking-wider text-text-muted">
+          {language ?? ''}
         </span>
-      )}
-      <button
-        type="button"
-        onClick={handleCopy}
-        aria-label="Copy code"
-        className={cn(
-          'absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded',
-          'text-text-muted opacity-0 transition-opacity hover:bg-canvas hover:text-text-primary',
-          'group-hover:opacity-100 focus-visible:opacity-100',
-        )}
-      >
-        {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-      </button>
-      <pre className={cn('overflow-x-auto p-4 pt-7 text-[13px] leading-snug', className)} {...rest}>
+        <button
+          type="button"
+          onClick={handleCopy}
+          aria-label="Copy code"
+          className={cn(
+            'inline-flex h-7 items-center gap-1.5 rounded px-2 text-xs',
+            'text-text-muted transition-colors hover:bg-canvas hover:text-text-primary',
+          )}
+        >
+          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+          <span>{copied ? 'Copied' : 'Copy'}</span>
+        </button>
+      </div>
+      <pre className={cn('overflow-x-auto p-4 text-[13px] leading-snug', className)} {...rest}>
         {children}
       </pre>
     </div>

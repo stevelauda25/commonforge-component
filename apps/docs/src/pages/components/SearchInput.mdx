@@ -1,5 +1,148 @@
+import { useState } from 'react';
+import { SearchInput } from 'pod-test-ui';
+
 <PageHeader
   title="Search Input"
-  description="Text input optimized for filtering / searching lists. Includes a leading magnifying-glass icon and an optional trailing Clear button."/>
+  description="Single-line search field with default search icon, keyboard shortcut hint (⌘K), and optional clear button when filled. Built on the same dark-aware input pattern as TextInput."
+  status="ready"
+/>
 
-<EmptyComponentState />
+<PreviewCard>
+  <SearchInput label="Search" placeholder="Search..." hint="This is a hint text to help user." />
+</PreviewCard>
+
+```tsx
+<SearchInput label="Search" placeholder="Search..." hint="This is a hint text to help user." />
+```
+
+## Sizes
+
+Two padding scales — `md` (12px, default) and `sm` (8px). Pick `sm` for dense toolbars; `md` for hero search bars.
+
+<PreviewCard>
+  <div className="flex w-[300px] flex-col gap-4">
+    <SearchInput size="md" label="Medium (default)" />
+    <SearchInput size="sm" label="Small" />
+  </div>
+</PreviewCard>
+
+```tsx
+<SearchInput size="md" />
+<SearchInput size="sm" />
+```
+
+## States
+
+The four Figma states (Default, Hover, Focused, Filled) are reflected via CSS pseudo-classes — no explicit `state` prop. Hover/focus border colors come from `experiment-input-stroke-active`, focused background from `experiment-input-bg-focused`.
+
+<PreviewCard>
+  <div className="flex w-[300px] flex-col gap-4">
+    <SearchInput label="Default" placeholder="Search..." />
+    <SearchInput label="Filled" defaultValue="apple watch" onClear={() => {}} />
+    <SearchInput label="Error" placeholder="Search..." error="Search query is required" />
+    <SearchInput label="Disabled" placeholder="Search..." disabled />
+  </div>
+</PreviewCard>
+
+```tsx
+<SearchInput placeholder="Search..." />
+<SearchInput defaultValue="apple watch" onClear={handleClear} />
+<SearchInput placeholder="Search..." error="Search query is required" />
+<SearchInput placeholder="Search..." disabled />
+```
+
+## Keyboard shortcut
+
+When the input is empty, a keyboard shortcut hint (default `⌘K`) renders on the right. Pass `null` to hide. Pass a custom array to change keys. **Visual only** — wiring the shortcut (e.g. focus on `⌘K`) is your job.
+
+<PreviewCard>
+  <div className="flex w-[320px] flex-col gap-4">
+    <SearchInput label="Default shortcut (⌘K)" />
+    <SearchInput label="Custom shortcut" shortcutKeys={['/', 'F']} />
+    <SearchInput label="No shortcut" shortcutKeys={null} />
+  </div>
+</PreviewCard>
+
+```tsx
+<SearchInput />                                /* ⌘ K */
+<SearchInput shortcutKeys={['/', 'F']} />      /* / F */
+<SearchInput shortcutKeys={null} />            /* none */
+```
+
+To wire the shortcut globally:
+```tsx
+useEffect(() => {
+  const handler = (e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      searchRef.current?.focus();
+    }
+  };
+  window.addEventListener('keydown', handler);
+  return () => window.removeEventListener('keydown', handler);
+}, []);
+```
+
+## Clear button
+
+Pass `onClear` to enable an `X` button that appears whenever the input has a value. Without `onClear` no clear button renders — the keyboard shortcut stays visible instead.
+
+<PreviewCard>
+  <ClearExample />
+</PreviewCard>
+
+export function ClearExample() {
+  const [q, setQ] = useState('apple watch');
+  return (
+    <div className="w-[300px]">
+      <SearchInput
+        label="With clear"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        onClear={() => setQ('')}
+      />
+    </div>
+  );
+}
+
+```tsx
+const [q, setQ] = useState('');
+<SearchInput
+  value={q}
+  onChange={(e) => setQ(e.target.value)}
+  onClear={() => setQ('')}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| `label` | `string` | — | Visible label above the input. |
+| `hint` | `string` | — | Hint text below (with info icon). |
+| `error` | `string` | — | Replaces hint, applies destructive border + ring. |
+| `size` | `'sm' \| 'md'` | `'md'` | Padding scale. |
+| `shortcutKeys` | `string[] \| null` | `['⌘', 'K']` | Shown when empty. `null` to hide. |
+| `onClear` | `() => void` | — | When set, X button renders while value present. |
+| `leftIcon` | `ReactNode` | `<Search />` | Override search icon (e.g. `<Filter />`). |
+| `value` / `defaultValue` / `onChange` | native input props | — | Controlled + uncontrolled both supported. |
+| `disabled` | `boolean` | `false` | Standard disabled — hides shortcut + clear. |
+
+Extends all native `<input type="search">` HTMLAttributes except `size` and `type` (managed internally).
+
+## Accessibility
+
+- Native `<input type="search">` under the hood — works with browser search history, form submission, etc.
+- `aria-invalid={true}` when `error` is set; the error span is linked via `aria-describedby`.
+- Hint span is linked via `aria-describedby` when no error present.
+- Shortcut keys + clear button have `aria-hidden`/`aria-label` so screen readers don't read decorative kbd glyphs.
+- Clear button is `tabIndex={-1}` to keep tab order clean — the input itself remains the focus target.
+- Focus ring is visible on `:focus-within` (covers both input and any inner button).
+
+## Things to watch
+
+- **Shortcut is visual only.** Wiring `⌘K` to actually focus the input is your job (`useEffect` + `keydown` listener). The component doesn't install a global handler — keeps things explicit.
+- **Clear button visibility depends on `onClear` AND value.** No `onClear` prop = no clear button, ever. With `onClear` + value = clear shows; user clicks → state clears (uncontrolled) OR your callback fires (controlled).
+- **`type="search"` browser quirk:** WebKit renders its own clear `X` by default. We suppress it via `[&::-webkit-search-cancel-button]:appearance-none` so only the POD clear button shows. Don't add another reset CSS that re-enables it.
+- **Don't mix `placeholder` with `label`** as the sole identifier — placeholder disappears on focus; the label is the persistent identifier for screen readers and the user.
+- **For multi-line / rich search**, this isn't the right primitive. Use a separate `<textarea>` or a Combobox-style component (not yet in POD).

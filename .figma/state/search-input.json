@@ -1,122 +1,77 @@
 {
   "type": "COMPONENT_SET",
-  "name": "search",
+  "name": "search-input",
   "variants": {
-    "📌 State=Default": {
+    "State=Default": {
       "type": "COMPONENT",
-      "fills": [
-        {
-          "type": "SOLID",
-          "color": "rgb(250, 250, 250, a=1)"
-        }
-      ],
-      "strokes": [
-        {
-          "type": "SOLID",
-          "color": "rgb(234, 234, 237, a=1)"
-        }
-      ],
+      "fills": [],
+      "strokes": [],
       "strokeWeight": 1,
-      "paddingLeft": 20,
-      "paddingRight": 20,
-      "paddingTop": 14,
-      "paddingBottom": 14,
-      "itemSpacing": 8,
-      "layoutMode": "HORIZONTAL",
-      "counterAxisAlignItems": "CENTER",
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
       "effects": [],
       "bindings": {
-        "fills": [
-          "15:4744"
-        ],
-        "strokes": [
-          "13:1335"
-        ]
+        "itemSpacing": "10:1227"
       },
-      "childCount": 4,
+      "childCount": 3,
       "childNames": [
-        "INSTANCE:search-2-line",
-        "TEXT:Search or jump to",
-        "FRAME:Shortcut",
-        "INSTANCE:info-custom-fill"
+        "INSTANCE:label",
+        "FRAME:Basic",
+        "INSTANCE:hint-text"
       ]
     },
-    "📌 State=Hover": {
+    "State=Hover": {
       "type": "COMPONENT",
-      "fills": [
-        {
-          "type": "SOLID",
-          "color": "rgb(250, 250, 250, a=1)"
-        }
-      ],
-      "strokes": [
-        {
-          "type": "SOLID",
-          "color": "rgb(234, 234, 237, a=1)"
-        }
-      ],
+      "fills": [],
+      "strokes": [],
       "strokeWeight": 1,
-      "paddingLeft": 20,
-      "paddingRight": 20,
-      "paddingTop": 14,
-      "paddingBottom": 14,
-      "itemSpacing": 8,
-      "layoutMode": "HORIZONTAL",
-      "counterAxisAlignItems": "CENTER",
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
       "effects": [],
       "bindings": {
-        "fills": [
-          "15:4744"
-        ],
-        "strokes": [
-          "13:1335"
-        ]
+        "itemSpacing": "10:1227"
       },
-      "childCount": 4,
+      "childCount": 3,
       "childNames": [
-        "INSTANCE:search-2-line",
-        "TEXT:Search or jump to",
-        "FRAME:Shortcut",
-        "INSTANCE:info-custom-fill"
+        "INSTANCE:label",
+        "FRAME:Basic",
+        "INSTANCE:hint-text"
       ]
     },
-    "📌 State=Active": {
+    "State=Focused": {
       "type": "COMPONENT",
-      "fills": [
-        {
-          "type": "SOLID",
-          "color": "rgb(250, 250, 250, a=1)"
-        }
-      ],
-      "strokes": [
-        {
-          "type": "SOLID",
-          "color": "rgb(234, 234, 237, a=1)"
-        }
-      ],
+      "fills": [],
+      "strokes": [],
       "strokeWeight": 1,
-      "paddingLeft": 20,
-      "paddingRight": 20,
-      "paddingTop": 14,
-      "paddingBottom": 14,
-      "itemSpacing": 8,
-      "layoutMode": "HORIZONTAL",
-      "counterAxisAlignItems": "CENTER",
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
       "effects": [],
       "bindings": {
-        "fills": [
-          "15:4744"
-        ],
-        "strokes": [
-          "13:1335"
-        ]
+        "itemSpacing": "10:1227"
       },
-      "childCount": 4,
+      "childCount": 3,
       "childNames": [
-        "INSTANCE:search-2-line",
-        "TEXT:Search or jump to",
-        "FRAME:Shortcut",
-        "INSTANCE:Compact Button [1.1]"
+        "INSTANCE:label",
+        "FRAME:Basic",
+        "INSTANCE:hint-text"
+      ]
+    },
+    "State=Filled": {
+      "type": "COMPONENT",
+      "fills": [],
+      "strokes": [],
+      "strokeWeight": 1,
+      "itemSpacing": 6,
+      "layoutMode": "VERTICAL",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1227"
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:label",
+        "FRAME:Basic",
+        "INSTANCE:hint-text"
       ]
     }
   },

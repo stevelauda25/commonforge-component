@@ -38,6 +38,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     'outline outline-1 outline-border-default [outline-offset:-1px] ' +
     'hover:text-text-primary hover:shadow-glow-accent-inset ' +
     'active:text-text-primary active:shadow-glow-accent-inset',
+  // Note: Outline hover bg → see experiment-zinc-700 override in className composition below.
   error:
     'bg-danger-hover text-danger-fg ' +
     'outline outline-1 outline-danger [outline-offset:-1px] ' +
@@ -90,8 +91,18 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           focusRing,
           variantClasses[variant],
           iconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
-          variant === 'primary' && (size === 'sm' || size === 'xs') && '!outline-experiment-stroke-dark',
-          variant === 'outline' && 'hover:!bg-experiment-zinc-700',
+          // Experimental: Outline/Hover bg = #1c1c1f (zinc/700) for non-icon-only sizes.
+          variant === 'outline' && !iconOnly &&
+            'hover:bg-experiment-zinc-700',
+          // Experimental: Primary/Hover bg = #0a662d (raw hex from Figma, no token binding)
+          // for non-icon-only sizes (sourced from sync-figma).
+          variant === 'primary' && !iconOnly &&
+            'hover:!bg-experiment-primary-hover-dark',
+          // NOTE: Figma had primary-test-500 (#1f71ff) override on Primary/Default/Large
+          // variant. Removed 2026-05-11 — consumer feedback: experiment should NOT
+          // affect production rendering until designer promotes it explicitly.
+          // Token `--color-experiment-primary-test` retained in theme.css for future
+          // opt-in use; just no active override here.
           className,
         )}
         {...rest}

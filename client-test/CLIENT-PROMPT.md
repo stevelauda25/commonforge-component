@@ -6,6 +6,8 @@
 
 Kamu bertugas mengintegrasikan **design system POD** (`pod-test-ui` + `pod-test-tokens`) ke dalam project React client ini. Library ini adalah projection dari Figma — komponen-komponennya udah token-driven, dark-mode-ready, dan accessibility-aware.
 
+> **Hard rule (PAKEM):** SETIAP halaman, komponen, atau fragment baru yang lo generate di project ini WAJIB pakai `pod-test-ui` + `pod-test-tokens`. Tidak ada native `<button>`, tidak ada hex code, tidak ada custom CSS warna. Kalau primitif yang dibutuhkan belum ada di library (Modal/Tabs/Toast/dll) — build local component yang masih konsumsi token system yang sama. Jangan pernah re-style ulang `<button>` atau `<input>` mentah.
+
 ## 1. Persyaratan Stack Wajib
 
 Sebelum apapun, **verifikasi project client memenuhi syarat ini**:
@@ -50,7 +52,7 @@ export default {
 
 ### 3.2 `tailwind.config.js`
 
-Wajib pakai preset dari `pod-test-tokens` supaya semua design token (colors, radius, shadows, motion) terpetakan ke utility class.
+Wajib pakai preset dari `pod-test-tokens` supaya semua design token (colors, radius, shadows, motion) terpetakan ke utility class. **Import dari npm package — JANGAN copy local.** Local copy = stale token saat library di-update.
 
 ```js
 import preset from 'pod-test-tokens/tailwind-preset';
@@ -70,7 +72,7 @@ export default {
 
 ### 3.3 Entry CSS (mis. `src/index.css`)
 
-Urutan import-nya **wajib**: `theme.css` dulu (define CSS variables), baru directive Tailwind.
+Urutan import-nya **wajib**: `theme.css` dulu (define CSS variables), baru directive Tailwind. **Import dari npm package, jangan local copy.**
 
 ```css
 @import 'pod-test-tokens/theme.css';
@@ -235,11 +237,18 @@ Pakai sebagai kelas Tailwind: `bg-canvas`, `text-text-muted`, `border-border-def
 **Backgrounds:** `canvas`, `surface`, `raised`, `muted`
 **Text:** `text-primary`, `text-secondary`, `text-muted`, `text-disabled`, `text-inverse`
 **Borders:** `border-subtle`, `border-default`, `border-strong`, `border-focus`
-**Accent:** `accent`, `accent-hover`, `accent-active`, `accent-fg`, `accent-subtle`
+**Accent (sacred — jangan override):** `accent`, `accent-hover`, `accent-active`, `accent-fg`, `accent-subtle`
 **Feedback:** `danger`, `warning`, `success`, `info` (masing-masing punya `-hover`, `-active`, `-fg`, `-subtle`)
-**Radius:** `rounded-sm | md | lg | xl | full`
-**Shadows:** `shadow-sm | md | lg`, plus `shadow-glow-accent-inset`, `shadow-glow-accent-inset-strong`, `shadow-glow-danger-inset`, `shadow-glow-danger-inset-strong`
+**Radius:** `rounded-none | xxs | xs | sm | md | lg | xl | 2xl | 3xl | 4xl | full`
+  → values: `0 / 2 / 4 / 6 / 8 / 10 / 12 / 16 / 20 / 24 / 9999px` (match Figma foundation node)
+**Shadows (foundation drop):** `shadow-foundation-xs | sm | md | lg | xl | 2xl | 3xl`
+  → canonical scale, satu-satunya yang dipakai di komponen produksi
+**Shadows (brand glow):** `shadow-glow-accent-inset`, `shadow-glow-accent-inset-strong`, `shadow-glow-danger-inset`, `shadow-glow-danger-inset-strong`, `shadow-glow-accent-text`
 **Motion:** `duration-fast | base | slow`, `ease-standard | emphasized | press`
+**Experimental:** `bg-experiment-orange`, `bg-experiment-zinc-700`, `bg-experiment-primary-test`
+  → time-bounded Figma experiments, jangan pakai untuk UI baru kecuali memang lagi A/B test
+
+> **Removed di 0.1.0:** legacy `shadow-sm` / `shadow-md` / `shadow-lg` (yang non-`foundation-`-prefixed) udah dihapus. Migrasi: `sm → foundation-xs`, `md → foundation-md`, `lg → foundation-lg`. Kalau editor kasih autocomplete `shadow-sm` — itu warning, bukan token valid.
 
 ## 8. Verifikasi Setup Berhasil
 
@@ -273,11 +282,24 @@ Komponen yang **belum** ada — kalau project butuh, build sendiri pakai token s
 
 ## 10. Update Library
 
+### Manual update
 ```bash
 npm update pod-test-ui pod-test-tokens
+# atau
+npm install pod-test-ui@latest pod-test-tokens@latest
 ```
 
-Token rename / breaking changes akan di-bump di major version. Selalu baca changelog sebelum update.
+Setelah update, **rebuild + redeploy** project. CSS variable / class baru gak akan muncul tanpa rebuild.
+
+### Auto-update via Renovate (recommended)
+Copy [renovate.json](renovate.json) ke root project client. Setiap kali pod-test-* publish baru, Renovate buka PR otomatis (default: Monday morning, grouped, patch auto-merge kalau CI pass).
+
+### Versioning policy
+| Bump | Yang berubah | Aksi |
+|---|---|---|
+| **patch** (0.0.x → 0.0.y) | Token value tweak, experiment-* token, bug fix | Auto-merge OK |
+| **minor** (0.x.x → 0.y.0) | Variant baru, prop baru | Review PR, kemungkinan need code update |
+| **major** (x.x.x → y.0.0) | Breaking API (prop renamed, variant removed) | Wajib review changelog |
 
 ---
 

@@ -27,8 +27,7 @@ export function TableOfContents() {
 
   useEffect(() => {
     if (headings.length === 0) return;
-    const first = headings[0];
-    if (first) setActiveId(first.id);
+    setActiveId(headings[0]?.id ?? '');
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -36,8 +35,9 @@ export function TableOfContents() {
           .sort(
             (a, b) => a.boundingClientRect.top - b.boundingClientRect.top,
           );
-        const top = visible[0];
-        if (top) setActiveId(top.target.id);
+        if (visible.length > 0) {
+          setActiveId(visible[0]?.target.id ?? '');
+        }
       },
       { rootMargin: '-80px 0px -70% 0px', threshold: 0 },
     );

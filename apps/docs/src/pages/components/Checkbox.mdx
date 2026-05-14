@@ -1,5 +1,186 @@
+import { useState } from 'react';
+import { Checkbox } from 'pod-test-ui';
+
 <PageHeader
   title="Checkbox"
-  description="Multi-select boolean input. Supports an indeterminate state for select-all parents."/>
+  description="Multi-select boolean input. Three values — off, on, indeterminate — with optional label, description, and error message."
+  status="ready"
+/>
 
-<EmptyComponentState />
+## Usage
+
+<PreviewCard>
+  <UsageExample />
+</PreviewCard>
+
+```tsx
+import { Checkbox } from 'pod-test-ui';
+
+const [accepted, setAccepted] = useState(false);
+
+<Checkbox checked={accepted} onCheckedChange={setAccepted} label="I agree to the terms" />
+```
+
+## Examples
+
+### States
+
+Off, on, and indeterminate. Use `'indeterminate'` for "some children selected" parents in tree-style multi-selects. `disabled` greys out the control and blocks pointer events — works in any state.
+
+<PreviewCard>
+  <div className="flex flex-col gap-3">
+    <Checkbox checked={false} onCheckedChange={() => {}} label="Off" />
+    <Checkbox checked={true} onCheckedChange={() => {}} label="On" />
+    <Checkbox checked="indeterminate" onCheckedChange={() => {}} label="Indeterminate" />
+    <Checkbox checked={false} onCheckedChange={() => {}} disabled label="Disabled (off)" />
+    <Checkbox checked={true} onCheckedChange={() => {}} disabled label="Disabled (on)" />
+  </div>
+</PreviewCard>
+
+```tsx
+<Checkbox checked={false}         onCheckedChange={setChecked} label="Off" />
+<Checkbox checked={true}          onCheckedChange={setChecked} label="On" />
+<Checkbox checked="indeterminate" onCheckedChange={setChecked} label="Indeterminate" />
+<Checkbox checked={false} disabled label="Disabled (off)" />
+<Checkbox checked={true}  disabled label="Disabled (on)" />
+```
+
+### With description
+
+Help text under the label. Linked via `aria-describedby`.
+
+<PreviewCard>
+  <Checkbox
+    checked={true}
+    onCheckedChange={() => {}}
+    label="Email notifications"
+    description="Get a daily digest at 8am of activity in your workspaces."
+  />
+</PreviewCard>
+
+```tsx
+<Checkbox
+  checked={emailOn}
+  onCheckedChange={setEmailOn}
+  label="Email notifications"
+  description="Get a daily digest at 8am of activity in your workspaces."
+/>
+```
+
+### Destructive (Error)
+
+Setting `error` replaces the description, switches the border to `danger`, and sets `aria-invalid`.
+
+<PreviewCard>
+  <Checkbox
+    checked={false}
+    onCheckedChange={() => {}}
+    label="Accept terms"
+    error="You must accept the terms to continue."
+  />
+</PreviewCard>
+
+```tsx
+<Checkbox
+  checked={accepted}
+  onCheckedChange={setAccepted}
+  label="Accept terms"
+  error={!accepted ? 'You must accept the terms to continue.' : undefined}
+/>
+```
+
+### Bare (no label)
+
+Omit `label` and pass `aria-label` directly for inline / compact layouts (e.g. row selection in tables).
+
+<PreviewCard>
+  <Checkbox checked={true} onCheckedChange={() => {}} aria-label="Select row" />
+</PreviewCard>
+
+```tsx
+<Checkbox checked={selected} onCheckedChange={setSelected} aria-label="Select row" />
+```
+
+### Controlled
+
+The component is fully controlled — there's no internal state. Always pass `checked` and update it from `onCheckedChange`.
+
+<PreviewCard>
+  <ControlledExample />
+</PreviewCard>
+
+```tsx
+function ControlledExample() {
+  const [checked, setChecked] = useState(false);
+  return (
+    <Checkbox
+      checked={checked}
+      onCheckedChange={setChecked}
+      label="Subscribe to newsletter"
+      description={checked ? 'You are subscribed.' : 'Not subscribed.'}
+    />
+  );
+}
+```
+
+export function UsageExample() {
+  const [accepted, setAccepted] = useState(false);
+  return (
+    <Checkbox
+      checked={accepted}
+      onCheckedChange={setAccepted}
+      label="I agree to the terms"
+    />
+  );
+}
+
+export function ControlledExample() {
+  const [checked, setChecked] = useState(false);
+  return (
+    <Checkbox
+      checked={checked}
+      onCheckedChange={setChecked}
+      label="Subscribe to newsletter"
+      description={checked ? 'You are subscribed.' : 'Not subscribed.'}
+    />
+  );
+}
+
+## API Reference
+
+| Prop              | Type                                | Default | Notes |
+|-------------------|-------------------------------------|---------|-------|
+| `checked`         | `boolean \| 'indeterminate'`        | —       | Required. `'indeterminate'` renders the minus glyph (display-only). |
+| `onCheckedChange` | `(checked: boolean) => void`        | —       | Fired on user toggle. Indeterminate always transitions to `true`. |
+| `label`           | `ReactNode`                         | —       | Renders as a `<label>` linked via `htmlFor`. |
+| `description`     | `ReactNode`                         | —       | Help text under the label. Hidden when `error` is set. Linked via `aria-describedby`. |
+| `error`           | `string`                            | —       | Error message — replaces `description`, applies destructive border, sets `aria-invalid`. |
+| `disabled`        | `boolean`                           | `false` | Disables the input and dims the container. |
+| `id`              | `string`                            | auto    | Auto-generated via `useId` when omitted; needed when wiring custom labels. |
+
+Extends all native `<input type="checkbox">` HTMLAttributes (minus `type`, `checked`, `onChange`, `size`). Fully controlled — no internal state.
+
+## Accessibility
+
+### Label association
+
+When `label` is provided, the component generates an `id` (via `useId`) and renders the visible label tied to the `<input>`. Pass your own `id` to override. For label-less usage, supply `aria-label` directly on the component.
+
+### Indeterminate
+
+`indeterminate` is set via the DOM property (the HTML attribute doesn't exist) — handled internally via `useEffect`. The `onCheckedChange` callback always receives a `boolean`; the indeterminate value is display-only and user clicks commit to `true` or `false`.
+
+For "select all" parent rows, derive `checked` from children: `all → true`, `some → 'indeterminate'`, `none → false`.
+
+### Error association
+
+`error` sets `aria-invalid="true"` on the input and links the error message via `aria-describedby`. When no error is present, `description` is linked instead. Both cannot be active at once — `error` takes precedence.
+
+### Keyboard & screen readers
+
+Native `<input type="checkbox">` — keyboard, screen-reader, and form participation come for free.
+
+- **Space** — toggles the checkbox.
+- **Tab** / **Shift+Tab** — moves focus to the next / previous focusable element.
+
+Always pair with a `label` (visible) or `aria-label` (when intentionally label-less).

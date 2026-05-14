@@ -2,17 +2,22 @@ import type { ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
+  /**
+   * Skip `overflow-hidden` so absolute-positioned popovers (Dropdown menus,
+   * Tooltips, etc.) can escape the card boundary. Default false — card
+   * clips content to the rounded corners.
+   */
+  noClip?: boolean;
 }
 
-export function PreviewCard({ children }: Props) {
+export function PreviewCard({ children, noClip = false }: Props) {
   return (
-    <div className="my-6 overflow-hidden rounded-lg border border-border-default bg-surface">
-      <div className="flex items-center justify-between border-b border-border-default bg-canvas px-4 py-2">
-        <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
-          Preview
-        </span>
-      </div>
-      <div className="flex min-h-[160px] items-center justify-center bg-muted/30 p-8">
+    <div
+      className={`preview-card my-6 rounded-lg border border-border-default bg-canvas ${
+        noClip ? '' : 'overflow-hidden'
+      }`}
+    >
+      <div className="flex min-h-[160px] items-center justify-center p-8">
         {children}
       </div>
     </div>

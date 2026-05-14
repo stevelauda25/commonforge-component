@@ -8,10 +8,12 @@ This file is **mandatory reading** before generating or editing any code in this
 
 This is `client-test` — a React + Vite + TypeScript application that consumes the **POD Design System** via two npm packages:
 
-- **`pod-test-ui`** — React components (`Button`, `Checkbox`, `SearchInput`, `Tooltip`)
+- **`pod-test-ui`** — React components (`Button`, `Checkbox`, `TextInput`, `Tooltip`, `Switch` [experimental])
 - **`pod-test-tokens`** — Design tokens (CSS variables + Tailwind preset)
 
 These packages are the **single source of truth** for visual design. They are token-driven, dark-mode-aware, and accessibility-aware. Treat them as production primitives — never re-implement what they provide.
+
+> **Hard rule:** Every screen, page, or fragment generated in this project MUST be composed from `pod-test-ui` components and `pod-test-tokens` semantic classes. No native `<button>`, no hex codes, no ad-hoc styling. If a primitive doesn't exist (Modal, Tabs, etc.) → see Rule 10.
 
 ---
 
@@ -23,32 +25,48 @@ These packages are the **single source of truth** for visual design. They are to
 | TypeScript | `^6.x` | `strict: true`, `noEmit: true` (Vite handles compilation) |
 | Vite | `^8.x` | Dev server & build |
 | **Tailwind CSS** | **`^3.4.x` (v3 ONLY)** | See "Tailwind Rules" below |
-| `pod-test-ui` | `^0.0.1` | Workspace consumer |
-| `pod-test-tokens` | `^0.0.1` | Workspace consumer |
+| `pod-test-ui` | `^0.1.0` | Workspace consumer — pin to latest minor |
+| `pod-test-tokens` | `^0.1.0` | Workspace consumer — pin to latest minor |
 | `lucide-react` | latest | Icon set — bundled by `pod-test-ui` |
 
 ---
 
 ## CORE RULES (Non-negotiable)
 
-### Rule 1 — Always Use Library Components
+### Rule 1 — Always Use Library Components (PAKEM, ZERO EXCEPTION)
 
-When a UI need maps to an existing primitive in `pod-test-ui`, use it. No exceptions.
+When generating ANY UI — a screen, a card, a form, a single row — your first move is: **map the request to existing `pod-test-ui` primitives**. If a primitive maps, use it. No exceptions, no "just this once for prototype", no "let me hardcode quickly".
 
 ```tsx
-// ✅ ALWAYS
-import { Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
+// ✅ ALWAYS — start every page from these imports
+import { Button, Checkbox, TextInput, Tooltip, Switch } from 'pod-test-ui';
 
 <Button variant="primary">Save</Button>
 <Checkbox checked={x} onCheckedChange={setX} label="Agree" />
-<SearchInput value={q} onValueChange={setQ} />
+<TextInput value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…" />
 <Tooltip content="Hint"><Button iconOnly leftIcon={<X />} aria-label="Close" /></Tooltip>
+<Switch checked={on} onCheckedChange={setOn} />   {/* experimental */}
 
-// ❌ NEVER — even for "quick" UI
+// ❌ NEVER — even for "quick" UI, even for "just a prototype"
 <button className="bg-green-600 text-white px-4 py-2 rounded">Save</button>
 <input type="checkbox" />
-<input type="search" />
+<input type="text" />
 ```
+
+**Coverage map** (component → POD primitive):
+
+| Asked for | Use this |
+|---|---|
+| Button, action, CTA, submit, link-styled-as-button | `<Button>` (variant: primary/outline/error) |
+| Checkbox, multi-select, "select all", agree to terms | `<Checkbox>` |
+| Text input, form field, search box, query input | `<TextInput>` (use `leftIcon={<Search />}` for search use case) |
+| Tooltip, hover help, keyboard-shortcut hint, icon explanation | `<Tooltip>` |
+| Toggle, on/off, enable feature | `<Switch>` ⚠ experimental — confirm with designer before shipping |
+| Native `<button>` | ❌ Never. Always `<Button>`. |
+| Native `<input type="checkbox">` | ❌ Never. Always `<Checkbox>`. |
+| Native `<input type="text">` / `<input type="search">` | ❌ Never. Always `<TextInput>`. |
+
+If you find yourself writing `<button>`, `<input>`, or any styled `<div>` that *acts like* a button/input/checkbox/tooltip — STOP. Replace with the POD primitive.
 
 ### Rule 2 — Always Use Semantic Tokens
 
@@ -71,13 +89,22 @@ Color, radius, shadow, motion: all values come from token classes. Hex codes, `r
 - **Backgrounds:** `canvas`, `surface`, `raised`, `muted`
 - **Text:** `text-primary`, `text-secondary`, `text-muted`, `text-disabled`, `text-inverse`
 - **Borders:** `border-subtle`, `border-default`, `border-strong`, `border-focus`
-- **Accent:** `accent`, `accent-hover`, `accent-active`, `accent-fg`, `accent-subtle`
+- **Accent:** `accent`, `accent-hover`, `accent-active`, `accent-fg`, `accent-subtle` *(brand — sacred, never override)*
 - **Feedback:** `danger`, `warning`, `success`, `info` (each has `-hover`, `-active`, `-fg`, `-subtle`)
-- **Radius:** `rounded-sm | md | lg | xl | full`
-- **Shadow:** `shadow-sm | md | lg`, plus `shadow-glow-accent-inset[-strong]`, `shadow-glow-danger-inset[-strong]`
+- **Radius:** `rounded-none | xxs | xs | sm | md | lg | xl | 2xl | 3xl | 4xl | full`
+  *(scale matches Figma foundation node — values: 0/2/4/6/8/10/12/16/20/24/9999px)*
+- **Shadow (foundation drop):** `shadow-foundation-xs | sm | md | lg | xl | 2xl | 3xl`
+  *(canonical scale — replaces legacy `shadow-sm/md/lg` which were removed in 0.1.0)*
+- **Shadow (brand glow):** `shadow-glow-accent-inset[-strong]`, `shadow-glow-danger-inset[-strong]`, `shadow-glow-accent-text`
 - **Motion:** `duration-fast | base | slow`, `ease-standard | emphasized | press`
+- **Experimental** *(Figma-introduced primitives, time-bounded — promote or remove later)*:
+  `bg-experiment-orange`, `bg-experiment-zinc-700`, `bg-experiment-primary-test`
 
 Tokens are stored as `R G B` triples — opacity modifiers work: `bg-canvas/80`, `text-accent/50`, `border-border-default/30`.
+
+**Removed in 0.1.0 (DO NOT use even if you remember them):**
+- `shadow-sm` / `shadow-md` / `shadow-lg` (the un-prefixed legacy set) — migrate to `shadow-foundation-sm / md / lg`.
+  Old `sm` mapped to `foundation-xs`; old `md` to `foundation-md`; old `lg` to `foundation-lg`.
 
 ### Rule 3 — Never Write `dark:` Variants
 
@@ -103,19 +130,26 @@ Verify by checking the generated CSS header — it must say `tailwindcss v3.x.x`
 
 ### Rule 5 — Controlled Components
 
-`Checkbox` and `SearchInput` are controlled-only. Always own their state.
+`Checkbox` is controlled-only. `TextInput` and `Switch` accept both controlled and uncontrolled patterns — but for forms with validation, prefer controlled.
 
 ```tsx
-// ✅ ALWAYS
+// ✅ ALWAYS (Checkbox = controlled only)
 const [checked, setChecked] = useState<boolean | 'indeterminate'>(false);
 <Checkbox checked={checked} onCheckedChange={setChecked} />
 
+// ✅ TextInput controlled (preferred for forms)
 const [query, setQuery] = useState('');
-<SearchInput value={query} onValueChange={setQuery} />
+<TextInput value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search…" />
 
-// ❌ NEVER — no defaultValue / uncontrolled mode
+// ✅ TextInput uncontrolled (OK for one-shot inputs)
+<TextInput defaultValue="" placeholder="Type here…" />
+
+// ✅ Switch — both patterns supported
+<Switch checked={on} onCheckedChange={setOn} />
+<Switch defaultChecked={true} />
+
+// ❌ NEVER — Checkbox does not accept defaultChecked
 <Checkbox defaultChecked />
-<SearchInput />
 ```
 
 ### Rule 6 — Tooltip Targets Must Be Focusable
@@ -167,11 +201,13 @@ Always import from the package root. Subpath imports work but are not the public
 
 ```tsx
 // ✅ ALWAYS
-import { Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
+import { Button, Checkbox, TextInput, Tooltip, Switch } from 'pod-test-ui';
 
-// ❌ NEVER
+// ❌ NEVER (private build artifact)
 import { Button } from 'pod-test-ui/dist/button';
-import { Button } from 'pod-test-ui/button';   // exists, but don't use
+
+// ⚠ Subpath imports work and are valid for tree-shaking, but top-level is the preferred public API:
+import { Button } from 'pod-test-ui/button';   // works, prefer top-level
 ```
 
 ### Rule 10 — When a Primitive Is Missing
@@ -240,19 +276,92 @@ Refer to `CLIENT-PROMPT.md` in this directory. It is the canonical setup guide (
 
 ---
 
+## Source of Truth Hierarchy (BACA SEBELUM EKSEKUSI APA PUN)
+
+Library versi-versi bisa berbeda. File ini (`CLAUDE.md`) bisa stale. **Untuk daftar component, prop, token, dan rule yang aktual di versi terinstall:**
+
+```bash
+cat node_modules/pod-test-ui/AGENTS.md
+```
+
+File itu di-ship dalam tarball npm. Setiap `npm update pod-test-ui` di project ini, manifest itu auto-update. Tidak perlu manual edit CLAUDE.md ini saat library rilis component baru.
+
+**Priority order saat ada konflik info:**
+
+1. `node_modules/pod-test-ui/AGENTS.md` — ground truth (versi-spesifik, auto-sync)
+2. `node_modules/pod-test-ui/dist/index.d.ts` — TS exports (kalau AGENTS.md missing/stale)
+3. `CLAUDE.md` (this file) — rule generik consumer-side (stack, dark mode, dll)
+4. `CLIENT-PROMPT.md` — setup detail (Tailwind v3, PostCSS, dll)
+5. `COMPONENT-RECIPES.md` — pattern siap pakai
+6. External web docs — paling terakhir, sering stale
+
+**Aturan praktisnya:**
+
+- Saat user minta "pakai component X" → cek dulu `AGENTS.md` apakah X ada.
+- Saat user mention token name → cek dulu `AGENTS.md` token list — yang tertulis di file ini bisa basi.
+- Saat `npm update` di-jalankan → cukup re-baca `AGENTS.md`, gak perlu manual sync CLAUDE.md.
+
+---
+
+## Agentation Feedback Flow
+
+This project has `agentation` (visual feedback overlay) wired into `App.tsx`. Owner non-dev klik element di browser → tulis intent → output disalin ke clipboard sudah ter-enrich dengan POD context lewat `src/lib/pod-agentation.ts`.
+
+**Saat user paste output agentation ke kamu**, output-nya akan punya format:
+
+```markdown
+# Agentation Feedback — POD-enriched
+
+You are editing a project that uses **POD Design System** (...)
+**Hard rules** (zero exceptions — see `client-test/CLAUDE.md`):
+- Every UI change must use POD primitives + semantic tokens.
+- ...
+
+---
+
+### Annotation: Button
+**User intent:** ganti ke outline
+
+**POD context:** Target is `<Button>` from `pod-test-ui` (a tracked primitive).
+→ Edit MUST keep this as `<Button>`. Don't replace with native `<button>`/`<input>`.
+→ Available props/variants: see `node_modules/pod-test-ui/AGENTS.md`.
+
+**Location:** `body > main > section > div > button`
+**Current classes:** `...`
+```
+
+**Cara handle:**
+
+1. Parse intent dari `**User intent:**` line — natural language seperti "ganti ke outline", "warna lebih lembut", "tambah icon kanan", dll.
+2. **Cek `POD context` line:**
+   - Kalau target POD primitive → translate intent ke prop change pada element existing. Don't rebuild from scratch.
+   - Kalau target local component → translate ke className/prop change pakai POD tokens (no hex).
+3. **Cek `node_modules/pod-test-ui/AGENTS.md`** untuk:
+   - Daftar variant/size yang valid untuk component itu
+   - Token names untuk styling adjustment
+4. **Gunakan intent map** di AGENTS.md untuk natural language → API call. Misal "ganti ke outline" → `variant="outline"` (POD pakai "outline", bukan "secondary").
+5. Locate file → pakai `Location` (DOM path) + `nearbyText` + `Current classes` untuk grep file source. Agentation tidak kasih file path eksplisit; kamu cari sendiri via grep di `src/`.
+6. Apply minimum edit. Don't refactor surrounding code unless intent mengharuskan.
+7. Report ke user: file yang di-edit + line, dan terjemahan intent → API change (misal "intent 'ganti ke outline' → `variant='outline'` di Button.tsx:42").
+
+---
+
 ## Common Mistakes to Watch For
 
 When reviewing existing code (yours or others') in this project, flag and fix any of these:
 
 - ✗ Hardcoded colors: `bg-[#…]`, `text-[#…]`, `style={{ color: '…' }}`
 - ✗ `dark:` modifiers anywhere
-- ✗ Native `<button>`, `<input type="checkbox">`, `<input type="search">` for new UI
+- ✗ Native `<button>`, `<input type="checkbox">`, `<input type="text">`, `<input type="search">` for new UI — use `<Button>`, `<Checkbox>`, `<TextInput>`
 - ✗ Tailwind v4 plugin (`@tailwindcss/postcss`) in `package.json`
 - ✗ `<Tooltip>` wrapping a non-focusable element
 - ✗ Icon-only `<Button>` without `aria-label`
-- ✗ `defaultChecked` / uncontrolled `<Checkbox>` or `<SearchInput>`
+- ✗ `defaultChecked` / uncontrolled `<Checkbox>` (Checkbox is controlled-only; TextInput / Switch DO accept uncontrolled, that's fine)
 - ✗ Subpath imports: `pod-test-ui/dist/...`
-- ✗ Re-implementing `Button`, `Checkbox`, `SearchInput`, or `Tooltip`
+- ✗ Re-implementing `Button`, `Checkbox`, `TextInput`, `Tooltip`, or `Switch`
+- ✗ Legacy shadow classes (`shadow-sm`, `shadow-md`, `shadow-lg`) — removed in 0.1.0, migrate to `shadow-foundation-*`
+- ✗ Inventing radius keys (`rounded-2.5xl`, `rounded-huge`) — only the documented scale is real
+- ✗ Touching `experiment-*` tokens for "production" UI — those are time-bounded experiments, not stable primitives
 
 ---
 

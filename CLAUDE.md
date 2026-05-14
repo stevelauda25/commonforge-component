@@ -70,6 +70,36 @@ whole accent system to match Figma's experiment". One drifted variant ≠ brand
 shift. Even ten drifted variants ≠ brand shift. Brand shift only happens when
 the user explicitly says "rebrand to <color>".
 
+### Multi-variant fidelity — applies ONLY when adding a new component
+
+**Trigger condition:** You're in FIRST-SYNC GUARD path (component just added
+via `/new-item`, or scaffolding code from scratch for a tracked component
+that had no prior `.tsx`). And the component has >1 variant OR >2 sizes.
+
+**Does NOT apply to:** routine `/sync-figma` runs on already-validated code
+(token swap, single-variant color change). Those stay FAST PATH — adding an
+audit there would bloat every sync and waste tokens. Use `/verify-component
+<slug>` standalone if you suspect drift in an existing component.
+
+**Why this matters at add-time only:** new components are scaffolded from
+zero. AI commonly infers patterns ("all sizes share radius", "outline hover
+is just darker") and misses per-variant overrides in Figma. Routine sync of
+already-correct code doesn't have this risk.
+
+**Add-time protocol** (Button = 3v × 4s × 3 states = 36 cells):
+
+1. From Figma `get_design_context.COMPONENT_SET.children`, emit a markdown
+   table — one row per `(variant, state, size)`. Columns: fill, stroke,
+   radius, textColor, fontSize, fontWeight, padding, effects.
+2. Map each row to `variantClasses[v]` + `sizeClasses[s]` + state modifiers
+   in your scaffolded `.tsx`. Resolve every class → hex.
+3. Diff cell by cell. Inference forbidden: "probably same as md", "all sizes
+   share radius", "outline hover is just darker".
+4. Per-variant overrides (e.g. `Primary/lg = #1f71ff` non-brand) → add
+   `experiment-<name>` token + targeted `variant === 'X' && size === 'Y'`
+   override. NEVER touch sacred brand tokens.
+5. State variants (hover/active/disabled/focus) = real audit rows.
+
 ### Granular execution
 
 Scope your edits to exactly what Figma changed. Read the `check.mjs` output
@@ -147,15 +177,33 @@ In every other case: execute.
 
 ## Auto-run scripts (no confirmation needed)
 
-These commands are pre-allowed in `.claude/settings.local.json` and should be
+These commands are pre-allowed in `.claude/settings.json` and should be
 executed without permission prompts whenever invoked or implied:
 
 - `node scripts/figma/check.mjs [slug]`
 - `node scripts/figma/check.mjs --json` / `--slugs-only` / `--urls-only`
 - `node scripts/figma/bless.mjs <slug>` / `--all` / `--prune`
 - `node scripts/figma/discover.mjs`
+- `node_modules/.bin/tsup …` (rebuilding packages after sync)
 
 When the user pastes one of these, just run it and report stdout.
+
+## Slash commands available
+
+- **`/new-item <figma-url>`** — BOOTSTRAP a new Figma node into tracking.
+  Parses URL → adds to manifest → pulls variables → blesses snapshot. Run
+  this once per new component/foundation page. Then `/sync-figma <slug>`
+  for ongoing work. See `.claude/commands/new-item.md`.
+- **`/sync-figma <slug>`** — pull from Figma, apply edits, bless, verify. See
+  `.claude/commands/sync-figma.md`. Sat-set; never modifies sacred tokens.
+  Also refreshes `.figma/variables/<slug>.json` dictionary. Requires slug
+  to exist in manifest (use /new-item first if it doesn't).
+- **`/refresh-vars [slug]`** — lightweight: ONLY refresh
+  `.figma/variables/<slug>.json` via MCP. No code changes, no bless. Use
+  when `check.mjs` shows raw IDs you want resolved to names.
+- **`/publish [patch|minor|major|x.y.z]`** — verify in-sync + clean tree → build →
+  bump → PAUSE for confirmation → npm publish → tag locally. See
+  `.claude/commands/publish.md`. Pauses ONCE before actual publish.
 
 ## Common edits — patterns
 
@@ -179,6 +227,25 @@ to expose as utility class.
 [apps/docs/src/pages/components/<Pascal>.mdx](apps/docs/src/pages/components/).
 Use pre-registered MDX globals (`PageHeader`, `PreviewCard`, `PropsTable`,
 `StatusBadge`) — no import needed.
+
+**New component** (e.g. Switch) → create 3 files, then run canvas-sync:
+1. `packages/ui/src/switch/switch.tsx` — component code
+2. `packages/ui/src/switch/index.ts` — `export { Switch } from './switch.js';`
+3. `packages/ui/src/switch/canvas.ts` — exports `switchCanvas` ([CanvasComponent](packages/ui/src/canvas-types.ts)):
+   ```ts
+   import type { CanvasComponent } from '../canvas-types.js';
+   export const switchCanvas: CanvasComponent = {
+     name: 'Switch',
+     importFrom: 'pod-test-ui/switch',
+     variants: ['default'],
+     sizes: ['sm', 'md'],
+     defaultProps: { checked: false },
+   };
+   ```
+Then `node scripts/canvas/sync.mjs` (or `npm run build` in packages/ui).
+The script auto-updates: `tsup.config.ts` entries, `package.json` exports,
+`src/canvas.ts` aggregator, `centernode/src/utils/podRuntime.js`. Centernode
+sidebar picks it up automatically. No manual file edits needed.
 
 ## Verification (always run after sync)
 

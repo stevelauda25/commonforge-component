@@ -6,6 +6,9 @@ import { PreviewCard } from './docs/PreviewCard.js';
 import { EmptyComponentState } from './docs/EmptyComponentState.js';
 import { PageHeader } from './docs/PageHeader.js';
 import { Swatch, SwatchGrid } from './docs/Swatch.js';
+import { TokenAutoGrid } from './foundations/TokenAutoGrid.js';
+import { MotionAutoGrid } from './foundations/MotionAutoGrid.js';
+import { MotionPatternDemo, MotionPatternGrid } from './foundations/MotionPatternDemos.js';
 
 const components = {
   pre: CodeBlock,
@@ -15,6 +18,10 @@ const components = {
   PageHeader,
   Swatch,
   SwatchGrid,
+  TokenAutoGrid,
+  MotionAutoGrid,
+  MotionPatternDemo,
+  MotionPatternGrid,
 };
 
 export function MdxProvider({ children }: { children: ReactNode }) {

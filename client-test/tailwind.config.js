@@ -1,4 +1,4 @@
-import preset from './src/tailwind-preset.ts';
+import preset from 'pod-test-tokens/tailwind-preset';
 
 /** @type {import('tailwindcss').Config} */
 export default {

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "slug": "search-input",
+  "fileKey": "TCd9exLXTUMciyw1VqnPSK",
+  "nodeId": "2408:3610",
+  "syncedAt": "2026-05-13T05:50:00Z",
+  "comment": "Auto-populated by /new-item via MCP get_variable_defs. SF Pro font references coerced to Inter on next /sync-figma per CLAUDE.md rule.",
+  "variables": {
+    "text/strong": "#fafafa",
+    "text-sm/regular": "Font(family: \"Inter\", style: Regular, size: 14, weight: 400, lineHeight: 20, letterSpacing: 0)",
+    "icon/placeholder": "#3a3a3d",
+    "text/placeholder": "#3a3a3d",
+    "text-xs/regular": "Font(family: \"Inter\", style: Regular, size: 13, weight: 400, lineHeight: 18, letterSpacing: 0)",
+    "text/soft": "#7c7e84",
+    "rounded-md": "6",
+    "rounded-none": "0",
+    "rounded": "4",
+    "bg/disabled": "#1c1c1f",
+    "padding-s": "8",
+    "radius-m": "8",
+    "bg/medium": "#111113",
+    "stroke/strong": "#18181b",
+    "shadows/shadow-xs": "Effect(type: DROP_SHADOW, color: #00000014, offset: (0, 2), radius: 2, spread: 0)",
+    "icon/soft": "#7c7e84",
+    "paading-xs": "6",
+    "stroke/soft": "#3a3a3d",
+    "focus-rings/ring-gray/ring-gray-s": "Effect(type: DROP_SHADOW, color: #8F8F8F33, offset: (0, 0), radius: 0, spread: 2)",
+    "zinc/950": "#09090b"
+  }
+}

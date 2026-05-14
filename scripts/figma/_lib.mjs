@@ -4,7 +4,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -14,6 +14,9 @@ export const repoRoot = resolve(__dirname, '..', '..');
 export const MANIFEST_PATH  = resolve(repoRoot, '.figma', 'manifest.json');
 export const SNAPSHOT_PATH  = resolve(repoRoot, '.figma', 'snapshots.json');
 export const STATE_DIR      = resolve(repoRoot, '.figma', 'state');
+export const VARIABLES_DIR  = resolve(repoRoot, '.figma', 'variables');
+// Legacy single-file path — checked as fallback if variables/ dir doesn't exist
+export const VARIABLES_PATH = resolve(repoRoot, '.figma', 'variables.json');
 
 export function loadEnv() {
   const path = resolve(repoRoot, '.env.local');
@@ -36,15 +39,30 @@ export function loadEnv() {
   return env;
 }
 
-export async function figmaFetch(env, path) {
-  const res = await fetch(`https://api.figma.com${path}`, {
-    headers: { 'X-Figma-Token': env.FIGMA_PAT },
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Figma API ${res.status} ${res.statusText} for ${path}\n${body}`);
+export async function figmaFetch(env, path, opts = {}) {
+  const maxRetries = opts.maxRetries ?? 3;
+  let attempt = 0;
+  while (true) {
+    const res = await fetch(`https://api.figma.com${path}`, {
+      headers: { 'X-Figma-Token': env.FIGMA_PAT },
+    });
+    // 429 = rate limit. Respect Retry-After header if Figma sends one,
+    // otherwise exponential backoff capped at 30s.
+    if (res.status === 429 && attempt < maxRetries) {
+      const retryAfter = parseInt(res.headers.get('Retry-After') || '0', 10);
+      const waitMs = retryAfter > 0
+        ? retryAfter * 1000
+        : Math.min(2000 * Math.pow(2, attempt), 30_000);
+      await new Promise((r) => setTimeout(r, waitMs));
+      attempt++;
+      continue;
+    }
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Figma API ${res.status} ${res.statusText} for ${path}\n${body}`);
+    }
+    return res.json();
   }
-  return res.json();
 }
 
 function walkBoundVariables(node, sink) {
@@ -117,6 +135,54 @@ export async function hashComponent(env, nodeId) {
   const canonical = canonicalize(subtree);
   const hash = createHash('sha256').update(canonical).digest('hex');
   return { hash, varCount: varIds.size, canonical, subtree };
+}
+
+/**
+ * Bulk version — fetch many node subtrees in a SINGLE Figma API call.
+ * Figma's /nodes endpoint accepts comma-separated ids, returns all in one
+ * response. Massive rate-limit win: N components → 1 call (vs N calls).
+ *
+ * Chunks at 50 ids per request as safety margin (URL length + cost units).
+ * Returns Map<nodeId, { hash, varCount, canonical, subtree } | { error }>.
+ */
+export async function hashComponentsBulk(env, nodeIds) {
+  const result = new Map();
+  const CHUNK_SIZE = 50;
+  const chunks = [];
+  for (let i = 0; i < nodeIds.length; i += CHUNK_SIZE) {
+    chunks.push(nodeIds.slice(i, i + CHUNK_SIZE));
+  }
+
+  for (const chunk of chunks) {
+    const ids = chunk.join(',');
+    let nodesRes;
+    try {
+      nodesRes = await figmaFetch(
+        env,
+        `/v1/files/${env.FIGMA_FILE_KEY}/nodes?ids=${encodeURIComponent(ids)}`,
+      );
+    } catch (err) {
+      // Whole chunk failed (e.g. 429 after retries exhausted). Mark every
+      // node in this chunk as errored — partial result is better than total.
+      for (const nodeId of chunk) {
+        result.set(nodeId, { error: err.message });
+      }
+      continue;
+    }
+    for (const nodeId of chunk) {
+      const subtree = nodesRes.nodes[nodeId]?.document;
+      if (!subtree) {
+        result.set(nodeId, { error: `Node ${nodeId} not found in file ${env.FIGMA_FILE_KEY}` });
+        continue;
+      }
+      const varIds = new Set();
+      walkBoundVariables(subtree, varIds);
+      const canonical = canonicalize(subtree);
+      const hash = createHash('sha256').update(canonical).digest('hex');
+      result.set(nodeId, { hash, varCount: varIds.size, canonical, subtree });
+    }
+  }
+  return result;
 }
 
 /**
@@ -234,18 +300,21 @@ export function diffSummaries(oldSum, newSum) {
 function compareNode(a, b, prefix = '') {
   const changes = [];
 
-  // Both arrays → compare element-wise so we get fills[0].color, not full JSON
-  if (Array.isArray(a) && Array.isArray(b)) {
-    const len = Math.max(a.length, b.length);
+  // Either side is an array → element-wise (treat non-array as empty array).
+  // This handles new fills[] appearing where old had nothing — we recurse
+  // into the new element instead of dumping the whole object as a leaf.
+  if (Array.isArray(a) || Array.isArray(b)) {
+    const aArr = Array.isArray(a) ? a : [];
+    const bArr = Array.isArray(b) ? b : [];
+    const len = Math.max(aArr.length, bArr.length);
     for (let i = 0; i < len; i++) {
-      const av = a[i];
-      const bv = b[i];
+      const av = aArr[i];
+      const bv = bArr[i];
       const path = `${prefix}[${i}]`;
       if (JSON.stringify(av) === JSON.stringify(bv)) continue;
-      if (
-        av !== null && bv !== null &&
-        typeof av === 'object' && typeof bv === 'object'
-      ) {
+      const aIsObj = av && typeof av === 'object';
+      const bIsObj = bv && typeof bv === 'object';
+      if (aIsObj || bIsObj) {
         changes.push(...compareNode(av, bv, path));
       } else {
         changes.push({ path, before: av, after: bv });
@@ -254,23 +323,119 @@ function compareNode(a, b, prefix = '') {
     return changes;
   }
 
-  // Both objects → compare key-wise
-  const keys = new Set([...Object.keys(a || {}), ...Object.keys(b || {})]);
+  // Object key-wise (treat non-object as empty object).
+  const aObj = (a && typeof a === 'object') ? a : {};
+  const bObj = (b && typeof b === 'object') ? b : {};
+  const keys = new Set([...Object.keys(aObj), ...Object.keys(bObj)]);
   for (const key of keys) {
     const path = prefix ? `${prefix}.${key}` : key;
-    const av = a?.[key];
-    const bv = b?.[key];
+    const av = aObj[key];
+    const bv = bObj[key];
     if (JSON.stringify(av) === JSON.stringify(bv)) continue;
-    if (
-      av !== null && bv !== null &&
-      typeof av === 'object' && typeof bv === 'object'
-    ) {
+    const aIsObj = av && typeof av === 'object';
+    const bIsObj = bv && typeof bv === 'object';
+    if (aIsObj || bIsObj) {
       changes.push(...compareNode(av, bv, path));
     } else {
       changes.push({ path, before: av, after: bv });
     }
   }
   return changes;
+}
+
+/**
+ * Load variable dictionary — name→value mapping for diff enrichment.
+ *
+ * Reads from `.figma/variables/<slug>.json` (per-component files) and merges
+ * all of them. Falls back to legacy `.figma/variables.json` single-file if dir
+ * is empty/missing.
+ *
+ * Per-component split prevents foundation tokens (radius/shadow) from being
+ * overwritten when /sync-figma button refreshes button-scoped variables.
+ */
+export function loadVariableDictionary() {
+  const variables = {};
+
+  // Try per-component dir first (preferred)
+  let dirEntries = [];
+  try {
+    if (existsSync(VARIABLES_DIR)) {
+      dirEntries = readdirSync(VARIABLES_DIR).filter((f) => f.endsWith('.json'));
+    }
+  } catch {
+    /* empty */
+  }
+
+  if (dirEntries.length > 0) {
+    for (const file of dirEntries) {
+      try {
+        const data = JSON.parse(readFileSync(resolve(VARIABLES_DIR, file), 'utf8'));
+        Object.assign(variables, data.variables || {});
+      } catch {
+        /* skip malformed file */
+      }
+    }
+  } else {
+    // Fallback: legacy single file
+    try {
+      const data = JSON.parse(readFileSync(VARIABLES_PATH, 'utf8'));
+      Object.assign(variables, data.variables || {});
+    } catch {
+      return {
+        hasData: false,
+        nameForValue: () => null,
+        nameForBoundId: () => null,
+      };
+    }
+  }
+
+  if (Object.keys(variables).length === 0) {
+    return {
+      hasData: false,
+      nameForValue: () => null,
+      nameForBoundId: () => null,
+    };
+  }
+
+  // Build value → [names] reverse index
+  const byValue = new Map();
+  for (const [name, value] of Object.entries(variables)) {
+    if (typeof value !== 'string') continue;
+    const norm = value.toLowerCase();
+    if (!byValue.has(norm)) byValue.set(norm, []);
+    byValue.get(norm).push(name);
+  }
+
+  // Pick best name candidate based on path heuristic
+  function pickByPath(candidates, hint) {
+    if (candidates.length === 0) return null;
+    if (candidates.length === 1) return candidates[0];
+    if (hint) {
+      const filtered = candidates.filter((n) => n.includes(hint));
+      if (filtered.length > 0) {
+        // Shortest = least-suffixed = most "default"
+        return filtered.sort((a, b) => a.length - b.length)[0];
+      }
+    }
+    return candidates.sort((a, b) => a.length - b.length)[0];
+  }
+
+  return {
+    hasData: true,
+    /** Look up token name by resolved value (hex / number string). */
+    nameForValue(value, hint) {
+      if (value == null) return null;
+      const v = String(value).toLowerCase();
+      const cands = byValue.get(v);
+      if (!cands) return null;
+      return pickByPath(cands, hint);
+    },
+    /** Look up token name from a bound ID by going through state's resolved value. */
+    nameForBoundId(_boundId, resolvedValue, hint) {
+      // We don't have direct ID→name mapping (Pro tier limit). Fall back to value lookup.
+      return this.nameForValue(resolvedValue, hint);
+    },
+  };
 }
 
 export function loadState(slug) {

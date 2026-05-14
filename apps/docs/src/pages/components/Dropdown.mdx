@@ -1,5 +1,534 @@
+import { useState } from 'react';
+import { Dropdown, DropdownMenu, DropdownItem, DropdownBadge, Checkbox } from 'pod-test-ui';
+import { Pencil, NotebookText, Upload, Trash2 } from 'lucide-react';
+
 <PageHeader
   title="Dropdown"
-  description="Floating menu of actions or links."/>
+  description="Single-select or multi-tag trigger with label, hint, and error. Stateless trigger — consumer manages menu open/close and option list. Designed to pair with a future Menu primitive."
+  status="ready"
+/>
 
-<EmptyComponentState />
+<PreviewCard noClip>
+  <div className="min-h-[220px]">
+    <HeroExample />
+  </div>
+</PreviewCard>
+
+export function HeroExample() {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState(null);
+  return (
+    <div className="relative w-[260px]">
+      <Dropdown
+        label="Label"
+        required
+        sublabel="(Optional)"
+        labelInfo
+        placeholder="Select"
+        hint="This is a hint text to help user."
+        open={open}
+        selectedLabel={selected ?? undefined}
+        onClick={() => setOpen((o) => !o)}
+      />
+      {open && (
+        <DropdownMenu className="absolute z-10 mt-1 w-full">
+          <DropdownItem
+            selected={selected === 'Option A'}
+            showSelectedMark
+            onClick={() => { setSelected('Option A'); setOpen(false); }}
+          >
+            Option A
+          </DropdownItem>
+          <DropdownItem
+            selected={selected === 'Option B'}
+            showSelectedMark
+            onClick={() => { setSelected('Option B'); setOpen(false); }}
+          >
+            Option B
+          </DropdownItem>
+        </DropdownMenu>
+      )}
+    </div>
+  );
+}
+
+```tsx
+const [open, setOpen] = useState(false);
+const [selected, setSelected] = useState(null);
+
+<Dropdown
+  label="Label"
+  required
+  sublabel="(Optional)"
+  labelInfo
+  placeholder="Select"
+  hint="This is a hint text to help user."
+  open={open}
+  selectedLabel={selected ?? undefined}
+  onClick={() => setOpen((o) => !o)}
+/>
+{open && (
+  <DropdownMenu className="absolute z-10 mt-1 w-full">
+    <DropdownItem onClick={() => setSelected('Option A')}>Option A</DropdownItem>
+    <DropdownItem onClick={() => setSelected('Option B')}>Option B</DropdownItem>
+  </DropdownMenu>
+)}
+```
+
+## Variants
+
+Two variants: `default` shows a single placeholder / selected text, `tags` renders multi-select chips inline. Both clickable below — try them.
+
+<PreviewCard noClip>
+  <div className="min-h-[220px] w-[640px]">
+    <VariantInteractiveExample />
+  </div>
+</PreviewCard>
+
+export function VariantInteractiveExample() {
+  const [openDefault, setOpenDefault] = useState(false);
+  const [openTags, setOpenTags] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [tags, setTags] = useState([
+    { value: 'a', label: 'LABEL' },
+    { value: 'b', label: 'LABEL' },
+  ]);
+  return (
+    <div className="grid grid-cols-2 gap-6">
+      <div className="relative">
+        <Dropdown
+          variant="default"
+          label="Default"
+          placeholder="Select"
+          hint="This is a hint text to help user."
+          open={openDefault}
+          selectedLabel={selected ?? undefined}
+          onClick={() => setOpenDefault((o) => !o)}
+        />
+        {openDefault && (
+          <DropdownMenu className="absolute z-10 mt-1 w-full">
+            <DropdownItem
+              selected={selected === 'Option A'}
+              showSelectedMark
+              onClick={() => { setSelected('Option A'); setOpenDefault(false); }}
+            >
+              Option A
+            </DropdownItem>
+            <DropdownItem
+              selected={selected === 'Option B'}
+              showSelectedMark
+              onClick={() => { setSelected('Option B'); setOpenDefault(false); }}
+            >
+              Option B
+            </DropdownItem>
+          </DropdownMenu>
+        )}
+      </div>
+      <div className="relative">
+        <Dropdown
+          variant="tags"
+          label="Tags"
+          placeholder="Select"
+          hint="This is a hint text to help user."
+          tags={tags}
+          onRemoveTag={(v) => setTags((arr) => arr.filter((t) => t.value !== v))}
+          open={openTags}
+          onClick={() => setOpenTags((o) => !o)}
+        />
+        {openTags && (
+          <DropdownMenu className="absolute z-10 mt-1 w-full">
+            <DropdownItem
+              leftAdornment={<Checkbox checked={tags.some((t) => t.value === 'a')} onCheckedChange={() => {}} />}
+              onClick={() =>
+                setTags((arr) =>
+                  arr.some((t) => t.value === 'a')
+                    ? arr.filter((t) => t.value !== 'a')
+                    : [...arr, { value: 'a', label: 'LABEL' }],
+                )
+              }
+            >
+              Label A
+            </DropdownItem>
+            <DropdownItem
+              leftAdornment={<Checkbox checked={tags.some((t) => t.value === 'b')} onCheckedChange={() => {}} />}
+              onClick={() =>
+                setTags((arr) =>
+                  arr.some((t) => t.value === 'b')
+                    ? arr.filter((t) => t.value !== 'b')
+                    : [...arr, { value: 'b', label: 'LABEL' }],
+                )
+              }
+            >
+              Label B
+            </DropdownItem>
+          </DropdownMenu>
+        )}
+      </div>
+    </div>
+  );
+}
+
+```tsx
+<Dropdown variant="default" placeholder="Select" />
+<Dropdown
+  variant="tags"
+  tags={[{ value: 'a', label: 'LABEL' }, { value: 'b', label: 'LABEL' }]}
+  onRemoveTag={(v) => removeFromSelection(v)}
+/>
+```
+
+## Sizes
+
+Two padding scales — `md` (12px vertical, default) and `sm` (8px). Use `sm` for dense toolbars.
+
+<PreviewCard>
+  <div className="flex w-[300px] flex-col gap-4">
+    <Dropdown size="md" label="Medium (default)" placeholder="Select" />
+    <Dropdown size="sm" label="Small" placeholder="Select" />
+  </div>
+</PreviewCard>
+
+```tsx
+<Dropdown size="md" />
+<Dropdown size="sm" />
+```
+
+## States
+
+Trigger reflects 4 visual states from Figma — `default`, `:hover`, `open` (controlled via prop), `filled` (when `selectedLabel` is set OR `tags.length > 0`).
+
+<PreviewCard>
+  <div className="flex w-[300px] flex-col gap-4">
+    <Dropdown label="Default" placeholder="Select" />
+    <Dropdown label="Open" placeholder="Select" open />
+    <Dropdown label="Filled" selectedLabel="Option A" />
+    <Dropdown label="Error" placeholder="Select" error="Selection is required" />
+    <Dropdown label="Disabled" placeholder="Select" disabled />
+  </div>
+</PreviewCard>
+
+```tsx
+<Dropdown placeholder="Select" />
+<Dropdown placeholder="Select" open />
+<Dropdown selectedLabel="Option A" />
+<Dropdown placeholder="Select" error="Selection is required" />
+<Dropdown placeholder="Select" disabled />
+```
+
+## Menu primitives
+
+POD ships three menu primitives that pair with `Dropdown`:
+
+- **`<DropdownMenu>`** — popover container (bg, border, shadow, scroll cap).
+- **`<DropdownItem>`** — individual row. Supports `selected`, `disabled`, `destructive`, `error`, `leftAdornment`, `rightAdornment`, `showSelectedMark`.
+- **`<DropdownBadge>`** — small leading badge with colored dot (9 colors). Drop as `leftAdornment`.
+
+`Dropdown` itself remains stateless — you wire `open` + the menu yourself. Three composition examples below mirror the Figma source.
+
+### Action menu (icon + label + destructive)
+
+Simple action list — pen / notebook / upload / trash icons next to labels. Last row is destructive (red).
+
+<PreviewCard noClip>
+  <div className="min-h-[240px]">
+    <ActionMenuExample />
+  </div>
+</PreviewCard>
+
+export function ActionMenuExample() {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="relative w-[200px]">
+      <Dropdown label="Bet actions" placeholder="Actions" open={open} onClick={() => setOpen((o) => !o)} />
+      {open && (
+        <DropdownMenu className="absolute z-10 mt-1 w-full">
+          <DropdownItem leftAdornment={<Pencil className="h-4 w-4" />}>Edit bet</DropdownItem>
+          <DropdownItem leftAdornment={<NotebookText className="h-4 w-4" />}>Take notes</DropdownItem>
+          <DropdownItem leftAdornment={<Upload className="h-4 w-4" />}>Share bet</DropdownItem>
+          <DropdownItem leftAdornment={<Trash2 className="h-4 w-4" />} destructive>Delete bet</DropdownItem>
+        </DropdownMenu>
+      )}
+    </div>
+  );
+}
+
+```tsx
+<Dropdown open={open} onClick={...} />
+{open && (
+  <DropdownMenu>
+    <DropdownItem leftAdornment={<Pencil className="h-4 w-4" />}>Edit bet</DropdownItem>
+    <DropdownItem leftAdornment={<NotebookText className="h-4 w-4" />}>Take notes</DropdownItem>
+    <DropdownItem leftAdornment={<Upload className="h-4 w-4" />}>Share bet</DropdownItem>
+    <DropdownItem leftAdornment={<Trash2 className="h-4 w-4" />} destructive>
+      Delete bet
+    </DropdownItem>
+  </DropdownMenu>
+)}
+```
+
+### Multi-select with checkbox + colored badge
+
+Books picker — each row has a Checkbox (controlled), a colored DropdownBadge (4-letter code), and the full book name.
+
+<PreviewCard noClip>
+  <div className="min-h-[400px]">
+    <BooksMenuExample />
+  </div>
+</PreviewCard>
+
+export function BooksMenuExample() {
+  const [open, setOpen] = useState(true);
+  const [selected, setSelected] = useState(['CIRC', 'NOVG']);
+  const books = [
+    { code: 'CIRC', name: 'Circa Sports', color: 'green' },
+    { code: 'NOVG', name: 'NoVig',        color: 'blue' },
+    { code: 'PINY', name: 'Pinnacle',     color: 'orange' },
+    { code: 'FNDL', name: 'FanDuel',      color: 'lime' },
+    { code: 'PROX', name: 'ProXchange',   color: 'indigo' },
+    { code: 'DKNG', name: 'DraftKings',   color: 'red' },
+    { code: 'BMGM', name: 'BetMGM',       color: 'sky' },
+    { code: 'BTNO', name: 'BetNow',       color: 'purple' },
+    { code: 'UNDG', name: 'Underdog',     color: 'yellow' },
+  ];
+  const toggle = (code) =>
+    setSelected((s) => (s.includes(code) ? s.filter((c) => c !== code) : [...s, code]));
+  return (
+    <div className="relative w-[280px]">
+      <Dropdown
+        label="Books"
+        placeholder="Select books"
+        open={open}
+        selectedLabel={selected.length ? `${selected.length} selected` : undefined}
+        onClick={() => setOpen((o) => !o)}
+      />
+      {open && (
+        <DropdownMenu className="absolute z-10 mt-1 w-full" maxHeight={280}>
+          {books.map((b) => {
+            const isOn = selected.includes(b.code);
+            return (
+              <DropdownItem
+                key={b.code}
+                leftAdornment={
+                  <span className="inline-flex items-center gap-2">
+                    <Checkbox checked={isOn} onCheckedChange={() => toggle(b.code)} />
+                    <DropdownBadge label={b.code} color={b.color} />
+                  </span>
+                }
+                onClick={() => toggle(b.code)}
+              >
+                {b.name}
+              </DropdownItem>
+            );
+          })}
+        </DropdownMenu>
+      )}
+    </div>
+  );
+}
+
+```tsx
+<DropdownItem
+  leftAdornment={
+    <span className="inline-flex items-center gap-2">
+      <Checkbox checked={isOn} onCheckedChange={...} />
+      <DropdownBadge label="CIRC" color="green" />
+    </span>
+  }
+  onClick={...}
+>
+  Circa Sports
+</DropdownItem>
+```
+
+### Plain text checkbox list
+
+For filter pickers — Checkbox + label, no badge.
+
+<PreviewCard noClip>
+  <div className="min-h-[400px]">
+    <LeaguesMenuExample />
+  </div>
+</PreviewCard>
+
+export function LeaguesMenuExample() {
+  const [open, setOpen] = useState(true);
+  const [selected, setSelected] = useState(['Italy - Serie A', 'Italy - Serie B']);
+  const leagues = [
+    'Club Friendlies',
+    'Oman - Pro League',
+    'England - Premier League',
+    'Japan - J3 League',
+    'Italy - Serie A',
+    'Italy - Serie B',
+    'Denmark - Superliga',
+    'Spain - La Liga',
+  ];
+  const toggle = (l) =>
+    setSelected((s) => (s.includes(l) ? s.filter((x) => x !== l) : [...s, l]));
+  return (
+    <div className="relative w-[280px]">
+      <Dropdown
+        label="Leagues"
+        placeholder="Filter leagues"
+        open={open}
+        selectedLabel={selected.length ? `${selected.length} leagues` : undefined}
+        onClick={() => setOpen((o) => !o)}
+      />
+      {open && (
+        <DropdownMenu className="absolute z-10 mt-1 w-full" maxHeight={280}>
+          {leagues.map((l) => {
+            const isOn = selected.includes(l);
+            return (
+              <DropdownItem
+                key={l}
+                leftAdornment={<Checkbox checked={isOn} onCheckedChange={() => toggle(l)} />}
+                onClick={() => toggle(l)}
+              >
+                {l}
+              </DropdownItem>
+            );
+          })}
+        </DropdownMenu>
+      )}
+    </div>
+  );
+}
+
+```tsx
+<DropdownItem
+  leftAdornment={<Checkbox checked={isOn} onCheckedChange={...} />}
+  onClick={...}
+>
+  Italy - Serie A
+</DropdownItem>
+```
+
+### Single-select with check mark
+
+Radio-style pickers — `selected` highlights, `showSelectedMark` renders a trailing ✓.
+
+<PreviewCard noClip>
+  <div className="min-h-[220px]">
+    <SingleSelectExample />
+  </div>
+</PreviewCard>
+
+export function SingleSelectExample() {
+  const [open, setOpen] = useState(true);
+  const [selected, setSelected] = useState('Option B');
+  const options = ['Option A', 'Option B', 'Option C', 'Option D'];
+  return (
+    <div className="relative w-[200px]">
+      <Dropdown
+        label="Choice"
+        placeholder="Pick one"
+        open={open}
+        selectedLabel={selected}
+        onClick={() => setOpen((o) => !o)}
+      />
+      {open && (
+        <DropdownMenu className="absolute z-10 mt-1 w-full">
+          {options.map((opt) => (
+            <DropdownItem
+              key={opt}
+              selected={selected === opt}
+              showSelectedMark
+              onClick={() => {
+                setSelected(opt);
+                setOpen(false);
+              }}
+            >
+              {opt}
+            </DropdownItem>
+          ))}
+        </DropdownMenu>
+      )}
+    </div>
+  );
+}
+
+```tsx
+<DropdownItem
+  selected={value === opt}
+  showSelectedMark
+  onClick={() => setValue(opt)}
+>
+  {opt}
+</DropdownItem>
+```
+
+## Tags variant — removable chips
+
+For multi-select pickers, pass `tags={[]}` and an `onRemoveTag(value)` callback. Component renders chips with X buttons; callback fires when user clicks X.
+
+<PreviewCard>
+  <TagsExample />
+</PreviewCard>
+
+export function TagsExample() {
+  const [tags, setTags] = useState([
+    { value: 'a', label: 'PRIMARY' },
+    { value: 'b', label: 'OUTLINE' },
+    { value: 'c', label: 'ERROR' },
+  ]);
+  return (
+    <div className="w-[400px]">
+      <Dropdown
+        variant="tags"
+        label="Selected variants"
+        placeholder="Select"
+        tags={tags}
+        onRemoveTag={(v) => setTags((arr) => arr.filter((t) => t.value !== v))}
+      />
+    </div>
+  );
+}
+
+```tsx
+const [tags, setTags] = useState([{ value: 'a', label: 'PRIMARY' }]);
+
+<Dropdown
+  variant="tags"
+  tags={tags}
+  onRemoveTag={(v) => setTags((arr) => arr.filter((t) => t.value !== v))}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| `label` | `string` | — | Visible label above. |
+| `required` | `boolean` | `false` | Adds red asterisk to label. |
+| `sublabel` | `string` | — | Secondary label text, e.g. `"(Optional)"`. |
+| `labelInfo` | `boolean` | `false` | Info icon next to label. |
+| `hint` | `string` | — | Hint text below, with info icon. |
+| `error` | `string` | — | Replaces hint, applies destructive border + ring. |
+| `size` | `'sm' \| 'md'` | `'md'` | Padding scale. |
+| `variant` | `'default' \| 'tags'` | `'default'` | Trigger content style. |
+| `selectedLabel` | `string` | — | For `default`: visible selected text. |
+| `placeholder` | `string` | `'Select'` | Shown when not filled. |
+| `tags` | `DropdownTag[]` | `[]` | For `tags`: list of `{ value, label }`. |
+| `onRemoveTag` | `(value) => void` | — | Required to render X on chips. |
+| `open` | `boolean` | `false` | Flips chevron + locks border. Consumer-controlled. |
+| `disabled` | `boolean` | `false` | Standard disabled — hides chip X, disables click. |
+| `onClick` | native button | — | Wire this to toggle your menu open/close. |
+
+Extends all native `<button>` HTMLAttributes except `size` and `value`.
+
+## Accessibility
+
+- Native `<button>` trigger — keyboard activation (Space / Enter) works out of the box.
+- `aria-haspopup="listbox"` + `aria-expanded={open}` so screen readers announce dropdown semantics.
+- `aria-invalid` is set when `error` is present; error span is linked via `aria-describedby`.
+- Hint span linked via `aria-describedby` when no error present.
+- Chip X button is `tabIndex={-1}` to keep tab order on the trigger; remove via mouse only OR move focus management to consumer.
+- Decorative icons (chevron, label info, chip X) are `aria-hidden`.
+
+## Things to watch
+
+- **Component is stateless.** It does NOT manage menu visibility or option lists. You wire that up — Dropdown only renders the trigger UI and flips the chevron based on `open`.
+- **Chip click vs trigger click.** Clicking the X on a chip calls `onRemoveTag` and stops propagation, so the trigger's `onClick` (menu toggle) doesn't fire. Verify your menu doesn't open accidentally on chip remove.
+- **Disabled hides X buttons too** — `onRemoveTag` won't render the X when `disabled`, even if the callback is passed. Re-enable to expose chip removal.
+- **Truncation:** `default` variant uses `truncate` on the selected text — long selections get ellipsis. `tags` variant wraps to multiple lines (no truncation by default).
+- **No multi-select API built in.** For `tags`, you maintain the array externally. POD doesn't ship a Combobox / multi-select primitive yet — confirm with designer if you need search-as-you-type inside the menu.

@@ -12,9 +12,9 @@
   "dependencies": {
     "@mdx-js/react": "^3.0.1",
     "@mdx-js/rollup": "^3.0.1",
+    "lucide-react": "^0.428.0",
     "pod-test-tokens": "workspace:*",
     "pod-test-ui": "workspace:*",
-    "lucide-react": "^0.428.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
@@ -28,6 +28,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "agentation": "^3.0.2",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.4",

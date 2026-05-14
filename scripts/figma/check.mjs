@@ -14,9 +14,12 @@
  */
 
 import {
-  diffSummaries, figmaUrl, getFileName, hashComponent, loadEnv,
-  loadManifest, loadSnapshots, loadState, relativeTime, summarize,
+  diffSummaries, figmaUrl, getFileName, hashComponent, hashComponentsBulk, loadEnv,
+  loadManifest, loadSnapshots, loadState, loadVariableDictionary,
+  relativeTime, summarize,
 } from './_lib.mjs';
+
+const vars = loadVariableDictionary();
 
 import {
   c, card, changeLine, parseRgb, rgbToHex, ruleHeavy, ruleLight,
@@ -57,16 +60,29 @@ async function main() {
   const inSync = [];
   const errors = [];
 
-  for (const comp of manifest.components) {
-    if (isDetail && !targets.includes(comp.slug)) continue;
-    const snap = snapshots.components?.[comp.slug];
-    let current;
-    try {
-      current = await hashComponent(env, comp.nodeId);
-    } catch (err) {
-      errors.push({ slug: comp.slug, message: err.message });
+  // Filter to active set (detail mode hits subset of components).
+  const activeComps = manifest.components.filter(
+    (comp) => !isDetail || targets.includes(comp.slug),
+  );
+
+  // Bulk fetch: 1 Figma API call instead of N. Big rate-limit win,
+  // automatic chunking for >50 components.
+  const bulkResults = await hashComponentsBulk(
+    env,
+    activeComps.map((c) => c.nodeId),
+  );
+
+  for (const comp of activeComps) {
+    const current = bulkResults.get(comp.nodeId);
+    if (current?.error) {
+      errors.push({ slug: comp.slug, message: current.error });
       continue;
     }
+    if (!current?.hash) {
+      errors.push({ slug: comp.slug, message: 'No hash result for this node' });
+      continue;
+    }
+    const snap = snapshots.components?.[comp.slug];
     const url = figmaUrl(manifest.fileKey, comp.nodeId, fileName);
     if (!snap) {
       drifted.push({ slug: comp.slug, nodeId: comp.nodeId, url, reason: 'never blessed', lastSync: null, diff: null, neverBlessed: true });
@@ -75,7 +91,8 @@ async function main() {
     if (snap.hash !== current.hash) {
       const oldState = loadState(comp.slug);
       const newSummary = summarize(current.subtree);
-      const diff = oldState ? diffSummaries(oldState, newSummary) : null;
+      const rawDiff = oldState ? diffSummaries(oldState, newSummary) : null;
+      const diff = rawDiff ? enrichDiff(rawDiff) : null;
       drifted.push({ slug: comp.slug, nodeId: comp.nodeId, url, reason: 'design changed', lastSync: snap.syncedAt, diff });
     } else {
       inSync.push({ slug: comp.slug, nodeId: comp.nodeId, url, lastSync: snap.syncedAt });
@@ -238,7 +255,7 @@ function renderDetail({ drifted, inSync, errors }) {
         const m = d.diff.modified[i];
         console.log('    ' + c.yellow('~') + ' ' + c.bold(m.variant));
         for (const ch of m.changes) {
-          console.log(formatChange(ch));
+          console.log(formatChange(ch, m.changes));
         }
         if (i < d.diff.modified.length - 1) console.log();
       }
@@ -283,12 +300,23 @@ function formatChangeCounts(diff) {
  *   paddingLeft              → "padding left"   + px
  *   cornerRadius             → "corner radius"  + px
  */
-function formatChange(ch) {
+function formatChange(ch, siblingChanges) {
   const indent = '        ';
   const { label, formatValueFn } = describePath(ch.path);
 
-  const beforeStr = formatValueFn(ch.before);
-  const afterStr  = formatValueFn(ch.after);
+  // Find sibling resolved color for binding lookup
+  // e.g. for path "bindings.fills[0]", look for sibling "fills[0].color"
+  let siblingValue = null;
+  if (ch.path.startsWith('bindings.fills') || ch.path.startsWith('bindings.strokes')) {
+    const idx = ch.path.match(/\[(\d+)\]/)?.[1];
+    const which = ch.path.includes('fills') ? 'fills' : 'strokes';
+    const siblingPath = `${which}[${idx}].color`;
+    const sib = siblingChanges?.find((s) => s.path === siblingPath);
+    if (sib) siblingValue = { before: sib.before, after: sib.after };
+  }
+
+  const beforeStr = formatValueFn(ch.before, ch.path, siblingValue?.before);
+  const afterStr  = formatValueFn(ch.after, ch.path, siblingValue?.after);
 
   return indent + c.cyan(label.padEnd(22)) + beforeStr + c.dim('  →  ') + afterStr;
 }
@@ -356,15 +384,29 @@ function friendlyBinding(rest) {
   return aliases[rest] || `${rest} binding`;
 }
 
-function colorValue(v) {
+function colorValue(v, pathHint) {
   if (typeof v !== 'string') return scalarValue(v);
   const rgb = parseRgb(v);
   if (!rgb) return c.dim(String(v));
-  return swatch(v) + ' ' + c.bold(rgbToHex(rgb));
+  const hex = rgbToHex(rgb);
+  const hint = pathHint && pathHint.includes('strokes') ? 'stroke' : 'surface';
+  const tokenName = vars.nameForValue(hex, hint);
+  const suffix = tokenName ? ' ' + c.dim(`(${tokenName})`) : '';
+  return swatch(v) + ' ' + c.bold(hex) + suffix;
 }
 
-function variableValue(v) {
+function variableValue(v, pathHint, siblingValue) {
   if (v === undefined || v === null) return c.dim('∅');
+  // siblingValue = resolved color/value from the parallel fills/strokes change.
+  // If we have it, look up the token name. Otherwise just show the bound ID.
+  if (siblingValue) {
+    const hint = pathHint && pathHint.includes('strokes') ? 'stroke' : 'surface';
+    const rgb = parseRgb(siblingValue);
+    if (rgb) {
+      const tokenName = vars.nameForBoundId(v, rgbToHex(rgb), hint);
+      if (tokenName) return c.bold(tokenName) + ' ' + c.dim(`(id ${v})`);
+    }
+  }
   return c.bold(String(v));
 }
 
@@ -378,6 +420,90 @@ function scalarValue(v) {
   // Add px suffix for known scalars
   if (typeof v === 'number') return c.bold(String(v)) + c.dim('px');
   return c.bold(String(v));
+}
+
+// ─── Server-side diff enrichment for --json output (UI consumes) ──────────
+
+function enrichDiff(diff) {
+  return {
+    added:    diff.added,
+    removed:  diff.removed,
+    modified: diff.modified.map((m) => ({
+      variant: m.variant,
+      changes: m.changes
+        .filter((ch) => !isTrivialChange(ch))
+        .map((ch) => enrichChange(ch)),
+    })),
+  };
+}
+
+function isTrivialChange(ch) {
+  // fills[0].type changing from undefined to "SOLID" is noise — fills[0].color
+  // captures the meaningful change.
+  if (/^(fills|strokes)\[\d+\]\.(type|visible|opacity)$/.test(ch.path)) {
+    if (ch.before === undefined && (ch.after === 'SOLID' || ch.after === true || ch.after === 1)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function enrichChange(ch) {
+  const { kind, label } = describePathForUI(ch.path);
+  return {
+    path:    ch.path,
+    before:  ch.before,
+    after:   ch.after,
+    label,
+    kind,
+    beforeDisplay: enrichValue(ch.before, ch.path, kind),
+    afterDisplay:  enrichValue(ch.after,  ch.path, kind),
+  };
+}
+
+function describePathForUI(path) {
+  if (/^(fills|strokes)\[\d+\]\.color$/.test(path)) {
+    return { kind: 'color', label: path.startsWith('fills') ? 'fill color' : 'stroke color' };
+  }
+  if (/^bindings\.fills\[\d+\]$/.test(path))   return { kind: 'binding', label: 'fill binding' };
+  if (/^bindings\.strokes\[\d+\]$/.test(path)) return { kind: 'binding', label: 'stroke binding' };
+  if (/^bindings\.\w+$/.test(path)) {
+    const rest = path.replace(/^bindings\./, '');
+    return { kind: 'binding', label: `${rest} binding` };
+  }
+  if (/^(fills|strokes)\[\d+\]\.(opacity|visible|type)$/.test(path)) {
+    const part = path.split('.').pop();
+    const prefix = path.startsWith('fills') ? 'fill' : 'stroke';
+    return { kind: 'scalar', label: `${prefix} ${part}` };
+  }
+  const aliases = {
+    cornerRadius: 'corner radius', strokeWeight: 'stroke weight',
+    paddingLeft: 'padding left', paddingRight: 'padding right',
+    paddingTop: 'padding top', paddingBottom: 'padding bottom',
+    itemSpacing: 'item spacing', layoutMode: 'layout mode',
+    primaryAxisAlignItems: 'main-axis align', counterAxisAlignItems: 'cross-axis align',
+    childCount: 'child count',
+  };
+  if (aliases[path]) return { kind: 'scalar', label: aliases[path] };
+  return { kind: 'scalar', label: path };
+}
+
+function enrichValue(value, path, kind) {
+  if (value === undefined || value === null) return { kind: 'empty' };
+  if (kind === 'color' && typeof value === 'string') {
+    const rgb = parseRgb(value);
+    if (rgb) {
+      const hex = rgbToHex(rgb);
+      const hint = path.includes('strokes') ? 'stroke' : 'surface';
+      const name = vars.nameForValue(hex, hint);
+      return { kind: 'color', hex, css: `rgb(${rgb.r},${rgb.g},${rgb.b})`, name: name || null };
+    }
+  }
+  if (kind === 'binding' && typeof value === 'string') {
+    return { kind: 'binding', id: value };
+  }
+  if (typeof value === 'object') return { kind: 'object', json: JSON.stringify(value) };
+  return { kind: 'scalar', text: String(value) };
 }
 
 main().catch((err) => {

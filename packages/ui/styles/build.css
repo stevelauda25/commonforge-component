@@ -1,0 +1,15 @@
+/* POD UI — compiled Tailwind utilities for consumers that don't run Tailwind themselves
+ * (e.g. centernode playground, vanilla React apps).
+ *
+ * Output: dist/styles.css
+ *
+ * Consumers also need to import 'pod-test-tokens/theme.css' separately for CSS variables.
+ * Order matters: theme.css FIRST, then this file.
+ *
+ * We intentionally OMIT `@tailwind base` — Tailwind v3's preflight would leak
+ * a `button { background-color: transparent }` rule (unlayered, element-level)
+ * into the host app and break the host's button styling (e.g. centernode's
+ * Tailwind v4 UI). Consumers already have their own base/reset.
+ */
+@tailwind components;
+@tailwind utilities;

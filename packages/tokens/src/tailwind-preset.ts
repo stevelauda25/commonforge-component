@@ -70,25 +70,41 @@ export const preset: Partial<Config> = {
         // Neutral overlay (for modal scrims etc.)
         overlay: rgbVar('overlay'),
 
-        // Experimental — Figma-introduced colors not yet promoted to brand
-        experiment: {
-          'stroke-dark': rgbVar('experiment-stroke-dark'),
-          'zinc-700':    rgbVar('experiment-zinc-700'),
-        },
+        // Experimental — Figma-introduced primitives, see theme.css block
+        'experiment-zinc-700':            rgbVar('experiment-zinc-700'),
+        'experiment-primary-test':        rgbVar('experiment-primary-test'),
+        'experiment-input-stroke-active': rgbVar('experiment-input-stroke-active'),
+        'experiment-input-bg-focused':    rgbVar('experiment-input-bg-focused'),
+        'experiment-cb-border':           rgbVar('experiment-cb-border'),
+        'experiment-cb-disabled-bg':      rgbVar('experiment-cb-disabled-bg'),
+        'experiment-cb-disabled-icon':    rgbVar('experiment-cb-disabled-icon'),
+        'experiment-primary-hover-dark':  rgbVar('experiment-primary-hover-dark'),
       },
 
       borderRadius: {
-        sm:  'var(--radius-sm)',
-        md:  'var(--radius-md)',
-        lg:  'var(--radius-lg)',
-        xl:  'var(--radius-xl)',
+        none: 'var(--radius-none)',
+        xxs:  'var(--radius-xxs)',
+        xs:   'var(--radius-xs)',
+        sm:   'var(--radius-sm)',
+        md:   'var(--radius-md)',
+        lg:   'var(--radius-lg)',
+        xl:   'var(--radius-xl)',
+        '2xl':'var(--radius-2xl)',
+        '3xl':'var(--radius-3xl)',
+        '4xl':'var(--radius-4xl)',
         full: 'var(--radius-full)',
       },
 
       boxShadow: {
-        sm: 'var(--shadow-sm)',
-        md: 'var(--shadow-md)',
-        lg: 'var(--shadow-lg)',
+        // Foundation scale from Figma — canonical drop-shadow scale
+        'foundation-xs':  'var(--shadow-foundation-xs)',
+        'foundation-sm':  'var(--shadow-foundation-sm)',
+        'foundation-md':  'var(--shadow-foundation-md)',
+        'foundation-lg':  'var(--shadow-foundation-lg)',
+        'foundation-xl':  'var(--shadow-foundation-xl)',
+        'foundation-2xl': 'var(--shadow-foundation-2xl)',
+        'foundation-3xl': 'var(--shadow-foundation-3xl)',
+        // Brand glows (sacred — never modified by sync)
         'glow-accent-inset':        'var(--shadow-glow-accent-inset)',
         'glow-accent-inset-strong': 'var(--shadow-glow-accent-inset-strong)',
         'glow-danger-inset':        'var(--shadow-glow-danger-inset)',
@@ -128,6 +144,24 @@ export const preset: Partial<Config> = {
         xl:   ['1.125rem', { lineHeight: '1.625rem' }],// 18
         '2xl':['1.25rem',  { lineHeight: '1.75rem' }], // 20
         '3xl':['1.5rem',   { lineHeight: '2rem' }],    // 24
+      },
+
+      // Motion keyframes — POD-defined, consumers get them via the preset.
+      // Pair with `--duration-*` and `--ease-*` CSS variables for token-driven motion.
+      keyframes: {
+        'menu-in': {
+          '0%':   { opacity: '0', transform: 'translateY(-4px) scale(0.98)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+        'fade-in': {
+          '0%':   { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+      animation: {
+        // Reveal popover/menu — quick scale + fade. ease-emphasized for slight overshoot feel.
+        'menu-in': 'menu-in var(--duration-base) var(--ease-emphasized) both',
+        'fade-in': 'fade-in var(--duration-fast) var(--ease-standard) both',
       },
     },
   },

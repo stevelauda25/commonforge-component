@@ -10,6 +10,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 html, body {
@@ -25,6 +26,36 @@ html, body {
 .mdx-content h2 { font-size: 1.25rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 0.75rem; scroll-margin-top: 5rem; }
 .mdx-content h3 { font-size: 1rem;     font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.5rem;  scroll-margin-top: 5rem; }
 .mdx-content > p { margin: 0.75rem 0; line-height: 1.6; color: rgb(var(--color-text-secondary)); }
+.mdx-content ul {
+  list-style: disc outside;
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+  color: rgb(var(--color-text-secondary));
+}
+.mdx-content ol {
+  list-style: decimal outside;
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+  color: rgb(var(--color-text-secondary));
+}
+.mdx-content li { margin: 0.375rem 0; line-height: 1.6; }
+.mdx-content li > ul, .mdx-content li > ol { margin: 0.25rem 0; }
+.mdx-content li::marker { color: rgb(var(--color-text-muted)); }
+.mdx-content hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid rgb(var(--color-border-default));
+}
+.mdx-content blockquote {
+  margin: 1rem 0;
+  padding: 0.625rem 0.875rem;
+  border-left: 3px solid rgb(var(--color-warning-default));
+  background: rgb(var(--color-warning-subtle) / 0.5);
+  color: rgb(var(--color-text-primary));
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: 0.875rem;
+}
+.mdx-content blockquote > p { margin: 0; }
 .mdx-content table { border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
 .mdx-content th, .mdx-content td {
   border: 1px solid rgb(var(--color-border-default));
@@ -40,6 +71,12 @@ html, body {
   overflow-x: auto;
   margin: 1rem 0;
 }
+/* When pre is wrapped by CodeBlock, let the wrapper drive the visual chrome. */
+.mdx-content .code-block pre {
+  background: transparent;
+  border-radius: 0;
+  margin: 0;
+}
 .mdx-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -50,3 +87,70 @@ html:not(.dark) .mdx-content code[data-theme='dark'],
 html:not(.dark) .mdx-content pre[data-theme='dark'] { display: none; }
 html.dark .mdx-content code[data-theme='light'],
 html.dark .mdx-content pre[data-theme='light'] { display: none; }
+
+/* Shiki dual-theme: wire per-token CSS vars to actual color. */
+html:not(.dark) .mdx-content code span { color: var(--shiki-light); }
+html.dark      .mdx-content code span { color: var(--shiki-dark);  }
+
+/* PreviewCard + CodeBlock that immediately follows = one unified card.
+   rehype-pretty-code wraps <pre> in <figure data-rehype-pretty-code-figure>,
+   so the real sibling is <figure>, not .code-block. */
+.preview-card:has(+ .code-block),
+.preview-card:has(+ figure[data-rehype-pretty-code-figure]) {
+  margin-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.preview-card + .code-block,
+.preview-card + figure[data-rehype-pretty-code-figure] > .code-block {
+  margin-top: 0;
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.preview-card + figure[data-rehype-pretty-code-figure] {
+  margin: 0;
+}
+
+/* Motion hero demo — bar fills then resets infinitely */
+@keyframes motion-demo {
+  0%   { transform: scaleX(0); transform-origin: left; }
+  50%  { transform: scaleX(1); transform-origin: left; }
+  50.1%{ transform: scaleX(1); transform-origin: right; }
+  100% { transform: scaleX(0); transform-origin: right; }
+}
+
+/* Motion docs — skeleton shimmer (token-driven via var(--ease-standard)) */
+@keyframes motion-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* Motion docs — spinner */
+@keyframes motion-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Motion docs — scale-in pop */
+@keyframes motion-pop-in {
+  0%   { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Motion docs — slide-in from bottom (fade-up) */
+@keyframes motion-slide-up {
+  0%   { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Motion docs — slide-in from right (drawer reveal) */
+@keyframes motion-slide-in-right {
+  0%   { opacity: 0; transform: translateX(16px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Motion docs — gentle bounce (notification dot) */
+@keyframes motion-pulse-dot {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%      { transform: scale(1.4); opacity: 0.6; }
+}

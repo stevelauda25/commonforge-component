@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "slug": "foundation-radius",
+  "fileKey": "TCd9exLXTUMciyw1VqnPSK",
+  "nodeId": "2352:3173",
+  "syncedAt": "2026-05-02T00:00:00Z",
+  "comment": "Foundation radius/spacing tokens. Auto-populated by /sync-figma foundation-radius. FULL REPLACE on each sync.",
+  "variables": {
+    "radius-none": "0",
+    "radius-xxs": "2",
+    "radius-xs": "4",
+    "radius-sm": "6",
+    "radius-md": "8",
+    "radius-lg": "10",
+    "radius-xl": "12",
+    "radius-2xl": "16",
+    "radius-3xl": "20",
+    "radius-4xl": "24",
+    "radius-full": "9999",
+    "spacing-xxs": "2",
+    "spacing-xs": "4",
+    "spacing-md": "8",
+    "spacing-lg": "12",
+    "spacing-xl": "16",
+    "spacing-2xl": "20",
+    "spacing-3xl": "24",
+    "spacing-4xl": "32",
+    "spacing-6xl": "48",
+    "spacing-7xl": "64",
+    "spacing-8xl": "80"
+  }
+}

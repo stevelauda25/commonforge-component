@@ -14,9 +14,8 @@ export function ComponentTile({ entry }: Props) {
   return (
     <div
       className={cn(
-        'group flex min-h-[200px] flex-col overflow-hidden rounded-lg border bg-surface',
+        'group flex min-h-[200px] flex-col overflow-hidden rounded-lg border border-border-default bg-canvas',
         'transition-colors hover:border-border-strong',
-        isReady ? 'border-border-default' : 'border-dashed border-border-default',
       )}
     >
       <Link

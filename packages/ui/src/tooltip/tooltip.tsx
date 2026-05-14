@@ -68,7 +68,7 @@ export function Tooltip({
             className={cn(
               'z-50 max-w-xs',
               'rounded-md px-2.5 py-1.5 text-xs font-medium leading-snug',
-              'shadow-md',
+              'shadow-foundation-md',
               'inline-flex items-center gap-1.5',
               'data-[state=delayed-open]:animate-in data-[state=closed]:animate-out',
               'data-[state=closed]:fade-out-0 data-[state=delayed-open]:fade-in-0',
