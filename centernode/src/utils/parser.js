@@ -4,6 +4,8 @@
 // These are POD design-system instances, not user-defined components.
 // =============================================================
 
+import { VARIANT_PROP_ALIAS } from "./variantAliases.js";
+
 const JSX_SNIPPET_RE = /^\s*<([A-Z]\w*)/;
 
 export function isJsxSnippet(code) {
@@ -66,16 +68,21 @@ export function parseJsxSnippetSchema(code, manifestEntry) {
     schema.children = { type: "string", default: innerMatch[1].trim() };
   }
 
-  // 3. Promote variant/size to enums via manifest
+  // 3. Promote variant/size to enums via manifest. For components where the
+  //    conceptual variant lives under a different prop (Badge.color, Tab.tabType),
+  //    promote that aliased prop instead — keeps the props panel pill selector
+  //    consistent regardless of API prop name.
   if (manifestEntry) {
-    if (schema.variant && manifestEntry.variants?.length) {
-      schema.variant = {
+    const aliasKey = VARIANT_PROP_ALIAS[tag];
+    const variantKey = aliasKey ?? "variant";
+    if (schema[variantKey] && manifestEntry.variants?.length) {
+      schema[variantKey] = {
         type: "enum",
         options: manifestEntry.variants,
-        default: schema.variant.default,
+        default: schema[variantKey].default,
       };
     }
-    if (schema.size && manifestEntry.sizes?.length) {
+    if (schema.size && manifestEntry.sizes?.length && manifestEntry.sizes.length > 1) {
       schema.size = {
         type: "enum",
         options: manifestEntry.sizes,

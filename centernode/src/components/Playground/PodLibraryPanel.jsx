@@ -7,6 +7,9 @@ import { TextInput as PodTextInput } from "pod-test-ui/text-input";
 import { SearchInput as PodSearchInput } from "pod-test-ui/search-input";
 import { Switch as PodSwitch } from "pod-test-ui/switch";
 import { Dropdown as PodDropdown } from "pod-test-ui/dropdown";
+import { Badge as PodBadge } from "pod-test-ui/badges";
+import { Tab as PodTab } from "pod-test-ui/tabs";
+import { VARIANT_PROP_ALIAS } from "../../utils/variantAliases.js";
 
 const POD_PREVIEW = {
   Button: PodButton,
@@ -15,6 +18,8 @@ const POD_PREVIEW = {
   SearchInput: PodSearchInput,
   Switch: PodSwitch,
   Dropdown: PodDropdown,
+  Badge: PodBadge,
+  Tab: PodTab,
 };
 
 /**
@@ -31,6 +36,8 @@ const PREVIEW_HINTS = {
   SearchInput: { width: 200, scale: 0.9 },
   Switch:      { scale: 1.05, padded: true },
   Dropdown:    { width: 200, scale: 0.9 },
+  Badge:       { scale: 1.05, padded: true },
+  Tab:         { scale: 1, padded: true },
 };
 
 // Per-component preview adornments — sometimes the raw defaultProps don't
@@ -57,6 +64,14 @@ function decorateForPreview(name, props) {
       ...(variant !== "only" && label ? { label } : {}),
       ...(variant === "withDescription" && description ? { description } : {}),
     };
+  }
+  // Components where synthetic `variant` aliases to a real prop with a
+  // different name (e.g. Badge → color, Tab → tabType). Strip variant/size
+  // and re-emit under the correct prop name.
+  const alias = VARIANT_PROP_ALIAS[name];
+  if (alias) {
+    const { variant, size, ...rest } = props;
+    return variant !== undefined ? { ...rest, [alias]: variant } : rest;
   }
   return props;
 }
@@ -95,6 +110,20 @@ function variantPropsToJsx(componentName, props) {
     return buildCheckboxComposite(props);
   }
 
+  // Variant prop aliasing — rename `variant` → real prop (e.g. Badge.color,
+  // Tab.tabType) before serializing. Also strip the synthetic `size` if the
+  // component doesn't accept it (Badge, Tab default to "default" size only).
+  const alias = VARIANT_PROP_ALIAS[componentName];
+  if (alias) {
+    const { variant, size, ...kept } = props || {};
+    const remapped = variant !== undefined ? { ...kept, [alias]: variant } : kept;
+    return variantPropsToJsxRaw(componentName, remapped);
+  }
+
+  return variantPropsToJsxRaw(componentName, props);
+}
+
+function variantPropsToJsxRaw(componentName, props) {
   const { children, ...rest } = props || {};
   // Skip only empty strings — they'd render ugly attributes like `label=""`.
   // ALL other prop values emit (including `false`) so the props panel
