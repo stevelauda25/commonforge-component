@@ -104,8 +104,11 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
         className="relative"
         style={{
           display: (isWidthHug && isHeightHug) ? "inline-block" : "block",
-          ...(isWidthHug ? { minWidth: 40 } : { width: wVal }),
-          ...(isHeightHug ? { minHeight: 24 } : { height: hVal }),
+          // No minWidth/minHeight in hug mode — selection ring (inset -6) is
+          // already wide enough to grab even for tiny components like
+          // Checkbox without label. Min would only add empty padding.
+          ...(isWidthHug ? null : { width: wVal }),
+          ...(isHeightHug ? null : { height: hVal }),
           ...tokenStyle,
         }}
         onClick={(e) => { e.stopPropagation(); onSelect(node.id); }}
@@ -113,11 +116,13 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
       >
         {/* Inner component wrapper — FIXED/FILL mode forces stretch.
             AUTO mode just contains the component at its intrinsic size.
-            `node.dark` flag scopes POD `.dark` CSS variables to this node,
-            and `bg-canvas` ensures transparent variants (e.g. Button outline)
-            sit on the dark canvas color instead of bleeding through. */}
+            `node.dark` flag scopes POD `.dark` CSS variables to this node.
+            We intentionally DON'T fill the wrapper with bg-canvas: the canvas
+            stays light and only the rendered component (button, dropdown,
+            etc.) picks up its own dark bg. Transparent variants like Button
+            outline will look light on light canvas — accepted trade-off. */}
         <div
-          className={`${wMode === "fixed" || isWidthFill ? "pg-stretch-child-w " : ""}${hMode === "fixed" || isHeightFill ? "pg-stretch-child-h " : ""}${node.dark ? "dark bg-canvas rounded-md" : ""}`}
+          className={`${wMode === "fixed" || isWidthFill ? "pg-stretch-child-w " : ""}${hMode === "fixed" || isHeightFill ? "pg-stretch-child-h " : ""}${node.dark ? "dark" : ""}`}
           style={{
             ...(wMode === "fixed" || isWidthFill ? { width: "100%" } : {}),
             ...(hMode === "fixed" || isHeightFill ? { height: "100%" } : {}),

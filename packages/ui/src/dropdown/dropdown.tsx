@@ -336,18 +336,19 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                 >
                   <span className="font-mono text-[13px] leading-4 text-text-muted">{t.label}</span>
                   {onRemoveTag && !disabled && (
-                    <button
-                      type="button"
-                      tabIndex={-1}
+                    // Span (not button) — the parent trigger is already a <button>,
+                    // and nesting buttons is invalid HTML (React hydration error).
+                    <span
+                      role="button"
+                      aria-label={`Remove ${t.label}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         onRemoveTag(t.value);
                       }}
-                      aria-label={`Remove ${t.label}`}
-                      className="ml-0.5 inline-flex items-center justify-center text-text-muted transition-colors duration-fast ease-standard hover:text-text-primary focus:outline-none"
+                      className="ml-0.5 inline-flex cursor-pointer items-center justify-center text-text-muted transition-colors duration-fast ease-standard hover:text-text-primary"
                     >
                       <X className="h-3.5 w-3.5" aria-hidden="true" />
-                    </button>
+                    </span>
                   )}
                 </span>
               ))}

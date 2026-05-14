@@ -24,6 +24,22 @@ import ChangelogPopup from "./ChangelogPopup";
 
 const h = createElement;
 
+/**
+ * Per-composite prop visibility — hides props that don't apply for the
+ * currently-selected variant. Keyed by the COMPOSITE function name from
+ * node.code (e.g. `CheckboxExample`), not the underlying primitive.
+ *
+ * See CENTERNODE-RULES.md "Conditional prop visibility".
+ */
+function isPropVisibleForVariant(componentName, propKey, currentProps) {
+  if (componentName === "CheckboxExample") {
+    const variant = currentProps.variant;
+    if (propKey === "description" && variant !== "withDescription") return false;
+    if (propKey === "label" && variant === "only") return false;
+  }
+  return true;
+}
+
 // =============================================================
 // Inject `:root { --color-* }` overrides for POD design system tokens.
 // These override pod-test-tokens/theme.css at runtime, so every POD component
@@ -940,15 +956,23 @@ export default function ComponentPlayground() {
                         </span>
                       </div>
                     ) : (
-                      Object.entries(selectedNode.schema).map(([key, s]) => (
-                        <PropInput
-                          key={key}
-                          propKey={key}
-                          schema={s}
-                          value={selectedNode.props[key] ?? s.default}
-                          onChange={(v) => updateNodeProp(selectedNode.id, key, v)}
-                        />
-                      ))
+                      Object.entries(selectedNode.schema)
+                        .filter(([key]) =>
+                          isPropVisibleForVariant(
+                            extractComponentName(selectedNode.code),
+                            key,
+                            selectedNode.props,
+                          ),
+                        )
+                        .map(([key, s]) => (
+                          <PropInput
+                            key={key}
+                            propKey={key}
+                            schema={s}
+                            value={selectedNode.props[key] ?? s.default}
+                            onChange={(v) => updateNodeProp(selectedNode.id, key, v)}
+                          />
+                        ))
                     )}
                   </div>
                 )}

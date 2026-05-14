@@ -47,6 +47,17 @@ function decorateForPreview(name, props) {
       ],
     };
   }
+  if (name === "Checkbox") {
+    // Strip synthetic props (variant, size) — Checkbox primitive doesn't
+    // accept them. Also drop label/description when variant says they
+    // shouldn't render (mirrors composite conditional logic).
+    const { variant, size, label, description, ...rest } = props;
+    return {
+      ...rest,
+      ...(variant !== "only" && label ? { label } : {}),
+      ...(variant === "withDescription" && description ? { description } : {}),
+    };
+  }
   return props;
 }
 
@@ -77,127 +88,69 @@ function MiniPreview({ name, props }) {
 }
 
 function variantPropsToJsx(componentName, props) {
-  // Special case: Dropdown spawns as a stateful composite so the trigger on
-  // canvas is actually clickable + shows a real menu popup. Variant (default/tags)
-  // controls inner menu style: single-select for default, multi-checkbox for tags.
-  // User can edit Code tab to customize.
-  if (componentName === "Dropdown") {
-    return buildDropdownComposite(props);
+  // Components with SYNTHETIC variants (no real `variant` API prop) spawn
+  // as a function-component composite so the synthetic prop lives in code
+  // and bidirectional sync works. See CENTERNODE-RULES.md "Variant prop rule".
+  if (componentName === "Checkbox") {
+    return buildCheckboxComposite(props);
   }
 
   const { children, ...rest } = props || {};
+  // Skip only empty strings — they'd render ugly attributes like `label=""`.
+  // ALL other prop values emit (including `false`) so the props panel
+  // detects them and the dev sees the full API surface.
   const attrs = Object.entries(rest)
+    .filter(([, v]) => !(typeof v === "string" && v === ""))
     .map(([k, v]) => {
-      if (typeof v === "boolean") return v ? k : null;
+      if (typeof v === "boolean") return `${k}={${v}}`;
       if (typeof v === "string") return `${k}="${v}"`;
       return `${k}={${JSON.stringify(v)}}`;
     })
-    .filter(Boolean)
     .join(" ");
   const inner = children == null ? "" : String(children);
-  if (!inner && rest.placeholder !== undefined) {
-    return `<${componentName} ${attrs} />`;
+  if (!inner) {
+    return `<${componentName}${attrs ? ` ${attrs}` : ""} />`;
   }
   return `<${componentName}${attrs ? ` ${attrs}` : ""}>${inner}</${componentName}>`;
 }
 
-function buildDropdownComposite(props) {
+/**
+ * Composite spawn for Checkbox — synthetic `variant` prop lives in code.
+ * Pattern: function wrapper with destructured params + `variantStyles` enum
+ * hint object. Parser picks these up so Props panel shows all editable
+ * controls (variant pill, checked toggle, label/description text inputs).
+ * See CENTERNODE-RULES.md.
+ */
+function buildCheckboxComposite(props) {
   const v = props || {};
-  const variant = v.variant === "tags" ? "tags" : "default";
-  const size = v.size === "sm" ? "sm" : "md";
-  const label = v.label ?? "Label";
-  const placeholder = v.placeholder ?? "Select";
-  const hint = v.hint ?? "This is a hint text to help user.";
-  const sublabel = v.sublabel ?? "(Optional)";
-  const required = !!v.required;
-  const labelInfo = v.labelInfo === undefined ? true : !!v.labelInfo;
-  const error = v.error ?? "";
+  const variant = ["only", "withLabel", "withDescription"].includes(v.variant)
+    ? v.variant
+    : "withLabel";
+  const checked = !!v.checked;
+  const label = v.label ?? "I agree to the terms";
+  const description = v.description ?? "Daily digest at 8am.";
   const disabled = !!v.disabled;
 
-  // Single composite that handles BOTH variants via conditional rendering.
-  // ALL props are destructured at the top → parseSchemaFromCode picks them up
-  // → Props panel renders editable controls per prop.
-  // `variantStyles` + `sizeStyles` are enum hints for the parser's detectEnum().
-  return `function InteractiveDropdown({
+  return `function CheckboxExample({
   variant = "${variant}",
-  size = "${size}",
+  checked = ${checked},
   label = "${label}",
-  sublabel = "${sublabel}",
-  placeholder = "${placeholder}",
-  hint = "${hint}",
-  error = "${error}",
-  required = ${required},
-  labelInfo = ${labelInfo},
+  description = "${description}",
   disabled = ${disabled},
 }) {
-  // Enum hints — parser detects these as variant/size pills in Props panel.
-  const variantStyles = { default: 'single', tags: 'multi' };
-  const sizeStyles = { sm: 'small', md: 'medium' };
+  // variantStyles — enum hint picked up by Props panel as a pill selector.
+  const variantStyles = { only: 'checkbox only', withLabel: 'with label', withDescription: 'with description' };
 
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [tags, setTags] = useState([]);
-
-  const singleOptions = ['Option A', 'Option B', 'Option C'];
-  const tagOptions = [
-    { value: 'a', label: 'LABEL A' },
-    { value: 'b', label: 'LABEL B' },
-    { value: 'c', label: 'LABEL C' },
-  ];
-
-  const toggleTag = (val, lbl) => setTags((arr) =>
-    arr.some((t) => t.value === val)
-      ? arr.filter((t) => t.value !== val)
-      : [...arr, { value: val, label: lbl }]
-  );
+  const [c, setC] = useState(checked);
 
   return (
-    <div className="relative w-[260px]">
-      <Dropdown
-        variant={variant}
-        size={size}
-        label={label}
-        sublabel={sublabel || undefined}
-        required={required}
-        labelInfo={labelInfo}
-        placeholder={placeholder}
-        hint={hint || undefined}
-        error={error || undefined}
-        disabled={disabled}
-        open={open}
-        selectedLabel={variant === 'default' ? (selected ?? undefined) : undefined}
-        tags={variant === 'tags' ? tags : undefined}
-        onRemoveTag={variant === 'tags' ? ((val) => setTags((arr) => arr.filter((t) => t.value !== val))) : undefined}
-        onClick={() => setOpen((o) => !o)}
-      />
-      {open && variant === 'default' && (
-        <DropdownMenu className="absolute z-10 mt-1 w-full">
-          {singleOptions.map((opt) => (
-            <DropdownItem
-              key={opt}
-              selected={selected === opt}
-              showSelectedMark
-              onClick={() => { setSelected(opt); setOpen(false); }}
-            >
-              {opt}
-            </DropdownItem>
-          ))}
-        </DropdownMenu>
-      )}
-      {open && variant === 'tags' && (
-        <DropdownMenu className="absolute z-10 mt-1 w-full">
-          {tagOptions.map((opt) => (
-            <DropdownItem
-              key={opt.value}
-              leftAdornment={<Checkbox checked={tags.some((t) => t.value === opt.value)} onCheckedChange={() => {}} />}
-              onClick={() => toggleTag(opt.value, opt.label)}
-            >
-              {opt.label}
-            </DropdownItem>
-          ))}
-        </DropdownMenu>
-      )}
-    </div>
+    <Checkbox
+      checked={c}
+      onCheckedChange={setC}
+      disabled={disabled}
+      label={variant !== 'only' ? label : undefined}
+      description={variant === 'withDescription' ? description : undefined}
+    />
   );
 }`;
 }
@@ -265,17 +218,26 @@ function ComponentRow({ component, onPick, defaultOpen = false, darkPreview = fa
       {open && (
         <div className="px-3 pb-3 pt-0 space-y-2">
           {hasVariants ? (
-            variants.map((v) => (
-              <VariantCard
-                key={v}
-                name={name}
-                label={v}
-                props={{ ...defaultProps, variant: v, size: defaultSize }}
-                onPick={onPick}
-                title={`Add ${name} (${v})`}
-                darkPreview={darkPreview}
-              />
-            ))
+            variants.map((v) => {
+              // variantPresets (synthetic variant) → overlay onto defaultProps
+              //   AND inject `variant: v` so the composite spawn reads it.
+              // No variantPresets (real variant prop) → just inject `variant: v`.
+              const preset = component.variantPresets?.[v];
+              const variantProps = preset
+                ? { ...defaultProps, ...preset, variant: v, size: defaultSize }
+                : { ...defaultProps, variant: v, size: defaultSize };
+              return (
+                <VariantCard
+                  key={v}
+                  name={name}
+                  label={v}
+                  props={variantProps}
+                  onPick={onPick}
+                  title={`Add ${name} (${v})`}
+                  darkPreview={darkPreview}
+                />
+              );
+            })
           ) : (
             <VariantCard
               name={name}

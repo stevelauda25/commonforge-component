@@ -48,6 +48,17 @@ export interface CanvasComponent {
    * scope so composite `code` examples can use them without explicit imports.
    */
   extraScope?: readonly string[];
+  /**
+   * Synthetic variants — when the listed variants aren't actual `variant`
+   * props of the component but conceptual presets (e.g. Checkbox has no
+   * `variant` prop, but "with-label" vs "with-description" are useful
+   * sidebar groupings). Each key is the variant name from `variants`; each
+   * value is the prop overlay applied on top of `defaultProps` for that
+   * variant card. When this field is set, the playground does NOT inject
+   * a `variant: <key>` prop on the rendered component (the component would
+   * reject the unknown prop).
+   */
+  variantPresets?: Record<string, Record<string, unknown>>;
 }
 
 export interface CanvasManifest {

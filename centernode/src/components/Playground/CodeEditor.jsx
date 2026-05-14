@@ -3,7 +3,7 @@ import React, { useRef, useMemo } from 'react';
 import { highlightCode, TOKEN_COLORS } from '@/utils/highlighter';
 
 // =============================================================
-export default function CodeEditor({ value, onChange }) {
+export default function CodeEditor({ value, onChange, readOnly = false }) {
   const textareaRef = useRef(null);
   const preRef = useRef(null);
   const lineNumbersRef = useRef(null);
@@ -88,20 +88,22 @@ export default function CodeEditor({ value, onChange }) {
           <span>{"\n"}</span>
         </pre>
 
-        {/* Transparent textarea (foreground) */}
+        {/* Transparent textarea (foreground) — disabled when readOnly so the
+            composite source can be hidden behind a clean usage view. */}
         <textarea
           ref={textareaRef}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => !readOnly && onChange(e.target.value)}
           onScroll={handleScroll}
-          onKeyDown={handleKeyDown}
+          onKeyDown={readOnly ? undefined : handleKeyDown}
           spellCheck={false}
+          readOnly={readOnly}
           className="absolute inset-0 w-full h-full resize-none outline-none bg-transparent"
           style={{
             ...sharedStyle,
             paddingLeft: "12px",
             color: "transparent",
-            caretColor: "#171717",
+            caretColor: readOnly ? "transparent" : "#171717",
           }}
         />
       </div>
