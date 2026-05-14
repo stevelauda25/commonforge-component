@@ -2,11 +2,13 @@
  * Re-run `node scripts/canvas/sync.mjs` after adding/removing component dirs.
  */
 import type { CanvasManifest } from './canvas-types.js';
+import { badgesCanvas } from './badges/canvas.js';
 import { buttonCanvas } from './button/canvas.js';
 import { checkboxCanvas } from './checkbox/canvas.js';
 import { dropdownCanvas } from './dropdown/canvas.js';
 import { searchInputCanvas } from './search-input/canvas.js';
 import { switchCanvas } from './switch/canvas.js';
+import { tabsCanvas } from './tabs/canvas.js';
 import { textInputCanvas } from './text-input/canvas.js';
 
 export * from './canvas-types.js';
@@ -14,11 +16,13 @@ export * from './canvas-types.js';
 export const canvasManifest: CanvasManifest = {
   version: '1',
   components: [
+    badgesCanvas,
     buttonCanvas,
     checkboxCanvas,
     dropdownCanvas,
     searchInputCanvas,
     switchCanvas,
+    tabsCanvas,
     textInputCanvas,
   ],
 };

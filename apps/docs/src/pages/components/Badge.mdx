@@ -1,5 +1,100 @@
+import { Badge } from 'pod-test-ui';
+
 <PageHeader
   title="Badge"
-  description="Compact label for status, count, or category."/>
+  description="Compact label for status, count, or category. Color tag indicator + IBM Plex Mono uppercase label + optional removable × icon."
+  status="ready"
+/>
 
-<EmptyComponentState />
+<PreviewCard>
+  <Badge color="green">LABEL</Badge>
+</PreviewCard>
+
+```tsx
+<Badge color="green">LABEL</Badge>
+```
+
+## Variants
+
+Eleven `color` styles. Nine chromatic colors plus two grays. All use the same shape — only the tinted background, tag dot, and label color change.
+
+<PreviewCard align="start">
+  <div className="flex flex-wrap items-center gap-2">
+    <Badge color="green">LABEL</Badge>
+    <Badge color="lime">LABEL</Badge>
+    <Badge color="purple">LABEL</Badge>
+    <Badge color="soft-gray">LABEL</Badge>
+    <Badge color="blue">LABEL</Badge>
+    <Badge color="indigo">LABEL</Badge>
+    <Badge color="sky">LABEL</Badge>
+    <Badge color="dark-gray">LABEL</Badge>
+    <Badge color="orange">LABEL</Badge>
+    <Badge color="red">LABEL</Badge>
+    <Badge color="yellow">LABEL</Badge>
+  </div>
+</PreviewCard>
+
+```tsx
+<Badge color="green">LABEL</Badge>
+<Badge color="indigo">LABEL</Badge>
+<Badge color="red">LABEL</Badge>
+<Badge color="dark-gray">LABEL</Badge>
+```
+
+## Without close icon
+
+Set `closable={false}` to render the badge as a pure label — no × at the end.
+
+<PreviewCard align="start">
+  <div className="flex flex-wrap items-center gap-2">
+    <Badge color="green" closable={false}>READY</Badge>
+    <Badge color="yellow" closable={false}>DRAFT</Badge>
+    <Badge color="red" closable={false}>BLOCKED</Badge>
+    <Badge color="soft-gray" closable={false}>ARCHIVED</Badge>
+  </div>
+</PreviewCard>
+
+```tsx
+<Badge color="green" closable={false}>READY</Badge>
+```
+
+## Removable (interactive)
+
+Pass `onClose` to make the × a real button that fires on click. Use this for filter chips or selected-tag UIs where the consumer wants to dismiss.
+
+<PreviewCard align="start">
+  <div className="flex flex-wrap items-center gap-2">
+    <Badge color="indigo" onClose={() => alert('Removed')}>FILTER</Badge>
+    <Badge color="sky" onClose={() => alert('Removed')}>TAG</Badge>
+  </div>
+</PreviewCard>
+
+```tsx
+<Badge color="indigo" onClose={() => removeFilter('indigo')}>FILTER</Badge>
+```
+
+## Props
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| `color` | `'green' \| 'lime' \| 'orange' \| 'yellow' \| 'red' \| 'purple' \| 'indigo' \| 'sky' \| 'blue' \| 'soft-gray' \| 'dark-gray'` | `'green'` | Tinted color treatment. |
+| `closable` | `boolean` | `true` | Show the trailing × icon. Decorative unless `onClose` is also passed. |
+| `onClose` | `() => void` | — | When provided, × renders as a real `<button>` and calls this on click. |
+| `children` | `React.ReactNode` | — | The label text. Convention: uppercase, short. |
+
+Extends native `<span>` HTMLAttributes (except `color`, which is the variant prop).
+
+## Accessibility
+
+- Renders as a `<span>` (presentation-level) by default — when `onClose` is set, the × becomes an interactive `<button>` with `aria-label="Remove"`.
+- × icon has `aria-hidden="true"` in the decorative-only path so screen readers don't announce the close glyph for non-removable badges.
+- Tag dot has `aria-hidden="true"` — purely visual signal, not part of the label.
+- Label uses IBM Plex Mono Medium — make sure the font is loaded by your app shell. Falls back to `ui-monospace` if not.
+- If removable badges participate in a list (e.g. filter chips), wrap them in a parent with `role="list"` and give each badge `role="listitem"` for clearer SR semantics.
+
+## Things to watch
+
+- The Dark Gray variant adds a 1px border (Figma `stroke/strong`) — other variants are border-less. If you wrap badges in a container that already has a border, this one may visually double up.
+- The color tag (3×10px dot) is fixed-width — long labels do NOT push the dot wider. Truncate label client-side if you need a hard width cap.
+- Label uses uppercase per Figma convention; the component does NOT auto-uppercase. Pass `STATUS` not `Status` if you want the canonical look.
+- `closable={true}` + no `onClose` renders a decorative × — clicking it does nothing. Mostly useful for visual matches in static contexts (lists, search results). Don't use this in filter UIs; always wire `onClose`.

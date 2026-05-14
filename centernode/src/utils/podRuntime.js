@@ -5,16 +5,19 @@
  *
  * Manually-maintained: transformIfJSX (sucrase config) and exports below.
  */
+import { Badges } from "pod-test-ui/badges";
 import { Button } from "pod-test-ui/button";
 import { Checkbox } from "pod-test-ui/checkbox";
 import { Dropdown, DropdownMenu, DropdownItem, DropdownBadge } from "pod-test-ui/dropdown";
 import { SearchInput } from "pod-test-ui/search-input";
 import { Switch } from "pod-test-ui/switch";
+import { Tabs } from "pod-test-ui/tabs";
 import { TextInput } from "pod-test-ui/text-input";
 import { canvasManifest } from "pod-test-ui/canvas";
 import { transform } from "sucrase";
 
 export const POD_COMPONENTS = {
+  Badges,
   Button,
   Checkbox,
   Dropdown,
@@ -23,6 +26,7 @@ export const POD_COMPONENTS = {
   DropdownBadge,
   SearchInput,
   Switch,
+  Tabs,
   TextInput
 };
 export { canvasManifest };

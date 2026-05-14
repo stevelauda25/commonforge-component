@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "syncedAt": "2026-05-13T12:46:42.789Z",
+  "syncedAt": "2026-05-14T14:24:24.343Z",
   "components": {
     "button": {
       "hash": "bab2976cfad0226cc181208735aa896e9570fbf73ee734044cda564d8b05e5fe",
@@ -33,22 +33,40 @@
       "nodeId": "2360:239"
     },
     "text-input": {
-      "hash": "037a5885ac3694f6c25f358b4530bf6f79fa7c0a857b3cd56ee07cdeb0560cba",
+      "hash": "741daff97a885c261064f7509e612eb9ca9e25d9526248a87025533e1ebeaed7",
       "varCount": 21,
-      "syncedAt": "2026-05-12T13:09:05.047Z",
+      "syncedAt": "2026-05-14T14:24:24.343Z",
       "nodeId": "2386:6510"
     },
     "search-input": {
-      "hash": "eb830d4ca788bbffd6c4b4655840d9795282cb56aacf3232c2ffbd57da92be8b",
+      "hash": "17956f555d11b249b3f4063d1ee3b07494937fc4f85106e980810937d5eecde6",
       "varCount": 16,
-      "syncedAt": "2026-05-13T08:26:57.113Z",
+      "syncedAt": "2026-05-14T14:24:24.343Z",
       "nodeId": "2408:3610"
     },
     "dropdown": {
-      "hash": "a667240f42e299b1dcfcee58c64397b8fda78e8c8d517dbe9b6b34c284488076",
+      "hash": "c14b41e57a38a4aff45652b47fee280c36a8a88fb60ae2818677d01381601bd3",
       "varCount": 17,
-      "syncedAt": "2026-05-13T12:46:42.789Z",
+      "syncedAt": "2026-05-14T14:24:24.343Z",
       "nodeId": "2415:2051"
+    },
+    "tabs": {
+      "hash": "2f4bed76c04c06b8f5662864a955f0ce4a741b4f1bbcbabb967202ffe0368684",
+      "varCount": 22,
+      "syncedAt": "2026-05-14T13:19:53.971Z",
+      "nodeId": "2412:1375"
+    },
+    "tabs-menu": {
+      "hash": "92dcc9ad7d302cc35ec3c1d0dccc5284fa2e100a892bbcc93bfd188f180d8df1",
+      "varCount": 19,
+      "syncedAt": "2026-05-14T12:44:58.125Z",
+      "nodeId": "2446:1666"
+    },
+    "badges": {
+      "hash": "bc23a6f33f690fed6c40db42fcdd042f9587ee118ede32eb62c905e556b80b32",
+      "varCount": 36,
+      "syncedAt": "2026-05-14T13:55:00.765Z",
+      "nodeId": "2419:6553"
     }
   }
 }

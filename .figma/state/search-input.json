@@ -56,7 +56,7 @@
         "INSTANCE:hint-text"
       ]
     },
-    "State=Filled": {
+    "State=Active": {
       "type": "COMPONENT",
       "fills": [],
       "strokes": [],

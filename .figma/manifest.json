@@ -45,6 +45,27 @@
       "slug": "dropdown",
       "nodeId": "2415:2051",
       "status": "ready"
+    },
+    {
+      "slug": "tabs",
+      "nodeId": "2412:1375",
+      "status": "ready",
+      "docsName": "Tab",
+      "docsRoute": "/components/tab"
+    },
+    {
+      "slug": "tabs-menu",
+      "nodeId": "2446:1666",
+      "status": "ready",
+      "docsName": "Tab",
+      "docsRoute": "/components/tab"
+    },
+    {
+      "slug": "badges",
+      "nodeId": "2419:6553",
+      "status": "ready",
+      "docsName": "Badge",
+      "docsRoute": "/components/badge"
     }
   ]
 }

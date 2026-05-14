@@ -6,6 +6,7 @@ import { PreviewCard } from './docs/PreviewCard.js';
 import { EmptyComponentState } from './docs/EmptyComponentState.js';
 import { PageHeader } from './docs/PageHeader.js';
 import { Swatch, SwatchGrid } from './docs/Swatch.js';
+import { TabBarDemo } from './docs/TabBarDemo.js';
 import { TokenAutoGrid } from './foundations/TokenAutoGrid.js';
 import { MotionAutoGrid } from './foundations/MotionAutoGrid.js';
 import { MotionPatternDemo, MotionPatternGrid } from './foundations/MotionPatternDemos.js';
@@ -18,6 +19,7 @@ const components = {
   PageHeader,
   Swatch,
   SwatchGrid,
+  TabBarDemo,
   TokenAutoGrid,
   MotionAutoGrid,
   MotionPatternDemo,

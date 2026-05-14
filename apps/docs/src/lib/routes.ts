@@ -32,10 +32,11 @@ export const routes: RouteEntry[] = [
   { path: '/components/text-input',    label: 'Text Input',   category: 'component', status: 'ready',    description: 'Single-line text field with label, hint, and error support.', load: () => import('../pages/components/TextInput.mdx') },
   { path: '/components/search-input',  label: 'Search Input', category: 'component', status: 'ready',    description: 'Search field with default icon, ⌘K shortcut hint, and optional clear button.', load: () => import('../pages/components/SearchInput.mdx') },
   { path: '/components/dropdown',      label: 'Dropdown',     category: 'component', status: 'ready',    description: 'Single-select or multi-tag trigger. Stateless — pair with your menu.', load: () => import('../pages/components/Dropdown.mdx') },
+  { path: '/components/tab',           label: 'Tab',          category: 'component', status: 'ready',    description: 'Single tab item — menu, underline, screen-nav, or pill style.',                load: () => import('../pages/components/Tab.mdx') },
+  { path: '/components/badge',         label: 'Badge',        category: 'component', status: 'ready',    description: 'Compact label for status, count, or category — 11 color variants with optional × remove.', load: () => import('../pages/components/Badge.mdx') },
 
   // Components — planned
   { path: '/components/tooltip',      label: 'Tooltip',      category: 'component', status: 'planned', description: 'Contextual help on hover/focus.', load: () => import('../pages/components/Tooltip.mdx') },
-  { path: '/components/badge',        label: 'Badge',        category: 'component', status: 'planned', description: 'Compact label for status, count, or category.', load: () => import('../pages/components/Badge.mdx') },
   { path: '/components/select',       label: 'Select',       category: 'component', status: 'planned', description: 'Dropdown picker for one of many options.',     load: () => import('../pages/components/Select.mdx') },
   { path: '/components/dialog',       label: 'Dialog',       category: 'component', status: 'planned', description: 'Modal overlay for focused tasks.',             load: () => import('../pages/components/Dialog.mdx') },
   { path: '/components/switch',       label: 'Switch',       category: 'component', status: 'planned', description: 'On/off binary toggle.',                        load: () => import('../pages/components/Switch.mdx') },

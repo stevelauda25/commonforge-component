@@ -1,6 +1,6 @@
 {
   "name": "pod-test-ui",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -9,6 +9,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./badges": {
+      "types": "./dist/badges.d.ts",
+      "import": "./dist/badges.mjs",
+      "require": "./dist/badges.js"
     },
     "./button": {
       "types": "./dist/button.d.ts",
@@ -34,6 +39,11 @@
       "types": "./dist/switch.d.ts",
       "import": "./dist/switch.mjs",
       "require": "./dist/switch.js"
+    },
+    "./tabs": {
+      "types": "./dist/tabs.d.ts",
+      "import": "./dist/tabs.mjs",
+      "require": "./dist/tabs.js"
     },
     "./text-input": {
       "types": "./dist/text-input.d.ts",
@@ -71,7 +81,7 @@
     "@radix-ui/react-tooltip": "^1.1.2",
     "clsx": "^2.1.1",
     "lucide-react": "^0.428.0",
-    "pod-test-tokens": "0.1.4",
+    "pod-test-tokens": "0.1.6",
     "tailwind-merge": "^2.4.0"
   },
   "devDependencies": {
