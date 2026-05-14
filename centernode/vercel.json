@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd .. && pnpm install --frozen-lockfile && cd centernode && npm install --no-fund --no-audit",
+  "buildCommand": "cd .. && pnpm build:packages && cd centernode && npm run build",
+  "framework": "nextjs"
+}
