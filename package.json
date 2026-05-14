@@ -1,7 +1,7 @@
 {
   "name": "pod-design-system-test",
   "private": true,
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Small design system test environment for POD — sprint-style scope.",
   "packageManager": "pnpm@9.7.0",
   "scripts": {
