@@ -8,12 +8,14 @@ This file is **mandatory reading** before generating or editing any code in this
 
 This is `client-test` — a React + Vite + TypeScript application that consumes the **POD Design System** via two npm packages:
 
-- **`pod-test-ui`** — React components (`Button`, `Checkbox`, `TextInput`, `Tooltip`, `Switch` [experimental])
-- **`pod-test-tokens`** — Design tokens (CSS variables + Tailwind preset)
+- **`pod-test-ui`** — React components. Current shipped set: `Button`, `Checkbox`, `TextInput`, `SearchInput`, `Dropdown` (+ `DropdownMenu` / `DropdownItem` / `DropdownBadge`), `Tooltip`, `Switch` (experimental), **`Badge`** (added 0.1.8), **`Tab`** (added 0.1.8).
+- **`pod-test-tokens`** — Design tokens (CSS variables + Tailwind preset). Source of truth for colors, radius, shadows, **spacing**, **font family**, **font size**, motion durations + easings, keyframes.
 
-These packages are the **single source of truth** for visual design. They are token-driven, dark-mode-aware, and accessibility-aware. Treat them as production primitives — never re-implement what they provide.
+These packages are the **single source of truth** for visual design AND interaction primitives. They are token-driven, dark-mode-aware, and accessibility-aware. Treat them as production primitives — never re-implement what they provide.
 
-> **Hard rule:** Every screen, page, or fragment generated in this project MUST be composed from `pod-test-ui` components and `pod-test-tokens` semantic classes. No native `<button>`, no hex codes, no ad-hoc styling. If a primitive doesn't exist (Modal, Tabs, etc.) → see Rule 10.
+> **Hard rule:** Every screen, page, or fragment generated in this project MUST be composed from `pod-test-ui` components and `pod-test-tokens` semantic classes. No native `<button>`, no hex codes, no ad-hoc styling, no third-party variants of primitives that POD already ships. If a primitive doesn't exist → see Rule 10.
+
+> **The list above can lag the actual installed version.** Before generating code, ALWAYS check `node_modules/pod-test-ui/AGENTS.md` (ships in the tarball, auto-updates on `npm install`). That file is the ground truth — this CLAUDE.md is a project-level overview only.
 
 ---
 
@@ -25,32 +27,74 @@ These packages are the **single source of truth** for visual design. They are to
 | TypeScript | `^6.x` | `strict: true`, `noEmit: true` (Vite handles compilation) |
 | Vite | `^8.x` | Dev server & build |
 | **Tailwind CSS** | **`^3.4.x` (v3 ONLY)** | See "Tailwind Rules" below |
-| `pod-test-ui` | `^0.1.0` | Workspace consumer — pin to latest minor |
-| `pod-test-tokens` | `^0.1.0` | Workspace consumer — pin to latest minor |
+| `pod-test-ui` | **always latest published** | Currently `^0.1.8`. Bump on every release; never freeze on an old minor. |
+| `pod-test-tokens` | **always latest published** | Currently `^0.1.8`. Lockstep with `pod-test-ui`. |
 | `lucide-react` | latest | Icon set — bundled by `pod-test-ui` |
 
 ---
 
 ## CORE RULES (Non-negotiable)
 
+### Rule 0 — Always Use the Latest NPM Version (PINNED-CARET, NOT FROZEN)
+
+`package.json` deps for `pod-test-ui` and `pod-test-tokens` MUST use a caret
+range pointing to the latest published version. Whenever a new version
+ships on npm, bump both in lockstep, run `npm install`, and verify
+`node_modules/pod-test-ui/AGENTS.md` reflects the new version. Component
+availability + intent map + token list change between releases — old
+AGENTS.md = stale rules in your head.
+
+```jsonc
+// ✅ package.json after every POD release
+"dependencies": {
+  "pod-test-tokens": "^0.1.8",
+  "pod-test-ui":     "^0.1.8"
+}
+```
+
+**Before generating any UI**, confirm three things:
+
+1. `cat node_modules/pod-test-ui/package.json | grep version` — installed version.
+2. `npm view pod-test-ui version` — latest on npm. If installed < latest,
+   bump first. New components / new props you'd miss otherwise.
+3. `cat node_modules/pod-test-ui/AGENTS.md` — ground-truth changelog +
+   component table + intent map. Use those exact API names; don't
+   guess from training data.
+
+**Forbidden:**
+- ❌ Pinning to an old version on purpose to "avoid breakage" — the design
+  system uses semver. Patch / minor bumps are additive.
+- ❌ Falling back to a local copy of a primitive that POD now ships
+  (e.g. you built a local `Badge` before 0.1.8 — delete it, use the npm one).
+- ❌ Generating UI without first re-reading `AGENTS.md` after a `npm install`.
+
 ### Rule 1 — Always Use Library Components (PAKEM, ZERO EXCEPTION)
 
 When generating ANY UI — a screen, a card, a form, a single row — your first move is: **map the request to existing `pod-test-ui` primitives**. If a primitive maps, use it. No exceptions, no "just this once for prototype", no "let me hardcode quickly".
 
 ```tsx
-// ✅ ALWAYS — start every page from these imports
-import { Button, Checkbox, TextInput, Tooltip, Switch } from 'pod-test-ui';
+// ✅ ALWAYS — import from the npm package, top-level entry
+import {
+  Button, Checkbox, TextInput, SearchInput,
+  Dropdown, DropdownMenu, DropdownItem, DropdownBadge,
+  Tooltip, Switch, Badge, Tab,
+} from 'pod-test-ui';
 
 <Button variant="primary">Save</Button>
 <Checkbox checked={x} onCheckedChange={setX} label="Agree" />
-<TextInput value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…" />
+<TextInput value={q} onChange={(e) => setQ(e.target.value)} placeholder="Email" />
+<SearchInput placeholder="Search…" />
+<Dropdown open={open} onClick={() => setOpen(o => !o)} popup={<DropdownMenu>...</DropdownMenu>} />
 <Tooltip content="Hint"><Button iconOnly leftIcon={<X />} aria-label="Close" /></Tooltip>
-<Switch checked={on} onCheckedChange={setOn} />   {/* experimental */}
+<Switch checked={on} onCheckedChange={setOn} />
+<Badge color="green">READY</Badge>
+<Tab tabType="underline" active>Overview</Tab>
 
 // ❌ NEVER — even for "quick" UI, even for "just a prototype"
 <button className="bg-green-600 text-white px-4 py-2 rounded">Save</button>
 <input type="checkbox" />
 <input type="text" />
+<div className="rounded-md bg-zinc-800 px-2 text-xs">READY</div>  {/* should be <Badge> */}
 ```
 
 **Coverage map** (component → POD primitive):
@@ -59,52 +103,65 @@ import { Button, Checkbox, TextInput, Tooltip, Switch } from 'pod-test-ui';
 |---|---|
 | Button, action, CTA, submit, link-styled-as-button | `<Button>` (variant: primary/outline/error) |
 | Checkbox, multi-select, "select all", agree to terms | `<Checkbox>` |
-| Text input, form field, search box, query input | `<TextInput>` (use `leftIcon={<Search />}` for search use case) |
+| Text input, form field, email field, password field | `<TextInput>` |
+| Search box, query input, filter input | `<SearchInput>` (built-in icon + ⌘K hint) |
+| Dropdown, select, picker, combobox, single/multi-select | `<Dropdown popup={<DropdownMenu>...</DropdownMenu>}>` (pass menu via the `popup` prop since 0.1.8) |
+| Removable filter chip, multi-select chip | `<Dropdown variant="tags" tags={[...]} onRemoveTag={...} popup={...} />` |
+| Status badge, count chip, category tag, filter pill | `<Badge color="…">LABEL</Badge>` (11 colors, optional removable ×) |
+| Tab, tab bar, segmented nav | `<Tab tabType="menu \| underline \| screen-nav \| pill" active={...}>` (atom — parent owns active state) |
 | Tooltip, hover help, keyboard-shortcut hint, icon explanation | `<Tooltip>` |
 | Toggle, on/off, enable feature | `<Switch>` ⚠ experimental — confirm with designer before shipping |
 | Native `<button>` | ❌ Never. Always `<Button>`. |
 | Native `<input type="checkbox">` | ❌ Never. Always `<Checkbox>`. |
-| Native `<input type="text">` / `<input type="search">` | ❌ Never. Always `<TextInput>`. |
+| Native `<input type="text">` / `<input type="search">` | ❌ Never. Always `<TextInput>` / `<SearchInput>`. |
+| Native `<select>` | ❌ Never. Always `<Dropdown popup={...}>`. |
 
-If you find yourself writing `<button>`, `<input>`, or any styled `<div>` that *acts like* a button/input/checkbox/tooltip — STOP. Replace with the POD primitive.
+If you find yourself writing `<button>`, `<input>`, `<select>`, or any styled `<div>` that *acts like* a primitive POD ships — STOP. Replace with the POD primitive. When in doubt, `cat node_modules/pod-test-ui/AGENTS.md` to confirm what's shipped in the installed version.
 
-### Rule 2 — Always Use Semantic Tokens
+### Rule 2 — Always Use Semantic Tokens (color, radius, shadow, spacing, font, motion)
 
-Color, radius, shadow, motion: all values come from token classes. Hex codes, `rgb()`, named colors, and arbitrary numeric values are forbidden in component code.
+Every visual value MUST come from a token class exposed by the
+`pod-test-tokens` Tailwind preset. Hex codes, `rgb()`, named colors,
+arbitrary spacing (`p-[17px]`), and one-off font sizes are forbidden in
+application code.
 
 ```tsx
 // ✅ ALWAYS
-<div className="bg-canvas text-text-primary border-border-default rounded-lg shadow-md">…</div>
-<a className="text-accent hover:text-accent-hover">…</a>
-<span className="bg-danger-subtle text-danger">…</span>
+<div className="bg-canvas text-text-primary border-border-default rounded-lg shadow-foundation-md p-4 gap-3">…</div>
+<a className="text-accent hover:text-accent-hover text-sm font-medium">…</a>
+<span className="bg-danger-subtle text-danger rounded-xs px-2 py-0.5">…</span>
 
 // ❌ NEVER
-<div className="bg-[#ffffff] text-[#181818] border-[#e4e4e7]">…</div>
-<div style={{ background: '#16a34a' }}>…</div>
-<a className="text-green-600 hover:text-green-700">…</a>
+<div className="bg-[#ffffff] text-[#181818] border-[#e4e4e7] p-[17px]">…</div>
+<div style={{ background: '#16a34a', padding: '13px' }}>…</div>
+<a className="text-green-600 hover:text-green-700 text-[15px]">…</a>
+<input className="font-['Roboto']" />  {/* font family is locked to Inter via preset */}
 ```
 
-**Available semantic token namespaces** (use as Tailwind classes — `bg-X`, `text-X`, `border-X`):
+**Available semantic token namespaces** (apply as Tailwind classes — `bg-X`, `text-X`, `border-X`, etc.):
 
 - **Backgrounds:** `canvas`, `surface`, `raised`, `muted`
-- **Text:** `text-primary`, `text-secondary`, `text-muted`, `text-disabled`, `text-inverse`
+- **Text colors:** `text-primary`, `text-secondary`, `text-muted`, `text-disabled`, `text-inverse`
 - **Borders:** `border-subtle`, `border-default`, `border-strong`, `border-focus`
-- **Accent:** `accent`, `accent-hover`, `accent-active`, `accent-fg`, `accent-subtle` *(brand — sacred, never override)*
-- **Feedback:** `danger`, `warning`, `success`, `info` (each has `-hover`, `-active`, `-fg`, `-subtle`)
+- **Brand accent:** `accent`, `accent-hover`, `accent-active`, `accent-fg`, `accent-subtle` *(sacred — never override)*
+- **Feedback:** `danger`, `warning`, `success`, `info` — each with `-hover`, `-active`, `-fg`, `-subtle`
 - **Radius:** `rounded-none | xxs | xs | sm | md | lg | xl | 2xl | 3xl | 4xl | full`
-  *(scale matches Figma foundation node — values: 0/2/4/6/8/10/12/16/20/24/9999px)*
-- **Shadow (foundation drop):** `shadow-foundation-xs | sm | md | lg | xl | 2xl | 3xl`
-  *(canonical scale — replaces legacy `shadow-sm/md/lg` which were removed in 0.1.0)*
+  *(scale matches Figma foundation — values: 0/2/4/6/8/10/12/16/20/24/9999px). Inventing new keys is forbidden.*
+- **Shadow (foundation drop scale):** `shadow-foundation-xs | sm | md | lg | xl | 2xl | 3xl`
 - **Shadow (brand glow):** `shadow-glow-accent-inset[-strong]`, `shadow-glow-danger-inset[-strong]`, `shadow-glow-accent-text`
-- **Motion:** `duration-fast | base | slow`, `ease-standard | emphasized | press`
+- **Spacing (padding / margin / gap):** Tailwind's stock scale — `0`, `0.5` (2px), `1` (4px), `1.5` (6px), `2` (8px), `2.5` (10px), `3` (12px), `4` (16px), `5` (20px), `6` (24px), `8` (32px), `10` (40px), `12` (48px), `16` (64px). **Never** use arbitrary `p-[Npx]` / `gap-[Npx]`. If the design calls for a value outside this scale, talk to the designer first.
+- **Font family:** Locked to **Inter** (loaded via `next/font` upstream and via stylesheet in docs). Don't import another font. POD's `text-*` size classes assume Inter metrics.
+- **Font size scale:** `text-xs` (12), `text-sm` (13 — dashboard default), `text-base` (14), `text-md` (15), `text-lg` (16), `text-xl` (18), `text-2xl` (20), `text-3xl` (24). Use these. Never `text-[15px]`.
+- **Font weight:** `font-normal`, `font-medium`, `font-semibold`, `font-bold` — same as Tailwind defaults.
+- **Motion:** `duration-fast | base | slow`, `ease-standard | emphasized | press`. Use `animate-menu-in` / `animate-menu-item-in` / `animate-fade-in` for entry; mirror their durations (220–280ms) for any custom exit motion.
 - **Experimental** *(Figma-introduced primitives, time-bounded — promote or remove later)*:
-  `bg-experiment-orange`, `bg-experiment-zinc-700`, `bg-experiment-primary-test`
+  `bg-experiment-tab-base`, `bg-experiment-tab-chip`, `bg-experiment-tab-text`, `bg-experiment-badge-{color}-{bg,tag,fg}`, etc. **Don't touch these for production UI** — they exist for component internals.
 
 Tokens are stored as `R G B` triples — opacity modifiers work: `bg-canvas/80`, `text-accent/50`, `border-border-default/30`.
 
-**Removed in 0.1.0 (DO NOT use even if you remember them):**
-- `shadow-sm` / `shadow-md` / `shadow-lg` (the un-prefixed legacy set) — migrate to `shadow-foundation-sm / md / lg`.
-  Old `sm` mapped to `foundation-xs`; old `md` to `foundation-md`; old `lg` to `foundation-lg`.
+**Removed (don't reach for from training memory):**
+- `shadow-sm` / `shadow-md` / `shadow-lg` un-prefixed — migrate to `shadow-foundation-*`.
+- `text-text-muted` was previously `#a1a1aa`; now scoped tokens (`experiment-tab-text` etc.) are darker per Figma. Don't try to "fix" the gray by switching tokens — different shades are intentional.
 
 ### Rule 3 — Never Write `dark:` Variants
 
@@ -212,11 +269,23 @@ import { Button } from 'pod-test-ui/button';   // works, prefer top-level
 
 ### Rule 10 — When a Primitive Is Missing
 
-These do **not** exist in `pod-test-ui` yet: `Modal`, `Dialog`, `Select`, `Combobox`, `DatePicker`, `Tabs`, `Toast`, `Badge`, `Table`, `Field` / `Label` / `HelperText`.
+`pod-test-ui` currently ships: `Button`, `Checkbox`, `TextInput`, `SearchInput`,
+`Dropdown` (+ DropdownMenu / DropdownItem / DropdownBadge), `Tooltip`, `Switch`,
+`Badge`, `Tab`. **Confirm via `cat node_modules/pod-test-ui/AGENTS.md`** before
+assuming something is missing — the list above may lag.
 
-When the user asks for one of these:
+Truly missing (as of 0.1.8): `Modal` / `Dialog`, `Combobox`, `DatePicker`,
+`Toast`, `Table`, dedicated `Field` / `Label` / `HelperText` primitives,
+`Avatar`, `Pagination`.
 
-1. **Build it locally** in `src/components/` using the same token system (`bg-canvas`, `text-text-primary`, etc.) and the same patterns as `pod-test-ui` (forwardRef, controlled, semantic tokens).
+If you need a `Tabs` group — compose `<Tab>` atoms in a `role="tablist"`
+wrapper, parent owns active state (the `<Tab>` atom is what POD ships).
+Same for `Badge` lists — just multiple `<Badge>` instances; no "BadgeGroup"
+needed.
+
+When the user asks for one of the truly missing primitives:
+
+1. **Build it locally** in `src/components/` using the same token system (`bg-canvas`, `text-text-primary`, etc.) and the same patterns as `pod-test-ui` (forwardRef, controlled, semantic tokens, blur+scale exit motion for dismissals).
 2. **Document why** in a brief comment at the top of the new component file.
 3. **Never** copy code out of `node_modules/pod-test-ui/`.
 4. **Suggest** to the user that the missing primitive should be requested upstream from the design system maintainer.
@@ -351,17 +420,24 @@ You are editing a project that uses **POD Design System** (...)
 When reviewing existing code (yours or others') in this project, flag and fix any of these:
 
 - ✗ Hardcoded colors: `bg-[#…]`, `text-[#…]`, `style={{ color: '…' }}`
+- ✗ Hardcoded spacing: `p-[17px]`, `gap-[10px]`, `m-[3px]` — use the stock Tailwind scale.
+- ✗ Hardcoded font sizes: `text-[15px]`, `text-[24px]` — use `text-md`, `text-3xl`.
+- ✗ Custom font family: `font-['Roboto']` — Inter is locked at the preset.
 - ✗ `dark:` modifiers anywhere
-- ✗ Native `<button>`, `<input type="checkbox">`, `<input type="text">`, `<input type="search">` for new UI — use `<Button>`, `<Checkbox>`, `<TextInput>`
+- ✗ Native `<button>`, `<input type="checkbox">`, `<input type="text">`, `<input type="search">`, `<select>` for new UI — use `<Button>`, `<Checkbox>`, `<TextInput>`, `<SearchInput>`, `<Dropdown popup={…}>`
+- ✗ Building a "Badge" / "Tab" / "Filter chip" yourself — POD ships `<Badge>` and `<Tab>` as of 0.1.8
+- ✗ Rendering `<DropdownMenu>` as a sibling with `absolute` positioning — use `<Dropdown popup={…}>` so the popover anchors below the trigger even with hint/error present
 - ✗ Tailwind v4 plugin (`@tailwindcss/postcss`) in `package.json`
 - ✗ `<Tooltip>` wrapping a non-focusable element
 - ✗ Icon-only `<Button>` without `aria-label`
 - ✗ `defaultChecked` / uncontrolled `<Checkbox>` (Checkbox is controlled-only; TextInput / Switch DO accept uncontrolled, that's fine)
 - ✗ Subpath imports: `pod-test-ui/dist/...`
-- ✗ Re-implementing `Button`, `Checkbox`, `TextInput`, `Tooltip`, or `Switch`
+- ✗ Re-implementing `Button`, `Checkbox`, `TextInput`, `SearchInput`, `Dropdown`, `Tooltip`, `Switch`, `Badge`, or `Tab`
 - ✗ Legacy shadow classes (`shadow-sm`, `shadow-md`, `shadow-lg`) — removed in 0.1.0, migrate to `shadow-foundation-*`
 - ✗ Inventing radius keys (`rounded-2.5xl`, `rounded-huge`) — only the documented scale is real
 - ✗ Touching `experiment-*` tokens for "production" UI — those are time-bounded experiments, not stable primitives
+- ✗ Instant DOM removal on user-triggered dismissal (filter chips, removable tags, toasts) — POD's removal-motion standard is 280ms blur+scale+width-collapse. See AGENTS.md "Motion" section for the recipe.
+- ✗ Stale `package.json` — running against an older `pod-test-ui` than what's on npm. Run `npm view pod-test-ui version`; if installed < latest, bump first.
 
 ---
 
