@@ -36,8 +36,28 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} h-full antialiased`}
+      // Initial `dark` class activates pod-test-tokens dark-mode variables
+      // across every POD primitive rendered inside centernode. The
+      // bootstrap script below reads `centernode-theme` from localStorage
+      // and removes the class if user previously toggled to light — runs
+      // before React mounts so there's no flash-of-wrong-theme.
+      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} h-full antialiased dark`}
+      suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                try{
+                  var stored=localStorage.getItem('centernode-theme');
+                  if(stored==='light'){document.documentElement.classList.remove('dark');}
+                }catch(e){}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

@@ -197,7 +197,7 @@ function VariantCard({ name, label, props, onPick, title, darkPreview }) {
         }
       }}
       title={title}
-      className="group relative w-full rounded-md border border-neutral-200 bg-white hover:border-neutral-900 hover:shadow-sm focus:border-neutral-900 focus:outline-none transition-all cursor-pointer overflow-hidden"
+      className="group relative w-full rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-neutral-900 dark:hover:border-neutral-100 hover:shadow-sm focus:border-neutral-900 dark:focus:border-neutral-100 focus:outline-none transition-all cursor-pointer overflow-hidden"
     >
       {label && (
         <div className={`absolute top-1.5 left-2 text-[9px] uppercase tracking-wider font-medium pointer-events-none z-10 ${
@@ -227,20 +227,20 @@ function ComponentRow({ component, onPick, defaultOpen = false, darkPreview = fa
   const variantCount = variants.length;
 
   return (
-    <div className="border-b border-neutral-100 last:border-0">
+    <div className="border-b border-neutral-100 dark:border-neutral-900 last:border-0">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center gap-1.5 px-3 py-2.5 hover:bg-neutral-50 text-left transition-colors"
+        className="w-full flex items-center gap-1.5 px-3 py-2.5 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 text-left transition-colors"
       >
         {open ? (
-          <ChevronDown className="w-3 h-3 text-neutral-500" />
+          <ChevronDown className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
         ) : (
-          <ChevronRight className="w-3 h-3 text-neutral-500" />
+          <ChevronRight className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
         )}
-        <span className="text-[12px] font-semibold text-neutral-900 flex-1">{name}</span>
+        <span className="text-[12px] font-semibold text-neutral-900 dark:text-neutral-100 flex-1">{name}</span>
         {hasVariants && (
-          <span className="text-[10px] text-neutral-400 font-mono">{variantCount}</span>
+          <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-mono">{variantCount}</span>
         )}
       </button>
 
@@ -278,8 +278,8 @@ function ComponentRow({ component, onPick, defaultOpen = false, darkPreview = fa
           )}
 
           {examples && examples.length > 0 && (
-            <div className="flex flex-col gap-1.5 pt-2 mt-1 border-t border-neutral-100">
-              <div className="text-[9px] uppercase tracking-wider text-neutral-400 font-medium px-0.5">
+            <div className="flex flex-col gap-1.5 pt-2 mt-1 border-t border-neutral-100 dark:border-neutral-800">
+              <div className="text-[9px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500 font-medium px-0.5">
                 Examples
               </div>
               <div className="flex flex-wrap gap-1">
@@ -288,7 +288,7 @@ function ComponentRow({ component, onPick, defaultOpen = false, darkPreview = fa
                     key={ex.label}
                     type="button"
                     onClick={() => onPick(name, { ...defaultProps, ...ex.props }, ex.code)}
-                    className="text-[10px] px-2 py-1 rounded-md border border-neutral-200 bg-white text-neutral-700 hover:border-neutral-900 hover:bg-neutral-900 hover:text-white transition-colors"
+                    className="text-[10px] px-2 py-1 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-200 hover:border-neutral-900 dark:hover:border-neutral-100 hover:bg-neutral-900 dark:hover:bg-neutral-100 hover:text-white dark:hover:text-neutral-900 transition-colors"
                   >
                     {ex.label}
                   </button>
@@ -303,7 +303,9 @@ function ComponentRow({ component, onPick, defaultOpen = false, darkPreview = fa
 }
 
 export default function PodLibraryPanel({ manifest, onAddPodNode }) {
-  const [previewDark, setPreviewDark] = useState(false);
+  // Default to dark previews since centernode itself runs dark by default —
+  // shows the component in the theme it'll actually live in on the canvas.
+  const [previewDark, setPreviewDark] = useState(true);
 
   const handlePick = (componentName, props, overrideCode) => {
     // If example provides a composite code snippet (function component with state),
@@ -317,14 +319,14 @@ export default function PodLibraryPanel({ manifest, onAddPodNode }) {
   const count = manifest?.components?.length ?? 0;
 
   return (
-    <div className="w-[260px] bg-white border-r border-neutral-200 flex flex-col shrink-0">
-      <div className="flex items-center gap-2 px-3 py-3 border-b border-neutral-200 shrink-0">
-        <div className="w-6 h-6 rounded-md bg-neutral-900 text-white flex items-center justify-center shrink-0">
+    <div className="w-[260px] bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex flex-col shrink-0">
+      <div className="flex items-center gap-2 px-3 py-3 border-b border-neutral-200 dark:border-neutral-800 shrink-0">
+        <div className="w-6 h-6 rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 flex items-center justify-center shrink-0">
           <Package className="w-3.5 h-3.5" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-[12px] font-semibold text-neutral-900 leading-tight">POD Components</div>
-          <div className="text-[10px] text-neutral-500 leading-tight mt-0.5">
+          <div className="text-[12px] font-semibold text-neutral-900 dark:text-neutral-100 leading-tight">POD Components</div>
+          <div className="text-[10px] text-neutral-500 dark:text-neutral-400 leading-tight mt-0.5">
             {count} component{count === 1 ? "" : "s"} · v{manifest?.version ?? "?"}
           </div>
         </div>
@@ -335,8 +337,8 @@ export default function PodLibraryPanel({ manifest, onAddPodNode }) {
           aria-label={`Switch preview to ${previewDark ? "light" : "dark"} mode`}
           className={`shrink-0 w-7 h-7 rounded-md border flex items-center justify-center transition-colors ${
             previewDark
-              ? "bg-neutral-900 border-neutral-900 text-amber-300 hover:bg-neutral-800"
-              : "bg-white border-neutral-200 text-neutral-600 hover:border-neutral-900 hover:text-neutral-900"
+              ? "bg-neutral-900 dark:bg-neutral-100 border-neutral-900 dark:border-neutral-100 text-amber-300 dark:text-amber-500 hover:bg-neutral-800 dark:hover:bg-neutral-200"
+              : "bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:border-neutral-900 dark:hover:border-neutral-100 hover:text-neutral-900 dark:hover:text-neutral-100"
           }`}
         >
           {previewDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
@@ -354,11 +356,11 @@ export default function PodLibraryPanel({ manifest, onAddPodNode }) {
           />
         ))}
         {count === 0 && (
-          <div className="p-4 text-[11px] text-neutral-500">No POD components available.</div>
+          <div className="p-4 text-[11px] text-neutral-500 dark:text-neutral-400">No POD components available.</div>
         )}
       </div>
 
-      <div className="px-3 py-2 border-t border-neutral-100 text-[10px] text-neutral-400 shrink-0">
+      <div className="px-3 py-2 border-t border-neutral-100 dark:border-neutral-800 text-[10px] text-neutral-400 dark:text-neutral-500 shrink-0">
         from <span className="font-mono">pod-test-ui</span> · click to add
       </div>
     </div>

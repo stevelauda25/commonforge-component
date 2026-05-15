@@ -4,7 +4,9 @@ import {
   Plus, Download, Upload, Trash2, Copy, Code2, X, ZoomIn, ZoomOut, Maximize2,
   Sparkles, ChevronLeft, Check, MousePointer2, Hand, Palette,
   Smartphone, Tablet, Monitor, Frame, SlidersHorizontal, RotateCcw, FileCode, Info,
-  Layers, Ruler, Package,
+  Layers, Ruler, Package, Sun, Moon,
+  AlignHorizontalDistributeCenter, AlignVerticalDistributeCenter,
+  ArrowRight, ArrowDown,
 } from "lucide-react";
 import { DEFAULT_TOKENS, FRAME_PRESETS, TEMPLATES, DEMO_CODE } from "@/constants/playground";
 import { parseSchemaFromCode, extractComponentName, updateCodeWithProp, isJsxSnippet, extractJsxTag, parseJsxSnippetSchema } from "@/utils/parser";
@@ -104,10 +106,171 @@ export function useGlobalTokensCSS(tokens) {
 }
 
 // =============================================================
+// Centernode theme toggle — flips the `.dark` class on <html>. Default is
+// dark (set by layout.tsx); user can switch to light. Choice persists to
+// localStorage so reloads keep the picked theme.
+function ThemeToggle() {
+  const [dark, setDark] = useState(() => {
+    if (typeof document === "undefined") return true;
+    return document.documentElement.classList.contains("dark");
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+    try {
+      localStorage.setItem("centernode-theme", dark ? "dark" : "light");
+    } catch {
+      /* private mode / quota — ignore */
+    }
+  }, [dark]);
+
+  return (
+    <button
+      type="button"
+      onClick={() => setDark((d) => !d)}
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      title={dark ? "Switch to light mode" : "Switch to dark mode"}
+      className="text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 p-1.5 rounded-md flex items-center justify-center transition-colors"
+    >
+      {dark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+    </button>
+  );
+}
+
+// =============================================================
+// Bulk-edit panel — shown in the right inspector when ≥2 nodes are selected.
+// Holds the auto-layout / distribute / delete-all / duplicate-all actions
+// plus a Gap input that drives the layout calls.
+function MultiSelectPanel({
+  count,
+  selectedNodeIds,
+  nodes,
+  onPickNode,
+  onDuplicateAll,
+  onDeleteAll,
+  onAutoArrange,
+  onDistribute,
+}) {
+  const [gap, setGap] = useState(12);
+  const selected = nodes.filter((n) => selectedNodeIds.has(n.id));
+
+  return (
+    <div className="p-6 flex flex-col gap-4 overflow-y-auto">
+      <div className="text-center">
+        <div className="w-10 h-10 mx-auto mb-3 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+          <Layers className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
+        </div>
+        <div className="text-xs text-neutral-600 dark:text-neutral-300 font-medium mb-1">
+          {count} components selected
+        </div>
+        <div className="text-[11px] text-neutral-400 dark:text-neutral-500 leading-relaxed">
+          Shift-click to add or remove · Esc to clear
+        </div>
+      </div>
+
+      {/* Auto-layout section */}
+      <div className="flex flex-col gap-2 pt-2 border-t border-neutral-200 dark:border-neutral-800">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+          Auto layout
+        </div>
+        <div className="grid grid-cols-2 gap-1">
+          <button
+            onClick={() => onAutoArrange("row", gap)}
+            className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-neutral-200 dark:border-neutral-700"
+            title="Arrange selection in a horizontal row with the chosen gap"
+          >
+            <ArrowRight className="w-3 h-3" />
+            Row
+          </button>
+          <button
+            onClick={() => onAutoArrange("column", gap)}
+            className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-neutral-200 dark:border-neutral-700"
+            title="Stack selection vertically with the chosen gap"
+          >
+            <ArrowDown className="w-3 h-3" />
+            Column
+          </button>
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="text-[11px] text-neutral-500 dark:text-neutral-400 shrink-0">Gap</label>
+          <input
+            type="number"
+            value={gap}
+            min={0}
+            max={400}
+            onChange={(e) => setGap(parseInt(e.target.value, 10) || 0)}
+            className="flex-1 text-[11px] px-2 py-1 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700 rounded-md focus:border-neutral-400 dark:focus:border-neutral-500 outline-none"
+          />
+          <span className="text-[10px] text-neutral-400 dark:text-neutral-500">px</span>
+        </div>
+        {count >= 3 && (
+          <div className="grid grid-cols-2 gap-1 pt-1">
+            <button
+              onClick={() => onDistribute("row")}
+              className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-neutral-200 dark:border-neutral-700"
+              title="Equalize horizontal spacing between selected nodes (keeps first + last)"
+            >
+              <AlignHorizontalDistributeCenter className="w-3 h-3" />
+              Distribute H
+            </button>
+            <button
+              onClick={() => onDistribute("column")}
+              className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-neutral-200 dark:border-neutral-700"
+              title="Equalize vertical spacing between selected nodes (keeps first + last)"
+            >
+              <AlignVerticalDistributeCenter className="w-3 h-3" />
+              Distribute V
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Bulk actions */}
+      <div className="grid grid-cols-2 gap-1 pt-2 border-t border-neutral-200 dark:border-neutral-800">
+        <button
+          onClick={onDuplicateAll}
+          className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-neutral-200 dark:border-neutral-700"
+        >
+          <Copy className="w-3 h-3" />
+          Duplicate all
+        </button>
+        <button
+          onClick={onDeleteAll}
+          className="text-[11px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-red-200 dark:border-red-900/50"
+        >
+          <Trash2 className="w-3 h-3" />
+          Delete all
+        </button>
+      </div>
+
+      {/* Selected list */}
+      <div className="text-left pt-2 border-t border-neutral-200 dark:border-neutral-800">
+        <div className="text-[10px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase tracking-wider mb-2">Selected</div>
+        <div className="space-y-0.5">
+          {selected.map((n) => (
+            <button
+              key={n.id}
+              onClick={() => onPickNode(n.id)}
+              className="w-full text-left text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded flex items-center gap-2 transition-colors"
+            >
+              <div className="w-1 h-1 rounded-full bg-blue-500" />
+              <span className="font-medium truncate">{n.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================
 export default function ComponentPlayground() {
   const [initialized, setInitialized] = useState(false);
   const [nodes, setNodes] = useState([]);
-  const [selectedNodeId, setSelectedNodeId] = useState(null);
+  // Multi-select: Set of node ids. selectedNodeId stays as a derived
+  // single-id (only when EXACTLY one is selected) for existing call sites
+  // that show props for one node at a time.
+  const [selectedNodeIds, setSelectedNodeIds] = useState(() => new Set());
   const [globalTokens, setGlobalTokens] = useState(DEFAULT_TOKENS);
   const [globalPodTokens, setGlobalPodTokens] = useState(POD_DEFAULT_TOKENS);
   const [tokensPanelOpen, setTokensPanelOpen] = useState(false);
@@ -119,6 +282,9 @@ export default function ComponentPlayground() {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [spaceHeld, setSpaceHeld] = useState(false);
+  // Marquee = drag-rectangle selection on empty canvas. World-space coords.
+  // null when not actively marquee-selecting.
+  const [marquee, setMarquee] = useState(null);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [measureMode, setMeasureMode] = useState(false);
@@ -127,7 +293,29 @@ export default function ComponentPlayground() {
   const exportMenuRef = useRef(null);
   const [saveStatus, setSaveStatus] = useState("");
 
+  // Derived selection helpers. selectedNodeId resolves only when exactly
+  // ONE node is selected — so the inspector panel only shows when there's
+  // a single unambiguous target. Multi-selection shows a count + bulk actions.
+  const selectedNodeId = selectedNodeIds.size === 1 ? [...selectedNodeIds][0] : null;
   const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+  const setSelectedNodeId = useCallback((id) => {
+    setSelectedNodeIds(id == null ? new Set() : new Set([id]));
+  }, []);
+  const toggleNodeSelection = useCallback((id) => {
+    setSelectedNodeIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+  const handleSelect = useCallback(
+    (id, shiftKey) => {
+      if (shiftKey) toggleNodeSelection(id);
+      else setSelectedNodeId(id);
+    },
+    [toggleNodeSelection, setSelectedNodeId],
+  );
 
   // Build component registry — compile each node's code into a callable component
   // We only depend on the id and code of nodes, so dragging/resizing doesn't rebuild the registry
@@ -365,6 +553,82 @@ export default function ComponentPlayground() {
     setSelectedNodeId(newId);
   };
 
+  // Auto-layout — Figma-style row/column arrangement for the current
+  // multi-selection. Sorts selected nodes by current position (so the user's
+  // intent is preserved), pins the leftmost/topmost as anchor, then re-flows
+  // the rest with a uniform `gap`. Each node keeps its own size; only x/y
+  // change.
+  const autoArrangeSelected = useCallback((direction = "row", gap = 12) => {
+    if (selectedNodeIds.size < 2) return;
+    setNodes((prev) => {
+      const selected = prev.filter((n) => selectedNodeIds.has(n.id));
+      if (selected.length < 2) return prev;
+      const sorted = [...selected].sort((a, b) =>
+        direction === "row" ? (a.x ?? 0) - (b.x ?? 0) : (a.y ?? 0) - (b.y ?? 0)
+      );
+      const anchorX = sorted[0].x ?? 0;
+      const anchorY = sorted[0].y ?? 0;
+      const sizeOf = (n) => ({
+        w: typeof n.customSize?.width === "number" ? n.customSize.width : 240,
+        h: typeof n.customSize?.height === "number" ? n.customSize.height : 80,
+      });
+      let cursor = direction === "row" ? anchorX : anchorY;
+      const newPos = new Map();
+      for (const n of sorted) {
+        const { w, h } = sizeOf(n);
+        if (direction === "row") {
+          newPos.set(n.id, { x: cursor, y: anchorY });
+          cursor += w + gap;
+        } else {
+          newPos.set(n.id, { x: anchorX, y: cursor });
+          cursor += h + gap;
+        }
+      }
+      return prev.map((n) => (newPos.has(n.id) ? { ...n, ...newPos.get(n.id) } : n));
+    });
+  }, [selectedNodeIds]);
+
+  // Distribute spacing — equalize gaps between selected nodes along their
+  // dominant axis. Keeps first + last in place, redistributes middle. Useful
+  // when nodes are roughly arranged but spacing is uneven.
+  const distributeSelected = useCallback((direction = "row") => {
+    if (selectedNodeIds.size < 3) return; // need ≥3 for "distribute" to mean anything
+    setNodes((prev) => {
+      const selected = prev.filter((n) => selectedNodeIds.has(n.id));
+      const sorted = [...selected].sort((a, b) =>
+        direction === "row" ? (a.x ?? 0) - (b.x ?? 0) : (a.y ?? 0) - (b.y ?? 0)
+      );
+      const sizeOf = (n) => ({
+        w: typeof n.customSize?.width === "number" ? n.customSize.width : 240,
+        h: typeof n.customSize?.height === "number" ? n.customSize.height : 80,
+      });
+      const first = sorted[0];
+      const last = sorted[sorted.length - 1];
+      const firstSize = sizeOf(first);
+      const lastSize = sizeOf(last);
+      const startEdge = direction === "row" ? (first.x ?? 0) + firstSize.w : (first.y ?? 0) + firstSize.h;
+      const endEdge = direction === "row" ? (last.x ?? 0) : (last.y ?? 0);
+      const totalMidWidth = sorted
+        .slice(1, -1)
+        .reduce((s, n) => s + (direction === "row" ? sizeOf(n).w : sizeOf(n).h), 0);
+      const gap = (endEdge - startEdge - totalMidWidth) / (sorted.length - 1);
+      let cursor = startEdge + gap;
+      const newPos = new Map();
+      for (let i = 1; i < sorted.length - 1; i++) {
+        const n = sorted[i];
+        const size = sizeOf(n);
+        if (direction === "row") {
+          newPos.set(n.id, { x: cursor, y: n.y ?? 0 });
+          cursor += size.w + gap;
+        } else {
+          newPos.set(n.id, { x: n.x ?? 0, y: cursor });
+          cursor += size.h + gap;
+        }
+      }
+      return prev.map((n) => (newPos.has(n.id) ? { ...n, ...newPos.get(n.id) } : n));
+    });
+  }, [selectedNodeIds]);
+
   // Close add menu on click outside
   useEffect(() => {
     if (!addMenuOpen) return;
@@ -397,9 +661,13 @@ export default function ComponentPlayground() {
         setSpaceHeld(true);
         document.body.classList.add("space-held");
       }
-      if (e.key === "d" && selectedNodeId && !isInput) duplicateNode(selectedNodeId);
-      if ((e.key === "Delete" || e.key === "Backspace") && selectedNodeId && !isInput) deleteNode(selectedNodeId);
-      if (e.key === "Escape") { setSelectedNodeId(null); setAddMenuOpen(false); }
+      if (e.key === "d" && selectedNodeIds.size > 0 && !isInput) {
+        [...selectedNodeIds].forEach((id) => duplicateNode(id));
+      }
+      if ((e.key === "Delete" || e.key === "Backspace") && selectedNodeIds.size > 0 && !isInput) {
+        [...selectedNodeIds].forEach((id) => deleteNode(id));
+      }
+      if (e.key === "Escape") { setSelectedNodeIds(new Set()); setAddMenuOpen(false); }
       if (e.key === "0" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setZoom(1); setPan({ x: 0, y: 0 });
@@ -417,70 +685,156 @@ export default function ComponentPlayground() {
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
     };
-  }, [spaceHeld, selectedNodeId, nodes]);
+  }, [spaceHeld, selectedNodeIds, nodes, duplicateNode, deleteNode]);
 
   const handleCanvasMouseDown = (e) => {
     const isCanvasBg = e.target === canvasRef.current || e.target.classList?.contains("canvas-bg");
-    const isPan = spaceHeld || e.button === 1 || isCanvasBg;
-    if (!isPan) return;
-    if (isCanvasBg && !spaceHeld) setSelectedNodeId(null);
-    const startX = e.clientX - pan.x;
-    const startY = e.clientY - pan.y;
-    document.body.classList.add("is-panning");
-    const handleMove = (ev) => setPan({ x: ev.clientX - startX, y: ev.clientY - startY });
-    const handleUp = () => {
-      document.body.classList.remove("is-panning");
+    if (!isCanvasBg) return;
+
+    // Pan: spacebar held OR middle-click. Everything else on canvas-bg
+    // starts a marquee selection.
+    const isPan = spaceHeld || e.button === 1;
+
+    if (isPan) {
+      const startX = e.clientX - pan.x;
+      const startY = e.clientY - pan.y;
+      document.body.classList.add("is-panning");
+      const handleMove = (ev) => setPan({ x: ev.clientX - startX, y: ev.clientY - startY });
+      const handleUp = () => {
+        document.body.classList.remove("is-panning");
+        window.removeEventListener("mousemove", handleMove);
+        window.removeEventListener("mouseup", handleUp);
+      };
+      window.addEventListener("mousemove", handleMove);
+      window.addEventListener("mouseup", handleUp);
+      return;
+    }
+
+    // Marquee selection. Translate screen → world coords using current
+    // pan + zoom, drag a rectangle, then intersect with each node's bbox
+    // on mouseup. Shift-held preserves prior selection (additive).
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const startWorldX = (e.clientX - rect.left - pan.x) / zoom;
+    const startWorldY = (e.clientY - rect.top - pan.y) / zoom;
+    const shiftAtStart = e.shiftKey;
+    const baseSelection = shiftAtStart ? new Set(selectedNodeIds) : new Set();
+
+    setMarquee({ x1: startWorldX, y1: startWorldY, x2: startWorldX, y2: startWorldY });
+    if (!shiftAtStart && selectedNodeIds.size > 0) setSelectedNodeIds(new Set());
+
+    const handleMove = (ev) => {
+      const curWorldX = (ev.clientX - rect.left - pan.x) / zoom;
+      const curWorldY = (ev.clientY - rect.top - pan.y) / zoom;
+      setMarquee({ x1: startWorldX, y1: startWorldY, x2: curWorldX, y2: curWorldY });
+    };
+    const handleUp = (ev) => {
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("mouseup", handleUp);
+      const endWorldX = (ev.clientX - rect.left - pan.x) / zoom;
+      const endWorldY = (ev.clientY - rect.top - pan.y) / zoom;
+      const xMin = Math.min(startWorldX, endWorldX);
+      const xMax = Math.max(startWorldX, endWorldX);
+      const yMin = Math.min(startWorldY, endWorldY);
+      const yMax = Math.max(startWorldY, endWorldY);
+      // Tiny drag (< 4 world units) = treated as plain click, clears selection.
+      const dragged = Math.abs(endWorldX - startWorldX) > 4 || Math.abs(endWorldY - startWorldY) > 4;
+      if (dragged) {
+        const hit = new Set(baseSelection);
+        for (const n of nodes) {
+          const nx = n.x ?? 0;
+          const ny = n.y ?? 0;
+          const nw = typeof n.customSize?.width === "number" ? n.customSize.width : 240;
+          const nh = typeof n.customSize?.height === "number" ? n.customSize.height : 80;
+          // Bbox-intersects test (any overlap, not full containment).
+          const overlaps = nx < xMax && nx + nw > xMin && ny < yMax && ny + nh > yMin;
+          if (overlaps) hit.add(n.id);
+        }
+        setSelectedNodeIds(hit);
+      }
+      setMarquee(null);
     };
     window.addEventListener("mousemove", handleMove);
     window.addEventListener("mouseup", handleUp);
   };
 
-  const handleWheel = useCallback((e) => {
-    e.preventDefault();
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    if (e.ctrlKey || e.metaKey) {
-      const cx = e.clientX - rect.left;
-      const cy = e.clientY - rect.top;
-      const worldX = (cx - pan.x) / zoom;
-      const worldY = (cy - pan.y) / zoom;
-      const newZoom = Math.max(0.1, Math.min(4, zoom * (1 + -e.deltaY * 0.01)));
-      setZoom(newZoom);
-      setPan({ x: cx - worldX * newZoom, y: cy - worldY * newZoom });
-    } else {
-      setPan((p) => ({ x: p.x - e.deltaX, y: p.y - e.deltaY }));
-    }
-  }, [zoom, pan]);
+  // Latest zoom/pan held in refs so the wheel listener can read fresh values
+  // without re-subscribing on every change. Re-subscribing during a rapid
+  // pinch leaves micro-gaps where the listener doesn't exist → browser zoom
+  // leaks through and the whole UI scales.
+  const zoomRef = useRef(zoom);
+  const panRef = useRef(pan);
+  useEffect(() => { zoomRef.current = zoom; }, [zoom]);
+  useEffect(() => { panRef.current = pan; }, [pan]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    canvas.addEventListener("wheel", handleWheel, { passive: false });
-    
-    // Listen for wheel events forwarded from iframes
-    const handleMessage = (e) => {
-      if (e.data && e.data.type === 'canvas-wheel') {
-        const ev = {
-          preventDefault: () => {},
-          clientX: e.data.clientX,
-          clientY: e.data.clientY,
-          deltaX: e.data.deltaX,
-          deltaY: e.data.deltaY,
-          ctrlKey: e.data.ctrlKey,
-          metaKey: e.data.metaKey
-        };
-        handleWheel(ev);
+    // Figma-style wheel handling — ONE listener on window, attached once.
+    // ctrl/meta wheel always preventDefaults (blocks browser zoom completely).
+    // Canvas zoom/pan only fires when the cursor is inside the canvas rect;
+    // wheel over the sidebar / top bar leaves React state alone.
+    const onWheel = (e) => {
+      const isZoomGesture = e.ctrlKey || e.metaKey;
+      const rect = canvasRef.current?.getBoundingClientRect();
+      const overCanvas =
+        !!rect &&
+        e.clientX >= rect.left && e.clientX <= rect.right &&
+        e.clientY >= rect.top  && e.clientY <= rect.bottom;
+
+      // Always block browser zoom on pinch / ⌘+wheel, even when the cursor
+      // is outside the canvas. Centernode never wants the UI shell to scale.
+      if (isZoomGesture) e.preventDefault();
+
+      if (!overCanvas) return;
+
+      // Inside canvas → also block native scroll, then drive zoom/pan.
+      e.preventDefault();
+      const z = zoomRef.current;
+      const p = panRef.current;
+      if (isZoomGesture) {
+        const cx = e.clientX - rect.left;
+        const cy = e.clientY - rect.top;
+        const worldX = (cx - p.x) / z;
+        const worldY = (cy - p.y) / z;
+        const newZoom = Math.max(0.1, Math.min(4, z * (1 + -e.deltaY * 0.01)));
+        setZoom(newZoom);
+        setPan({ x: cx - worldX * newZoom, y: cy - worldY * newZoom });
+      } else {
+        setPan((prev) => ({ x: prev.x - e.deltaX, y: prev.y - e.deltaY }));
       }
     };
-    window.addEventListener("message", handleMessage);
-    
-    return () => {
-      canvas.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("message", handleMessage);
+
+    // Wheel events forwarded from preview iframes — synthesize a minimal
+    // event shape so the same handler can drive canvas zoom/pan.
+    const onMessage = (msg) => {
+      if (!msg.data || msg.data.type !== "canvas-wheel") return;
+      onWheel({
+        preventDefault: () => {},
+        clientX: msg.data.clientX,
+        clientY: msg.data.clientY,
+        deltaX: msg.data.deltaX,
+        deltaY: msg.data.deltaY,
+        ctrlKey: msg.data.ctrlKey,
+        metaKey: msg.data.metaKey,
+      });
     };
-  }, [handleWheel]);
+
+    // Safari/iPad pinch arrives as gesture events instead of ctrl-wheel.
+    const blockGesture = (e) => e.preventDefault();
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("message", onMessage);
+    document.addEventListener("gesturestart", blockGesture);
+    document.addEventListener("gesturechange", blockGesture);
+    document.addEventListener("gestureend", blockGesture);
+
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("message", onMessage);
+      document.removeEventListener("gesturestart", blockGesture);
+      document.removeEventListener("gesturechange", blockGesture);
+      document.removeEventListener("gestureend", blockGesture);
+    };
+  }, []);
 
   const handleExport = () => {
     const data = { nodes, globalTokens };
@@ -520,18 +874,18 @@ export default function ComponentPlayground() {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col bg-neutral-50 text-neutral-900 overflow-hidden" style={{ fontFamily: "'Inter', -apple-system, sans-serif" }}>
+    <div className="w-full h-screen flex flex-col bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 overflow-hidden" style={{ fontFamily: "'Inter', -apple-system, sans-serif" }}>
       {/* TOP BAR */}
-      <header className="h-12 border-b border-neutral-200 bg-white flex items-center justify-between px-4 shrink-0 z-30">
+      <header className="h-12 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex items-center justify-between px-4 shrink-0 z-30">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-[5px] bg-neutral-900 flex items-center justify-center">
-              <Sparkles className="w-3 h-3 text-white" />
+            <div className="w-5 h-5 rounded-[5px] bg-neutral-900 dark:bg-neutral-100 flex items-center justify-center">
+              <Sparkles className="w-3 h-3 text-white dark:text-neutral-900" />
             </div>
             <span className="text-sm font-semibold tracking-tight">Playground</span>
           </div>
-          <span className="text-neutral-300">/</span>
-          <span className="text-[11px] text-neutral-400">{nodes.length} component{nodes.length !== 1 ? "s" : ""}</span>
+          <span className="text-neutral-300 dark:text-neutral-700">/</span>
+          <span className="text-[11px] text-neutral-400 dark:text-neutral-500">{nodes.length} component{nodes.length !== 1 ? "s" : ""}</span>
           {saveStatus && (
             <span className="text-[10px] text-green-600 font-medium ml-1 flex items-center gap-1">
               <Check className="w-2.5 h-2.5" /> saved
@@ -539,16 +893,18 @@ export default function ComponentPlayground() {
           )}
         </div>
         <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <div className="w-px h-5 bg-neutral-200 dark:bg-neutral-800 mx-1" />
           <button
             onClick={() => setShowSyntaxHint(!showSyntaxHint)}
-            className="text-xs text-neutral-600 hover:bg-neutral-100 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors"
+            className="text-xs text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors"
           >
             <Info className="w-3.5 h-3.5" />
             Syntax
           </button>
           <button
             onClick={() => setChangelogOpen(true)}
-            className="text-xs text-neutral-600 hover:bg-neutral-100 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors"
+            className="text-xs text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors"
             title="What's new in centernode"
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -557,14 +913,16 @@ export default function ComponentPlayground() {
           <button
             onClick={() => setTokensPanelOpen(!tokensPanelOpen)}
             className={`text-xs px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
-              tokensPanelOpen ? "bg-neutral-900 text-white" : "text-neutral-600 hover:bg-neutral-100"
+              tokensPanelOpen
+                ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
+                : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
             }`}
           >
             <Palette className="w-3.5 h-3.5" />
             Tokens
           </button>
-          <div className="w-px h-5 bg-neutral-200 mx-1" />
-          <label className="text-xs text-neutral-600 hover:bg-neutral-100 px-2.5 py-1.5 rounded-md cursor-pointer flex items-center gap-1.5 transition-colors">
+          <div className="w-px h-5 bg-neutral-200 dark:bg-neutral-800 mx-1" />
+          <label className="text-xs text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2.5 py-1.5 rounded-md cursor-pointer flex items-center gap-1.5 transition-colors">
             <Upload className="w-3.5 h-3.5" />
             Import
             <input type="file" accept=".json" onChange={handleImport} className="hidden" />
@@ -756,8 +1114,9 @@ export default function ComponentPlayground() {
           ref={canvasRef}
           className={`canvas-bg flex-1 relative overflow-hidden ${spaceHeld ? "cursor-grab active:cursor-grabbing" : ""}`}
           style={{
-            // Dot pattern stays constant in screen space (doesn't zoom with content)
-            backgroundImage: `radial-gradient(circle, #d4d4d4 1px, transparent 1px)`,
+            // backgroundImage lives in globals.css (.canvas-bg) so it swaps
+            // automatically with the .dark class. Only the size + position
+            // are dynamic and need inline style.
             backgroundSize: `24px 24px`,
             backgroundPosition: `${pan.x % 24}px ${pan.y % 24}px`,
           }}
@@ -779,29 +1138,78 @@ export default function ComponentPlayground() {
               }}
             >
             {nodes.map((node) => {
+              const isSelected = selectedNodeIds.has(node.id);
               return (
                 <PreviewNode
                   key={node.id}
                   node={node}
-                  selected={selectedNodeId === node.id}
+                  selected={isSelected}
+                  // Suppress per-node selection chrome (handles, label, border)
+                  // when more than one node is selected — the group bounding
+                  // frame below substitutes for individual indicators.
+                  multiSelected={isSelected && selectedNodeIds.size > 1}
                   onUpdate={updateNode}
                   onDelete={deleteNode}
                   onDuplicate={duplicateNode}
-                  onSelect={setSelectedNodeId}
+                  onSelect={handleSelect}
                   registry={registry}
                   measureMode={measureMode}
                   zoom={zoom}
                 />
               );
             })}
+            {/* Group bounding frame for multi-selection — single rect that
+                encloses every selected node's bbox. Shown instead of per-node
+                chrome when ≥2 nodes are selected. */}
+            {selectedNodeIds.size > 1 && (() => {
+              const selected = nodes.filter((n) => selectedNodeIds.has(n.id));
+              if (selected.length === 0) return null;
+              let xMin = Infinity, yMin = Infinity, xMax = -Infinity, yMax = -Infinity;
+              for (const n of selected) {
+                const nx = n.x ?? 0;
+                const ny = n.y ?? 0;
+                const nw = typeof n.customSize?.width === "number" ? n.customSize.width : 240;
+                const nh = typeof n.customSize?.height === "number" ? n.customSize.height : 80;
+                if (nx < xMin) xMin = nx;
+                if (ny < yMin) yMin = ny;
+                if (nx + nw > xMax) xMax = nx + nw;
+                if (ny + nh > yMax) yMax = ny + nh;
+              }
+              return (
+                <div
+                  className="pointer-events-none absolute border-2 border-blue-500 rounded-[2px]"
+                  style={{
+                    left: xMin - 6,
+                    top: yMin - 6,
+                    width: xMax - xMin + 12,
+                    height: yMax - yMin + 12,
+                  }}
+                >
+                  <span className="absolute -top-5 left-0 text-[10px] font-semibold text-blue-500 bg-blue-500/10 dark:bg-blue-400/15 px-1.5 py-0.5 rounded">
+                    {selected.length} selected
+                  </span>
+                </div>
+              );
+            })()}
+            {marquee && (
+              <div
+                className="pointer-events-none absolute border border-blue-500/80 bg-blue-500/10 dark:bg-blue-400/15"
+                style={{
+                  left: Math.min(marquee.x1, marquee.x2),
+                  top: Math.min(marquee.y1, marquee.y2),
+                  width: Math.abs(marquee.x2 - marquee.x1),
+                  height: Math.abs(marquee.y2 - marquee.y1),
+                }}
+              />
+            )}
             </div>
           </div>
 
           <div ref={addMenuRef} className="absolute top-4 left-4 z-10">
             <button
               onClick={() => setAddMenuOpen(!addMenuOpen)}
-              className={`bg-neutral-900 text-white text-xs font-medium px-3 py-2 rounded-lg shadow-sm hover:bg-neutral-800 flex items-center gap-1.5 transition-all ${
-                addMenuOpen ? "ring-2 ring-neutral-900/20 ring-offset-2" : ""
+              className={`bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-xs font-medium px-3 py-2 rounded-lg shadow-sm hover:bg-neutral-800 dark:hover:bg-neutral-200 flex items-center gap-1.5 transition-all ${
+                addMenuOpen ? "ring-2 ring-neutral-900/20 dark:ring-neutral-100/20 ring-offset-2 dark:ring-offset-neutral-900" : ""
               }`}
             >
               <Plus className="w-3.5 h-3.5" />
@@ -809,23 +1217,23 @@ export default function ComponentPlayground() {
             </button>
 
             {addMenuOpen && (
-              <div className="absolute top-full mt-2 left-0 w-[300px] bg-white rounded-xl shadow-xl border border-neutral-200 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
-                <div className="px-3 py-2 border-b border-neutral-100 bg-neutral-50/50">
-                  <div className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider">Start with</div>
+              <div className="absolute top-full mt-2 left-0 w-[300px] bg-white dark:bg-neutral-900 rounded-xl shadow-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
+                <div className="px-3 py-2 border-b border-neutral-100 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-800/30">
+                  <div className="text-[10px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Start with</div>
                 </div>
                 <div className="p-1.5 max-h-[400px] overflow-y-auto">
                   {Object.entries(TEMPLATES).map(([key, tpl]) => (
                     <button
                       key={key}
                       onClick={() => { addNode(key); setAddMenuOpen(false); }}
-                      className="w-full flex items-start gap-3 p-2.5 rounded-lg hover:bg-neutral-50 transition-colors text-left group"
+                      className="w-full flex items-start gap-3 p-2.5 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors text-left group"
                     >
-                      <div className="w-8 h-8 rounded-md bg-neutral-100 flex items-center justify-center shrink-0 text-neutral-500 text-lg font-light group-hover:bg-white group-hover:shadow-sm transition-all">
+                      <div className="w-8 h-8 rounded-md bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0 text-neutral-500 dark:text-neutral-300 text-lg font-light group-hover:bg-white dark:group-hover:bg-neutral-700 group-hover:shadow-sm transition-all">
                         {tpl.icon}
                       </div>
                       <div className="flex-1 min-w-0 pt-0.5">
-                        <div className="text-[13px] font-semibold text-neutral-900 leading-tight">{tpl.name}</div>
-                        <div className="text-[11px] text-neutral-500 leading-snug mt-0.5">{tpl.description}</div>
+                        <div className="text-[13px] font-semibold text-neutral-900 dark:text-neutral-100 leading-tight">{tpl.name}</div>
+                        <div className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-snug mt-0.5">{tpl.description}</div>
                       </div>
                     </button>
                   ))}
@@ -837,44 +1245,44 @@ export default function ComponentPlayground() {
           {nodes.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="text-center max-w-sm px-6">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-neutral-100 flex items-center justify-center">
-                  <Package className="w-5 h-5 text-neutral-400" />
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+                  <Package className="w-5 h-5 text-neutral-400 dark:text-neutral-500" />
                 </div>
-                <div className="text-sm text-neutral-700 font-medium mb-1">Canvas is empty</div>
-                <div className="text-[11px] text-neutral-500 leading-relaxed">
-                  Pick a component from the <span className="font-semibold text-neutral-700">POD Components</span> sidebar on the left.
+                <div className="text-sm text-neutral-700 dark:text-neutral-200 font-medium mb-1">Canvas is empty</div>
+                <div className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                  Pick a component from the <span className="font-semibold text-neutral-700 dark:text-neutral-200">POD Components</span> sidebar on the left.
                 </div>
               </div>
             </div>
           )}
 
-          <div className="absolute bottom-4 right-4 flex items-center gap-0.5 bg-white border border-neutral-200 rounded-lg shadow-sm p-1">
+          <div className="absolute bottom-4 right-4 flex items-center gap-0.5 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-sm p-1">
             <button
               onClick={() => setMeasureMode(!measureMode)}
               className={`p-1.5 rounded transition-colors ${
-                measureMode ? "bg-pink-50 text-pink-600 hover:bg-pink-100" : "hover:bg-neutral-100 text-neutral-600"
+                measureMode ? "bg-pink-50 dark:bg-pink-950 text-pink-600 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-900" : "hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300"
               }`}
               title="Measure mode — hover elements to inspect"
             >
               <Ruler className="w-3.5 h-3.5" />
             </button>
-            <div className="w-px h-4 bg-neutral-200 mx-0.5" />
-            <button onClick={() => setZoom((z) => Math.max(0.1, z - 0.1))} className="p-1.5 hover:bg-neutral-100 rounded transition-colors">
-              <ZoomOut className="w-3.5 h-3.5 text-neutral-600" />
+            <div className="w-px h-4 bg-neutral-200 dark:bg-neutral-800 mx-0.5" />
+            <button onClick={() => setZoom((z) => Math.max(0.1, z - 0.1))} className="p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded transition-colors">
+              <ZoomOut className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300" />
             </button>
-            <div className="text-[11px] font-mono text-neutral-600 w-10 text-center tabular-nums">
+            <div className="text-[11px] font-mono text-neutral-600 dark:text-neutral-300 w-10 text-center tabular-nums">
               {Math.round(zoom * 100)}%
             </div>
-            <button onClick={() => setZoom((z) => Math.min(4, z + 0.1))} className="p-1.5 hover:bg-neutral-100 rounded transition-colors">
-              <ZoomIn className="w-3.5 h-3.5 text-neutral-600" />
+            <button onClick={() => setZoom((z) => Math.min(4, z + 0.1))} className="p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded transition-colors">
+              <ZoomIn className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300" />
             </button>
-            <div className="w-px h-4 bg-neutral-200 mx-0.5" />
-            <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="p-1.5 hover:bg-neutral-100 rounded transition-colors" title="Reset (⌘0)">
-              <Maximize2 className="w-3.5 h-3.5 text-neutral-600" />
+            <div className="w-px h-4 bg-neutral-200 dark:bg-neutral-800 mx-0.5" />
+            <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded transition-colors" title="Reset (⌘0)">
+              <Maximize2 className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300" />
             </button>
           </div>
 
-          <div className="absolute bottom-4 left-4 flex items-center gap-2 text-[10px] text-neutral-500 font-mono bg-white/80 backdrop-blur px-2.5 py-1.5 rounded-md border border-neutral-200">
+          <div className="absolute bottom-4 left-4 flex items-center gap-2 text-[10px] text-neutral-500 dark:text-neutral-400 font-mono bg-white/80 dark:bg-neutral-900/80 backdrop-blur px-2.5 py-1.5 rounded-md border border-neutral-200 dark:border-neutral-800">
             {measureMode ? (
               <><Ruler className="w-3 h-3 text-pink-600" /> <span className="text-pink-700">measure mode</span> · hover elements</>
             ) : spaceHeld ? (
@@ -885,18 +1293,18 @@ export default function ComponentPlayground() {
           </div>
         </div>
 
-        <div className="w-[360px] border-l border-neutral-200 bg-white flex flex-col shrink-0 z-20">
+        <div className="w-[360px] border-l border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col shrink-0 z-20">
           {selectedNode ? (
             <>
-              <div className="px-4 py-3 border-b border-neutral-200">
-                <label className="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider block mb-1">Component</label>
+              <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+                <label className="text-[10px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase tracking-wider block mb-1">Component</label>
                 <input
                   value={selectedNode.name}
                   onChange={(e) => updateNode(selectedNode.id, { name: e.target.value })}
-                  className="w-full text-sm font-medium px-2 py-1 bg-neutral-50 border border-neutral-200 rounded-md focus:border-neutral-400 focus:bg-white outline-none transition-colors"
+                  className="w-full text-sm font-medium px-2 py-1 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700 rounded-md focus:border-neutral-400 dark:focus:border-neutral-500 focus:bg-white dark:focus:bg-neutral-800 outline-none transition-colors"
                 />
                 <div className="mt-3">
-                  <label className="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <label className="text-[10px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <Frame className="w-3 h-3" /> Size
                   </label>
                   {selectedNode.customSize && (
@@ -922,7 +1330,7 @@ export default function ComponentPlayground() {
                 </div>
               </div>
 
-              <div className="flex items-center border-b border-neutral-200 bg-neutral-50/50 shrink-0">
+              <div className="flex items-center border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-800/30 shrink-0">
                 {[
                   { id: "props", icon: SlidersHorizontal, label: "Props" },
                   { id: "code", icon: Code2, label: "Code" },
@@ -935,7 +1343,9 @@ export default function ComponentPlayground() {
                       key={tab.id}
                       onClick={() => setInspectorTab(tab.id)}
                       className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-[11px] font-medium transition-colors border-b-2 ${
-                        active ? "border-neutral-900 text-neutral-900" : "border-transparent text-neutral-500 hover:text-neutral-700"
+                        active
+                          ? "border-neutral-900 dark:border-neutral-100 text-neutral-900 dark:text-neutral-100"
+                          : "border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
                       }`}
                     >
                       <Icon className="w-3 h-3" />
@@ -949,9 +1359,9 @@ export default function ComponentPlayground() {
                 {inspectorTab === "props" && (
                   <div className="flex-1 overflow-y-auto p-4">
                     {Object.keys(selectedNode.schema || {}).length === 0 ? (
-                      <div className="text-[11px] text-neutral-400 italic py-8 text-center">
+                      <div className="text-[11px] text-neutral-400 dark:text-neutral-500 italic py-8 text-center">
                         No props defined.<br />
-                        <span className="text-neutral-500">
+                        <span className="text-neutral-500 dark:text-neutral-400">
                           Add props to <span className="font-mono">function Component(&#123;...&#125;)</span> in Code tab.
                         </span>
                       </div>
@@ -1057,35 +1467,48 @@ export default function ComponentPlayground() {
                 })()}
               </div>
 
-              <div className="border-t border-neutral-200 p-2 shrink-0">
+              <div className="border-t border-neutral-200 dark:border-neutral-800 p-2 shrink-0">
                 <div className="grid grid-cols-2 gap-1">
-                  <button onClick={() => duplicateNode(selectedNode.id)} className="text-[11px] text-neutral-700 hover:bg-neutral-100 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors">
+                  <button onClick={() => duplicateNode(selectedNode.id)} className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors">
                     <Copy className="w-3 h-3" />
                     Duplicate
                   </button>
-                  <button onClick={() => deleteNode(selectedNode.id)} className="text-[11px] text-red-600 hover:bg-red-50 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors">
+                  <button onClick={() => deleteNode(selectedNode.id)} className="text-[11px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors">
                     <Trash2 className="w-3 h-3" />
                     Delete
                   </button>
                 </div>
               </div>
             </>
+          ) : selectedNodeIds.size > 1 ? (
+            <MultiSelectPanel
+              count={selectedNodeIds.size}
+              selectedNodeIds={selectedNodeIds}
+              nodes={nodes}
+              onPickNode={setSelectedNodeId}
+              onDuplicateAll={() => [...selectedNodeIds].forEach((id) => duplicateNode(id))}
+              onDeleteAll={() => [...selectedNodeIds].forEach((id) => deleteNode(id))}
+              onAutoArrange={autoArrangeSelected}
+              onDistribute={distributeSelected}
+            />
           ) : (
             <div className="p-6">
               <div className="text-center mb-6">
-                <div className="w-10 h-10 mx-auto mb-3 rounded-lg bg-neutral-100 flex items-center justify-center">
-                  <MousePointer2 className="w-4 h-4 text-neutral-400" />
+                <div className="w-10 h-10 mx-auto mb-3 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+                  <MousePointer2 className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
                 </div>
-                <div className="text-xs text-neutral-600 font-medium mb-1">Nothing selected</div>
-                <div className="text-[11px] text-neutral-400 leading-relaxed">Click a component on the canvas to edit.</div>
+                <div className="text-xs text-neutral-600 dark:text-neutral-300 font-medium mb-1">Nothing selected</div>
+                <div className="text-[11px] text-neutral-400 dark:text-neutral-500 leading-relaxed">
+                  Click a component to edit. Drag to marquee-select. Shift-click for multi.
+                </div>
               </div>
               {nodes.length > 0 && (
                 <div className="text-left">
-                  <div className="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider mb-2">Components</div>
+                  <div className="text-[10px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase tracking-wider mb-2">Components</div>
                   <div className="space-y-0.5">
                     {nodes.map((n) => (
-                      <button key={n.id} onClick={() => setSelectedNodeId(n.id)} className="w-full text-left text-[11px] text-neutral-700 hover:bg-neutral-100 px-2 py-1.5 rounded flex items-center gap-2 transition-colors">
-                        <div className="w-1 h-1 rounded-full bg-neutral-400" />
+                      <button key={n.id} onClick={() => setSelectedNodeId(n.id)} className="w-full text-left text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded flex items-center gap-2 transition-colors">
+                        <div className="w-1 h-1 rounded-full bg-neutral-400 dark:bg-neutral-500" />
                         <span className="font-medium truncate">{n.name}</span>
                       </button>
                     ))}

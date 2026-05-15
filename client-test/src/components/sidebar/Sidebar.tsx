@@ -18,10 +18,18 @@ const navItems = [
 ];
 
 function ThemeToggle() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof document === 'undefined') return true;
+    return document.documentElement.classList.contains('dark');
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
+    try {
+      localStorage.setItem('pod-client-theme', dark ? 'dark' : 'light');
+    } catch {
+      /* ignore */
+    }
   }, [dark]);
 
   return (

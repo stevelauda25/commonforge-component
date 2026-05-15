@@ -6,12 +6,14 @@ export default function PropInput({ propKey, schema, value, onChange }) {
   if (schema.type === "boolean") {
     return (
       <div className="flex items-center justify-between py-2">
-        <div className="text-[12px] text-neutral-700 font-medium">{propKey}</div>
+        <div className="text-[12px] text-neutral-700 dark:text-neutral-200 font-medium">{propKey}</div>
         <button
           onClick={() => onChange(!value)}
-          className={`relative w-8 h-4 rounded-full transition-colors ${value ? "bg-neutral-900" : "bg-neutral-200"}`}
+          className={`relative w-8 h-4 rounded-full transition-colors ${
+            value ? "bg-neutral-900 dark:bg-neutral-100" : "bg-neutral-200 dark:bg-neutral-700"
+          }`}
         >
-          <span className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${value ? "translate-x-4" : "translate-x-0"}`} />
+          <span className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white dark:bg-neutral-900 rounded-full transition-transform ${value ? "translate-x-4" : "translate-x-0"}`} />
         </button>
       </div>
     );
@@ -19,7 +21,7 @@ export default function PropInput({ propKey, schema, value, onChange }) {
   if (schema.type === "enum") {
     return (
       <div className="py-2">
-        <label className="text-[11px] text-neutral-500 font-medium mb-1.5 block">{propKey}</label>
+        <label className="text-[11px] text-neutral-500 dark:text-neutral-400 font-medium mb-1.5 block">{propKey}</label>
         <div className="flex flex-wrap gap-1">
           {schema.options.map((opt) => (
             <button
@@ -27,8 +29,8 @@ export default function PropInput({ propKey, schema, value, onChange }) {
               onClick={() => onChange(opt)}
               className={`text-[11px] px-2 py-1 rounded border transition-all ${
                 value === opt
-                  ? "bg-neutral-900 text-white border-neutral-900"
-                  : "bg-white text-neutral-700 border-neutral-200 hover:border-neutral-400"
+                  ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 border-neutral-900 dark:border-neutral-100"
+                  : "bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-200 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-500"
               }`}
             >
               {opt}
@@ -41,12 +43,12 @@ export default function PropInput({ propKey, schema, value, onChange }) {
   if (schema.type === "number") {
     return (
       <div className="py-2">
-        <label className="text-[11px] text-neutral-500 font-medium mb-1.5 block">{propKey}</label>
+        <label className="text-[11px] text-neutral-500 dark:text-neutral-400 font-medium mb-1.5 block">{propKey}</label>
         <input
           type="number"
           value={value ?? 0}
           onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-          className="w-full text-[12px] px-2 py-1.5 bg-white border border-neutral-200 rounded-md focus:border-neutral-400 outline-none"
+          className="w-full text-[12px] px-2 py-1.5 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700 rounded-md focus:border-neutral-400 dark:focus:border-neutral-500 outline-none"
         />
       </div>
     );
@@ -54,16 +56,16 @@ export default function PropInput({ propKey, schema, value, onChange }) {
   if (schema.type === "color") {
     return (
       <div className="py-2">
-        <label className="text-[11px] text-neutral-500 font-medium mb-1.5 block">{propKey}</label>
+        <label className="text-[11px] text-neutral-500 dark:text-neutral-400 font-medium mb-1.5 block">{propKey}</label>
         <div className="flex gap-2">
           <div className="relative shrink-0">
-            <div 
-              className="w-8 h-8 rounded-md border border-neutral-200 shadow-sm cursor-pointer"
+            <div
+              className="w-8 h-8 rounded-md border border-neutral-200 dark:border-neutral-700 shadow-sm cursor-pointer"
               style={{ backgroundColor: value }}
               onClick={(e) => e.currentTarget.nextSibling.click()}
             />
-            <input 
-              type="color" 
+            <input
+              type="color"
               className="absolute opacity-0 pointer-events-none"
               value={value?.startsWith('#') && value.length === 7 ? value : "#000000"}
               onChange={(e) => onChange(e.target.value)}
@@ -73,7 +75,7 @@ export default function PropInput({ propKey, schema, value, onChange }) {
             type="text"
             value={value ?? ""}
             onChange={(e) => onChange(e.target.value)}
-            className="flex-1 text-[12px] px-2 py-1.5 bg-white border border-neutral-200 rounded-md focus:border-neutral-400 outline-none font-mono"
+            className="flex-1 text-[12px] px-2 py-1.5 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700 rounded-md focus:border-neutral-400 dark:focus:border-neutral-500 outline-none font-mono"
             placeholder="#000000"
           />
         </div>
@@ -82,12 +84,12 @@ export default function PropInput({ propKey, schema, value, onChange }) {
   }
   return (
     <div className="py-2">
-      <label className="text-[11px] text-neutral-500 font-medium mb-1.5 block">{propKey}</label>
+      <label className="text-[11px] text-neutral-500 dark:text-neutral-400 font-medium mb-1.5 block">{propKey}</label>
       <input
         type="text"
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full text-[12px] px-2 py-1.5 bg-white border border-neutral-200 rounded-md focus:border-neutral-400 outline-none"
+        className="w-full text-[12px] px-2 py-1.5 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700 rounded-md focus:border-neutral-400 dark:focus:border-neutral-500 outline-none"
       />
     </div>
   );

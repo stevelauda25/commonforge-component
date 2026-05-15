@@ -9,7 +9,11 @@ import MeasureOverlay from './MeasureOverlay';
 import ResizeHandles from './ResizeHandles';
 
 // =============================================================
-export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onSelect, selected, registry, measureMode, zoom }) {
+export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onSelect, selected, multiSelected = false, registry, measureMode, zoom }) {
+  // Group-frame mode: when the node is part of a >1 selection, the parent
+  // playground renders a single bounding frame for all of them. Suppress the
+  // per-node label / dot / chrome to keep the visual clean.
+  const showChrome = selected && !multiSelected;
   const containerRef = useRef(null);
 
   const handleMouseDown = (e) => {
@@ -18,7 +22,7 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
     if (!isLabelDrag) return;
 
     e.stopPropagation();
-    onSelect(node.id);
+    onSelect(node.id, e.shiftKey);
     // Capture starting screen position and current world position
     const startScreenX = e.clientX;
     const startScreenY = e.clientY;
@@ -67,12 +71,13 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
       style={{ left: node.x, top: node.y }}
       onMouseDown={handleMouseDown}
     >
-      {/* Label above — only visible on hover/select */}
+      {/* Label above — only visible on hover/select. Hidden entirely while
+          this node is part of a multi-selection (parent renders group frame). */}
       <div
         className={`node-drag flex items-center justify-between gap-2 mb-1.5 cursor-move transition-opacity ${
-          selected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          multiSelected ? "opacity-0 pointer-events-none" : showChrome ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         }`}
-        onClick={(e) => { e.stopPropagation(); onSelect(node.id); }}
+        onClick={(e) => { e.stopPropagation(); onSelect(node.id, e.shiftKey); }}
       >
         <div className="flex items-center gap-1.5 min-w-0">
           <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${selected ? "bg-blue-500" : "bg-neutral-300"}`} />
@@ -111,7 +116,7 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
           ...(isHeightHug ? null : { height: hVal }),
           ...tokenStyle,
         }}
-        onClick={(e) => { e.stopPropagation(); onSelect(node.id); }}
+        onClick={(e) => { e.stopPropagation(); onSelect(node.id, e.shiftKey); }}
         ref={containerRef}
       >
         {/* Inner component wrapper — FIXED/FILL mode forces stretch.
@@ -136,12 +141,16 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
           />
         </div>
 
-        {/* Ring overlay — sits just outside component bounds with a small offset */}
+        {/* Ring overlay — sits just outside component bounds with a small offset.
+            Hidden when this node is part of a multi-selection (group frame above
+            substitutes). */}
         <div
           className={`absolute rounded-md pointer-events-none transition-all ${
-            selected
-              ? "ring-2 ring-blue-500"
-              : "ring-1 ring-transparent group-hover:ring-blue-300"
+            multiSelected
+              ? "ring-0"
+              : showChrome
+                ? "ring-2 ring-blue-500"
+                : "ring-1 ring-transparent group-hover:ring-blue-300"
           }`}
           style={{
             inset: -6,
@@ -149,7 +158,7 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
         />
 
         {measureMode && <MeasureOverlay containerRef={containerRef} />}
-        {selected && (
+        {showChrome && (
           <ResizeHandles
             containerRef={containerRef}
             zoom={zoom}

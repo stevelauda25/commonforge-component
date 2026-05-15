@@ -10,6 +10,51 @@ import { X, Sparkles } from "lucide-react";
 
 const ENTRIES = [
   {
+    version: "0.4",
+    date: "2026-05-15",
+    sections: [
+      {
+        title: "Dark mode for centernode itself",
+        items: [
+          "Centernode app now starts in dark mode by default — matches the theme POD components actually live in on the canvas. Inspector, sidebar, top bar, props panel, code editor: all dark-aware.",
+          "Theme toggle (sun / moon icon) in the top header flips the `.dark` class on `<html>`. Choice persists to `localStorage` so reloads keep the picked theme; bootstrap script in `layout.tsx` applies it before React mounts (no flash-of-wrong-theme).",
+          "Canvas dot-grid swaps colour with theme — dots stay subtle in both modes instead of burning in dark.",
+          "Previously: centernode was light-only, which clashed with dark POD components dropped onto canvas. Now: canvas chrome and component canvas-mode are independent — sidebar mini-previews still have their own light/dark toggle.",
+        ],
+      },
+      {
+        title: "Multi-select — shift-click + marquee drag",
+        items: [
+          "Shift-click any node on canvas to add/remove from selection. Click empty canvas → drag to draw a marquee rectangle; any node intersecting the marquee enters the selection.",
+          "Esc clears selection. Single-select still works exactly as before — multi-select is purely additive.",
+          "When ≥2 nodes are selected, the per-node blue ring + label dots disappear. A single group-bounding frame replaces them, so the canvas stays visually clean instead of cluttered with overlapping chrome.",
+        ],
+      },
+      {
+        title: "Auto-layout — Figma-style Row / Column arrangement",
+        items: [
+          "Right inspector shows an `Auto layout` panel when ≥2 nodes are selected. Pick `Row` (horizontal) or `Column` (vertical), set a `Gap` (px), click — selected nodes re-flow with uniform spacing.",
+          "Anchored to the leftmost (Row) or topmost (Column) node — your sort order is preserved by current X/Y position, so you don't have to re-pick the order.",
+          "Each node keeps its own size; only x/y change. No flexbox container — the layout is baked into node positions.",
+        ],
+      },
+      {
+        title: "Distribute spacing — equalize gaps for ≥3 nodes",
+        items: [
+          "`Distribute H` / `Distribute V` buttons appear in the multi-select panel when ≥3 nodes are selected. Pins first + last in place, redistributes the middle nodes so inter-node gaps are equal along the chosen axis.",
+          "Useful when you've roughly arranged nodes but spacing is uneven — one click and they snap to even rhythm.",
+        ],
+      },
+      {
+        title: "Bulk actions on multi-selection",
+        items: [
+          "`Duplicate all` clones every selected node at an offset; `Delete all` removes them in one go. Both replace the previous flow of duplicate-one-then-the-next.",
+          "Selected-list at the bottom of the multi-select panel shows every node in selection by name with a click-to-focus action — handy for picking one node out of a tight cluster.",
+        ],
+      },
+    ],
+  },
+  {
     version: "0.3",
     date: "2026-05-14",
     sections: [

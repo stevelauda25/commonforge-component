@@ -1,4 +1,13 @@
-import { Button, Checkbox, SearchInput, Tab, Tooltip } from 'pod-test-ui';
+import {
+  Button,
+  Checkbox,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  SearchInput,
+  TextInput,
+  Tooltip,
+} from 'pod-test-ui';
 import {
   ArrowRight,
   Bell,
@@ -14,10 +23,19 @@ import { IssueCard } from './components/IssueCard.js';
 import { enrichAgentationOutput } from './lib/pod-agentation.js';
 
 function ThemeToggle() {
-  const [dark, setDark] = useState(false);
+  // Initial value comes from the bootstrap script in index.html (default = dark).
+  const [dark, setDark] = useState(() => {
+    if (typeof document === 'undefined') return true;
+    return document.documentElement.classList.contains('dark');
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
+    try {
+      localStorage.setItem('pod-client-theme', dark ? 'dark' : 'light');
+    } catch {
+      /* ignore quota / private mode */
+    }
   }, [dark]);
 
   return (
@@ -236,21 +254,206 @@ function Hero() {
   );
 }
 
+const TEAM_SIZES = [
+  { value: '1-10',    label: '1-10' },
+  { value: '11-50',   label: '11-50' },
+  { value: '51-200',  label: '51-200' },
+  { value: '201+',    label: '201+' },
+] as const;
+
+type TeamSize = (typeof TEAM_SIZES)[number]['value'] | '';
+
+interface LeadErrors {
+  name?: string;
+  email?: string;
+  company?: string;
+  teamSize?: string;
+}
+
+function LeadCaptureForm() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [company, setCompany] = useState('');
+  const [teamSize, setTeamSize] = useState<TeamSize>('');
+  const [subscribe, setSubscribe] = useState<boolean | 'indeterminate'>(true);
+  const [teamOpen, setTeamOpen] = useState(false);
+  const [errors, setErrors] = useState<LeadErrors>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const teamRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!teamOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      if (!teamRef.current?.contains(e.target as Node)) setTeamOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setTeamOpen(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [teamOpen]);
+
+  const validate = (): LeadErrors => {
+    const e: LeadErrors = {};
+    if (!name.trim()) e.name = 'Nama wajib diisi.';
+    if (!email.trim()) {
+      e.email = 'Email wajib diisi.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      e.email = 'Format email tidak valid.';
+    }
+    if (!company.trim()) e.company = 'Nama perusahaan wajib diisi.';
+    if (!teamSize) e.teamSize = 'Pilih ukuran tim.';
+    return e;
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setDone(false);
+    const next = validate();
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
+
+    setSubmitting(true);
+    await new Promise((r) => setTimeout(r, 900));
+    setSubmitting(false);
+    setDone(true);
+
+    setName('');
+    setEmail('');
+    setCompany('');
+    setTeamSize('');
+    setSubscribe(true);
+    setErrors({});
+  };
+
+  const teamLabel = TEAM_SIZES.find((t) => t.value === teamSize)?.label;
+
+  return (
+    <section className="mx-auto w-full max-w-md px-6 py-12">
+      <header className="mb-6">
+        <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
+          Get started with POD
+        </h2>
+        <p className="mt-1 text-sm text-text-muted">
+          Isi data singkat — tim kami akan kirim setup guide ke email kamu.
+        </p>
+      </header>
+
+      <form
+        onSubmit={onSubmit}
+        className="flex flex-col gap-5 rounded-xl border border-border-default bg-surface p-6 shadow-foundation-sm"
+        noValidate
+      >
+        <TextInput
+          label="Full name"
+          required
+          autoComplete="name"
+          placeholder="Helmi Ismail"
+          value={name}
+          error={errors.name}
+          onChange={(e) => {
+            setName(e.target.value);
+            if (errors.name) setErrors((er) => ({ ...er, name: undefined }));
+          }}
+        />
+
+        <TextInput
+          label="Work email"
+          required
+          type="email"
+          autoComplete="email"
+          placeholder="you@company.com"
+          value={email}
+          error={errors.email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (errors.email) setErrors((er) => ({ ...er, email: undefined }));
+          }}
+        />
+
+        <TextInput
+          label="Company"
+          required
+          autoComplete="organization"
+          placeholder="Acme Inc."
+          value={company}
+          error={errors.company}
+          onChange={(e) => {
+            setCompany(e.target.value);
+            if (errors.company) setErrors((er) => ({ ...er, company: undefined }));
+          }}
+        />
+
+        <div ref={teamRef}>
+          <Dropdown
+            label="Team size"
+            required
+            placeholder="Pilih ukuran tim…"
+            selectedLabel={teamLabel}
+            error={errors.teamSize}
+            open={teamOpen}
+            onClick={() => setTeamOpen((o) => !o)}
+            popup={
+              teamOpen ? (
+                <DropdownMenu>
+                  {TEAM_SIZES.map((opt) => (
+                    <DropdownItem
+                      key={opt.value}
+                      selected={teamSize === opt.value}
+                      showSelectedMark
+                      onClick={() => {
+                        setTeamSize(opt.value);
+                        setTeamOpen(false);
+                        if (errors.teamSize) setErrors((er) => ({ ...er, teamSize: undefined }));
+                      }}
+                    >
+                      {opt.label}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              ) : null
+            }
+          />
+        </div>
+
+        <Checkbox
+          checked={subscribe}
+          onCheckedChange={setSubscribe}
+          label="Subscribe to product updates"
+          description="We send a digest twice a month"
+        />
+
+        <Button type="submit" variant="primary" size="md" loading={submitting}>
+          Get started
+        </Button>
+      </form>
+
+      {done && (
+        <div
+          role="status"
+          className="mt-4 rounded-lg border border-success/40 bg-success-subtle p-4 text-sm text-text-primary"
+        >
+          <p className="font-medium">Thanks — kami sudah catat datanya.</p>
+          <p className="text-text-muted">Setup guide akan dikirim ke email kamu.</p>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function App() {
   return (
     <div className="min-h-screen bg-canvas text-text-primary">
       <Header />
       <Hero />
       <IssueCard />
-
-      <section className="mx-auto w-full max-w-3xl px-6 py-12">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-semibold tracking-tight text-text-primary">
-            Will BTC close above $80k by end of Q4?
-          </h1>
-          <Badge color="green" closable={false}>RESOLVED</Badge>
-        </div>
-      </section>
+      <LeadCaptureForm />
       {import.meta.env.DEV && (
         <Agentation
           onCopy={(_markdown) => {

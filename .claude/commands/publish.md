@@ -53,9 +53,49 @@ If typecheck fails → stop, surface errors. Don't publish broken code.
 
 ### 3. Build packages (tokens first — ui depends on it)
 
+**THREE steps, all mandatory.** Skipping step 3c is the #1 recurring
+publish bug — `tsup --clean` (step 3b) wipes `dist/styles.css`, and if
+you forget to regenerate it, the tarball ships without the file. Both
+0.1.6 and 0.1.11 broke because of this. Don't be number three.
+
+**3a. Build tokens** (must run first — ui imports the preset):
 ```bash
 cd packages/tokens && ../../node_modules/.bin/tsup src/index.ts src/tailwind-preset.ts --format cjs,esm --dts --clean
+```
+
+**3b. Build ui JS bundle** (`tsup --clean` wipes the whole dist/ — including yesterday's styles.css):
+```bash
 cd packages/ui && ../../node_modules/.bin/tsup
+```
+
+**3c. Build ui CSS bundle** (the one that keeps getting forgotten). The
+workspace symlink for `pod-test-tokens` may point at a stale pnpm-cached
+version, so we write a one-off `tailwind.build.config.ts` that imports
+the preset DIRECTLY from `../tokens/dist/tailwind-preset.mjs`, run
+tailwindcss against it, then delete the temp config:
+
+```bash
+cd packages/ui
+cat > tailwind.build.config.ts <<'EOF'
+import type { Config } from 'tailwindcss';
+import preset from '../tokens/dist/tailwind-preset.mjs';
+export default {
+  presets: [preset.default ?? preset],
+  content: ['src/**/*.{ts,tsx}'],
+} satisfies Config;
+EOF
+../../apps/docs/node_modules/.bin/tailwindcss -c tailwind.build.config.ts -i styles/build.css -o dist/styles.css --minify
+rm tailwind.build.config.ts
+```
+
+**3d. Verify the tarball will include styles.css** before bumping versions
+or pausing for confirmation. If this returns an empty result, step 3c
+failed silently — re-run it before continuing:
+
+```bash
+npm pack --dry-run 2>&1 | grep "dist/styles.css"
+# Expected: a line containing "dist/styles.css" with a non-zero byte count.
+# If empty → STOP, fix step 3c, do NOT proceed to step 4.
 ```
 
 ### 4. Bump versions in package.json files
@@ -81,6 +121,9 @@ Print exactly this format:
     pod-test-ui:     dist/
 
   Total package size: <X kB> (estimated via npm pack --dry-run)
+
+  pod-test-ui tarball should report 113 files (NOT 112). If 112, dist/styles.css
+  is missing — go back to step 3c. Don't ask for confirm yet.
 
   Reply "confirm" to publish.
   Reply "abort" or anything else to revert version bump.
