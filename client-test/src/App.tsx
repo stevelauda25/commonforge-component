@@ -1,4 +1,4 @@
-import { Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
+import { Button, Checkbox, SearchInput, Tab, Tooltip } from 'pod-test-ui';
 import {
   ArrowRight,
   Bell,
@@ -11,7 +11,6 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { Agentation } from 'agentation';
 import { IssueCard } from './components/IssueCard.js';
-import { MarketDetailHeader } from './components/MarketDetailHeader.js';
 import { enrichAgentationOutput } from './lib/pod-agentation.js';
 
 function ThemeToggle() {
@@ -243,7 +242,15 @@ export default function App() {
       <Header />
       <Hero />
       <IssueCard />
-      <MarketDetailHeader />
+
+      <section className="mx-auto w-full max-w-3xl px-6 py-12">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-3xl font-semibold tracking-tight text-text-primary">
+            Will BTC close above $80k by end of Q4?
+          </h1>
+          <Badge color="green" closable={false}>RESOLVED</Badge>
+        </div>
+      </section>
       {import.meta.env.DEV && (
         <Agentation
           onCopy={(_markdown) => {
