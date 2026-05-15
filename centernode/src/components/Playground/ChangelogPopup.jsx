@@ -10,6 +10,45 @@ import { X, Sparkles } from "lucide-react";
 
 const ENTRIES = [
   {
+    version: "0.3",
+    date: "2026-05-14",
+    sections: [
+      {
+        title: "Badge + Tab in the library",
+        items: [
+          "Badge spawns with 11 color variants (Green / Lime / Orange / Yellow / Red / Purple / Indigo / Sky / Blue / Soft Gray / Dark Gray). Each card shows the real badge with its tag-dot indicator + IBM Plex Mono label.",
+          "Tab spawns with 4 style variants (Menu / Underline / ScreenNav / Pill). Underline active state shows the canonical green success bar (was missing in earlier sync due to `bg-success-default` class typo).",
+          "Both pulled from `pod-test-ui@0.1.7` — published lockstep with `pod-test-tokens@0.1.7`.",
+        ],
+      },
+      {
+        title: "Variant prop aliasing — Props panel pills work for non-`variant` APIs",
+        items: [
+          "Badge uses `color` prop (not `variant`); Tab uses `tabType`. Centernode now treats those as the variant pill source via a shared `VARIANT_PROP_ALIAS` map (`utils/variantAliases.js`).",
+          "Pill selector in Props panel renders 11 colors for Badge / 4 styles for Tab — same UX as Button/variant.",
+          "Bidirectional sync intact: pick a pill → JSX in editor updates (`<Badge color=\"indigo\">`); edit code manually → pill highlights the new value.",
+          "Single-option `size` arrays no longer render a useless 1-item size pill (Badge & Tab only have `size: ['default']`).",
+        ],
+      },
+      {
+        title: "Tab atom — Figma fidelity pass",
+        items: [
+          "Per-cell audit of the 16-state matrix (4 types × 4 states) against Figma node 2412:1375. Every fill / stroke / text / icon color matched cell by cell.",
+          "Added `experiment-tab-border`, `experiment-tab-text`, `experiment-tab-text-disabled` tokens to match Figma `stroke/strong` (#18181b), `text/soft` (#7c7e84), `text/disabled` (#3a3a3d) — values that didn't map cleanly to existing semantic tokens.",
+          "Underline indicator renders for Active state only (matched Figma `<div h-0>` invisibility for inactive). Fixed `bg-success-default` → `bg-success` (the `-default` suffix is implicit when the color has a DEFAULT key in the preset).",
+          "Restructured `tabs.tsx` into `inactiveClasses` / `activeClasses` maps — eliminates Tailwind cascade conflicts when default-bg and active-bg both exist on the same element.",
+        ],
+      },
+      {
+        title: "canvas-sync infra fix",
+        items: [
+          "`scripts/canvas/sync.mjs` now reads `name:` field from each `canvas.ts` instead of always deriving from `kebabToPascal(dir)`. Fixes plural-folder / singular-export mismatch (`badges/` → `Badge`, `tabs/` → `Tab`).",
+          "Regenerated `centernode/src/utils/podRuntime.js` — imports now correctly reference `Badge` and `Tab` (was `Badges` / `Tabs`, breaking build).",
+        ],
+      },
+    ],
+  },
+  {
     version: "0.2",
     date: "2026-05-13",
     sections: [

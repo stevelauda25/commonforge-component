@@ -1,4 +1,5 @@
 import { Badge } from 'pod-test-ui';
+import { BadgeRemovableDemo } from '../../components/docs/BadgeRemovableDemo';
 
 <PageHeader
   title="Badge"
@@ -18,8 +19,8 @@ import { Badge } from 'pod-test-ui';
 
 Eleven `color` styles. Nine chromatic colors plus two grays. All use the same shape — only the tinted background, tag dot, and label color change.
 
-<PreviewCard align="start">
-  <div className="flex flex-wrap items-center gap-2">
+<PreviewCard>
+  <div className="flex flex-wrap items-center justify-center gap-2">
     <Badge color="green">LABEL</Badge>
     <Badge color="lime">LABEL</Badge>
     <Badge color="purple">LABEL</Badge>
@@ -45,8 +46,8 @@ Eleven `color` styles. Nine chromatic colors plus two grays. All use the same sh
 
 Set `closable={false}` to render the badge as a pure label — no × at the end.
 
-<PreviewCard align="start">
-  <div className="flex flex-wrap items-center gap-2">
+<PreviewCard>
+  <div className="flex flex-wrap items-center justify-center gap-2">
     <Badge color="green" closable={false}>READY</Badge>
     <Badge color="yellow" closable={false}>DRAFT</Badge>
     <Badge color="red" closable={false}>BLOCKED</Badge>
@@ -60,17 +61,17 @@ Set `closable={false}` to render the badge as a pure label — no × at the end.
 
 ## Removable (interactive)
 
-Pass `onClose` to make the × a real button that fires on click. Use this for filter chips or selected-tag UIs where the consumer wants to dismiss.
+Pass `onClose` to make the × a real button that fires on click. Try it — click the × on any badge below to dismiss it. When all are gone, the preview offers a reset.
 
-<PreviewCard align="start">
-  <div className="flex flex-wrap items-center gap-2">
-    <Badge color="indigo" onClose={() => alert('Removed')}>FILTER</Badge>
-    <Badge color="sky" onClose={() => alert('Removed')}>TAG</Badge>
-  </div>
+<PreviewCard>
+  <BadgeRemovableDemo />
 </PreviewCard>
 
 ```tsx
-<Badge color="indigo" onClose={() => removeFilter('indigo')}>FILTER</Badge>
+const [items, setItems] = useState(initial);
+const remove = (id) => setItems((prev) => prev.filter((b) => b.id !== id));
+
+<Badge color="indigo" onClose={() => remove('filter-1')}>FILTER</Badge>
 ```
 
 ## Props

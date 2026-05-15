@@ -14,14 +14,28 @@
 }
 ```
 
+**Changelog 0.1.7 → 0.1.8:**
+- New components: **`Badge`** (11 color variants — green/lime/orange/yellow/red/purple/indigo/sky/blue/soft-gray/dark-gray, optional removable ×) and **`Tab`** (4 styles: menu/underline/screen-nav/pill, stateless atom).
+- **Dropdown — `popup` prop (NEW preferred API).** Pass `<DropdownMenu>...</DropdownMenu>` to `popup` and the trigger anchors the popover correctly even when `hint`/`error` are present. Old pattern (rendering `DropdownMenu` as a sibling with `absolute` positioning) still works but mis-aligns the popup below the hint — migrate to `popup`.
+  ```tsx
+  <Dropdown
+    label="Books" placeholder="Select" hint="..."
+    open={open} onClick={() => setOpen(o => !o)}
+    popup={<DropdownMenu>{items}</DropdownMenu>}
+  />
+  ```
+- **DropdownMenu** — bg swapped from `bg-canvas` (#09090b) to `bg-experiment-tab-base` (#111113 = Figma `bg/medium`), now consistent across Tab + Badge + Dropdown popovers.
+- **DropdownBadge** — internally wraps the canonical `Badge` component (instead of its own ad-hoc styles). Same API (`label`, `color`), but consumes `experiment-badge-*` tokens for visual consistency.
+- **Motion** — `animate-menu-in` upgraded to the POD elegant baseline: blur 4px→0 + opacity 0→1 + scale 0.97→1 + translateY -4→0, 280ms cubic-bezier(0.4, 0, 0.2, 1). Same family as the removal-motion standard. New `animate-menu-item-in` for staggered item cascade (220ms, 24ms delay per index). `DropdownMenu` auto-applies the cascade to its children.
+
 **Changelog 0.1.4 → 0.1.5:**
 - New component: **`Dropdown`** — single-select or multi-tag trigger with label/hint/error/sublabel/labelInfo/required. Stateless: pair with `DropdownMenu` for popup. Variants `default` × `tags`, sizes `sm` · `md`. Figma source: `input-dropdown` (node `2415:2051`).
 - New sub-primitives shipped with Dropdown:
-  - **`DropdownMenu`** — popover container (`bg-canvas`, `border-default`, `shadow-foundation-lg`, scrollable, animates in via `animate-menu-in`).
+  - **`DropdownMenu`** — popover container, scrollable, animates in via `animate-menu-in`.
   - **`DropdownItem`** — single row. Props: `selected`, `disabled`, `destructive`, `error`, `leftAdornment`, `rightAdornment`, `showSelectedMark`.
-  - **`DropdownBadge`** — small leading badge with colored dot (9 colors: `green`/`blue`/`orange`/`lime`/`indigo`/`red`/`sky`/`purple`/`yellow`). For use as `<DropdownItem leftAdornment={<DropdownBadge label="CIRC" color="green" />}>`.
+  - **`DropdownBadge`** — small leading badge (label + colored dot). 9 colors: `green`/`blue`/`orange`/`lime`/`indigo`/`red`/`sky`/`purple`/`yellow`. Used as `<DropdownItem leftAdornment={<DropdownBadge label="CIRC" color="green" />}>`. Since 0.1.8, internally a thin wrapper around `Badge`.
 - New motion utilities in `pod-test-tokens` preset:
-  - `animate-menu-in` — fade + scale-down reveal, `duration-base · ease-emphasized`. Auto-applied to `DropdownMenu`.
+  - `animate-menu-in` — fade + scale-down reveal. Auto-applied to `DropdownMenu`. (Upgraded in 0.1.8 — see top of changelog.)
   - `animate-fade-in` — opacity fade, `duration-fast · ease-standard`. For consumer popovers/tooltips.
 - `canvas.ts` schema additions (consumed by playground tools like centernode):
   - `CanvasComponent.tokens` — common POD tokens this component consumes (filters Tokens panel scope).
@@ -50,8 +64,10 @@
 | `Checkbox` | stable | — | — | **controlled only** (`checked` + `onCheckedChange`) | `/components/checkbox` |
 | `TextInput` | stable | `default` | `sm` · `md` · `lg` | controlled + uncontrolled (`defaultValue` / `value`) | `/components/text-input` |
 | `SearchInput` | stable | `default` | `sm` · `md` | controlled + uncontrolled (`defaultValue` / `value`) — built-in ⌘K shortcut hint + optional clear button | `/components/search-input` |
-| `Dropdown` | stable | `default` · `tags` | `sm` · `md` | **stateless trigger** — consumer manages `open` + menu. Pair with `DropdownMenu` + `DropdownItem` | `/components/dropdown` |
+| `Dropdown` | stable | `default` · `tags` | `sm` · `md` | **stateless trigger** — consumer manages `open` + menu. Pass `<DropdownMenu>` to the `popup` prop (preferred since 0.1.8) so the popover anchors below the trigger correctly even with `hint`/`error` present. | `/components/dropdown` |
 | `Tooltip` | stable | `default` · `info` · `warning` · `error` | — | n/a (wraps a focusable child) | `/components/tooltip` |
+| `Badge` | stable | 11 colors: `green` · `lime` · `orange` · `yellow` · `red` · `purple` · `indigo` · `sky` · `blue` · `soft-gray` · `dark-gray` | — | optional `closable` (× icon); pass `onClose` for interactive remove | `/components/badge` |
+| `Tab` | stable | `menu` · `underline` · `screen-nav` · `pill` (`tabType` prop) | — | stateless atom — consumer manages `active` + focus. Compose into a tablist | `/components/tab` |
 | `Switch` | **experimental** (not in Figma yet) | — | `sm` · `md` | controlled + uncontrolled (`defaultChecked` / `checked` + `onCheckedChange`) | — |
 
 **Utility export:** `cn(...args)` — Tailwind className composer dengan conflict resolution (`tailwind-merge` inside).
@@ -65,6 +81,8 @@ import { SearchInput } from 'pod-test-ui/search-input';
 import { Dropdown, DropdownMenu, DropdownItem, DropdownBadge } from 'pod-test-ui/dropdown';
 import { Switch } from 'pod-test-ui/switch';
 import { Tooltip } from 'pod-test-ui/tooltip';
+import { Badge } from 'pod-test-ui/badges';
+import { Tab } from 'pod-test-ui/tabs';
 // Canvas/playground catalog (machine-readable manifest):
 import { canvasManifest } from 'pod-test-ui/canvas';
 // Compiled Tailwind utilities (for non-Tailwind consumers):
@@ -92,8 +110,9 @@ Kalau user bilang… | Pakai…
 "text input", "form field", "text field", "input box" | `<TextInput>`
 "text input dengan error", "validation error" | `<TextInput error="..." />`
 "switch", "toggle", "on/off" | `<Switch>` ⚠ experimental — confirm dengan designer kalau ini final
-"dropdown", "select", "picker", "combobox" | `<Dropdown>` (trigger) + `<DropdownMenu>` + `<DropdownItem>` (consumer manages `open` state)
-"multi-select", "multi-pick", "tags input" | `<Dropdown variant="tags" tags={[...]} onRemoveTag={...} />` + `<DropdownItem leftAdornment={<Checkbox .../>}>`
+"dropdown", "select", "picker", "combobox" | `<Dropdown popup={<DropdownMenu>...</DropdownMenu>} open={open} ...>` — pass menu as `popup` prop so it anchors correctly even with `hint`/`error`. Old "render `DropdownMenu` as sibling" pattern still works but mis-positions below hint.
+"multi-select", "multi-pick", "tags input" | `<Dropdown variant="tags" tags={[...]} onRemoveTag={...} popup={<DropdownMenu>{checkboxItems}</DropdownMenu>} />`
+"badge", "chip", "status pill", "filter tag" | `<Badge color="green">LABEL</Badge>` — 11 colors. `closable={true}` adds × icon; pass `onClose` to make it an interactive remove button.
 "action menu", "context menu", "overflow menu" | `<Dropdown>` + `<DropdownMenu>` with `<DropdownItem leftAdornment={<Icon />}>` rows; destructive action = `<DropdownItem destructive>Delete</DropdownItem>`
 "tooltip", "hover help", "shortcut hint" | `<Tooltip>` (wraps a focusable element)
 "input text", "form field", "text box" | ❌ **Belum ada di pod-test-ui**. Build local pakai POD tokens (Rule 10 di consumer's CLAUDE.md)

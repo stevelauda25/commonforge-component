@@ -269,6 +269,56 @@ Each app has its own `vercel.json` with build commands. Don't override
 in dashboard — vercel.json wins. To update centernode/client-test with
 latest pod-test-ui changes: `/publish` (auto-bumps both consumers).
 
+## Motion — interactive removal / dismissal
+
+**HARD RULE: never use instant DOM removal for user-triggered dismissal.**
+
+Filter chips, removable badges, dismissable toasts, closing menu items,
+deleted rows — every interactive remove animates out. Snap-removal causes
+neighbors to instantly close the gap, which looks amateur and breaks the
+design system's perceived quality bar.
+
+**Standard exit motion** (~280ms total, ease cubic-bezier(0.4,0,0.2,1)):
+
+```ts
+const EXIT_MS = 280;
+// 1. opacity 1 → 0                     (≈ 210ms, ease-out)
+// 2. filter blur(0) → blur(4px)        (≈ 210ms, ease-out — defocus signal)
+// 3. transform scale(1) → scale(0.85)  (≈ 240ms, ease-out)
+// 4. max-width <measured>px → 0        (280ms, ease-out — neighbors glide in)
+// 5. margin-right <gap>px → 0          (280ms, ease-out — closes inter-item space)
+// → After EXIT_MS: setState to actually remove from items[]
+```
+
+**Why all five layers:**
+
+- Opacity alone → too soft, item lingers visually.
+- Scale alone → no clear "leaving" cue.
+- Width collapse alone → no defocus.
+- Without width+margin collapse → siblings snap-dempet (the original amateur bug).
+
+**Why measured width (not `auto`):** `width: auto → 0` doesn't animate. Use
+`useLayoutEffect` + `el.offsetWidth` after first mount, store in state, then
+animate from that pixel value to 0.
+
+**Why blur:** Adds depth — the item visually recedes instead of just vanishing.
+Combined with scale-down it reads as "leaving the surface". Pure opacity fade
+without blur looks like the renderer crashed.
+
+**Stagger durations** — don't make all properties exactly the same. Opacity
+~75% of width duration, scale ~85%. Uniform timing feels synthetic; staggered
+feels organic.
+
+**Reference implementation:** [apps/docs/src/components/docs/BadgeRemovableDemo.tsx](apps/docs/src/components/docs/BadgeRemovableDemo.tsx).
+Copy the timer/ref/widths pattern wholesale for any new dismissal interaction.
+
+**Forbidden:**
+
+- ❌ `onClose={() => setItems(prev => prev.filter(...))}` directly — instant snap.
+- ❌ Tailwind's `animate-fade-in` alone for exit (it's for enter, no width handling).
+- ❌ Skipping the width/margin collapse "because it's just a small UI".
+- ❌ Different exit durations across components — consistency reads as professional.
+
 ## Verification (always run after sync)
 
 ```bash

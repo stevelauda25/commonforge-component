@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Check, ChevronDown, ChevronUp, Info, X } from 'lucide-react';
 import { cn } from '../lib/cn.js';
+import { Badge, type BadgeColor } from '../badges/index.js';
 
 export type DropdownVariant = 'default' | 'tags';
 export type DropdownSize = 'sm' | 'md';
@@ -16,16 +17,39 @@ export interface DropdownMenuProps extends React.HTMLAttributes<HTMLDivElement> 
   maxHeight?: number;
 }
 
+// Per-item stagger delay — first item fires immediately, each subsequent
+// one ~24ms later. Tuned for elegant cascade: tight enough to feel coupled
+// to the menu reveal, spaced enough that individual items still register.
+const ITEM_STAGGER_MS = 24;
+
 export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
   function DropdownMenu({ children, maxHeight = 320, className, ...rest }, ref) {
+    // Wrap each child in a span carrying its own animation-delay so the items
+    // cascade in after the shell. `display: contents` keeps the layout flat —
+    // the wrapper exists only so we can attach the staggered animation.
+    const staggered = React.Children.map(children, (child, i) => {
+      if (!React.isValidElement(child)) return child;
+      const delayMs = i * ITEM_STAGGER_MS;
+      return (
+        <div
+          className="animate-menu-item-in"
+          style={{ animationDelay: `${delayMs}ms` }}
+        >
+          {child}
+        </div>
+      );
+    });
+
     return (
       <div
         ref={ref}
         role="listbox"
         className={cn(
-          'overflow-hidden rounded-md border border-border-default bg-canvas shadow-foundation-lg',
+          // bg-experiment-tab-base = Figma bg/medium (#111113 dark) — the
+          // canonical popover surface across Tab, Badge, Dropdown.
+          'overflow-hidden rounded-md border border-border-default bg-experiment-tab-base shadow-foundation-lg',
           'flex flex-col',
-          // POD motion: reveal with quick scale + fade. origin-top so the scale
+          // POD motion: 250ms blur+scale+fade reveal. origin-top so the scale
           // grows down from the trigger edge instead of expanding from center.
           'origin-top animate-menu-in',
           className,
@@ -33,7 +57,7 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
         {...rest}
       >
         <div className="flex flex-col overflow-y-auto py-1" style={{ maxHeight }}>
-          {children}
+          {staggered}
         </div>
       </div>
     );
@@ -129,64 +153,33 @@ export const DropdownItem = React.forwardRef<HTMLButtonElement, DropdownItemProp
 );
 
 /* ════════════════════════════════════════════════════════════════════
- * DropdownBadge — small mono label badge with leading colored bar.
- * Used inside DropdownItem as a leading adornment (e.g. betting books:
- * CIRC, NOVG, PINY, FNDL, etc.). Colors match Figma's 9 categories.
+ * DropdownBadge — thin wrapper around the canonical `Badge` component
+ * for use as a DropdownItem leading adornment (e.g. betting books: CIRC,
+ * NOVG, PINY, FNDL). Forces `closable={false}` (no × in a menu row) and
+ * matches the same 9 chromatic colors `Badge` exposes for consistency
+ * across the design system.
  * ════════════════════════════════════════════════════════════════════ */
 
-export type DropdownBadgeColor =
-  | 'green'
-  | 'blue'
-  | 'orange'
-  | 'lime'
-  | 'indigo'
-  | 'red'
-  | 'sky'
-  | 'purple'
-  | 'yellow';
+export type DropdownBadgeColor = Extract<
+  BadgeColor,
+  'green' | 'blue' | 'orange' | 'lime' | 'indigo' | 'red' | 'sky' | 'purple' | 'yellow'
+>;
 
 export interface DropdownBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   label: string;
   color?: DropdownBadgeColor;
 }
 
-const BADGE_BG: Record<DropdownBadgeColor, string> = {
-  green:  'bg-green-950/60 text-green-100',
-  blue:   'bg-blue-950/60 text-blue-100',
-  orange: 'bg-orange-950/60 text-orange-100',
-  lime:   'bg-lime-950/60 text-lime-100',
-  indigo: 'bg-indigo-950/60 text-indigo-100',
-  red:    'bg-red-950/60 text-red-100',
-  sky:    'bg-sky-950/60 text-sky-100',
-  purple: 'bg-purple-950/60 text-purple-100',
-  yellow: 'bg-yellow-950/60 text-yellow-100',
-};
-
-const BADGE_DOT: Record<DropdownBadgeColor, string> = {
-  green:  'bg-green-500',
-  blue:   'bg-blue-500',
-  orange: 'bg-orange-500',
-  lime:   'bg-lime-500',
-  indigo: 'bg-indigo-500',
-  red:    'bg-red-500',
-  sky:    'bg-sky-500',
-  purple: 'bg-purple-500',
-  yellow: 'bg-yellow-500',
-};
-
-export function DropdownBadge({ label, color = 'green', className, ...rest }: DropdownBadgeProps) {
+export function DropdownBadge({
+  label,
+  color = 'green',
+  className,
+  ...rest
+}: DropdownBadgeProps) {
   return (
-    <span
-      className={cn(
-        'inline-flex shrink-0 items-center gap-1 rounded-xs px-1 py-0.5',
-        BADGE_BG[color],
-        className,
-      )}
-      {...rest}
-    >
-      <span className={cn('inline-block h-2.5 w-[3px] rounded-full', BADGE_DOT[color])} aria-hidden="true" />
-      <span className="font-mono text-[13px] font-medium leading-4 tracking-wide">{label}</span>
-    </span>
+    <Badge color={color} closable={false} className={cn('shrink-0', className)} {...rest}>
+      {label}
+    </Badge>
   );
 }
 
@@ -233,6 +226,14 @@ export interface DropdownProps
    * controls actual menu visibility.
    */
   open?: boolean;
+  /**
+   * Popup content rendered between the trigger and hint when present.
+   * Anchored absolutely to the trigger so it correctly overlays content
+   * below — independent of hint/error/label height. Pass a `<DropdownMenu>`
+   * (or any positioned popover) here; consumer still controls when to
+   * render (typically gated on `open`).
+   */
+  popup?: React.ReactNode;
 }
 
 // Focus-ring shadows — literal values from Figma `focus-rings` tokens.
@@ -255,6 +256,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
       tags = [],
       onRemoveTag,
       open = false,
+      popup,
       disabled,
       className,
       id,
@@ -289,7 +291,8 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
           </div>
         )}
 
-        <button
+        <div className="relative">
+          <button
           ref={ref}
           id={triggerId}
           type="button"
@@ -364,7 +367,13 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
             </span>
           )}
           <ChevronIcon className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
-        </button>
+          </button>
+          {popup && open && (
+            <div className="absolute left-0 right-0 top-full z-10 mt-1">
+              {popup}
+            </div>
+          )}
+        </div>
 
         {error ? (
           <span id={errorId} className="flex items-center gap-1 text-[13px] leading-[18px] text-danger">

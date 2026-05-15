@@ -18,7 +18,7 @@ export function HeroExample() {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   return (
-    <div className="relative w-[260px]">
+    <div className="w-[260px]">
       <Dropdown
         label="Label"
         required
@@ -29,25 +29,25 @@ export function HeroExample() {
         open={open}
         selectedLabel={selected ?? undefined}
         onClick={() => setOpen((o) => !o)}
+        popup={
+          <DropdownMenu>
+            <DropdownItem
+              selected={selected === 'Option A'}
+              showSelectedMark
+              onClick={() => { setSelected('Option A'); setOpen(false); }}
+            >
+              Option A
+            </DropdownItem>
+            <DropdownItem
+              selected={selected === 'Option B'}
+              showSelectedMark
+              onClick={() => { setSelected('Option B'); setOpen(false); }}
+            >
+              Option B
+            </DropdownItem>
+          </DropdownMenu>
+        }
       />
-      {open && (
-        <DropdownMenu className="absolute z-10 mt-1 w-full">
-          <DropdownItem
-            selected={selected === 'Option A'}
-            showSelectedMark
-            onClick={() => { setSelected('Option A'); setOpen(false); }}
-          >
-            Option A
-          </DropdownItem>
-          <DropdownItem
-            selected={selected === 'Option B'}
-            showSelectedMark
-            onClick={() => { setSelected('Option B'); setOpen(false); }}
-          >
-            Option B
-          </DropdownItem>
-        </DropdownMenu>
-      )}
     </div>
   );
 }
@@ -66,13 +66,13 @@ const [selected, setSelected] = useState(null);
   open={open}
   selectedLabel={selected ?? undefined}
   onClick={() => setOpen((o) => !o)}
+  popup={
+    <DropdownMenu>
+      <DropdownItem onClick={() => setSelected('Option A')}>Option A</DropdownItem>
+      <DropdownItem onClick={() => setSelected('Option B')}>Option B</DropdownItem>
+    </DropdownMenu>
+  }
 />
-{open && (
-  <DropdownMenu className="absolute z-10 mt-1 w-full">
-    <DropdownItem onClick={() => setSelected('Option A')}>Option A</DropdownItem>
-    <DropdownItem onClick={() => setSelected('Option B')}>Option B</DropdownItem>
-  </DropdownMenu>
-)}
 ```
 
 ## Variants
@@ -95,18 +95,16 @@ export function VariantInteractiveExample() {
   ]);
   return (
     <div className="grid grid-cols-2 gap-6">
-      <div className="relative">
-        <Dropdown
-          variant="default"
-          label="Default"
-          placeholder="Select"
-          hint="This is a hint text to help user."
-          open={openDefault}
-          selectedLabel={selected ?? undefined}
-          onClick={() => setOpenDefault((o) => !o)}
-        />
-        {openDefault && (
-          <DropdownMenu className="absolute z-10 mt-1 w-full">
+      <Dropdown
+        variant="default"
+        label="Default"
+        placeholder="Select"
+        hint="This is a hint text to help user."
+        open={openDefault}
+        selectedLabel={selected ?? undefined}
+        onClick={() => setOpenDefault((o) => !o)}
+        popup={
+          <DropdownMenu>
             <DropdownItem
               selected={selected === 'Option A'}
               showSelectedMark
@@ -122,21 +120,19 @@ export function VariantInteractiveExample() {
               Option B
             </DropdownItem>
           </DropdownMenu>
-        )}
-      </div>
-      <div className="relative">
-        <Dropdown
-          variant="tags"
-          label="Tags"
-          placeholder="Select"
-          hint="This is a hint text to help user."
-          tags={tags}
-          onRemoveTag={(v) => setTags((arr) => arr.filter((t) => t.value !== v))}
-          open={openTags}
-          onClick={() => setOpenTags((o) => !o)}
-        />
-        {openTags && (
-          <DropdownMenu className="absolute z-10 mt-1 w-full">
+        }
+      />
+      <Dropdown
+        variant="tags"
+        label="Tags"
+        placeholder="Select"
+        hint="This is a hint text to help user."
+        tags={tags}
+        onRemoveTag={(v) => setTags((arr) => arr.filter((t) => t.value !== v))}
+        open={openTags}
+        onClick={() => setOpenTags((o) => !o)}
+        popup={
+          <DropdownMenu>
             <DropdownItem
               leftAdornment={<Checkbox checked={tags.some((t) => t.value === 'a')} onCheckedChange={() => {}} />}
               onClick={() =>
@@ -162,8 +158,8 @@ export function VariantInteractiveExample() {
               Label B
             </DropdownItem>
           </DropdownMenu>
-        )}
-      </div>
+        }
+      />
     </div>
   );
 }
@@ -238,16 +234,21 @@ Simple action list — pen / notebook / upload / trash icons next to labels. Las
 export function ActionMenuExample() {
   const [open, setOpen] = useState(true);
   return (
-    <div className="relative w-[200px]">
-      <Dropdown label="Bet actions" placeholder="Actions" open={open} onClick={() => setOpen((o) => !o)} />
-      {open && (
-        <DropdownMenu className="absolute z-10 mt-1 w-full">
-          <DropdownItem leftAdornment={<Pencil className="h-4 w-4" />}>Edit bet</DropdownItem>
-          <DropdownItem leftAdornment={<NotebookText className="h-4 w-4" />}>Take notes</DropdownItem>
-          <DropdownItem leftAdornment={<Upload className="h-4 w-4" />}>Share bet</DropdownItem>
-          <DropdownItem leftAdornment={<Trash2 className="h-4 w-4" />} destructive>Delete bet</DropdownItem>
-        </DropdownMenu>
-      )}
+    <div className="w-[200px]">
+      <Dropdown
+        label="Bet actions"
+        placeholder="Actions"
+        open={open}
+        onClick={() => setOpen((o) => !o)}
+        popup={
+          <DropdownMenu>
+            <DropdownItem leftAdornment={<Pencil className="h-4 w-4" />}>Edit bet</DropdownItem>
+            <DropdownItem leftAdornment={<NotebookText className="h-4 w-4" />}>Take notes</DropdownItem>
+            <DropdownItem leftAdornment={<Upload className="h-4 w-4" />}>Share bet</DropdownItem>
+            <DropdownItem leftAdornment={<Trash2 className="h-4 w-4" />} destructive>Delete bet</DropdownItem>
+          </DropdownMenu>
+        }
+      />
     </div>
   );
 }
@@ -293,35 +294,35 @@ export function BooksMenuExample() {
   const toggle = (code) =>
     setSelected((s) => (s.includes(code) ? s.filter((c) => c !== code) : [...s, code]));
   return (
-    <div className="relative w-[280px]">
+    <div className="w-[280px]">
       <Dropdown
         label="Books"
         placeholder="Select books"
         open={open}
         selectedLabel={selected.length ? `${selected.length} selected` : undefined}
         onClick={() => setOpen((o) => !o)}
+        popup={
+          <DropdownMenu maxHeight={280}>
+            {books.map((b) => {
+              const isOn = selected.includes(b.code);
+              return (
+                <DropdownItem
+                  key={b.code}
+                  leftAdornment={
+                    <span className="inline-flex items-center gap-2">
+                      <Checkbox checked={isOn} onCheckedChange={() => toggle(b.code)} />
+                      <DropdownBadge label={b.code} color={b.color} />
+                    </span>
+                  }
+                  onClick={() => toggle(b.code)}
+                >
+                  {b.name}
+                </DropdownItem>
+              );
+            })}
+          </DropdownMenu>
+        }
       />
-      {open && (
-        <DropdownMenu className="absolute z-10 mt-1 w-full" maxHeight={280}>
-          {books.map((b) => {
-            const isOn = selected.includes(b.code);
-            return (
-              <DropdownItem
-                key={b.code}
-                leftAdornment={
-                  <span className="inline-flex items-center gap-2">
-                    <Checkbox checked={isOn} onCheckedChange={() => toggle(b.code)} />
-                    <DropdownBadge label={b.code} color={b.color} />
-                  </span>
-                }
-                onClick={() => toggle(b.code)}
-              >
-                {b.name}
-              </DropdownItem>
-            );
-          })}
-        </DropdownMenu>
-      )}
     </div>
   );
 }
@@ -366,30 +367,30 @@ export function LeaguesMenuExample() {
   const toggle = (l) =>
     setSelected((s) => (s.includes(l) ? s.filter((x) => x !== l) : [...s, l]));
   return (
-    <div className="relative w-[280px]">
+    <div className="w-[280px]">
       <Dropdown
         label="Leagues"
         placeholder="Filter leagues"
         open={open}
         selectedLabel={selected.length ? `${selected.length} leagues` : undefined}
         onClick={() => setOpen((o) => !o)}
+        popup={
+          <DropdownMenu maxHeight={280}>
+            {leagues.map((l) => {
+              const isOn = selected.includes(l);
+              return (
+                <DropdownItem
+                  key={l}
+                  leftAdornment={<Checkbox checked={isOn} onCheckedChange={() => toggle(l)} />}
+                  onClick={() => toggle(l)}
+                >
+                  {l}
+                </DropdownItem>
+              );
+            })}
+          </DropdownMenu>
+        }
       />
-      {open && (
-        <DropdownMenu className="absolute z-10 mt-1 w-full" maxHeight={280}>
-          {leagues.map((l) => {
-            const isOn = selected.includes(l);
-            return (
-              <DropdownItem
-                key={l}
-                leftAdornment={<Checkbox checked={isOn} onCheckedChange={() => toggle(l)} />}
-                onClick={() => toggle(l)}
-              >
-                {l}
-              </DropdownItem>
-            );
-          })}
-        </DropdownMenu>
-      )}
     </div>
   );
 }
@@ -418,31 +419,31 @@ export function SingleSelectExample() {
   const [selected, setSelected] = useState('Option B');
   const options = ['Option A', 'Option B', 'Option C', 'Option D'];
   return (
-    <div className="relative w-[200px]">
+    <div className="w-[200px]">
       <Dropdown
         label="Choice"
         placeholder="Pick one"
         open={open}
         selectedLabel={selected}
         onClick={() => setOpen((o) => !o)}
+        popup={
+          <DropdownMenu>
+            {options.map((opt) => (
+              <DropdownItem
+                key={opt}
+                selected={selected === opt}
+                showSelectedMark
+                onClick={() => {
+                  setSelected(opt);
+                  setOpen(false);
+                }}
+              >
+                {opt}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        }
       />
-      {open && (
-        <DropdownMenu className="absolute z-10 mt-1 w-full">
-          {options.map((opt) => (
-            <DropdownItem
-              key={opt}
-              selected={selected === opt}
-              showSelectedMark
-              onClick={() => {
-                setSelected(opt);
-                setOpen(false);
-              }}
-            >
-              {opt}
-            </DropdownItem>
-          ))}
-        </DropdownMenu>
-      )}
     </div>
   );
 }

@@ -182,9 +182,35 @@ export const preset: Partial<Config> = {
       // Motion keyframes — POD-defined, consumers get them via the preset.
       // Pair with `--duration-*` and `--ease-*` CSS variables for token-driven motion.
       keyframes: {
+        // Popover / dropdown reveal — entry counterpart of the 280ms
+        // removal-motion standard. Pure 2-stop linear interpolation between
+        // these endpoints; browser eases naturally via cubic-bezier below.
+        // Blur is the subtle defocus signal, not a heavy stylized effect.
         'menu-in': {
-          '0%':   { opacity: '0', transform: 'translateY(-4px) scale(0.98)' },
-          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+          '0%':   {
+            opacity: '0',
+            filter: 'blur(4px)',
+            transform: 'translateY(-4px) scale(0.97)',
+          },
+          '100%': {
+            opacity: '1',
+            filter: 'blur(0)',
+            transform: 'translateY(0) scale(1)',
+          },
+        },
+        // Per-item entrance — lighter than the shell so the cascade reads
+        // as layered, not redundant.
+        'menu-item-in': {
+          '0%':   {
+            opacity: '0',
+            filter: 'blur(2px)',
+            transform: 'translateY(-3px)',
+          },
+          '100%': {
+            opacity: '1',
+            filter: 'blur(0)',
+            transform: 'translateY(0)',
+          },
         },
         'fade-in': {
           '0%':   { opacity: '0' },
@@ -192,9 +218,12 @@ export const preset: Partial<Config> = {
         },
       },
       animation: {
-        // Reveal popover/menu — quick scale + fade. ease-emphasized for slight overshoot feel.
-        'menu-in': 'menu-in var(--duration-base) var(--ease-emphasized) both',
-        'fade-in': 'fade-in var(--duration-fast) var(--ease-standard) both',
+        // Match the 280ms exit-motion family. cubic-bezier(0.4, 0, 0.2, 1)
+        // is the same ease-out used by BadgeRemovableDemo — linear-feeling,
+        // not spring-back. Validated by user as the "elegant" baseline.
+        'menu-in':      'menu-in 280ms cubic-bezier(0.4, 0, 0.2, 1) both',
+        'menu-item-in': 'menu-item-in 220ms cubic-bezier(0.4, 0, 0.2, 1) both',
+        'fade-in':      'fade-in var(--duration-fast) var(--ease-standard) both',
       },
     },
   },
