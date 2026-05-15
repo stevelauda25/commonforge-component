@@ -57,7 +57,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     }, [isIndeterminate]);
 
     return (
-      <div className={cn('flex gap-2.5', description ? 'items-start' : 'items-center', className)}>
+      <div className={cn('flex gap-2.5', description || error ? 'items-start' : 'items-center', className)}>
         <span className="relative inline-flex items-center justify-center">
           <input
             ref={setRefs}
