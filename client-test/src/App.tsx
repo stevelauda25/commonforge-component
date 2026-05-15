@@ -8,9 +8,9 @@ import {
   Sun,
   Zap,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Agentation } from 'agentation';
-import { AddIncomeForm } from './components/AddIncomeForm.js';
+import { IssueCard } from './components/IssueCard.js';
 import { enrichAgentationOutput } from './lib/pod-agentation.js';
 
 function ThemeToggle() {
@@ -36,8 +36,21 @@ function ThemeToggle() {
 
 function Header() {
   const [query, setQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const navItems = ['Components', 'Tokens', 'Patterns', 'Pricing'];
+
+  // ⌘K / Ctrl+K focuses the search box (matches the visual shortcut hint).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border-default bg-canvas/80 backdrop-blur-md">
@@ -65,8 +78,10 @@ function Header() {
 
         <div className="ml-auto hidden w-full max-w-[260px] lg:block">
           <SearchInput
+            ref={searchRef}
             value={query}
-            onValueChange={setQuery}
+            onChange={(e) => setQuery(e.target.value)}
+            onClear={() => setQuery('')}
             placeholder="Search docs…"
             size="sm"
           />
@@ -186,9 +201,10 @@ function Hero() {
               <div className="flex-1">
                 <SearchInput
                   value={email}
-                  onValueChange={setEmail}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@company.com"
                   leftIcon={<Bell size={16} />}
+                  shortcutKeys={null}
                   error={error && !email.includes('@') ? error : undefined}
                   aria-label="Email address"
                 />
@@ -225,7 +241,7 @@ export default function App() {
     <div className="min-h-screen bg-canvas text-text-primary">
       <Header />
       <Hero />
-      <AddIncomeForm />
+      <IssueCard />
       {import.meta.env.DEV && (
         <Agentation
           onCopy={(_markdown) => {
