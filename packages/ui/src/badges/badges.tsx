@@ -119,13 +119,22 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
 ) {
   const c = colorTokens[color];
 
-  // Built-in exit motion — measure self once, then animate
-  // max-width + opacity + blur + scale on close. After EXIT_MS, fire the
-  // consumer's onClose so parent state cleanup happens against an already-
-  // collapsed badge (no visual snap).
-  const [isExiting, setIsExiting] = React.useState(false);
-  const [measuredWidth, setMeasuredWidth] = React.useState<number | undefined>(undefined);
+  // Built-in exit motion uses a two-phase pattern so that the normal
+  // (idle) state has zero layout constraints — no maxWidth, no overflow
+  // clipping. The phases:
+  //   1. `idle`     — natural sizing, no inline style, no transitions
+  //   2. `closing`  — width locked to measured pixel value + overflow:hidden,
+  //                   set in one render with no transition (so the lock is
+  //                   instantaneous, not animated from `auto`)
+  //   3. `exiting`  — same locked frame transitioned to 0 (and opacity/blur/
+  //                   scale animate in parallel). Browser interpolates from
+  //                   `closing` snapshot to `exiting` target.
+  // The phase flip happens across a requestAnimationFrame so the browser
+  // commits the `closing` styles before the transition kicks in.
+  type Phase = 'idle' | 'closing' | 'exiting';
+  const [phase, setPhase] = React.useState<Phase>('idle');
   const internalRef = React.useRef<HTMLSpanElement | null>(null);
+  const measuredWidthRef = React.useRef<number | undefined>(undefined);
 
   const setRefs = React.useCallback(
     (node: HTMLSpanElement | null) => {
@@ -136,26 +145,26 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
     [ref],
   );
 
-  React.useLayoutEffect(() => {
-    if (internalRef.current && measuredWidth === undefined) {
-      setMeasuredWidth(internalRef.current.offsetWidth);
-    }
-  }, [measuredWidth]);
-
   const handleClose = React.useCallback(() => {
-    if (isExiting) return;
-    if (instantRemove || !onClose) {
-      onClose?.();
+    if (phase !== 'idle' || !onClose) return;
+    if (instantRemove) {
+      onClose();
       return;
     }
-    setIsExiting(true);
-    window.setTimeout(() => onClose(), EXIT_MS);
-  }, [isExiting, instantRemove, onClose]);
+    // Capture the live width at click time so a font-swap or reflow that
+    // happened after mount doesn't leave us with a stale measurement.
+    if (internalRef.current) {
+      measuredWidthRef.current = internalRef.current.offsetWidth;
+    }
+    setPhase('closing');
+    requestAnimationFrame(() => {
+      setPhase('exiting');
+      window.setTimeout(() => onClose(), EXIT_MS);
+    });
+  }, [phase, instantRemove, onClose]);
 
-  // Exit-animation inline style. Applied only when the badge is in the
-  // middle of an exit transition (or has finished measurement).
   const animationStyle: React.CSSProperties =
-    isExiting
+    phase === 'exiting'
       ? {
           maxWidth: 0,
           marginRight: 0,
@@ -171,13 +180,12 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
           willChange: 'opacity, transform, filter, max-width',
           pointerEvents: 'none',
         }
-      : measuredWidth != null
+      : phase === 'closing' && measuredWidthRef.current != null
         ? {
-            // Lock in the measured width once known, so the exit transition
-            // has a numeric "from" value (auto → 0 doesn't animate).
-            maxWidth: `${measuredWidth}px`,
+            // One-frame snapshot: lock width to the just-measured value with
+            // overflow hidden so the exiting transition has a numeric `from`.
+            maxWidth: `${measuredWidthRef.current}px`,
             overflow: 'hidden',
-            transition: `max-width ${EXIT_MS}ms cubic-bezier(0.4, 0, 0.2, 1), margin ${EXIT_MS}ms cubic-bezier(0.4, 0, 0.2, 1), padding ${EXIT_MS}ms cubic-bezier(0.4, 0, 0.2, 1), opacity ${Math.round(EXIT_MS * 0.75)}ms ease-out, filter ${Math.round(EXIT_MS * 0.75)}ms ease-out, transform ${Math.round(EXIT_MS * 0.85)}ms ease-out`,
           }
         : {};
 
@@ -198,7 +206,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
         aria-hidden="true"
         className={cn('shrink-0 w-[3px] h-2.5 rounded-full', c.tag)}
       />
-      <span className="truncate">{children}</span>
+      <span>{children}</span>
       {closable &&
         (onClose ? (
           <button
