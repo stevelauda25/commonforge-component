@@ -1,5 +1,5 @@
 
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { Copy, X } from "lucide-react";
 import { FRAME_PRESETS } from '@/constants/playground';
 import { extractComponentName } from '@/utils/parser';
@@ -9,12 +9,43 @@ import MeasureOverlay from './MeasureOverlay';
 import ResizeHandles from './ResizeHandles';
 
 // =============================================================
-export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onSelect, selected, multiSelected = false, registry, measureMode, zoom }) {
+export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onSelect, onMeasure, selected, multiSelected = false, registry, measureMode, zoom }) {
   // Group-frame mode: when the node is part of a >1 selection, the parent
   // playground renders a single bounding frame for all of them. Suppress the
   // per-node label / dot / chrome to keep the visual clean.
   const showChrome = selected && !multiSelected;
   const containerRef = useRef(null);
+
+  // Report content rect + its offset within the outer wrapper to the parent.
+  // The outer wrapper is anchored at (node.x, node.y) but ALSO contains the
+  // floating label row above the component. Without the offset, the group
+  // bounding frame would start at node.y (top of label area) yet only span
+  // the content's height — leaving phantom padding above the visible badge
+  // and clipping out the bottom. Reporting offsetX/Y lets the parent draw a
+  // frame that hugs the real rendered component.
+  useEffect(() => {
+    if (!onMeasure) return;
+    const el = containerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const id = node.id;
+    const report = () => {
+      const outer = el.parentElement;
+      if (!outer) return;
+      const c = el.getBoundingClientRect();
+      const o = outer.getBoundingClientRect();
+      const z = typeof zoom === "number" && zoom > 0 ? zoom : 1;
+      onMeasure(id, {
+        offsetX: (c.left - o.left) / z,
+        offsetY: (c.top - o.top) / z,
+        width: c.width / z,
+        height: c.height / z,
+      });
+    };
+    report();
+    const ro = new ResizeObserver(report);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [node.id, onMeasure, zoom]);
 
   const handleMouseDown = (e) => {
     // Drag from label area only (there's no padding space now)

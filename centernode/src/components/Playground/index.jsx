@@ -293,6 +293,55 @@ export default function ComponentPlayground() {
   const exportMenuRef = useRef(null);
   const [saveStatus, setSaveStatus] = useState("");
 
+  // Per-node measured render rect (world coords, pre-zoom). PreviewNode
+  // reports {offsetX, offsetY, width, height} of the content wrapper relative
+  // to the outer wrapper — outer wrapper anchors at (node.x, node.y) but also
+  // hosts the floating label row above the component, so the content's
+  // visible position is (node.x + offsetX, node.y + offsetY). Without the
+  // offset, the group bounding frame draws around the label-padded outer
+  // bbox and ghost-floats above the real badge.
+  // Ref-backed for synchronous reads by auto-layout / distribute; the tick
+  // state triggers re-render so the group frame updates when sizes change.
+  const measuredSizesRef = useRef(new Map());
+  const [, bumpMeasureTick] = useState(0);
+  const onNodeMeasure = useCallback((id, rect) => {
+    const cur = measuredSizesRef.current.get(id);
+    if (
+      cur &&
+      cur.offsetX === rect.offsetX &&
+      cur.offsetY === rect.offsetY &&
+      cur.width === rect.width &&
+      cur.height === rect.height
+    ) return;
+    measuredSizesRef.current.set(id, rect);
+    bumpMeasureTick((t) => t + 1);
+  }, []);
+  // World-space rect of a node's visible content. Anchored at
+  // (node.x + offsetX, node.y + offsetY) and sized to the rendered component.
+  // Falls back to the outer anchor + customSize when no measurement exists
+  // yet (e.g. first frame after spawn).
+  const nodeRect = useCallback((n) => {
+    const x = n.x ?? 0;
+    const y = n.y ?? 0;
+    const m = measuredSizesRef.current.get(n.id);
+    if (m && m.width > 0 && m.height > 0) {
+      return { x: x + m.offsetX, y: y + m.offsetY, w: m.width, h: m.height };
+    }
+    const cw = n.customSize?.width;
+    const ch = n.customSize?.height;
+    return {
+      x, y,
+      w: typeof cw === "number" ? cw : 0,
+      h: typeof ch === "number" ? ch : 0,
+    };
+  }, []);
+  // Compact w/h accessor for auto-layout cursors — they only need to know
+  // how far to advance, not where the content sits within the outer.
+  const nodeSize = useCallback((n) => {
+    const r = nodeRect(n);
+    return { w: r.w, h: r.h };
+  }, [nodeRect]);
+
   // Derived selection helpers. selectedNodeId resolves only when exactly
   // ONE node is selected — so the inspector panel only shows when there's
   // a single unambiguous target. Multi-selection shows a count + bulk actions.
@@ -568,14 +617,10 @@ export default function ComponentPlayground() {
       );
       const anchorX = sorted[0].x ?? 0;
       const anchorY = sorted[0].y ?? 0;
-      const sizeOf = (n) => ({
-        w: typeof n.customSize?.width === "number" ? n.customSize.width : 240,
-        h: typeof n.customSize?.height === "number" ? n.customSize.height : 80,
-      });
       let cursor = direction === "row" ? anchorX : anchorY;
       const newPos = new Map();
       for (const n of sorted) {
-        const { w, h } = sizeOf(n);
+        const { w, h } = nodeSize(n);
         if (direction === "row") {
           newPos.set(n.id, { x: cursor, y: anchorY });
           cursor += w + gap;
@@ -586,7 +631,7 @@ export default function ComponentPlayground() {
       }
       return prev.map((n) => (newPos.has(n.id) ? { ...n, ...newPos.get(n.id) } : n));
     });
-  }, [selectedNodeIds]);
+  }, [selectedNodeIds, nodeSize]);
 
   // Distribute spacing — equalize gaps between selected nodes along their
   // dominant axis. Keeps first + last in place, redistributes middle. Useful
@@ -598,25 +643,20 @@ export default function ComponentPlayground() {
       const sorted = [...selected].sort((a, b) =>
         direction === "row" ? (a.x ?? 0) - (b.x ?? 0) : (a.y ?? 0) - (b.y ?? 0)
       );
-      const sizeOf = (n) => ({
-        w: typeof n.customSize?.width === "number" ? n.customSize.width : 240,
-        h: typeof n.customSize?.height === "number" ? n.customSize.height : 80,
-      });
       const first = sorted[0];
       const last = sorted[sorted.length - 1];
-      const firstSize = sizeOf(first);
-      const lastSize = sizeOf(last);
+      const firstSize = nodeSize(first);
       const startEdge = direction === "row" ? (first.x ?? 0) + firstSize.w : (first.y ?? 0) + firstSize.h;
       const endEdge = direction === "row" ? (last.x ?? 0) : (last.y ?? 0);
       const totalMidWidth = sorted
         .slice(1, -1)
-        .reduce((s, n) => s + (direction === "row" ? sizeOf(n).w : sizeOf(n).h), 0);
+        .reduce((s, n) => s + (direction === "row" ? nodeSize(n).w : nodeSize(n).h), 0);
       const gap = (endEdge - startEdge - totalMidWidth) / (sorted.length - 1);
       let cursor = startEdge + gap;
       const newPos = new Map();
       for (let i = 1; i < sorted.length - 1; i++) {
         const n = sorted[i];
-        const size = sizeOf(n);
+        const size = nodeSize(n);
         if (direction === "row") {
           newPos.set(n.id, { x: cursor, y: n.y ?? 0 });
           cursor += size.w + gap;
@@ -627,7 +667,7 @@ export default function ComponentPlayground() {
       }
       return prev.map((n) => (newPos.has(n.id) ? { ...n, ...newPos.get(n.id) } : n));
     });
-  }, [selectedNodeIds]);
+  }, [selectedNodeIds, nodeSize]);
 
   // Close add menu on click outside
   useEffect(() => {
@@ -1152,6 +1192,7 @@ export default function ComponentPlayground() {
                   onDelete={deleteNode}
                   onDuplicate={duplicateNode}
                   onSelect={handleSelect}
+                  onMeasure={onNodeMeasure}
                   registry={registry}
                   measureMode={measureMode}
                   zoom={zoom}
@@ -1166,15 +1207,16 @@ export default function ComponentPlayground() {
               if (selected.length === 0) return null;
               let xMin = Infinity, yMin = Infinity, xMax = -Infinity, yMax = -Infinity;
               for (const n of selected) {
-                const nx = n.x ?? 0;
-                const ny = n.y ?? 0;
-                const nw = typeof n.customSize?.width === "number" ? n.customSize.width : 240;
-                const nh = typeof n.customSize?.height === "number" ? n.customSize.height : 80;
-                if (nx < xMin) xMin = nx;
-                if (ny < yMin) yMin = ny;
-                if (nx + nw > xMax) xMax = nx + nw;
-                if (ny + nh > yMax) yMax = ny + nh;
+                const r = nodeRect(n);
+                if (r.w <= 0 || r.h <= 0) continue; // skip unmeasured nodes
+                if (r.x < xMin) xMin = r.x;
+                if (r.y < yMin) yMin = r.y;
+                if (r.x + r.w > xMax) xMax = r.x + r.w;
+                if (r.y + r.h > yMax) yMax = r.y + r.h;
               }
+              // Bail if no measurements landed yet (e.g. first frame after
+              // bulk-spawn) — avoids drawing a degenerate frame.
+              if (!Number.isFinite(xMin) || xMax <= xMin || yMax <= yMin) return null;
               return (
                 <div
                   className="pointer-events-none absolute border-2 border-blue-500 rounded-[2px]"
