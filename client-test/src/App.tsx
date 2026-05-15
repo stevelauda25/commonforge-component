@@ -11,6 +11,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { Agentation } from 'agentation';
 import { IssueCard } from './components/IssueCard.js';
+import { MarketDetailHeader } from './components/MarketDetailHeader.js';
 import { enrichAgentationOutput } from './lib/pod-agentation.js';
 
 function ThemeToggle() {
@@ -242,6 +243,7 @@ export default function App() {
       <Header />
       <Hero />
       <IssueCard />
+      <MarketDetailHeader />
       {import.meta.env.DEV && (
         <Agentation
           onCopy={(_markdown) => {

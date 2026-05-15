@@ -35,6 +35,48 @@ These packages are the **single source of truth** for visual design AND interact
 
 ## CORE RULES (Non-negotiable)
 
+### Rule -1 — Copy Locale: ENGLISH ONLY (regardless of conversation language)
+
+Every visible string in generated component code MUST be **English**, full
+stop. This applies to:
+
+- `label`, `placeholder`, `hint`, `description`, `error` props on inputs / checkboxes / dropdowns
+- Button text and link labels
+- Tab labels, badge content, tooltip content
+- Empty-state copy, page titles, section headings, table headers
+- Any literal text that ends up rendered in the UI
+
+```tsx
+// ✅ ALWAYS (no matter what language the prompt is in)
+<TextInput label="Email" placeholder="you@example.com" hint="We never share this." />
+<Button>Sign in</Button>
+<Badge color="green">READY</Badge>
+<Dropdown placeholder="Select country" />
+
+// ❌ NEVER
+<TextInput label="Surel" placeholder="alamat@anda.com" hint="Kami tidak akan membagikan ini." />
+<Button>Masuk</Button>
+<Badge color="green">SIAP</Badge>
+<Dropdown placeholder="Pilih negara" />
+```
+
+**Why:** This project is a public showcase for the POD design system. Demos
+and prototypes ship to investors, partners, and external developers — the
+locale audience is international. Bahasa Indonesia in component copy
+looks like accidental developer leakage.
+
+**The conversation can be in any language** (Indonesian, English, Spanish,
+etc.) — the AI agent still responds in the user's language, but the *code
+it generates* always has English strings.
+
+**The only exception** — when the user EXPLICITLY passes a string in their
+prompt as the literal copy:
+
+- "set the button label to `Masuk`" → emit `<Button>Masuk</Button>` (user supplied)
+- "placeholder text harus `Tulis pesan di sini...`" → emit verbatim (user supplied)
+
+Otherwise default English. If unsure, default English.
+
 ### Rule 0 — Always Use the Latest NPM Version (PINNED-CARET, NOT FROZEN)
 
 `package.json` deps for `pod-test-ui` and `pod-test-tokens` MUST use a caret

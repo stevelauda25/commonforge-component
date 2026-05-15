@@ -160,6 +160,16 @@ Kalau user bilang… | Pakai…
 
 ## Aturan POD yang harus AI agent patuhi
 
+0. **All visible copy in component code MUST be English.** Labels,
+   placeholders, hints, errors, button text, badge content, tab labels,
+   empty-state copy — semuanya English regardless of prompt language. The
+   conversation can be Indonesian/Spanish/whatever; the code stays English.
+   Only exception: user explicitly passes a string in their prompt as
+   the literal copy ("set button to `Masuk`" → emit `Masuk` verbatim).
+   ```tsx
+   // ✅ <TextInput label="Email" placeholder="you@example.com" />
+   // ❌ <TextInput label="Surel" placeholder="alamat@anda.com" />
+   ```
 1. **Use POD primitives first.** Kalau intent map a primitif, pakai itu — jangan native `<button>`/`<input>`.
 2. **Token only.** Tidak ada hex (`#...`), tidak ada `rgb()`, tidak ada `style={{ color: ... }}` di app code.
 3. **Tidak ada `dark:` modifier.** Dark mode di-handle automatic by token swap saat `.dark` class aktif di `<html>`.
