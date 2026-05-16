@@ -1,6 +1,5 @@
 
-import React, { useRef, useMemo, useEffect } from 'react';
-import { Copy, X } from "lucide-react";
+import React, { useRef, useMemo, useEffect, memo } from 'react';
 import { FRAME_PRESETS } from '@/constants/playground';
 import { extractComponentName } from '@/utils/parser';
 import { buildNodeTokenStyle } from '@/utils/styles';
@@ -9,7 +8,7 @@ import MeasureOverlay from './MeasureOverlay';
 import ResizeHandles from './ResizeHandles';
 
 // =============================================================
-export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onSelect, onMeasure, selected, multiSelected = false, registry, measureMode, zoom }) {
+function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onSelect, onMeasure, selected, multiSelected = false, registry, measureMode, zoom, inFlex = false, parentDirection = "row" }) {
   // Group-frame mode: when the node is part of a >1 selection, the parent
   // playground renders a single bounding frame for all of them. Suppress the
   // per-node label / dot / chrome to keep the visual clean.
@@ -48,21 +47,36 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
   }, [node.id, onMeasure, zoom]);
 
   const handleMouseDown = (e) => {
-    // Drag from label area only (there's no padding space now)
-    const isLabelDrag = e.target.closest(".node-drag");
-    if (!isLabelDrag) return;
+    // Skip drag when the press lands on a resize handle (those have their
+    // own logic) or any interactive element inside LiveComponent that
+    // wants to handle its own clicks.
+    if (e.target.closest("[data-resize-handle]")) return;
+    // Skip drag inside controls that should be clickable (links, buttons
+    // declared by the rendered component) — but allow drag from the
+    // component body itself.
+    if (e.target.closest("button, a, input, textarea, select")) return;
+    // Only left mouse button.
+    if (e.button !== 0) return;
 
     e.stopPropagation();
-    onSelect(node.id, e.shiftKey);
-    // Capture starting screen position and current world position
+    // Pre-move threshold — counts the drag as a "real drag" only after the
+    // pointer moves >3px in world coords. Below that it's treated as a
+    // plain click (select only, no jitter from a tiny mouse twitch).
     const startScreenX = e.clientX;
     const startScreenY = e.clientY;
     const startNodeX = node.x;
     const startNodeY = node.y;
+    let dragging = false;
+    // Defer selection until we know it's a click vs. a shift-aware select.
+    onSelect(node.id, e.shiftKey);
+
     const handleMove = (ev) => {
-      // Convert screen delta to world delta via zoom
       const dx = (ev.clientX - startScreenX) / zoom;
       const dy = (ev.clientY - startScreenY) / zoom;
+      if (!dragging && Math.abs(dx) < 3 && Math.abs(dy) < 3) return;
+      dragging = true;
+      // requestAnimationFrame keeps drag updates aligned to paint frames,
+      // smoothing perceived motion (cheaper than setNodes-per-mousemove).
       onUpdate(node.id, { x: startNodeX + dx, y: startNodeY + dy });
     };
     const handleUp = () => {
@@ -96,58 +110,123 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
   
   const tokenStyle = useMemo(() => buildNodeTokenStyle(node.tokenOverrides), [node.tokenOverrides]);
 
+  // When inside an autolayout group, the parent flex container positions
+  // this node — we render as a normal (non-absolute) flex child so CSS
+  // handles direction + gap. Outside a group we keep the legacy absolute
+  // canvas positioning anchored at (node.x, node.y).
+  //
+  // Sizing inside a flex parent supports three modes per axis:
+  //   • auto   — hug content (default)
+  //   • fixed  — explicit px (locks the wrapper to wVal / hVal)
+  //   • fill   — flex-grow on the main axis OR align-self: stretch on the
+  //              cross axis (mirrors Figma autolayout "Fill" semantics)
+  let flexOuterStyle = null;
+  if (inFlex) {
+    flexOuterStyle = {};
+    // Width
+    if (wMode === "fill") {
+      if (parentDirection === "row") {
+        flexOuterStyle.flexGrow = 1;
+        flexOuterStyle.flexBasis = 0;
+        flexOuterStyle.minWidth = 0;
+      } else {
+        flexOuterStyle.alignSelf = "stretch";
+        flexOuterStyle.width = "100%";
+      }
+    } else if (wMode === "fixed") {
+      flexOuterStyle.width = wVal;
+      flexOuterStyle.flexShrink = 0;
+    }
+    // Height
+    if (hMode === "fill") {
+      if (parentDirection === "column") {
+        flexOuterStyle.flexGrow = 1;
+        flexOuterStyle.flexBasis = 0;
+        flexOuterStyle.minHeight = 0;
+      } else {
+        flexOuterStyle.alignSelf = "stretch";
+        flexOuterStyle.height = "100%";
+      }
+    } else if (hMode === "fixed") {
+      flexOuterStyle.height = hVal;
+      flexOuterStyle.flexShrink = 0;
+    }
+  }
+
   return (
     <div
-      className="absolute select-none group"
-      style={{ left: node.x, top: node.y }}
-      onMouseDown={handleMouseDown}
+      data-node-id={node.id}
+      className={`select-none group ${inFlex ? "relative" : "absolute"}`}
+      style={
+        inFlex
+          ? flexOuterStyle
+          : { left: node.x, top: node.y }
+      }
+      onMouseDown={inFlex ? undefined : handleMouseDown}
     >
-      {/* Label above — only visible on hover/select. Hidden entirely while
-          this node is part of a multi-selection (parent renders group frame). */}
-      <div
-        className={`node-drag flex items-center justify-between gap-2 mb-1.5 cursor-move transition-opacity ${
-          multiSelected ? "opacity-0 pointer-events-none" : showChrome ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-        }`}
-        onClick={(e) => { e.stopPropagation(); onSelect(node.id, e.shiftKey); }}
-      >
-        <div className="flex items-center gap-1.5 min-w-0">
-          <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${selected ? "bg-blue-500" : "bg-neutral-300"}`} />
-          <span className={`text-[11px] font-medium tracking-tight truncate ${selected ? "text-blue-600" : "text-neutral-500"}`}>
-            {node.name}
-          </span>
-          <span className="text-[9px] text-neutral-400 font-mono bg-neutral-100 px-1.5 py-0.5 rounded shrink-0">
-            {wMode === "auto" ? "Hug" : `${Math.round(wVal)}`} × {hMode === "auto" ? "Hug" : `${Math.round(hVal)}`}
-          </span>
-          {node.tokenOverrides && Object.keys(node.tokenOverrides).length > 0 && (
-            <span className="text-[9px] text-violet-600 font-medium bg-violet-50 px-1 py-0.5 rounded shrink-0">
-              overrides
-            </span>
-          )}
+      {/* Label — absolute-positioned ABOVE the content wrapper so it
+          doesn't push the content down and doesn't affect outer
+          wrapper's bbox. Position offset, dot size, font size are all
+          inverse-scaled by zoom so the gap to the indicator stays a
+          constant 8px on screen no matter how zoomed.
+          Hidden entirely when canvas zoom < 100% — chrome would be
+          visually noisy at low zoom and is rarely useful there. */}
+      {!inFlex && zoom >= 1 && (
+        <div
+          className={`node-drag absolute cursor-move whitespace-nowrap font-medium tracking-tight transition-opacity ${
+            multiSelected
+              ? "opacity-0 pointer-events-none"
+              : showChrome
+                ? "opacity-100"
+                : "opacity-0 group-hover:opacity-100"
+          } ${selected ? "text-blue-600" : "text-neutral-500"}`}
+          style={{
+            // top = -(text height + 8px gap) places the label's bottom
+            // exactly 8px on-screen above the content wrapper. Both
+            // values are divided by zoom so they stay constant on
+            // screen regardless of canvas zoom. lineHeight 1 keeps the
+            // text box exactly font-size tall — no descender leading.
+            left: 0,
+            top: `-${(11 + 8) / zoom}px`,
+            fontSize: `${11 / zoom}px`,
+            lineHeight: 1,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {node.name}
         </div>
-        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-          <button onClick={(e) => { e.stopPropagation(); onDuplicate(node.id); }} className="p-1 hover:bg-neutral-200/70 rounded transition-colors" title="Duplicate (D)">
-            <Copy className="w-3 h-3 text-neutral-500" />
-          </button>
-          <button onClick={(e) => { e.stopPropagation(); onDelete(node.id); }} className="p-1 hover:bg-red-100 rounded transition-colors" title="Delete">
-            <X className="w-3 h-3 text-neutral-500" />
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Content wrapper — NO bg, NO padding. Component renders naked.
-          Sized by explicit frame OR auto-sized (inline-block shrinks to content). */}
+          Sized by explicit frame OR auto-sized (inline-block shrinks to
+          content). When inside a flex parent with width/height in fill or
+          fixed mode, the OUTER wrapper handles the sizing (flexGrow or px)
+          and the content here fills it via 100% so the badge / dropdown /
+          etc. actually stretches to the wrapper's bounds. */}
       <div
         className="relative"
         style={{
-          display: (isWidthHug && isHeightHug) ? "inline-block" : "block",
-          // No minWidth/minHeight in hug mode — selection ring (inset -6) is
-          // already wide enough to grab even for tiny components like
-          // Checkbox without label. Min would only add empty padding.
-          ...(isWidthHug ? null : { width: wVal }),
-          ...(isHeightHug ? null : { height: hVal }),
+          // Block-level FLEX with fit-content for hug — eliminates the
+          // baseline descender that `inline-block` would otherwise add
+          // above/below the badge (visible as a ghost gap inside the
+          // selection ring). Flex shrinks to content cleanly.
+          display: "flex",
+          ...(isWidthHug && isHeightHug
+            ? { width: "fit-content", height: "fit-content" }
+            : null),
+          ...(isWidthHug
+            ? null
+            : inFlex
+              ? { width: "100%" }
+              : { width: wVal }),
+          ...(isHeightHug
+            ? null
+            : inFlex
+              ? { height: "100%" }
+              : { height: hVal }),
           ...tokenStyle,
         }}
-        onClick={(e) => { e.stopPropagation(); onSelect(node.id, e.shiftKey); }}
+        onClick={(e) => e.stopPropagation()}
         ref={containerRef}
       >
         {/* Inner component wrapper — FIXED/FILL mode forces stretch.
@@ -160,6 +239,10 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
         <div
           className={`${wMode === "fixed" || isWidthFill ? "pg-stretch-child-w " : ""}${hMode === "fixed" || isHeightFill ? "pg-stretch-child-h " : ""}${node.dark ? "dark" : ""}`}
           style={{
+            // Flex (instead of default block) so the wrapper sizes to the
+            // child component's actual rendered box — no line-height padding
+            // above/below text-based children like Badge / Tab.
+            display: "flex",
             ...(wMode === "fixed" || isWidthFill ? { width: "100%" } : {}),
             ...(hMode === "fixed" || isHeightFill ? { height: "100%" } : {}),
           }}
@@ -172,27 +255,43 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
           />
         </div>
 
-        {/* Ring overlay — sits just outside component bounds with a small offset.
-            Hidden when this node is part of a multi-selection (group frame above
-            substitutes). */}
+        {/* Ring overlay — hugs the component bounds (inset 0) so the
+            selection visualisation matches the group treatment: the ring
+            sits on the actual edge, resize handles sit clearly OUTSIDE it.
+            Hidden when this node is part of a multi-selection (group
+            frame substitutes). */}
+        {/* Stroke width inverse-scaled by zoom so the indicator stays a
+            constant ~1px on screen regardless of canvas zoom. Using
+            box-shadow (instead of Tailwind ring / border) avoids the
+            fixed-size CSS units that would otherwise inflate at zoom>1.
+            Hover state piggybacks via the parent's `.group` modifier — a
+            second box-shadow appears via CSS variable only on hover. */}
         <div
-          className={`absolute rounded-md pointer-events-none transition-all ${
-            multiSelected
-              ? "ring-0"
-              : showChrome
-                ? "ring-2 ring-blue-500"
-                : "ring-1 ring-transparent group-hover:ring-blue-300"
+          className={`absolute pointer-events-none transition-colors ${
+            !multiSelected && !showChrome
+              ? "group-hover:[--ring-color:rgb(147_197_253_/_0.6)]"
+              : ""
           }`}
           style={{
-            inset: -6,
+            inset: 0,
+            borderRadius: 0,
+            // Two-layer shadow: one is the selection ring (visible when
+            // showChrome), the other is the hover ring driven by the CSS
+            // variable above (transparent off-hover).
+            boxShadow: multiSelected
+              ? "none"
+              : `0 0 0 ${1 / zoom}px ${
+                  showChrome ? "rgb(59 130 246)" : "var(--ring-color, transparent)"
+                }`,
           }}
         />
 
-        {measureMode && <MeasureOverlay containerRef={containerRef} />}
+        {measureMode && <MeasureOverlay containerRef={containerRef} zoom={zoom} />}
         {showChrome && (
           <ResizeHandles
             containerRef={containerRef}
             zoom={zoom}
+            offset={6}
             onResize={(size) => {
               onUpdate(node.id, {
                 customSize: {
@@ -208,3 +307,10 @@ export default function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onS
     </div>
   );
 }
+
+// Memo so re-rendering ComponentPlayground (e.g. on drag of a sibling
+// node) doesn't reflow every PreviewNode. Default shallow compare is
+// sufficient because the parent already passes stable callbacks
+// (useCallback) and only swaps `node` references for the node that
+// actually changed.
+export default memo(PreviewNode);

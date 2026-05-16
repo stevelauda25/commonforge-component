@@ -1,16 +1,9 @@
-import {
-  Button,
-  Checkbox,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  SearchInput,
-  TextInput,
-  Tooltip,
-} from 'pod-test-ui';
+import { Badge, Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
 import {
   ArrowRight,
   Bell,
+  Check,
+  ExternalLink,
   Moon,
   Sparkles,
   Star,
@@ -254,196 +247,91 @@ function Hero() {
   );
 }
 
-const TEAM_SIZES = [
-  { value: '1-10',    label: '1-10' },
-  { value: '11-50',   label: '11-50' },
-  { value: '51-200',  label: '51-200' },
-  { value: '201+',    label: '201+' },
-] as const;
+function ClaimPayoutCard() {
+  const SHARES = 247.5;
+  const PRICE_PER_SHARE = 1.0;
+  const PAYOUT = SHARES * PRICE_PER_SHARE;
 
-type TeamSize = (typeof TEAM_SIZES)[number]['value'] | '';
+  const [autoClaim, setAutoClaim] = useState<boolean | 'indeterminate'>(false);
+  const [claiming, setClaiming] = useState(false);
+  const [claimed, setClaimed] = useState(false);
 
-interface LeadErrors {
-  name?: string;
-  email?: string;
-  company?: string;
-  teamSize?: string;
-}
-
-function LeadCaptureForm() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [company, setCompany] = useState('');
-  const [teamSize, setTeamSize] = useState<TeamSize>('');
-  const [subscribe, setSubscribe] = useState<boolean | 'indeterminate'>(true);
-  const [teamOpen, setTeamOpen] = useState(false);
-  const [errors, setErrors] = useState<LeadErrors>({});
-  const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
-
-  const teamRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!teamOpen) return;
-    const onDoc = (e: MouseEvent) => {
-      if (!teamRef.current?.contains(e.target as Node)) setTeamOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setTeamOpen(false);
-    };
-    document.addEventListener('mousedown', onDoc);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDoc);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [teamOpen]);
-
-  const validate = (): LeadErrors => {
-    const e: LeadErrors = {};
-    if (!name.trim()) e.name = 'Nama wajib diisi.';
-    if (!email.trim()) {
-      e.email = 'Email wajib diisi.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      e.email = 'Format email tidak valid.';
-    }
-    if (!company.trim()) e.company = 'Nama perusahaan wajib diisi.';
-    if (!teamSize) e.teamSize = 'Pilih ukuran tim.';
-    return e;
-  };
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setDone(false);
-    const next = validate();
-    setErrors(next);
-    if (Object.keys(next).length > 0) return;
-
-    setSubmitting(true);
+  const onClaim = async () => {
+    setClaiming(true);
     await new Promise((r) => setTimeout(r, 900));
-    setSubmitting(false);
-    setDone(true);
-
-    setName('');
-    setEmail('');
-    setCompany('');
-    setTeamSize('');
-    setSubscribe(true);
-    setErrors({});
+    setClaiming(false);
+    setClaimed(true);
   };
 
-  const teamLabel = TEAM_SIZES.find((t) => t.value === teamSize)?.label;
+  const fmt = (n: number) =>
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(n);
 
   return (
     <section className="mx-auto w-full max-w-md px-6 py-12">
-      <header className="mb-6">
-        <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
-          Get started with POD
-        </h2>
-        <p className="mt-1 text-sm text-text-muted">
-          Isi data singkat — tim kami akan kirim setup guide ke email kamu.
-        </p>
-      </header>
+      <article className="flex flex-col gap-5 rounded-xl border border-border-default bg-surface p-6 shadow-foundation-sm">
+        <header className="flex items-center justify-between gap-3">
+          <Badge color="green" closable={false}>RESOLVED YES</Badge>
+          <span className="text-xs text-text-muted">Resolved Nov 6, 2024</span>
+        </header>
 
-      <form
-        onSubmit={onSubmit}
-        className="flex flex-col gap-5 rounded-xl border border-border-default bg-surface p-6 shadow-foundation-sm"
-        noValidate
-      >
-        <TextInput
-          label="Full name"
-          required
-          autoComplete="name"
-          placeholder="Helmi Ismail"
-          value={name}
-          error={errors.name}
-          onChange={(e) => {
-            setName(e.target.value);
-            if (errors.name) setErrors((er) => ({ ...er, name: undefined }));
-          }}
-        />
+        <div className="flex items-start gap-3 rounded-lg border border-success/40 bg-success-subtle p-4">
+          <div className="mt-0.5 shrink-0">
+            <Check size={16} className="text-success" />
+          </div>
+          <div className="text-sm">
+            <p className="font-medium text-text-primary">Final outcome: Yes</p>
+            <p className="text-text-muted">Donald Trump won the 2024 election.</p>
+          </div>
+        </div>
 
-        <TextInput
-          label="Work email"
-          required
-          type="email"
-          autoComplete="email"
-          placeholder="you@company.com"
-          value={email}
-          error={errors.email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (errors.email) setErrors((er) => ({ ...er, email: undefined }));
-          }}
-        />
-
-        <TextInput
-          label="Company"
-          required
-          autoComplete="organization"
-          placeholder="Acme Inc."
-          value={company}
-          error={errors.company}
-          onChange={(e) => {
-            setCompany(e.target.value);
-            if (errors.company) setErrors((er) => ({ ...er, company: undefined }));
-          }}
-        />
-
-        <div ref={teamRef}>
-          <Dropdown
-            label="Team size"
-            required
-            placeholder="Pilih ukuran tim…"
-            selectedLabel={teamLabel}
-            error={errors.teamSize}
-            open={teamOpen}
-            onClick={() => setTeamOpen((o) => !o)}
-            popup={
-              teamOpen ? (
-                <DropdownMenu>
-                  {TEAM_SIZES.map((opt) => (
-                    <DropdownItem
-                      key={opt.value}
-                      selected={teamSize === opt.value}
-                      showSelectedMark
-                      onClick={() => {
-                        setTeamSize(opt.value);
-                        setTeamOpen(false);
-                        if (errors.teamSize) setErrors((er) => ({ ...er, teamSize: undefined }));
-                      }}
-                    >
-                      {opt.label}
-                    </DropdownItem>
-                  ))}
-                </DropdownMenu>
-              ) : null
-            }
-          />
+        <div className="flex flex-col gap-2 rounded-lg bg-canvas/40 p-4">
+          <PayoutRow label="Shares"            value={SHARES.toLocaleString()} />
+          <PayoutRow label="× Price per share" value={fmt(PRICE_PER_SHARE)} />
+          <div className="mt-1 flex items-center justify-between border-t border-border-subtle pt-3">
+            <span className="text-sm font-medium text-text-primary">= Total payout</span>
+            <span className="text-lg font-semibold tabular-nums text-text-primary">{fmt(PAYOUT)}</span>
+          </div>
         </div>
 
         <Checkbox
-          checked={subscribe}
-          onCheckedChange={setSubscribe}
-          label="Subscribe to product updates"
-          description="We send a digest twice a month"
+          checked={autoClaim}
+          onCheckedChange={setAutoClaim}
+          label="Auto-claim future resolutions in this category"
+          description="Saving akan otomatis cair tanpa konfirmasi manual."
         />
 
-        <Button type="submit" variant="primary" size="md" loading={submitting}>
-          Get started
-        </Button>
-      </form>
+        <footer className="flex flex-wrap items-center gap-2 border-t border-border-subtle pt-4">
+          <Button
+            variant="primary"
+            size="md"
+            loading={claiming}
+            disabled={claimed}
+            className="flex-1"
+            onClick={onClaim}
+          >
+            {claimed ? 'Claimed' : `Claim ${fmt(PAYOUT)}`}
+          </Button>
+          <Button variant="outline" size="md" rightIcon={<ExternalLink size={14} />}>
+            View market
+          </Button>
+        </footer>
 
-      {done && (
-        <div
-          role="status"
-          className="mt-4 rounded-lg border border-success/40 bg-success-subtle p-4 text-sm text-text-primary"
-        >
-          <p className="font-medium">Thanks — kami sudah catat datanya.</p>
-          <p className="text-text-muted">Setup guide akan dikirim ke email kamu.</p>
-        </div>
-      )}
+        {claimed && (
+          <p role="status" className="text-xs text-success">
+            Payout sent to your wallet — tx confirmed.
+          </p>
+        )}
+      </article>
     </section>
+  );
+}
+
+function PayoutRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between text-sm">
+      <span className="text-text-muted">{label}</span>
+      <span className="font-medium tabular-nums text-text-secondary">{value}</span>
+    </div>
   );
 }
 
@@ -453,7 +341,7 @@ export default function App() {
       <Header />
       <Hero />
       <IssueCard />
-      <LeadCaptureForm />
+      <ClaimPayoutCard />
       {import.meta.env.DEV && (
         <Agentation
           onCopy={(_markdown) => {

@@ -244,6 +244,181 @@ ${jsxBody}
 `;
 }
 
+// =============================================================
+// Extract the inner JSX expression from a function-component code body.
+// Falls back to a tag placeholder when the body is too complex to scrape.
+function extractInnerJsx(code) {
+  if (!code || typeof code !== "string") return null;
+  // `return ( ... )` — most common for components with nested JSX
+  const m1 = code.match(/return\s*\(\s*([\s\S]*?)\s*\)\s*;?\s*}/);
+  if (m1 && m1[1].includes("<")) return m1[1];
+  // `return <Tag .../>` — single-line return without parens
+  const m2 = code.match(/return\s+(<[\s\S]*?\/?>)\s*;/);
+  if (m2) return m2[1];
+  return null;
+}
+
+// Reindent a multi-line JSX block by the given amount of spaces. Trims
+// leading blank lines so the output starts cleanly under the wrapper.
+function indentBlock(block, spaces) {
+  const pad = " ".repeat(spaces);
+  return block
+    .replace(/^\s*\n/, "")
+    .split("\n")
+    .map((l) => (l.length ? pad + l : l))
+    .join("\n");
+}
+
+// =============================================================
+// Generate a JSX snippet that represents a group as a flex wrapper around
+// its children. Live-callable from the inspector — recompute on every
+// autolayout / children change. Returns paste-ready code.
+//
+// Format options (toggled by `format`):
+//   - "jsx-inline"   : <div style={{...}}> ... </div>  (default, framework-agnostic)
+//   - "jsx-tailwind" : <div className="flex flex-col gap-3"> ... </div>
+//   - "html"         : <div style="..."> ... </div>     (plain HTML)
+// Build CSS / style props for a child node based on its customSize +
+// the parent flex direction. Returns { jsx, tw, html } pieces ready to
+// inject into the wrapper-tag string. Empty fragment for default hug.
+function childSizeProps(child, parentDir) {
+  const wMode = child.customSize?.widthMode || "auto";
+  const hMode = child.customSize?.heightMode || "auto";
+  const w = typeof child.customSize?.width === "number" ? child.customSize.width : null;
+  const h = typeof child.customSize?.height === "number" ? child.customSize.height : null;
+  const jsx = [];
+  const tw = [];
+  const html = [];
+  // Width
+  if (wMode === "fill") {
+    if (parentDir === "row") {
+      jsx.push(`flex: "1 1 0"`, `minWidth: 0`);
+      tw.push("flex-1", "min-w-0");
+      html.push("flex:1 1 0", "min-width:0");
+    } else {
+      jsx.push(`alignSelf: "stretch"`, `width: "100%"`);
+      tw.push("self-stretch", "w-full");
+      html.push("align-self:stretch", "width:100%");
+    }
+  } else if (wMode === "fixed" && w != null) {
+    jsx.push(`width: ${w}`);
+    tw.push(`w-[${w}px]`);
+    html.push(`width:${w}px`);
+  }
+  // Height
+  if (hMode === "fill") {
+    if (parentDir === "column") {
+      jsx.push(`flex: "1 1 0"`, `minHeight: 0`);
+      tw.push("flex-1", "min-h-0");
+      html.push("flex:1 1 0", "min-height:0");
+    } else {
+      jsx.push(`alignSelf: "stretch"`, `height: "100%"`);
+      tw.push("self-stretch", "h-full");
+      html.push("align-self:stretch", "height:100%");
+    }
+  } else if (hMode === "fixed" && h != null) {
+    jsx.push(`height: ${h}`);
+    tw.push(`h-[${h}px]`);
+    html.push(`height:${h}px`);
+  }
+  return { jsx, tw, html };
+}
+
+// Wrap a single child's inner JSX with a sizing wrapper when needed.
+function wrapChildForSize(innerJsx, props, format) {
+  if (format === "jsx-tailwind") {
+    if (props.tw.length === 0) return innerJsx;
+    // Pick out the inner element's existing className (if any) and merge.
+    // Simple approach — wrap in another <div> if we can't safely modify
+    // the child's existing className without parsing JSX.
+    return `<div className="${props.tw.join(" ")}">\n${indentBlock(innerJsx, 2)}\n</div>`;
+  }
+  if (format === "html") {
+    if (props.html.length === 0) return innerJsx;
+    return `<div style="${props.html.join(";")}">\n${indentBlock(innerJsx, 2)}\n</div>`;
+  }
+  // jsx-inline
+  if (props.jsx.length === 0) return innerJsx;
+  return `<div style={{ ${props.jsx.join(", ")} }}>\n${indentBlock(innerJsx, 2)}\n</div>`;
+}
+
+export function groupToCode(group, allNodes, format = "jsx-inline") {
+  if (!group || group.type !== "group") return "";
+  const dir = group.autolayout?.direction || "row";
+  const gap = group.autolayout?.gap ?? 0;
+  const align = group.autolayout?.align || "start";
+  const padding = group.autolayout?.padding ?? 0;
+  const gWMode = group.customSize?.widthMode || "auto";
+  const gHMode = group.customSize?.heightMode || "auto";
+  const gW = typeof group.customSize?.width === "number" ? group.customSize.width : null;
+  const gH = typeof group.customSize?.height === "number" ? group.customSize.height : null;
+  // CSS alignItems mapping — match the same enum we render with.
+  const alignItemsCss = {
+    start: "flex-start",
+    center: "center",
+    end: "flex-end",
+    stretch: "stretch",
+  }[align] || "flex-start";
+  // Tailwind utility for alignItems.
+  const alignTw = {
+    start: "items-start",
+    center: "items-center",
+    end: "items-end",
+    stretch: "items-stretch",
+  }[align] || "items-start";
+
+  const children = (group.children || [])
+    .map((cid) => allNodes.find((n) => n.id === cid))
+    .filter(Boolean);
+
+  const childLines = children
+    .map((c) => {
+      // JSX snippet children (POD instances) — inline as written.
+      const inner =
+        c.code && /^\s*</.test(c.code)
+          ? c.code.trim()
+          : extractInnerJsx(c.code) ||
+            `{/* ${c.name} — composite component, copy the function from the node’s code panel */}`;
+      // Wrap in a sizing div when the child has fill/fixed CSS to apply.
+      const wrapped = wrapChildForSize(inner, childSizeProps(c, dir), format);
+      return indentBlock(wrapped, 2);
+    })
+    .join("\n");
+
+  if (format === "jsx-tailwind") {
+    const flexDir = dir === "row" ? "flex-row" : "flex-col";
+    const parts = ["flex", flexDir, alignTw, `gap-[${gap}px]`];
+    if (padding > 0) parts.push(`p-[${padding}px]`);
+    if (gWMode === "fixed" && gW != null) parts.push(`w-[${gW}px]`);
+    if (gHMode === "fixed" && gH != null) parts.push(`h-[${gH}px]`);
+    return `<div className="${parts.join(" ")}">\n${childLines}\n</div>`;
+  }
+  if (format === "html") {
+    const segs = [
+      `display:flex`,
+      `flex-direction:${dir}`,
+      `align-items:${alignItemsCss}`,
+      `gap:${gap}px`,
+    ];
+    if (padding > 0) segs.push(`padding:${padding}px`);
+    if (gWMode === "fixed" && gW != null) segs.push(`width:${gW}px`);
+    if (gHMode === "fixed" && gH != null) segs.push(`height:${gH}px`);
+    return `<div style="${segs.join(";")}">\n${childLines}\n</div>`;
+  }
+  // Default: JSX with inline style.
+  const parts = [
+    `display: "flex"`,
+    `flexDirection: "${dir}"`,
+    `alignItems: "${alignItemsCss}"`,
+    `gap: ${gap}`,
+  ];
+  if (padding > 0) parts.push(`padding: ${padding}`);
+  if (gWMode === "fixed" && gW != null) parts.push(`width: ${gW}`);
+  if (gHMode === "fixed" && gH != null) parts.push(`height: ${gH}`);
+  const styleObj = `{ ${parts.join(", ")} }`;
+  return `<div style={${styleObj}}>\n${childLines}\n</div>`;
+}
+
 // Download helper
 export function downloadFile(filename, content, mimeType = "text/plain") {
   const blob = new Blob([content], { type: mimeType });

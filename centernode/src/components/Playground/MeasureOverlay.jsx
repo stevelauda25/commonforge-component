@@ -1,14 +1,24 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // =============================================================
-export default function MeasureOverlay({ containerRef }) {
+export default function MeasureOverlay({ containerRef, zoom = 1 }) {
   const [info, setInfo] = useState(null);
+  // Hold latest zoom in a ref so the listeners (attached once) read the
+  // current value without us having to re-subscribe on every zoom change.
+  const zoomRef = useRef(zoom);
+  zoomRef.current = zoom;
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
+    // getBoundingClientRect returns screen pixels POST-zoom (the CSS `zoom`
+    // wrapper around the canvas scales descendant rects). But the overlay is
+    // rendered inside that same wrapper, so an inline `left: N px` is
+    // multiplied by zoom AGAIN during layout. To land on the right spot we
+    // divide rect-derived deltas by the current zoom factor, recovering the
+    // pre-zoom CSS coordinate the overlay needs.
     const onMove = (e) => {
       const target = e.target;
       if (!target || target === container) {
@@ -21,13 +31,14 @@ export default function MeasureOverlay({ containerRef }) {
       const rect = target.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
       const styles = window.getComputedStyle(target);
+      const z = zoomRef.current > 0 ? zoomRef.current : 1;
 
       setInfo({
         tag: target.tagName.toLowerCase(),
-        x: rect.left - containerRect.left,
-        y: rect.top - containerRect.top,
-        width: Math.round(rect.width),
-        height: Math.round(rect.height),
+        x: (rect.left - containerRect.left) / z,
+        y: (rect.top - containerRect.top) / z,
+        width: Math.round(rect.width / z),
+        height: Math.round(rect.height / z),
         padding: styles.padding,
         margin: styles.margin,
         borderRadius: styles.borderRadius,
@@ -44,21 +55,25 @@ export default function MeasureOverlay({ containerRef }) {
       if (e.data && e.data.type === 'canvas-measure') {
         const frameId = e.data.frameId;
         const iframe = container.querySelector(`iframe[data-frame-id="${frameId}"]`);
-        
+
         if (!iframe) {
           return; // Came from another component's iframe
         }
-        
+
         if (!e.data.info) {
           setInfo(null);
         } else {
-          // Adjust coordinates relative to our container
+          // Iframe-internal info.x/y/width/height are already in CSS pixels
+          // (iframe is its own document — parent's `zoom` doesn't propagate
+          // inside). Only the iframe-vs-container offset needs un-zooming,
+          // because that delta IS measured in post-zoom screen pixels.
           const containerRect = container.getBoundingClientRect();
           const iframeRect = iframe.getBoundingClientRect();
-          
+          const z = zoomRef.current > 0 ? zoomRef.current : 1;
+
           const info = e.data.info;
-          info.x = info.x + iframeRect.left - containerRect.left;
-          info.y = info.y + iframeRect.top - containerRect.top;
+          info.x = info.x + (iframeRect.left - containerRect.left) / z;
+          info.y = info.y + (iframeRect.top - containerRect.top) / z;
           setInfo(info);
         }
       }
@@ -67,7 +82,7 @@ export default function MeasureOverlay({ containerRef }) {
     container.addEventListener("mousemove", onMove);
     container.addEventListener("mouseleave", onLeave);
     window.addEventListener("message", onMessage);
-    
+
     return () => {
       container.removeEventListener("mousemove", onMove);
       container.removeEventListener("mouseleave", onLeave);

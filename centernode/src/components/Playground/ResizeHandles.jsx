@@ -1,7 +1,7 @@
 import React from 'react';
 
 // =============================================================
-export default function ResizeHandles({ containerRef, onResize, zoom = 1 }) {
+export default function ResizeHandles({ containerRef, onResize, zoom = 1, offset = 0 }) {
   const startResize = (direction) => (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -47,16 +47,22 @@ export default function ResizeHandles({ containerRef, onResize, zoom = 1 }) {
   const s = 10 / zoom;
   const half = s / 2;
   const border = 2 / zoom;
+  // Push handles further outward by `offset` (in screen px) so they sit
+  // OUTSIDE any selection ring drawn on the container's edge — prevents
+  // the dots from overlapping the frame and feels closer to Figma's
+  // detached-handle look.
+  const off = offset / zoom;
+  const out = half + off;
 
   const handles = [
-    { dir: "w",  style: { top: `calc(50% - ${half}px)`, left: -half, cursor: "ew-resize" } },
-    { dir: "e",  style: { top: `calc(50% - ${half}px)`, right: -half, cursor: "ew-resize" } },
-    { dir: "n",  style: { left: `calc(50% - ${half}px)`, top: -half, cursor: "ns-resize" } },
-    { dir: "s",  style: { left: `calc(50% - ${half}px)`, bottom: -half, cursor: "ns-resize" } },
-    { dir: "nw", style: { top: -half, left: -half, cursor: "nwse-resize" } },
-    { dir: "ne", style: { top: -half, right: -half, cursor: "nesw-resize" } },
-    { dir: "sw", style: { bottom: -half, left: -half, cursor: "nesw-resize" } },
-    { dir: "se", style: { bottom: -half, right: -half, cursor: "nwse-resize" } },
+    { dir: "w",  style: { top: `calc(50% - ${half}px)`, left: -out, cursor: "ew-resize" } },
+    { dir: "e",  style: { top: `calc(50% - ${half}px)`, right: -out, cursor: "ew-resize" } },
+    { dir: "n",  style: { left: `calc(50% - ${half}px)`, top: -out, cursor: "ns-resize" } },
+    { dir: "s",  style: { left: `calc(50% - ${half}px)`, bottom: -out, cursor: "ns-resize" } },
+    { dir: "nw", style: { top: -out, left: -out, cursor: "nwse-resize" } },
+    { dir: "ne", style: { top: -out, right: -out, cursor: "nesw-resize" } },
+    { dir: "sw", style: { bottom: -out, left: -out, cursor: "nesw-resize" } },
+    { dir: "se", style: { bottom: -out, right: -out, cursor: "nwse-resize" } },
   ];
 
   return (
@@ -64,6 +70,7 @@ export default function ResizeHandles({ containerRef, onResize, zoom = 1 }) {
       {handles.map((handle) => (
         <div
           key={handle.dir}
+          data-resize-handle
           className="absolute bg-white border-blue-500 rounded-sm shadow-sm"
           style={{
             ...handle.style,

@@ -1,15 +1,22 @@
 
 import React, { useRef, useMemo } from 'react';
-import { highlightCode, TOKEN_COLORS } from '@/utils/highlighter';
+import { highlightCode, TOKEN_COLORS, TOKEN_COLORS_DARK } from '@/utils/highlighter';
 
 // =============================================================
-export default function CodeEditor({ value, onChange, readOnly = false }) {
+// Shared code surface — used both by the single-component editor (full
+// edit, light theme) and the autolayout group code preview (read-only,
+// dark theme). One implementation, one syntax highlighter, one font →
+// the two surfaces stay visually consistent.
+export default function CodeEditor({ value, onChange, readOnly = false, theme = "dark" }) {
   const textareaRef = useRef(null);
   const preRef = useRef(null);
   const lineNumbersRef = useRef(null);
 
-  const tokens = useMemo(() => highlightCode(value), [value]);
-  const lineCount = useMemo(() => value.split("\n").length, [value]);
+  const isDark = theme === "dark";
+  const palette = isDark ? TOKEN_COLORS_DARK : TOKEN_COLORS;
+
+  const tokens = useMemo(() => highlightCode(value || ""), [value]);
+  const lineCount = useMemo(() => (value || "").split("\n").length, [value]);
 
   // Sync scroll
   const handleScroll = () => {
@@ -40,7 +47,9 @@ export default function CodeEditor({ value, onChange, readOnly = false }) {
   };
 
   const sharedStyle = {
-    fontFamily: "'JetBrains Mono', 'Menlo', 'Consolas', monospace",
+    // Geist Mono — wired in app/layout.tsx as a `--font-geist-mono`
+    // CSS variable. Falls back to system mono if unloaded.
+    fontFamily: "var(--font-geist-mono), 'JetBrains Mono', 'Menlo', 'Consolas', monospace",
     fontSize: "12px",
     lineHeight: "1.6",
     tabSize: 2,
@@ -52,18 +61,29 @@ export default function CodeEditor({ value, onChange, readOnly = false }) {
     overflow: "auto",
   };
 
+  const surfaceBg = isDark ? "#0a0c10" : "#ffffff";
+  const gutterBg = isDark ? "#0a0c10" : "#fafafa";
+  const gutterFg = isDark ? "#525252" : "#a3a3a3";
+  const gutterBorder = isDark ? "rgba(255,255,255,0.06)" : "#e5e5e5";
+  const caretColor = readOnly ? "transparent" : (isDark ? "#e5e5e5" : "#171717");
+
   return (
-    <div className="relative w-full h-full flex bg-white overflow-hidden">
+    <div
+      className="relative w-full h-full flex overflow-hidden"
+      style={{ background: surfaceBg }}
+    >
       {/* Line numbers */}
       <div
         ref={lineNumbersRef}
-        className="shrink-0 select-none overflow-hidden bg-neutral-50 border-r border-neutral-200"
+        className="shrink-0 select-none overflow-hidden"
         style={{
           ...sharedStyle,
           padding: "12px 8px 12px 12px",
           width: "42px",
-          color: "#a3a3a3",
+          color: gutterFg,
           textAlign: "right",
+          background: gutterBg,
+          borderRight: `1px solid ${gutterBorder}`,
         }}
       >
         {Array.from({ length: lineCount }, (_, i) => (
@@ -81,7 +101,7 @@ export default function CodeEditor({ value, onChange, readOnly = false }) {
           style={{ ...sharedStyle, paddingLeft: "12px" }}
         >
           {tokens.map((t, i) => (
-            <span key={i} style={{ color: TOKEN_COLORS[t.type] || TOKEN_COLORS.text }}>
+            <span key={i} style={{ color: palette[t.type] || palette.text }}>
               {t.text}
             </span>
           ))}
@@ -103,7 +123,7 @@ export default function CodeEditor({ value, onChange, readOnly = false }) {
             ...sharedStyle,
             paddingLeft: "12px",
             color: "transparent",
-            caretColor: readOnly ? "transparent" : "#171717",
+            caretColor,
           }}
         />
       </div>

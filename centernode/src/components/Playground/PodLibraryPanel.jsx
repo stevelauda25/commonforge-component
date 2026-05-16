@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Package, Sun, Moon } from "lucide-react";
+import { ChevronDown, ChevronRight, Sun, Moon, Eye } from "lucide-react";
+import LayerPanel from "./LayerPanel";
 import { Button as PodButton } from "pod-test-ui/button";
 import { Checkbox as PodCheckbox } from "pod-test-ui/checkbox";
 import { TextInput as PodTextInput } from "pod-test-ui/text-input";
@@ -302,10 +303,25 @@ function ComponentRow({ component, onPick, defaultOpen = false, darkPreview = fa
   );
 }
 
-export default function PodLibraryPanel({ manifest, onAddPodNode }) {
+export default function PodLibraryPanel({
+  manifest,
+  onAddPodNode,
+  // Layers tab inputs — when these are wired the sidebar shows a Layers tab
+  // that mirrors the on-canvas hierarchy and lets the user select / enter
+  // groups from the sidebar.
+  nodes = [],
+  selectedNodeIds,
+  editingGroupId = null,
+  onSelectNode,
+  onEnterGroup,
+}) {
   // Default to dark previews since centernode itself runs dark by default —
   // shows the component in the theme it'll actually live in on the canvas.
   const [previewDark, setPreviewDark] = useState(true);
+  // Active tab. "components" = spawn catalog (default); "layers" = on-canvas
+  // node tree. Tabs share the panel chrome (header + footer) so context
+  // doesn't reset between tabs.
+  const [activeTab, setActiveTab] = useState("components");
 
   const handlePick = (componentName, props, overrideCode) => {
     // If example provides a composite code snippet (function component with state),
@@ -317,51 +333,102 @@ export default function PodLibraryPanel({ manifest, onAddPodNode }) {
   };
 
   const count = manifest?.components?.length ?? 0;
+  const showLayers = activeTab === "layers";
 
   return (
     <div className="w-[260px] bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex flex-col shrink-0">
-      <div className="flex items-center gap-2 px-3 py-3 border-b border-neutral-200 dark:border-neutral-800 shrink-0">
-        <div className="w-6 h-6 rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 flex items-center justify-center shrink-0">
-          <Package className="w-3.5 h-3.5" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-[12px] font-semibold text-neutral-900 dark:text-neutral-100 leading-tight">POD Components</div>
-          <div className="text-[10px] text-neutral-500 dark:text-neutral-400 leading-tight mt-0.5">
-            {count} component{count === 1 ? "" : "s"} · v{manifest?.version ?? "?"}
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={() => setPreviewDark((v) => !v)}
-          title={`Preview mode: ${previewDark ? "dark" : "light"} (catalog only — canvas unaffected)`}
-          aria-label={`Switch preview to ${previewDark ? "light" : "dark"} mode`}
-          className={`shrink-0 w-7 h-7 rounded-md border flex items-center justify-center transition-colors ${
-            previewDark
-              ? "bg-neutral-900 dark:bg-neutral-100 border-neutral-900 dark:border-neutral-100 text-amber-300 dark:text-amber-500 hover:bg-neutral-800 dark:hover:bg-neutral-200"
-              : "bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:border-neutral-900 dark:hover:border-neutral-100 hover:text-neutral-900 dark:hover:text-neutral-100"
-          }`}
-        >
-          {previewDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-        </button>
+      {/* Tab bar — flush at top, no header. Preview-theme toggle is a
+          per-tab control (Components only) so it lives in that tab's body,
+          not here. */}
+      <div className="flex items-stretch border-b border-neutral-200 dark:border-neutral-800 shrink-0">
+        {[
+          { id: "components", label: "Components" },
+          { id: "layers", label: "Layers" },
+        ].map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => setActiveTab(t.id)}
+            className={`flex-1 px-3 py-2.5 text-[11px] font-semibold transition-colors relative ${
+              activeTab === t.id
+                ? "text-neutral-900 dark:text-neutral-100"
+                : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
+            }`}
+          >
+            {t.label}
+            {activeTab === t.id && (
+              <span className="absolute bottom-0 left-2 right-2 h-[2px] bg-neutral-900 dark:bg-neutral-100 rounded-t" />
+            )}
+          </button>
+        ))}
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {manifest?.components?.map((c, i) => (
-          <ComponentRow
-            key={c.name}
-            component={c}
-            onPick={handlePick}
-            defaultOpen={i === 0}
-            darkPreview={previewDark}
+        {showLayers ? (
+          <LayerPanel
+            nodes={nodes}
+            selectedNodeIds={selectedNodeIds || new Set()}
+            editingGroupId={editingGroupId}
+            onSelect={onSelectNode || (() => {})}
+            onEnterGroup={onEnterGroup || (() => {})}
           />
-        ))}
-        {count === 0 && (
-          <div className="p-4 text-[11px] text-neutral-500 dark:text-neutral-400">No POD components available.</div>
+        ) : (
+          <>
+            {/* Preview-theme strip — lives INSIDE the Components tab body so
+                its presence implies it only affects this tab's previews. Not
+                in the tab nav (would look global) or any header (removed). */}
+            <div className="flex items-center justify-between px-3 py-2 border-b border-neutral-100 dark:border-neutral-900 bg-neutral-50/50 dark:bg-neutral-950/40">
+              <div className="flex items-center gap-1.5 text-[10px] text-neutral-500 dark:text-neutral-400 uppercase tracking-wider font-medium">
+                <Eye className="w-3 h-3" />
+                Preview
+              </div>
+              <div className="inline-flex rounded-md border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setPreviewDark(false)}
+                  className={`px-2 py-1 flex items-center gap-1 text-[10px] font-medium transition-colors ${
+                    !previewDark
+                      ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
+                      : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  }`}
+                  aria-pressed={!previewDark}
+                >
+                  <Sun className="w-3 h-3" /> Light
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewDark(true)}
+                  className={`px-2 py-1 flex items-center gap-1 text-[10px] font-medium transition-colors ${
+                    previewDark
+                      ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
+                      : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  }`}
+                  aria-pressed={previewDark}
+                >
+                  <Moon className="w-3 h-3" /> Dark
+                </button>
+              </div>
+            </div>
+            {manifest?.components?.map((c, i) => (
+              <ComponentRow
+                key={c.name}
+                component={c}
+                onPick={handlePick}
+                defaultOpen={i === 0}
+                darkPreview={previewDark}
+              />
+            ))}
+            {count === 0 && (
+              <div className="p-4 text-[11px] text-neutral-500 dark:text-neutral-400">No POD components available.</div>
+            )}
+          </>
         )}
       </div>
 
       <div className="px-3 py-2 border-t border-neutral-100 dark:border-neutral-800 text-[10px] text-neutral-400 dark:text-neutral-500 shrink-0">
-        from <span className="font-mono">pod-test-ui</span> · click to add
+        {showLayers
+          ? "double-click a group to enter"
+          : <>from <span className="font-mono">pod-test-ui</span> · click to add</>}
       </div>
     </div>
   );

@@ -28,6 +28,23 @@ export const TOKEN_COLORS = {
   text: "#171717",
 };
 
+// Dark-mode palette — same hue families as light but shifted to mid/high
+// luminance so they pop against a near-black code background. Used by
+// `CodeEditor` when `theme="dark"`.
+export const TOKEN_COLORS_DARK = {
+  comment: "#737373",
+  string: "#34d399",
+  number: "#fbbf24",
+  keyword: "#c4b5fd",
+  builtin: "#60a5fa",
+  type: "#22d3ee",
+  func: "#60a5fa",
+  ident: "#e5e5e5",
+  punct: "#a3a3a3",
+  op: "#f87171",
+  text: "#e5e5e5",
+};
+
 // Tokenize line into spans with highlight classes
 export function highlightCode(code) {
   // Basic tokenizer — handles: strings, template literals, comments, keywords, numbers, operators

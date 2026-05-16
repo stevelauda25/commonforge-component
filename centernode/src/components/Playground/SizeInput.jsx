@@ -60,7 +60,7 @@ const SizingIcon = ({ mode, isWidth }) => {
   return null;
 };
 
-export default function SizeInput({ type, value, mode, onChange }) {
+export default function SizeInput({ type, value, mode, onChange, showFill = false }) {
   const isWidth = type === "width";
   const numericValue = typeof value === "number" ? value : (isWidth ? 400 : 200);
   
@@ -104,9 +104,12 @@ export default function SizeInput({ type, value, mode, onChange }) {
     onChange({ mode: "fixed", value: clamped });
   };
 
+  // `showFill` flips this on for autolayout children — outside that
+  // context "Fill" has no meaningful CSS effect (nothing to stretch into).
   const MODES = [
-    { id: "fixed", label: `Fixed ${isWidth ? 'width' : 'height'}` },
-    { id: "auto", label: "Hug contents" }
+    { id: "fixed", label: `Fixed ${isWidth ? "width" : "height"}` },
+    { id: "auto", label: "Hug contents" },
+    ...(showFill ? [{ id: "fill", label: "Fill container" }] : []),
   ];
 
   const currentMode = MODES.find(m => m.id === mode) || MODES[0];
