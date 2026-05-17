@@ -8,7 +8,7 @@ import {
   AlignHorizontalDistributeCenter, AlignVerticalDistributeCenter,
   ArrowRight, ArrowDown, Search, Move, GitCommitHorizontal,
   Undo2, Redo2, PanelLeftClose, MousePointerSquareDashed,
-  CornerUpLeft,
+  CornerUpLeft, Type,
 } from "lucide-react";
 import { DEFAULT_TOKENS, FRAME_PRESETS, TEMPLATES, DEMO_CODE } from "@/constants/playground";
 import { parseSchemaFromCode, extractComponentName, updateCodeWithProp, isJsxSnippet, extractJsxTag, parseJsxSnippetSchema } from "@/utils/parser";
@@ -19,6 +19,8 @@ import CodeEditor from "./CodeEditor";
 import LiveComponent from "./LiveComponent";
 import PropInput from "./PropInput";
 import PreviewNode from "./PreviewNode";
+import TextNode from "./TextNode";
+import TextInspector from "./TextInspector";
 import MeasureOverlay from "./MeasureOverlay";
 import ResizeHandles from "./ResizeHandles";
 import ScrubInput from "./ScrubInput";
@@ -1132,8 +1134,8 @@ export default function ComponentPlayground() {
             .map((n) => {
             // Group nodes are metadata only — they don't have code / props /
             // customSize and would crash the legacy migration path below.
-            // Pass them through unchanged.
-            if (n.type === "group") return n;
+            // Text nodes likewise carry no JSX code. Pass them through.
+            if (n.type === "group" || n.type === "text") return n;
             let wMode = "fixed";
             let hMode = "auto";
             let wVal = 400;
@@ -1165,11 +1167,48 @@ export default function ComponentPlayground() {
               if (!(k in mergedProps)) mergedProps[k] = v.default;
             }
             
+            // Drop phantom token overrides: legacy state may carry an
+            // override value identical to the current default (or to a
+            // previous default the seed has since moved away from). Either
+            // way the override is meaningless and should be erased.
+            const STALE_DEFAULTS = {
+              colors: {
+                "border-focus": ["#16a34a"],
+                "accent-default": ["#16a34a"],
+                "accent-hover": ["#15803d"],
+                "accent-active": ["#166534"],
+                "border-default": ["#e4e4e7"],
+                "bg-canvas": ["#ffffff"],
+                "bg-surface": ["#fafafa"],
+                "bg-muted": ["#f4f4f5"],
+                "text-primary": ["#18181b"],
+                "text-secondary": ["#52525b"],
+                "text-muted": ["#71717a"],
+                "accent-subtle": ["#f0fdf4"],
+              },
+            };
+            const cleanedOverrides = {};
+            for (const [cat, entries] of Object.entries(n.tokenOverrides || {})) {
+              const refForCat = POD_DEFAULT_TOKENS[cat] || {};
+              const staleForCat = STALE_DEFAULTS[cat] || {};
+              const kept = {};
+              for (const [k, v] of Object.entries(entries || {})) {
+                const cur = (refForCat[k] || "").toLowerCase();
+                const valLower = String(v).toLowerCase();
+                const stale = (staleForCat[k] || []).map((x) => x.toLowerCase());
+                if (valLower === cur) continue;
+                if (stale.includes(valLower)) continue;
+                kept[k] = v;
+              }
+              if (Object.keys(kept).length > 0) cleanedOverrides[cat] = kept;
+            }
+
             return {
               ...n,
               frame: undefined,
               schema: reParsedSchema,
               props: mergedProps,
+              tokenOverrides: cleanedOverrides,
               customSize: { width: wVal, widthMode: wMode, height: hVal, heightMode: hMode }
             };
           });
@@ -1256,6 +1295,34 @@ export default function ComponentPlayground() {
     setSelectedNodeId(id);
   };
 
+  // Free-form text node — no LiveComponent, just plain styled DOM with a
+  // font family + size + weight + colour. Sits next to PreviewNode in the
+  // canvas render dispatcher.
+  const addTextNode = () => {
+    const id = `n${Date.now()}`;
+    const cx = (-pan.x + (canvasRef.current?.clientWidth || 800) / 2) / zoom;
+    const cy = (-pan.y + (canvasRef.current?.clientHeight || 600) / 2) / zoom;
+    const textCount = nodes.filter((n) => n.type === "text").length;
+    const newNode = {
+      id,
+      type: "text",
+      name: `text-${textCount + 1}`,
+      content: "Text",
+      fontFamily: "system-ui",
+      fontSize: 16,
+      fontWeight: 400,
+      lineHeight: 1.4,
+      letterSpacing: 0,
+      color: "#fafafa",
+      textAlign: "left",
+      fontStyle: "normal",
+      x: cx - 20,
+      y: cy - 8,
+    };
+    setNodes([...nodes, newNode]);
+    setSelectedNodeId(id);
+  };
+
   // Stable callbacks so memo'd PreviewNode / GroupContainer don't re-render
   // on every parent update. setNodes is already a stable React setter, so
   // empty deps are safe here.
@@ -1281,16 +1348,24 @@ export default function ComponentPlayground() {
       return { ...n, code: newCode, schema: newSchema, props: newProps };
     }));
   };
-  const updateNodeTokenOverride = (id, category, key, value) => {
+  const updateNodeTokenOverride = (id, category, key, value, referenceValue) => {
+    // A no-op override (value identical to the reference default) is treated
+    // as a reset — prevents phantom overrides created by clicking the color
+    // swatch and dismissing the picker without changing anything.
+    const isNoOp =
+      value !== undefined &&
+      referenceValue !== undefined &&
+      String(value).toLowerCase() === String(referenceValue).toLowerCase();
+    const effective = isNoOp ? undefined : value;
     setNodes((p) => p.map((n) => {
       if (n.id !== id) return n;
       const overrides = { ...(n.tokenOverrides || {}) };
       if (!overrides[category]) overrides[category] = {};
-      if (value === undefined) {
+      if (effective === undefined) {
         delete overrides[category][key];
         if (Object.keys(overrides[category]).length === 0) delete overrides[category];
       } else {
-        overrides[category] = { ...overrides[category], [key]: value };
+        overrides[category] = { ...overrides[category], [key]: effective };
       }
       return { ...n, tokenOverrides: overrides };
     }));
@@ -1517,7 +1592,13 @@ export default function ComponentPlayground() {
 
   useEffect(() => {
     const down = (e) => {
-      const isInput = e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA";
+      // Treat anything text-editable as "typing context" so global
+       // shortcuts (D for duplicate, Backspace for delete, etc.) don't
+       // hijack keys the user is typing into a text node / textarea / input.
+      const isInput =
+        e.target.tagName === "INPUT" ||
+        e.target.tagName === "TEXTAREA" ||
+        e.target.isContentEditable;
       // Command palette — ⌘K / Ctrl+K. Always intercept (works even when
       // an input has focus, so you can summon it anywhere).
       if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K")) {
@@ -2104,6 +2185,22 @@ export default function ComponentPlayground() {
             {/* Top-level nodes only — children of groups render INSIDE the
                 group's flex container below, not at canvas root. */}
             {nodes.filter((n) => !n.parent).map((node) => {
+              if (node.type === "text") {
+                const isSelected = selectedNodeIds.has(node.id);
+                const groupMultiSelected = isSelected && selectedNodeIds.size > 1;
+                return (
+                  <TextNode
+                    key={node.id}
+                    node={node}
+                    selected={isSelected}
+                    multiSelected={groupMultiSelected}
+                    onUpdate={updateNode}
+                    onSelect={handleSelect}
+                    onMeasure={onNodeMeasure}
+                    zoom={zoom}
+                  />
+                );
+              }
               if (node.type === "group") {
                 const isSelected = selectedNodeIds.has(node.id);
                 const isEditing = editingGroupId === node.id;
@@ -2209,7 +2306,7 @@ export default function ComponentPlayground() {
             </div>
           </div>
 
-          <div ref={addMenuRef} className="absolute top-3 left-3 z-10">
+          <div ref={addMenuRef} className="absolute top-3 left-3 z-10 flex items-center gap-1.5">
             <button
               onClick={() => setAddMenuOpen(!addMenuOpen)}
               className={`cn-glass rounded-md shadow-lg p-1.5 flex items-center cn-press transition-all ${
@@ -2221,6 +2318,14 @@ export default function ComponentPlayground() {
               aria-label="Add component"
             >
               <Plus className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={addTextNode}
+              className="cn-glass rounded-md shadow-lg p-1.5 flex items-center cn-press transition-all text-cn-text-muted hover:text-cn-text-primary"
+              title="Add text (T)"
+              aria-label="Add text"
+            >
+              <Type className="w-3.5 h-3.5" />
             </button>
 
             {addMenuOpen && (
@@ -2304,7 +2409,14 @@ export default function ComponentPlayground() {
         </div>
 
         <div className="w-[360px] border-l border-cn-border-default bg-cn-surface flex flex-col shrink-0 z-20 min-h-0 h-full">
-          {selectedNode?.type === "group" ? (
+          {selectedNode?.type === "text" ? (
+            <TextInspector
+              node={selectedNode}
+              onUpdate={updateNode}
+              onDelete={deleteNode}
+              onDuplicate={duplicateNode}
+            />
+          ) : selectedNode?.type === "group" ? (
             <GroupInspector
               group={selectedNode}
               childCount={(selectedNode.children || []).length}
@@ -2507,12 +2619,36 @@ export default function ComponentPlayground() {
                     const entry = canvasManifest.components.find((c) => c.name === tag);
                     const hasAllowlist = entry?.tokens?.length || entry?.variantTokens;
                     if (hasAllowlist) {
-                      const currentVariant = selectedNode.props?.variant;
+                      // Not every POD component uses a prop literally named
+                      // `variant` — Badge drives its theming through `color`,
+                      // for example. Locate the prop that actually carries
+                      // one of the manifest's variant values.
+                      const variantKeys = Object.keys(entry.variantTokens || {});
+                      let currentVariant = selectedNode.props?.variant;
+                      if (!currentVariant || !variantKeys.includes(currentVariant)) {
+                        for (const [k, v] of Object.entries(selectedNode.props || {})) {
+                          if (variantKeys.includes(v)) { currentVariant = v; break; }
+                          if (entry.variants?.includes(v)) { currentVariant = v; break; }
+                        }
+                      }
                       const common = entry.tokens || [];
                       const variantSpecific = currentVariant && entry.variantTokens?.[currentVariant]
                         ? entry.variantTokens[currentVariant]
                         : [];
-                      const allowed = new Set([...common, ...variantSpecific]);
+                      // Hide state-only tokens (focus ring, hover, active)
+                      // that aren't visible in the static canvas render —
+                      // showing them adds noise without explaining the
+                      // currently-rendered look.
+                      const STATE_ONLY_TOKENS = new Set([
+                        "border-focus",
+                        "accent-hover",
+                        "accent-active",
+                        "danger-hover",
+                        "danger-active",
+                      ]);
+                      const allowed = new Set(
+                        [...common, ...variantSpecific].filter((t) => !STATE_ONLY_TOKENS.has(t))
+                      );
                       const filteredColors = Object.fromEntries(
                         Object.entries(podRef.colors || {}).filter(([k]) => allowed.has(k))
                       );
@@ -2544,7 +2680,15 @@ export default function ComponentPlayground() {
                           tokens={selectedNode.tokenOverrides || {}}
                           referenceTokens={refTokens}
                           isOverride
-                          onChange={(cat, key, val) => updateNodeTokenOverride(selectedNode.id, cat, key, val)}
+                          onChange={(cat, key, val) =>
+                            updateNodeTokenOverride(
+                              selectedNode.id,
+                              cat,
+                              key,
+                              val,
+                              refTokens?.[cat]?.[key],
+                            )
+                          }
                         />
                       </div>
                     </div>
