@@ -1,18 +1,98 @@
 @import "tailwindcss";
 
-/* Enable class-based dark mode for Tailwind v4. Centernode starts dark
-   (see layout.tsx `dark` class on <html>); a ThemeToggle in the header
-   flips the class so the user can switch back to light if needed. */
+/* Enable class-based dark mode for Tailwind v4. Centernode runs dark by
+   default (see layout.tsx `dark` class on <html>); a ThemeToggle in the
+   header flips the class so the user can switch back to light if needed. */
 @variant dark (.dark &);
 
+/* ─────────────────────────────────────────────────────────────────────
+   Centernode theme — "warm dark" with amber accent.
+
+   Layering scale (deepest → shallowest):
+     bg-canvas        canvas backdrop (the working surface)
+     bg-surface       sidebars / inspectors / chrome panels
+     bg-elevated      menus, popovers, hover bg
+     bg-overlay       transient layers like modals
+
+   The base hues sit on a slightly warm axis (touch of brown / amber in
+   the neutrals) so the UI reads less "cold IDE" and more "studio dark".
+   ──────────────────────────────────────────────────────────────────── */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Surfaces (light fallback — we mainly run dark) */
+  --cn-canvas:    #fafaf9;
+  --cn-surface:   #ffffff;
+  --cn-elevated:  #f5f5f4;
+  --cn-overlay:   #ffffff;
+
+  /* Borders */
+  --cn-border-subtle:   rgba(0, 0, 0, 0.06);
+  --cn-border-default:  rgba(0, 0, 0, 0.10);
+  --cn-border-strong:   rgba(0, 0, 0, 0.18);
+
+  /* Text */
+  --cn-text-primary:    #1c1917;
+  --cn-text-secondary:  #57534e;
+  --cn-text-muted:      #a8a29e;
+  --cn-text-on-accent:  #1c1917;
+
+  /* Accent — amber (signature). Range from soft tint to active. */
+  --cn-accent:          #f59e0b;  /* primary action / brand */
+  --cn-accent-hover:    #fbbf24;  /* hover (brighter) */
+  --cn-accent-active:   #d97706;  /* pressed */
+  --cn-accent-soft:     rgba(245, 158, 11, 0.12);  /* tint bg */
+  --cn-accent-ring:     rgba(245, 158, 11, 0.40);
+
+  /* Selection — uses accent too for cohesive identity */
+  --cn-selection:       var(--cn-accent);
+  --cn-selection-soft:  var(--cn-accent-soft);
+
+  /* Semantic */
+  --cn-danger:          #ef4444;
+  --cn-danger-soft:     rgba(239, 68, 68, 0.10);
+  --cn-success:         #10b981;
+  --cn-info:            #38bdf8;
 }
 
 html.dark {
-  --background: #09090b;  /* matches pod-test-tokens dark --color-bg-canvas */
-  --foreground: #fafafa;  /* matches pod-test-tokens dark --color-text-primary */
+  --background: #0c0c0e;
+  --foreground: #fafaf9;
+
+  /* Warm dark surfaces — base has +2% red over neutral grey so it reads
+     softer than the typical near-black `#09090b`. Each layer is +1
+     luminance step so depth hierarchy is visible without harsh borders. */
+  --cn-canvas:    #0c0c0e;
+  --cn-surface:   #131316;
+  --cn-elevated:  #1c1c20;
+  --cn-overlay:   #232328;
+
+  /* Borders — alpha-on-white so they tint warmer with the bg underneath */
+  --cn-border-subtle:   rgba(255, 255, 255, 0.04);
+  --cn-border-default:  rgba(255, 255, 255, 0.08);
+  --cn-border-strong:   rgba(255, 255, 255, 0.16);
+
+  /* Text */
+  --cn-text-primary:    #fafaf9;
+  --cn-text-secondary:  #a8a29e;
+  --cn-text-muted:      #78716c;
+  --cn-text-on-accent:  #1c1917;  /* dark text reads best on amber */
+
+  /* Accent — amber stays consistent across themes */
+  --cn-accent:          #f59e0b;
+  --cn-accent-hover:    #fbbf24;
+  --cn-accent-active:   #d97706;
+  --cn-accent-soft:     rgba(251, 191, 36, 0.15);
+  --cn-accent-ring:     rgba(251, 191, 36, 0.45);
+
+  --cn-selection:       var(--cn-accent);
+  --cn-selection-soft:  var(--cn-accent-soft);
+
+  --cn-danger:          #f87171;
+  --cn-danger-soft:     rgba(248, 113, 113, 0.12);
+  --cn-success:         #34d399;
+  --cn-info:            #7dd3fc;
 }
 
 @theme inline {
@@ -20,19 +100,579 @@ html.dark {
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Expose Centernode palette to Tailwind so `bg-cn-surface`,
+     `text-cn-muted`, `border-cn-border-default`, `bg-cn-accent` etc. all
+     work as utility classes. */
+  --color-cn-canvas:           var(--cn-canvas);
+  --color-cn-surface:          var(--cn-surface);
+  --color-cn-elevated:         var(--cn-elevated);
+  --color-cn-overlay:          var(--cn-overlay);
+  --color-cn-border-subtle:    var(--cn-border-subtle);
+  --color-cn-border-default:   var(--cn-border-default);
+  --color-cn-border-strong:    var(--cn-border-strong);
+  --color-cn-text-primary:     var(--cn-text-primary);
+  --color-cn-text-secondary:   var(--cn-text-secondary);
+  --color-cn-text-muted:       var(--cn-text-muted);
+  --color-cn-text-on-accent:   var(--cn-text-on-accent);
+  --color-cn-accent:           var(--cn-accent);
+  --color-cn-accent-hover:     var(--cn-accent-hover);
+  --color-cn-accent-active:    var(--cn-accent-active);
+  --color-cn-accent-soft:      var(--cn-accent-soft);
+  --color-cn-selection:        var(--cn-selection);
+  --color-cn-selection-soft:   var(--cn-selection-soft);
+  --color-cn-danger:           var(--cn-danger);
+  --color-cn-danger-soft:      var(--cn-danger-soft);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  /* Inter matches POD design-system docs. POD components inherit this from <body>. */
+  background: var(--cn-canvas);
+  color: var(--cn-text-primary);
+  /* Inter for text, Geist Mono available for chrome / code surfaces. */
   font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Tool-app baseline — disable accidental text selection across all
+     chrome / canvas surfaces. Selection feels like a slipped click in a
+     design tool; users only need it inside real text-entry surfaces
+     (inputs, textareas, the code editor's <pre>). Those re-enable it
+     via the `.cn-text-selectable` opt-in below. */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
-/* Canvas dot grid — swaps colour with theme so dots don't burn in dark mode. */
+/* Selectable opt-in for editable content + code blocks. Applied to
+   native form elements automatically and to anything wearing the
+   `cn-text-selectable` class. */
+input, textarea, [contenteditable="true"], .cn-text-selectable {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+}
+
+/* Strip the default chrome blue focus ring across every interactive
+   element. Keep keyboard-only focus visible via :focus-visible — that
+   way mouse clicks stay clean (no leftover stroke after Esc, no ring
+   bleeding through the dark surfaces) but Tab navigation still shows
+   an amber ring for accessibility. */
+button, [role="button"], a, summary {
+  outline: none;
+}
+button:focus, [role="button"]:focus, a:focus, summary:focus {
+  outline: none;
+}
+button:focus-visible, [role="button"]:focus-visible, a:focus-visible, summary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--cn-canvas), 0 0 0 4px var(--cn-accent-ring);
+  border-radius: 4px;
+}
+
+/* Canvas dot grid — slightly warm dot color so it harmonizes with the
+   warm-dark canvas instead of looking like a cold blue-grey stipple. */
 .canvas-bg {
-  background-image: radial-gradient(circle, #d4d4d4 1px, transparent 1px);
+  background-image: radial-gradient(circle, #d6d3d1 1px, transparent 1px);
 }
 html.dark .canvas-bg {
-  background-image: radial-gradient(circle, #27272a 1px, transparent 1px);
+  background-image: radial-gradient(circle, #292524 1px, transparent 1px);
+}
+
+/* Thin amber-on-hover scrollbars so panels feel native to the warm-dark
+   palette instead of showing the OS's cool grey chrome. */
+html.dark ::-webkit-scrollbar { width: 10px; height: 10px; }
+html.dark ::-webkit-scrollbar-track { background: transparent; }
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.25);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Centernode design primitives.
+   These are class names — NOT Tailwind components — that consolidate
+   button / input / card / chip / label patterns into one source of
+   truth. Every surface in the app should reach for these instead of
+   inventing one-off Tailwind soups. That's how UI consistency happens.
+   ──────────────────────────────────────────────────────────────────── */
+
+/* Typography utilities */
+.cn-display      { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: var(--cn-text-primary); }
+.cn-label        { font-size: 11px; font-weight: 500; color: var(--cn-text-secondary); }
+.cn-label-strong { font-size: 11px; font-weight: 600; color: var(--cn-text-primary); }
+.cn-eyebrow      { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cn-text-muted); }
+.cn-body         { font-size: 12px; color: var(--cn-text-primary); }
+.cn-caption      { font-size: 11px; color: var(--cn-text-muted); }
+.cn-mono         { font-family: var(--font-geist-mono), 'JetBrains Mono', monospace; font-feature-settings: "tnum"; }
+.cn-mono-meta    { font-family: var(--font-geist-mono), monospace; font-size: 10px; color: var(--cn-text-muted); font-feature-settings: "tnum"; letter-spacing: 0; }
+
+/* ───── Buttons ─────
+   Base + variants. Variants set bg/color/border; base owns sizing,
+   focus ring, transition, font weight. Sizes are -sm and (default).
+*/
+.cn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cn-text-primary);
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease,
+              color 120ms ease, box-shadow 160ms ease, transform 120ms ease;
+  white-space: nowrap;
+  user-select: none;
+}
+.cn-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--cn-canvas), 0 0 0 4px var(--cn-accent-ring);
+}
+.cn-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.cn-btn-sm  { height: 24px; padding: 0 8px; font-size: 10px; border-radius: 5px; gap: 4px; }
+.cn-btn-lg  { height: 32px; padding: 0 14px; font-size: 12px; border-radius: 7px; }
+
+.cn-btn-primary {
+  background: var(--cn-accent);
+  color: var(--cn-text-on-accent);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2) inset, 0 0 0 1px rgba(0,0,0,0.04);
+}
+.cn-btn-primary:hover { background: var(--cn-accent-hover); transform: translateY(-0.5px); }
+.cn-btn-primary:active { background: var(--cn-accent-active); transform: translateY(0); }
+
+.cn-btn-ghost {
+  background: transparent;
+  color: var(--cn-text-secondary);
+}
+.cn-btn-ghost:hover { background: var(--cn-elevated); color: var(--cn-text-primary); }
+.cn-btn-ghost:active { background: var(--cn-overlay); }
+
+.cn-btn-outline {
+  background: transparent;
+  border-color: var(--cn-border-default);
+  color: var(--cn-text-primary);
+}
+.cn-btn-outline:hover { border-color: var(--cn-border-strong); background: var(--cn-elevated); }
+
+.cn-btn-danger {
+  background: transparent;
+  border-color: var(--cn-border-default);
+  color: var(--cn-danger);
+}
+.cn-btn-danger:hover { background: var(--cn-danger-soft); border-color: var(--cn-danger); }
+
+/* Icon-only button — square aspect, no left padding asymmetry */
+.cn-btn-icon { width: 28px; padding: 0; }
+.cn-btn-icon.cn-btn-sm { width: 24px; }
+
+/* ───── Inputs ─────
+   Transparent background by default — just a thin border. Reads as
+   "field" without the weight of a filled control. Border lights up on
+   hover, accent + soft ring on focus. */
+.cn-input {
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-family: inherit;
+  font-feature-settings: "tnum";
+  color: var(--cn-text-primary);
+  background: transparent;
+  border: 1px solid var(--cn-border-subtle);
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 160ms ease;
+}
+.cn-input::placeholder { color: var(--cn-text-muted); }
+.cn-input:hover { border-color: var(--cn-border-default); }
+.cn-input:focus {
+  border-color: var(--cn-accent);
+  box-shadow: 0 0 0 3px var(--cn-accent-ring);
+}
+.cn-input-mono {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+}
+
+/* ───── Cards ───── */
+.cn-card {
+  background: var(--cn-elevated);
+  border: 1px solid var(--cn-border-subtle);
+  border-radius: 8px;
+  padding: 12px;
+}
+.cn-card-tight { padding: 8px; }
+.cn-card-bare {
+  background: transparent;
+  border: 1px solid var(--cn-border-subtle);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+/* ───── Chips & pills ───── */
+.cn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 6px;
+  font-size: 10px;
+  font-weight: 500;
+  font-family: var(--font-geist-mono), monospace;
+  font-feature-settings: "tnum";
+  color: var(--cn-text-muted);
+  background: var(--cn-elevated);
+  border: 1px solid var(--cn-border-subtle);
+  border-radius: 4px;
+  line-height: 1;
+}
+.cn-chip-accent { color: var(--cn-accent); background: var(--cn-accent-soft); border-color: transparent; }
+.cn-chip-danger { color: var(--cn-danger); background: var(--cn-danger-soft); border-color: transparent; }
+
+/* ───── Segmented control ─────
+   Track is dark-ish, active thumb is LIGHTER + slightly lifted with a
+   1px highlight ring so it reads as "pulled forward" off the track. */
+.cn-segmented {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--cn-border-subtle);
+  border-radius: 6px;
+}
+.cn-segmented > button {
+  flex: 1;
+  padding: 0 8px;
+  height: 22px;
+  border: none;
+  background: transparent;
+  color: var(--cn-text-muted);
+  font-size: 10px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease, box-shadow 160ms ease;
+}
+.cn-segmented > button:hover { color: var(--cn-text-secondary); }
+.cn-segmented > button[aria-pressed="true"],
+.cn-segmented > button.is-active {
+  background: var(--cn-overlay);
+  color: var(--cn-text-primary);
+  box-shadow:
+    inset 0 0 0 1px var(--cn-border-default),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ───── Divider ───── */
+.cn-divider { height: 1px; background: var(--cn-border-subtle); margin: 8px 0; }
+.cn-divider-vert { width: 1px; background: var(--cn-border-subtle); height: 16px; }
+
+/* ───── Tab nav (pill style) ─────
+   Inactive tabs are bare text. Active tab gets a subtle elevated pill
+   background (no underline, no glow). Modeled after Linear / Notion. */
+.cn-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: transparent;
+}
+.cn-tabs > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  color: var(--cn-text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+  position: relative;
+}
+.cn-tabs > button:hover { color: var(--cn-text-secondary); }
+.cn-tabs > button[aria-pressed="true"],
+.cn-tabs > button.is-active {
+  background: var(--cn-elevated);
+  color: var(--cn-text-primary);
+  box-shadow: inset 0 0 0 1px var(--cn-border-subtle);
+}
+
+/* Minimal text tabs — no chip, no underline glow. Active tab is
+   distinguished purely by text color + weight. Reads like a section
+   navigator, not a control. Use this when the panel itself frames the
+   content and we just need lightweight switching. */
+.cn-tabs-minimal {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--cn-border-subtle);
+}
+.cn-tabs-minimal > button {
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--cn-text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: color 120ms ease;
+}
+.cn-tabs-minimal > button:hover { color: var(--cn-text-secondary); }
+.cn-tabs-minimal > button[aria-pressed="true"],
+.cn-tabs-minimal > button.is-active {
+  color: var(--cn-text-primary);
+}
+.cn-tabs-minimal > button.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--cn-text-primary);
+  border-radius: 0;
+}
+
+/* Flush version — when tabs span a full panel width, give each tab
+   flex:1 so they fill, and use a slightly different active treatment
+   (no inset border, just bg shift) so it reads as a strip not a chip. */
+.cn-tabs-flush {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: transparent;
+}
+.cn-tabs-flush > button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  color: var(--cn-text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.cn-tabs-flush > button:hover { color: var(--cn-text-secondary); background: rgba(255,255,255,0.02); }
+.cn-tabs-flush > button[aria-pressed="true"],
+.cn-tabs-flush > button.is-active {
+  background: var(--cn-elevated);
+  color: var(--cn-text-primary);
+}
+
+/* ───── Section header ───── */
+.cn-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 24px;
+  padding: 0 4px;
+  margin-bottom: 6px;
+}
+.cn-section-header > .title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cn-text-muted);
+}
+
+/* ───── Focus glow utility — for icon buttons + active toggles ───── */
+.cn-glow-accent {
+  box-shadow: 0 0 0 1px var(--cn-accent-ring), 0 0 12px -2px var(--cn-accent-ring);
+}
+
+/* ───── Pressable row — used for layer panel, list items ───── */
+.cn-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--cn-text-secondary);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 100ms ease, color 100ms ease;
+}
+.cn-row:hover { background: var(--cn-elevated); color: var(--cn-text-primary); }
+.cn-row.is-active {
+  background: var(--cn-accent-soft);
+  color: var(--cn-accent);
+}
+
+/* ───── Surface glass — for floating tool panels / status bar ───── */
+.cn-glass {
+  background: color-mix(in srgb, var(--cn-surface) 88%, transparent);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--cn-border-default);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Motion system.
+
+   Every interactable in centernode reaches for these tokens — duration,
+   easing, and pre-baked keyframes. The intent: nothing snaps. Everything
+   eases. Cumulative effect = professional, "designed", technical feel.
+
+   Durations follow a 4-step scale (insta, snappy, normal, settled).
+   Easings: out-expo for entrance, in-quad for exit, spring for state.
+   ──────────────────────────────────────────────────────────────────── */
+:root {
+  /* Durations */
+  --cn-dur-insta:   90ms;   /* button press visual feedback */
+  --cn-dur-snappy:  140ms;  /* hover / focus state changes */
+  --cn-dur-normal:  220ms;  /* default transitions, fades */
+  --cn-dur-settled: 360ms;  /* panel slides, modal opens */
+  --cn-dur-stage:   520ms;  /* stage transitions, heavy reveals */
+
+  /* Easings */
+  --cn-ease-out:     cubic-bezier(0.16, 1, 0.3, 1);     /* expo-out: starts fast, settles soft */
+  --cn-ease-in:      cubic-bezier(0.7, 0, 0.84, 0);     /* expo-in: anticipation */
+  --cn-ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1); /* slight overshoot — UI state */
+  --cn-ease-smooth:  cubic-bezier(0.4, 0, 0.2, 1);      /* material default for symmetry */
+}
+
+/* Keyframe library — composable building blocks for entrance, exit,
+   pulse, and stagger. */
+@keyframes cn-fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cn-fade-down {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cn-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes cn-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes cn-slide-in-left {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes cn-slide-in-right {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes cn-pulse-accent {
+  0%   { box-shadow: 0 0 0 0 var(--cn-accent-ring); }
+  70%  { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@keyframes cn-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes cn-blink-caret {
+  0%, 50%   { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+/* Utility classes — apply animation with ergonomic class names. */
+.cn-anim-in        { animation: cn-fade-up      var(--cn-dur-normal)  var(--cn-ease-out) both; }
+.cn-anim-down      { animation: cn-fade-down    var(--cn-dur-normal)  var(--cn-ease-out) both; }
+.cn-anim-fade      { animation: cn-fade-in      var(--cn-dur-normal)  var(--cn-ease-out) both; }
+.cn-anim-scale     { animation: cn-scale-in     var(--cn-dur-settled) var(--cn-ease-out) both; }
+.cn-anim-left      { animation: cn-slide-in-left  var(--cn-dur-settled) var(--cn-ease-out) both; }
+.cn-anim-right     { animation: cn-slide-in-right var(--cn-dur-settled) var(--cn-ease-out) both; }
+.cn-anim-pulse     { animation: cn-pulse-accent  var(--cn-dur-settled) var(--cn-ease-out) both; }
+
+/* Staggered children — apply to a container; direct children get a
+   small entrance delay each, top-to-bottom. Cap at 8 children. */
+.cn-anim-stagger > * { animation: cn-fade-up var(--cn-dur-normal) var(--cn-ease-out) both; }
+.cn-anim-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.cn-anim-stagger > *:nth-child(2) { animation-delay: 30ms; }
+.cn-anim-stagger > *:nth-child(3) { animation-delay: 60ms; }
+.cn-anim-stagger > *:nth-child(4) { animation-delay: 90ms; }
+.cn-anim-stagger > *:nth-child(5) { animation-delay: 120ms; }
+.cn-anim-stagger > *:nth-child(6) { animation-delay: 150ms; }
+.cn-anim-stagger > *:nth-child(7) { animation-delay: 180ms; }
+.cn-anim-stagger > *:nth-child(8) { animation-delay: 210ms; }
+
+/* Press-feedback — adds active-state scale down. Use on .cn-btn-* if
+   you want the tactile press feel without overriding individual transitions. */
+.cn-press:active { transform: scale(0.97); }
+
+/* Press feedback baseline applied to every button primitive — no more
+   instant click feel, every press has a brief 90ms compression. */
+.cn-btn { transition:
+  background-color var(--cn-dur-snappy) var(--cn-ease-smooth),
+  border-color     var(--cn-dur-snappy) var(--cn-ease-smooth),
+  color            var(--cn-dur-snappy) var(--cn-ease-smooth),
+  box-shadow       var(--cn-dur-normal) var(--cn-ease-out),
+  transform        var(--cn-dur-insta)  var(--cn-ease-smooth); }
+.cn-btn:active:not(:disabled) { transform: scale(0.97); }
+
+/* Caret blink for "live" mono labels (status bar, monitoring) */
+.cn-caret::after {
+  content: "▌";
+  display: inline-block;
+  margin-left: 2px;
+  animation: cn-blink-caret 1s steps(1) infinite;
+}
+
+/* Shimmer skeleton for loading states */
+.cn-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--cn-elevated) 0%,
+    var(--cn-overlay) 50%,
+    var(--cn-elevated) 100%
+  );
+  background-size: 200% 100%;
+  animation: cn-shimmer 1.4s linear infinite;
+  border-radius: 4px;
+}
+
+/* Universal transition reset for interactive elements — every panel,
+   row, chip will smoothly transition state changes. Add `cn-transitions`
+   to the element to opt in. */
+.cn-transitions, .cn-transitions * {
+  transition:
+    background-color var(--cn-dur-snappy) var(--cn-ease-smooth),
+    border-color     var(--cn-dur-snappy) var(--cn-ease-smooth),
+    color            var(--cn-dur-snappy) var(--cn-ease-smooth),
+    box-shadow       var(--cn-dur-normal) var(--cn-ease-out),
+    opacity          var(--cn-dur-snappy) var(--cn-ease-smooth);
+}
+
+/* Respect user motion preferences — disable non-essential animation
+   for accessibility, keeping only essential state changes. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

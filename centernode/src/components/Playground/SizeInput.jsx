@@ -118,11 +118,12 @@ export default function SizeInput({ type, value, mode, onChange, showFill = fals
   return (
     <div className="relative flex-1" ref={menuRef}>
       <div
-        className={`flex items-center h-8 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md transition-colors ${focused ? "border-neutral-400 dark:border-neutral-500 bg-white dark:bg-neutral-800" : "hover:border-neutral-300 dark:hover:border-neutral-600"}`}
+        className={`flex items-center h-7 bg-transparent border rounded-md transition-colors ${focused ? "border-cn-accent" : "border-cn-border-subtle hover:border-cn-border-default"}`}
+        style={focused ? { boxShadow: "0 0 0 3px var(--cn-accent-ring)" } : undefined}
       >
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="flex items-center justify-center w-7 h-full text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors cursor-pointer shrink-0 border-r border-transparent hover:border-neutral-200 dark:hover:border-neutral-700"
+          className="flex items-center justify-center w-7 h-full text-cn-text-muted hover:text-cn-text-primary transition-colors cursor-pointer shrink-0"
           title="Change sizing mode"
         >
           <SizingIcon mode={mode} isWidth={isWidth} />
@@ -145,19 +146,19 @@ export default function SizeInput({ type, value, mode, onChange, showFill = fals
               e.target.blur();
             }
           }}
-          className={`flex-1 min-w-0 w-full h-full bg-transparent px-2 text-[11px] outline-none ${!isFixed ? 'text-neutral-400 dark:text-neutral-500 cursor-default' : 'text-neutral-700 dark:text-neutral-200 font-mono'}`}
+          className={`flex-1 min-w-0 w-full h-full bg-transparent px-1 text-[11px] outline-none tabular-nums ${!isFixed ? 'text-cn-text-muted cursor-default' : 'text-cn-text-primary'}`}
         />
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="flex items-center justify-center w-6 h-full text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors shrink-0"
+          className="flex items-center justify-center w-5 h-full text-cn-text-muted hover:text-cn-text-secondary transition-colors shrink-0"
         >
           <ChevronDown className="w-3 h-3" />
         </button>
       </div>
 
       {menuOpen && (
-        <div className="absolute top-full left-0 mt-1 w-[160px] bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-lg rounded-lg py-1 z-50">
+        <div className="absolute top-full left-0 mt-1 w-[160px] cn-glass shadow-xl rounded-lg py-1 z-50 cn-anim-in" style={{ animationDuration: "var(--cn-dur-snappy)" }}>
           {MODES.map(m => (
             <button
               key={m.id}
@@ -165,13 +166,13 @@ export default function SizeInput({ type, value, mode, onChange, showFill = fals
                 onChange({ mode: m.id, value: numericValue });
                 setMenuOpen(false);
               }}
-              className="w-full flex items-center justify-between px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-left group transition-colors"
+              className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-cn-accent-soft text-left group transition-colors"
             >
               <div className="flex items-center gap-2.5">
-                <span className="w-4 text-neutral-400 dark:text-neutral-500 flex justify-center"><SizingIcon mode={m.id} isWidth={isWidth} /></span>
-                <span className="text-[11px] text-neutral-700 dark:text-neutral-200 group-hover:text-blue-700 dark:group-hover:text-blue-400">{m.label}</span>
+                <span className="w-4 text-cn-text-muted flex justify-center"><SizingIcon mode={m.id} isWidth={isWidth} /></span>
+                <span className="text-[11px] text-cn-text-secondary group-hover:text-cn-accent">{m.label}</span>
               </div>
-              {mode === m.id && <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />}
+              {mode === m.id && <Check className="w-3.5 h-3.5 text-cn-accent" />}
             </button>
           ))}
         </div>

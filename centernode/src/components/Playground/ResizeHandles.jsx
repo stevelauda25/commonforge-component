@@ -71,13 +71,17 @@ export default function ResizeHandles({ containerRef, onResize, zoom = 1, offset
         <div
           key={handle.dir}
           data-resize-handle
-          className="absolute bg-white border-blue-500 rounded-sm shadow-sm"
+          className="absolute bg-white rounded-sm shadow-sm"
+          // Border color uses the same amber as the selection ring so
+          // the dots read as part of the same selection chrome.
+          data-handle-tone="accent"
           style={{
             ...handle.style,
             width: s,
             height: s,
             borderWidth: border,
             borderStyle: "solid",
+            borderColor: "var(--cn-selection)",
             zIndex: 60,
           }}
           onMouseDown={startResize(handle.dir)}

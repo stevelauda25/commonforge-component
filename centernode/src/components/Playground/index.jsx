@@ -6,7 +6,9 @@ import {
   Smartphone, Tablet, Monitor, Frame, SlidersHorizontal, RotateCcw, FileCode, Info,
   Layers, Ruler, Package, Sun, Moon,
   AlignHorizontalDistributeCenter, AlignVerticalDistributeCenter,
-  ArrowRight, ArrowDown,
+  ArrowRight, ArrowDown, Search, Move, MoveHorizontal, MoveVertical, GitCommitHorizontal,
+  Undo2, Redo2, PanelLeftClose, MousePointerSquareDashed,
+  CornerUpLeft, Minus,
 } from "lucide-react";
 import { DEFAULT_TOKENS, FRAME_PRESETS, TEMPLATES, DEMO_CODE } from "@/constants/playground";
 import { parseSchemaFromCode, extractComponentName, updateCodeWithProp, isJsxSnippet, extractJsxTag, parseJsxSnippetSchema } from "@/utils/parser";
@@ -20,10 +22,16 @@ import PreviewNode from "./PreviewNode";
 import MeasureOverlay from "./MeasureOverlay";
 import ResizeHandles from "./ResizeHandles";
 import ScrubInput from "./ScrubInput";
+import AlignGrid from "./AlignGrid";
+import FillControl from "./FillControl";
 import TokenEditor from "./TokenEditor";
 import SizeInput from "./SizeInput";
 import PodLibraryPanel from "./PodLibraryPanel";
 import ChangelogPopup from "./ChangelogPopup";
+import Modal from "./Modal";
+import ActivityBar, { DEFAULT_ACTIVITY_ITEMS } from "./ActivityBar";
+import StatusBar from "./StatusBar";
+import CommandPalette from "./CommandPalette";
 
 const h = createElement;
 
@@ -156,109 +164,87 @@ function MultiSelectPanel({
   const selected = nodes.filter((n) => selectedNodeIds.has(n.id));
 
   return (
-    <div className="p-6 flex flex-col gap-4 overflow-y-auto">
-      <div className="text-center">
-        <div className="w-10 h-10 mx-auto mb-3 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-          <Layers className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
+    <div className="flex flex-col overflow-y-auto cn-anim-fade">
+      {/* Header — flat identity row */}
+      <div className="flex items-start gap-2.5 px-4 pt-4 pb-3">
+        <div className="w-7 h-7 rounded-md bg-cn-accent-soft text-cn-accent flex items-center justify-center shrink-0 mt-0.5">
+          <Layers className="w-3.5 h-3.5" />
         </div>
-        <div className="text-xs text-neutral-600 dark:text-neutral-300 font-medium mb-1">
-          {count} components selected
-        </div>
-        <div className="text-[11px] text-neutral-400 dark:text-neutral-500 leading-relaxed">
-          Shift-click to add or remove · Esc to clear
+        <div className="flex-1 min-w-0">
+          <div className="cn-display">{count} selected</div>
+          <div className="cn-mono-meta mt-1">shift-click to add · esc to clear</div>
         </div>
       </div>
 
-      {/* Auto-layout section */}
-      <div className="flex flex-col gap-2 pt-2 border-t border-neutral-200 dark:border-neutral-800">
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-          Auto layout
-        </div>
-        <div className="grid grid-cols-2 gap-1">
+      <div className="cn-divider mx-4" />
+
+      {/* Group as — flat section */}
+      <div className="px-4 py-3 flex flex-col gap-2.5">
+        <div className="cn-eyebrow">Group as</div>
+        <div className="cn-segmented grid grid-cols-2">
           <button
             onClick={() => onAutoArrange("row", gap)}
-            className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-neutral-200 dark:border-neutral-700"
-            title="Arrange selection in a horizontal row with the chosen gap"
+            className="flex items-center justify-center gap-1.5"
+            title="Group as horizontal row"
           >
-            <ArrowRight className="w-3 h-3" />
-            Row
+            <ArrowRight className="w-3 h-3" /> Row
           </button>
           <button
             onClick={() => onAutoArrange("column", gap)}
-            className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-neutral-200 dark:border-neutral-700"
-            title="Stack selection vertically with the chosen gap"
+            className="flex items-center justify-center gap-1.5"
+            title="Group as vertical column"
           >
-            <ArrowDown className="w-3 h-3" />
-            Column
+            <ArrowDown className="w-3 h-3" /> Column
           </button>
         </div>
-        <div className="flex items-center gap-2">
-          <label className="text-[11px] text-neutral-500 dark:text-neutral-400 shrink-0">Gap</label>
-          <input
-            type="number"
-            value={gap}
-            min={0}
-            max={400}
-            onChange={(e) => setGap(parseInt(e.target.value, 10) || 0)}
-            className="flex-1 text-[11px] px-2 py-1 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700 rounded-md focus:border-neutral-400 dark:focus:border-neutral-500 outline-none"
-          />
-          <span className="text-[10px] text-neutral-400 dark:text-neutral-500">px</span>
-        </div>
+        <ScrubInput label="Gap" value={gap} min={0} max={400} onChange={setGap} labelWidth={56} />
         {count >= 3 && (
-          <div className="grid grid-cols-2 gap-1 pt-1">
-            <button
-              onClick={() => onDistribute("row")}
-              className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-neutral-200 dark:border-neutral-700"
-              title="Equalize horizontal spacing between selected nodes (keeps first + last)"
-            >
+          <div className="grid grid-cols-2 gap-1.5 pt-0.5">
+            <button onClick={() => onDistribute("row")} className="cn-btn cn-btn-outline cn-btn-sm" title="Equalize horizontal gaps">
               <AlignHorizontalDistributeCenter className="w-3 h-3" />
-              Distribute H
+              Distrib H
             </button>
-            <button
-              onClick={() => onDistribute("column")}
-              className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-neutral-200 dark:border-neutral-700"
-              title="Equalize vertical spacing between selected nodes (keeps first + last)"
-            >
+            <button onClick={() => onDistribute("column")} className="cn-btn cn-btn-outline cn-btn-sm" title="Equalize vertical gaps">
               <AlignVerticalDistributeCenter className="w-3 h-3" />
-              Distribute V
+              Distrib V
             </button>
           </div>
         )}
       </div>
 
-      {/* Bulk actions */}
-      <div className="grid grid-cols-2 gap-1 pt-2 border-t border-neutral-200 dark:border-neutral-800">
-        <button
-          onClick={onDuplicateAll}
-          className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-neutral-200 dark:border-neutral-700"
-        >
-          <Copy className="w-3 h-3" />
-          Duplicate all
-        </button>
-        <button
-          onClick={onDeleteAll}
-          className="text-[11px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors border border-red-200 dark:border-red-900/50"
-        >
-          <Trash2 className="w-3 h-3" />
-          Delete all
-        </button>
-      </div>
+      <div className="cn-divider mx-4" />
 
       {/* Selected list */}
-      <div className="text-left pt-2 border-t border-neutral-200 dark:border-neutral-800">
-        <div className="text-[10px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase tracking-wider mb-2">Selected</div>
-        <div className="space-y-0.5">
+      <div className="px-4 py-3 flex flex-col gap-1">
+        <div className="cn-eyebrow flex items-center justify-between">
+          <span>Selected</span>
+          <span className="cn-mono-meta">{selected.length}</span>
+        </div>
+        <div className="flex flex-col -mx-1.5">
           {selected.map((n) => (
             <button
               key={n.id}
               onClick={() => onPickNode(n.id)}
-              className="w-full text-left text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded flex items-center gap-2 transition-colors"
+              className="cn-row"
             >
-              <div className="w-1 h-1 rounded-full bg-blue-500" />
-              <span className="font-medium truncate">{n.name}</span>
+              <span className={`w-1 h-1 rounded-full ${n.type === "group" ? "bg-cn-accent" : "bg-cn-text-muted"}`} />
+              <span className="font-medium truncate flex-1">{n.name}</span>
+              <span className="cn-mono-meta">{n.type === "group" ? "group" : "node"}</span>
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="cn-divider mx-4" />
+
+      {/* Actions footer */}
+      <div className="px-4 py-3 grid grid-cols-2 gap-1.5">
+        <button onClick={onDuplicateAll} className="cn-btn cn-btn-outline">
+          <Copy className="w-3 h-3" /> Duplicate all
+        </button>
+        <button onClick={onDeleteAll} className="cn-btn cn-btn-danger">
+          <Trash2 className="w-3 h-3" /> Delete all
+        </button>
       </div>
     </div>
   );
@@ -274,7 +260,10 @@ function MultiSelectPanel({
 //     descender leading inflating the gap)
 //   • plain text, no background chip
 function ChromeLabel({ zoom = 1, side = "left", tone = "solid", children }) {
-  const color = tone === "dashed" ? "rgb(96 165 250)" : "rgb(59 130 246)";
+  // tone=dashed uses a softer amber for the in-edit hint; default solid
+  // uses the canonical selection color. Both pulled from CSS vars so
+  // theme tweaks cascade.
+  const color = tone === "dashed" ? "rgb(251 191 36 / 0.75)" : "var(--cn-selection)";
   return (
     <div
       className="absolute font-medium whitespace-nowrap pointer-events-none"
@@ -376,6 +365,15 @@ function GroupContainer({
   // while editing — children take focus then.
   const showResize = isSelected && !isEditing && selectedNodeIds.size === 1;
 
+  // Appearance — fill / stroke / radius from `group.style`. All optional;
+  // when absent or zero the group renders as a plain transparent frame.
+  const style = group.style || {};
+  const fill = style.fill;
+  const isImageFill = typeof fill === "string" && fill.startsWith("url(");
+  const radius = typeof style.radius === "number" ? style.radius : 0;
+  const strokeW = typeof style.strokeWidth === "number" ? style.strokeWidth : 0;
+  const strokeC = typeof style.strokeColor === "string" ? style.strokeColor : "#ffffff";
+
   return (
     <div
       ref={ref}
@@ -393,6 +391,12 @@ function GroupContainer({
         // width/height the user sees (otherwise padding would push the
         // outer box past the dragged size by 2 * padding).
         boxSizing: "border-box",
+        // Appearance — only emit a property when the user has set it,
+        // so a "default" group stays a transparent frame.
+        ...(fill && !isImageFill ? { background: fill } : null),
+        ...(isImageFill ? { backgroundImage: fill, backgroundSize: "cover", backgroundPosition: "center" } : null),
+        ...(radius > 0 ? { borderRadius: `${radius}px` } : null),
+        ...(strokeW > 0 ? { border: `${strokeW}px solid ${strokeC}` } : null),
         ...(isWidthHug ? null : { width: wVal ?? undefined }),
         ...(isHeightHug ? null : { height: hVal ?? undefined }),
       }}
@@ -417,7 +421,7 @@ function GroupContainer({
           style={{
             inset: 0,
             borderRadius: 0,
-            boxShadow: `0 0 0 ${1 / zoom}px rgb(59 130 246)`,
+            boxShadow: `0 0 0 ${1 / zoom}px var(--cn-selection)`,
           }}
         >
           <ChromeLabel zoom={zoom} side="left" tone="solid">
@@ -432,7 +436,7 @@ function GroupContainer({
             inset: -4,
             borderRadius: 0,
             borderStyle: "dashed",
-            borderColor: "rgb(96 165 250 / 0.7)",
+            borderColor: "rgb(251 191 36 / 0.7)",
             borderWidth: `${1 / zoom}px`,
           }}
         >
@@ -509,11 +513,17 @@ function GroupProperties({
   onUngroup,
   onDelete,
   onUpdateSize, // (patch) => void — group-level customSize update
+  onUpdateStyle, // (partial) => void — group-level style (fill, radius, stroke) update
 }) {
   const wMode = group.customSize?.widthMode || "auto";
   const hMode = group.customSize?.heightMode || "auto";
   const wVal = typeof group.customSize?.width === "number" ? group.customSize.width : 240;
   const hVal = typeof group.customSize?.height === "number" ? group.customSize.height : 120;
+  // Appearance — empty/zero by default, applied to the group container.
+  const fill = group.style?.fill;
+  const radius = typeof group.style?.radius === "number" ? group.style.radius : 0;
+  const strokeWidth = typeof group.style?.strokeWidth === "number" ? group.style.strokeWidth : 0;
+  const strokeColor = typeof group.style?.strokeColor === "string" ? group.style.strokeColor : "#ffffff";
   const children = (group.children || [])
     .map((cid) => allNodes?.find((n) => n.id === cid))
     .filter(Boolean);
@@ -534,52 +544,39 @@ function GroupProperties({
     </div>
   );
 
-  const segBtn = (active) =>
-    `text-[11px] px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors ${
-      active
-        ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
-        : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200/60 dark:hover:bg-neutral-800"
-    }`;
-
   return (
-    <div className="flex flex-col gap-3 p-4 overflow-y-auto flex-1 min-h-0">
-      {/* Header card — icon + name input + child count + editing badge.
-          Single visual block instead of disconnected label / input / text. */}
-      <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50/60 dark:bg-neutral-900 p-3 flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-md bg-blue-500/15 text-blue-500 dark:text-blue-400 flex items-center justify-center shrink-0">
-          <Layers className="w-4 h-4" />
+    <div className="flex flex-col overflow-y-auto flex-1 min-h-0 cn-anim-fade">
+      {/* Header — flat identity row. Icon + inline-editable name +
+          inline meta chips. No card chrome. Reads like a doc header. */}
+      <div className="flex items-start gap-2.5 px-4 pt-4 pb-3">
+        <div className="w-7 h-7 rounded-md bg-cn-accent-soft text-cn-accent flex items-center justify-center shrink-0 mt-0.5">
+          <Layers className="w-3.5 h-3.5" />
         </div>
         <div className="flex-1 min-w-0">
           <input
             value={group.name}
             onChange={(e) => onRename(e.target.value)}
-            className="w-full text-[13px] font-semibold bg-transparent text-neutral-900 dark:text-neutral-100 outline-none border-b border-transparent focus:border-neutral-300 dark:focus:border-neutral-700 pb-0.5"
+            className="w-full cn-display bg-transparent outline-none border-b border-transparent focus:border-cn-border-default pb-0.5"
           />
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-[10px] text-neutral-500 dark:text-neutral-400">
-              {childCount} child{childCount === 1 ? "" : "ren"}
-            </span>
-            <span className="text-[9px] text-neutral-400 dark:text-neutral-500">·</span>
-            <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">
-              {direction === "row" ? "→" : "↓"} {direction}
-            </span>
+          <div className="flex items-center gap-1.5 mt-1.5 flex-wrap cn-mono-meta">
+            <span>{childCount} child{childCount === 1 ? "" : "ren"}</span>
+            <span>·</span>
+            <span>{direction === "row" ? "→" : "↓"} {direction}</span>
             {isEditing && (
               <>
-                <span className="text-[9px] text-neutral-400 dark:text-neutral-500">·</span>
-                <span className="text-[10px] text-blue-500 dark:text-blue-400 font-medium">
-                  editing
-                </span>
+                <span>·</span>
+                <span className="text-cn-accent">editing</span>
               </>
             )}
           </div>
         </div>
       </div>
 
-      {/* Size card — Hug (default) or Fixed per axis. Dragging the group's
-          resize handles on canvas auto-flips the axis to Fixed; the
-          dropdown is the manual path back to Hug. */}
-      <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50/60 dark:bg-neutral-900 p-3 flex flex-col gap-2.5">
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 flex items-center gap-1.5">
+      <div className="cn-divider mx-4" />
+
+      {/* Size — flat section: eyebrow + content. */}
+      <div className="px-4 py-3 flex flex-col gap-2">
+        <div className="cn-eyebrow flex items-center gap-1.5">
           <Frame className="w-3 h-3" /> Size
         </div>
         <div className="flex gap-1.5">
@@ -587,130 +584,132 @@ function GroupProperties({
             type="width"
             value={wVal}
             mode={wMode}
-            onChange={(next) =>
-              onUpdateSize({ width: next.value, widthMode: next.mode })
-            }
+            onChange={(next) => onUpdateSize({ width: next.value, widthMode: next.mode })}
           />
           <SizeInput
             type="height"
             value={hVal}
             mode={hMode}
-            onChange={(next) =>
-              onUpdateSize({ height: next.value, heightMode: next.mode })
-            }
+            onChange={(next) => onUpdateSize({ height: next.value, heightMode: next.mode })}
           />
         </div>
       </div>
 
-      {/* Auto layout card — all flex props in one consistent block. */}
-      <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50/60 dark:bg-neutral-900 p-3 flex flex-col gap-2.5">
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-          Auto layout
-        </div>
-        <div className="grid grid-cols-2 gap-1 bg-neutral-200/50 dark:bg-neutral-800/60 p-0.5 rounded-md">
+      <div className="cn-divider mx-4" />
+
+      {/* Auto layout — Figma-style dense grid. Direction segmented at
+          top, then a 2-col row pairing alignment grid with gap/padding
+          icon inputs. No "px" suffixes, no verbose labels — icons carry
+          the meaning. */}
+      <div className="px-4 py-3 flex flex-col gap-2">
+        <div className="cn-eyebrow">Auto layout</div>
+        <div className="cn-segmented grid grid-cols-2">
           <button
             type="button"
             onClick={() => onUpdateAutolayout({ direction: "row" })}
-            className={segBtn(direction === "row")}
+            className={`flex items-center justify-center gap-1.5 ${direction === "row" ? "is-active" : ""}`}
           >
             <ArrowRight className="w-3 h-3" /> Row
           </button>
           <button
             type="button"
             onClick={() => onUpdateAutolayout({ direction: "column" })}
-            className={segBtn(direction === "column")}
+            className={`flex items-center justify-center gap-1.5 ${direction === "column" ? "is-active" : ""}`}
           >
             <ArrowDown className="w-3 h-3" /> Column
           </button>
         </div>
-        <ScrubInput
-          label="Gap"
-          value={gap}
-          min={0}
-          max={400}
-          onChange={(n) => onUpdateAutolayout({ gap: n })}
-          labelWidth={48}
-        />
-        <ScrubInput
-          label="Padding"
-          value={padding}
-          min={0}
-          max={400}
-          onChange={(n) => onUpdateAutolayout({ padding: n })}
-          labelWidth={48}
-        />
-        <Row label="Align">
-          <div className="grid grid-cols-4 gap-0.5 flex-1 bg-neutral-200/50 dark:bg-neutral-800/60 p-0.5 rounded-md">
-            {[
-              { id: "start", label: direction === "row" ? "↑" : "←", title: "Start" },
-              { id: "center", label: "•", title: "Center" },
-              { id: "end", label: direction === "row" ? "↓" : "→", title: "End" },
-              { id: "stretch", label: "↔", title: "Stretch" },
-            ].map((a) => (
-              <button
-                key={a.id}
-                type="button"
-                onClick={() => onUpdateAutolayout({ align: a.id })}
-                title={a.title}
-                className={`${segBtn(align === a.id)} font-mono`}
-              >
-                {a.label}
-              </button>
-            ))}
-          </div>
-        </Row>
-      </div>
-
-      {/* Children list — compact, click to select child (no need to switch
-          to Layers tab for a quick jump). Group must already be in edit
-          mode for selection to land on the child rather than bubble up;
-          when not editing, this is informational only. */}
-      {children.length > 0 && (
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50/60 dark:bg-neutral-900 p-3">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-2">
-            Children
-          </div>
-          <div className="flex flex-col gap-0.5">
-            {children.map((c) => (
-              <div
-                key={c.id}
-                className="flex items-center gap-2 px-1.5 py-1 rounded text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
-              >
-                <span className="w-1 h-1 rounded-full bg-neutral-400 dark:bg-neutral-500" />
-                <span className="truncate flex-1">{c.name}</span>
-                <span className="text-[9px] font-mono text-neutral-400 dark:text-neutral-500 shrink-0">
-                  {c.type === "group" ? "group" : "component"}
-                </span>
-              </div>
-            ))}
+        {/* Align grid (left) + Gap + Padding stacked (right) */}
+        <div className="flex gap-2 items-start">
+          <AlignGrid
+            direction={direction}
+            align={align}
+            onChange={(a) => onUpdateAutolayout({ align: a })}
+          />
+          <div className="flex-1 flex flex-col gap-1.5">
+            <ScrubInput
+              icon={GitCommitHorizontal}
+              label="Gap"
+              value={gap}
+              min={0}
+              max={400}
+              onChange={(n) => onUpdateAutolayout({ gap: n })}
+            />
+            <ScrubInput
+              icon={Move}
+              label="Pad"
+              value={padding}
+              min={0}
+              max={400}
+              onChange={(n) => onUpdateAutolayout({ padding: n })}
+            />
           </div>
         </div>
+      </div>
+
+      <div className="cn-divider mx-4" />
+
+      {/* Appearance — each property is its OWN row of identical shape
+          (icon-swatch + value + actions). Reads like a settings list:
+          Fill, Stroke, Radius. No grid, no conditional rows breaking
+          alignment, no nested expand state. */}
+      <div className="px-4 py-3 flex flex-col gap-2">
+        <div className="cn-eyebrow">Appearance</div>
+        <FillControl
+          value={fill}
+          onChange={(v) => onUpdateStyle?.({ fill: v })}
+        />
+        <StrokeControl
+          width={strokeWidth}
+          color={strokeColor}
+          onChange={({ width, color }) =>
+            onUpdateStyle?.({ strokeWidth: width, strokeColor: color })
+          }
+        />
+        <ScrubInput
+          icon={CornerUpLeft}
+          label="Radius"
+          value={radius}
+          min={0}
+          max={400}
+          onChange={(n) => onUpdateStyle?.({ radius: n })}
+        />
+      </div>
+
+      {children.length > 0 && (
+        <>
+          <div className="cn-divider mx-4" />
+          {/* Children — bare list with eyebrow + count. */}
+          <div className="px-4 py-3 flex flex-col gap-1">
+            <div className="cn-eyebrow flex items-center justify-between">
+              <span>Children</span>
+              <span className="cn-mono-meta">{children.length}</span>
+            </div>
+            <div className="flex flex-col -mx-1.5">
+              {children.map((c) => (
+                <div key={c.id} className="cn-row">
+                  <span className={`w-1 h-1 rounded-full ${c.type === "group" ? "bg-cn-accent" : "bg-cn-text-muted"}`} />
+                  <span className="truncate flex-1">{c.name}</span>
+                  <span className="cn-mono-meta">{c.type === "group" ? "group" : "node"}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
       )}
 
-      {/* Actions — primary (edit + dissolve) and destructive (delete). */}
-      <div className="grid grid-cols-2 gap-1.5">
-        <button
-          type="button"
-          onClick={onEnter}
-          className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-2 rounded-md border border-neutral-200 dark:border-neutral-700 transition-colors"
-        >
-          Enter group
-        </button>
-        <button
-          type="button"
-          onClick={onUngroup}
-          className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-2 rounded-md border border-neutral-200 dark:border-neutral-700 transition-colors"
-        >
-          Ungroup
+      <div className="cn-divider mx-4" />
+
+      {/* Actions footer */}
+      <div className="px-4 py-3 flex flex-col gap-1.5">
+        <div className="grid grid-cols-2 gap-1.5">
+          <button type="button" onClick={onEnter} className="cn-btn cn-btn-outline">Enter group</button>
+          <button type="button" onClick={onUngroup} className="cn-btn cn-btn-outline">Ungroup</button>
+        </div>
+        <button type="button" onClick={onDelete} className="cn-btn cn-btn-danger">
+          Delete group + children
         </button>
       </div>
-      <button
-        type="button"
-        onClick={onDelete}
-        className="text-[11px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 px-2 py-2 rounded-md border border-red-200 dark:border-red-900/50 transition-colors"
-      >
-        Delete group + children
-      </button>
     </div>
   );
 }
@@ -726,6 +725,7 @@ function GroupInspector({
   onRename,
   onUpdateAutolayout,
   onUpdateSize,
+  onUpdateStyle,
   onEnter,
   onUngroup,
   onDelete,
@@ -756,10 +756,9 @@ function GroupInspector({
 
   return (
     <div className="flex flex-col flex-1 min-h-0">
-      {/* Tab bar — Properties / Code. Tab content fills the rest of the
-          inspector column with min-h-0 so the Code tab can use the full
-          available height without a manual max-height. */}
-      <div className="flex border-b border-neutral-200 dark:border-neutral-800 shrink-0">
+      {/* Minimal text tabs — purely typographic, thin underline on the
+          active tab. No chip, no glow, no orange. */}
+      <div className="cn-tabs-minimal shrink-0">
         {[
           { id: "properties", label: "Properties" },
           { id: "code", label: "Code" },
@@ -768,43 +767,44 @@ function GroupInspector({
             key={t.id}
             type="button"
             onClick={() => setTab(t.id)}
-            className={`flex-1 px-3 py-2.5 text-[11px] font-semibold transition-colors relative ${
-              tab === t.id
-                ? "text-neutral-900 dark:text-neutral-100"
-                : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
-            }`}
+            aria-pressed={tab === t.id}
+            className={tab === t.id ? "is-active" : ""}
           >
             {t.label}
-            {tab === t.id && (
-              <span className="absolute bottom-0 left-2 right-2 h-[2px] bg-neutral-900 dark:bg-neutral-100 rounded-t" />
-            )}
           </button>
         ))}
       </div>
 
       {tab === "properties" ? (
-        <GroupProperties
-          group={group}
-          childCount={childCount}
-          direction={direction}
-          gap={gap}
-          align={group.autolayout?.align || "start"}
-          padding={group.autolayout?.padding ?? 0}
-          allNodes={allNodes}
-          isEditing={isEditing}
-          onRename={onRename}
-          onUpdateAutolayout={onUpdateAutolayout}
-          onUpdateSize={onUpdateSize}
-          onEnter={onEnter}
-          onUngroup={onUngroup}
-          onDelete={onDelete}
-        />
+        <div key="props" className="flex flex-col flex-1 min-h-0 cn-anim-fade" style={{ animationDuration: "var(--cn-dur-snappy)" }}>
+          <GroupProperties
+            group={group}
+            childCount={childCount}
+            direction={direction}
+            gap={gap}
+            align={group.autolayout?.align || "start"}
+            padding={group.autolayout?.padding ?? 0}
+            allNodes={allNodes}
+            isEditing={isEditing}
+            onRename={onRename}
+            onUpdateAutolayout={onUpdateAutolayout}
+            onUpdateSize={onUpdateSize}
+            onUpdateStyle={onUpdateStyle}
+            onEnter={onEnter}
+            onUngroup={onUngroup}
+            onDelete={onDelete}
+          />
+        </div>
       ) : (
         // Code tab — segmented format toggle + copy on a flat strip,
         // then the code body fills the rest of the inspector. No drop
         // shadows, no card chrome, no filename pills — just a clean
         // code pane that integrates with the panel.
-        <div className="flex flex-col flex-1 min-h-0">
+        <div
+          key="code"
+          className="flex flex-col flex-1 min-h-0 cn-anim-fade"
+          style={{ animationDuration: "var(--cn-dur-snappy)" }}
+        >
           <div className="flex items-center gap-2 px-4 py-2 border-b border-neutral-200 dark:border-neutral-800 shrink-0">
             <div className="inline-flex rounded-md bg-neutral-100 dark:bg-neutral-800 p-0.5">
               {[
@@ -854,6 +854,12 @@ export default function ComponentPlayground() {
   const [globalTokens, setGlobalTokens] = useState(DEFAULT_TOKENS);
   const [globalPodTokens, setGlobalPodTokens] = useState(POD_DEFAULT_TOKENS);
   const [tokensPanelOpen, setTokensPanelOpen] = useState(false);
+  // Activity Bar — which side panel is currently open (null = collapsed).
+  // Components is the default panel on first load; user can collapse to
+  // give the canvas the full width when needed.
+  const [activityId, setActivityId] = useState("components");
+  // Command palette open state — bound to ⌘K globally.
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const [tokensTab, setTokensTab] = useState("pod"); // "pod" | "legacy"
   const [inspectorTab, setInspectorTab] = useState("props");
   const [showSyntaxHint, setShowSyntaxHint] = useState(false);
@@ -1511,6 +1517,13 @@ export default function ComponentPlayground() {
   useEffect(() => {
     const down = (e) => {
       const isInput = e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA";
+      // Command palette — ⌘K / Ctrl+K. Always intercept (works even when
+      // an input has focus, so you can summon it anywhere).
+      if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K")) {
+        e.preventDefault();
+        setPaletteOpen((v) => !v);
+        return;
+      }
       // Undo / Redo — Cmd/Ctrl+Z and Cmd/Ctrl+Shift+Z. Skip when an input
       // has focus so the browser's native field-level undo still works
       // (e.g. correcting a typo in the Gap field).
@@ -1546,6 +1559,13 @@ export default function ComponentPlayground() {
           setEditingGroupId(null);
         } else {
           setSelectedNodeIds(new Set());
+        }
+        // Drop DOM focus too so a leftover :focus-visible ring on a
+        // chevron / row doesn't bleed through after the selection
+        // clears. Skip when an input is active — Escape there means
+        // "cancel edit", and blur would discard the field's own commit.
+        if (document.activeElement && !isInput) {
+          try { document.activeElement.blur(); } catch {}
         }
       }
       if (e.key === "0" && (e.metaKey || e.ctrlKey)) {
@@ -1655,6 +1675,12 @@ export default function ComponentPlayground() {
     // Canvas zoom/pan only fires when the cursor is inside the canvas rect;
     // wheel over the sidebar / top bar leaves React state alone.
     const onWheel = (e) => {
+      // Skip ENTIRELY when the wheel originates inside an overlay (modals,
+      // popovers, command palette, etc). Otherwise the canvas pans /
+      // zooms while the user is just trying to scroll a long modal body.
+      if (e.target && typeof e.target.closest === "function" && e.target.closest("[data-overlay]")) {
+        return;
+      }
       const isZoomGesture = e.ctrlKey || e.metaKey;
       const rect = canvasRef.current?.getBoundingClientRect();
       const overCanvas =
@@ -1756,67 +1782,68 @@ export default function ComponentPlayground() {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 overflow-hidden" style={{ fontFamily: "'Inter', -apple-system, sans-serif" }}>
+    <div className="w-full h-screen flex flex-col bg-cn-canvas text-cn-text-primary overflow-hidden" style={{ fontFamily: "'Inter', -apple-system, sans-serif" }}>
       {/* TOP BAR */}
-      <header className="h-12 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex items-center justify-between px-4 shrink-0 z-30">
+      <header className="h-10 border-b border-cn-border-default bg-cn-surface flex items-center justify-between px-3 shrink-0 z-30 cn-anim-down" style={{ animationDuration: "var(--cn-dur-settled)" }}>
+        {/* Left cluster: brand mark with pulse, breadcrumb meta + chips */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-[5px] bg-neutral-900 dark:bg-neutral-100 flex items-center justify-center">
-              <Sparkles className="w-3 h-3 text-white dark:text-neutral-900" />
+          <div className="flex items-center gap-2">
+            <div
+              className="w-[18px] h-[18px] rounded-[4px] bg-cn-accent flex items-center justify-center"
+              style={{
+                boxShadow: "0 0 16px -2px rgba(245,158,11,0.55), 0 0 0 1px rgba(0,0,0,0.08) inset",
+              }}
+            >
+              <Sparkles className="w-2.5 h-2.5 text-cn-text-on-accent" />
             </div>
-            <span className="text-sm font-semibold tracking-tight">Playground</span>
+            <span className="cn-display">Centernode</span>
           </div>
-          <span className="text-neutral-300 dark:text-neutral-700">/</span>
-          <span className="text-[11px] text-neutral-400 dark:text-neutral-500">{nodes.length} component{nodes.length !== 1 ? "s" : ""}</span>
+          <span className="cn-mono-meta">/ {nodes.length.toString().padStart(2, "0")} node{nodes.length !== 1 ? "s" : ""}</span>
+          {selectedNodeIds.size > 0 && (
+            <span className="cn-chip cn-chip-accent cn-anim-fade" style={{ animationDuration: "var(--cn-dur-snappy)" }}>
+              {selectedNodeIds.size} selected
+            </span>
+          )}
           {saveStatus && (
-            <span className="text-[10px] text-green-600 font-medium ml-1 flex items-center gap-1">
+            <span className="cn-mono-meta flex items-center gap-1 cn-anim-fade" style={{ color: "var(--cn-success)" }}>
               <Check className="w-2.5 h-2.5" /> saved
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1">
+        {/* Center: command palette trigger — primary discoverability for
+            the new keyboard-first UX. Subtle but always visible. */}
+        <button
+          type="button"
+          onClick={() => setPaletteOpen(true)}
+          className="cn-btn cn-btn-ghost cn-btn-sm gap-2 px-2.5"
+          title="Open command palette"
+        >
+          <Search className="w-3 h-3 text-cn-text-muted" />
+          <span className="text-cn-text-muted">Search commands…</span>
+          <span className="cn-mono-meta px-1.5 py-0.5 rounded border border-cn-border-subtle bg-cn-elevated ml-2">⌘K</span>
+        </button>
+        {/* Right cluster: actions */}
+        <div className="flex items-center gap-0.5">
           <ThemeToggle />
-          <div className="w-px h-5 bg-neutral-200 dark:bg-neutral-800 mx-1" />
-          <button
-            onClick={() => setShowSyntaxHint(!showSyntaxHint)}
-            className="text-xs text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors"
-          >
-            <Info className="w-3.5 h-3.5" />
-            Syntax
+          <div className="cn-divider-vert mx-2" />
+          <button onClick={() => setShowSyntaxHint(!showSyntaxHint)} className="cn-btn cn-btn-ghost cn-btn-sm cn-btn-icon" title="JSX syntax hints">
+            <Info className="w-3 h-3" />
           </button>
-          <button
-            onClick={() => setChangelogOpen(true)}
-            className="text-xs text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors"
-            title="What's new in centernode"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            What's new
+          <button onClick={() => setChangelogOpen(true)} className="cn-btn cn-btn-ghost cn-btn-sm cn-btn-icon" title="What's new">
+            <Sparkles className="w-3 h-3" />
           </button>
-          <button
-            onClick={() => setTokensPanelOpen(!tokensPanelOpen)}
-            className={`text-xs px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
-              tokensPanelOpen
-                ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
-                : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-            }`}
-          >
-            <Palette className="w-3.5 h-3.5" />
-            Tokens
-          </button>
-          <div className="w-px h-5 bg-neutral-200 dark:bg-neutral-800 mx-1" />
-          <label className="text-xs text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2.5 py-1.5 rounded-md cursor-pointer flex items-center gap-1.5 transition-colors">
-            <Upload className="w-3.5 h-3.5" />
+          <div className="cn-divider-vert mx-2" />
+          <label className="cn-btn cn-btn-ghost cn-btn-sm cursor-pointer">
+            <Upload className="w-3 h-3" />
             Import
             <input type="file" accept=".json" onChange={handleImport} className="hidden" />
           </label>
           <div ref={exportMenuRef} className="relative">
             <button
               onClick={() => setExportMenuOpen(!exportMenuOpen)}
-              className={`text-xs text-neutral-600 hover:bg-neutral-100 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
-                exportMenuOpen ? "bg-neutral-100" : ""
-              }`}
+              className={`cn-btn cn-btn-sm ${exportMenuOpen ? "cn-btn-outline" : "cn-btn-ghost"}`}
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-3 h-3" />
               Export
             </button>
             {exportMenuOpen && (
@@ -1931,68 +1958,114 @@ export default function ComponentPlayground() {
       </header>
 
       <div className="flex-1 flex overflow-hidden relative">
-        <PodLibraryPanel
-          manifest={canvasManifest}
-          onAddPodNode={addPodNode}
-          nodes={nodes}
-          selectedNodeIds={selectedNodeIds}
-          editingGroupId={editingGroupId}
-          onSelectNode={handleSelect}
-          onEnterGroup={enterGroup}
+        <ActivityBar
+          items={DEFAULT_ACTIVITY_ITEMS}
+          activeId={
+            // Tokens panel state lifts into the activity bar — it owns
+            // its own toggle below, but the rail reflects it being open.
+            tokensPanelOpen ? "tokens" : activityId
+          }
+          onChange={(id) => {
+            if (id === "tokens") {
+              setTokensPanelOpen(true);
+              setActivityId(null);
+            } else {
+              setTokensPanelOpen(false);
+              setActivityId(id);
+            }
+          }}
         />
+        {activityId && (
+          <div
+            key={activityId}
+            className="cn-anim-left"
+            style={{ animationDuration: "var(--cn-dur-settled)" }}
+          >
+            <PodLibraryPanel
+              manifest={canvasManifest}
+              onAddPodNode={addPodNode}
+              nodes={nodes}
+              selectedNodeIds={selectedNodeIds}
+              editingGroupId={editingGroupId}
+              onSelectNode={handleSelect}
+              onEnterGroup={enterGroup}
+              initialTab={activityId === "layers" ? "layers" : "components"}
+            />
+          </div>
+        )}
         {tokensPanelOpen && (
-          <div className="w-[300px] border-r border-neutral-200 bg-white flex flex-col shrink-0 z-20">
-            <div className="h-9 px-3 flex items-center gap-2 border-b border-neutral-200 bg-neutral-50/50">
-              <Palette className="w-3.5 h-3.5 text-neutral-500" />
-              <span className="text-[11px] font-semibold text-neutral-600 uppercase tracking-wider">Global Tokens</span>
-              <button onClick={() => setTokensPanelOpen(false)} className="ml-auto p-1 hover:bg-neutral-200 rounded transition-colors">
-                <ChevronLeft className="w-3.5 h-3.5 text-neutral-500" />
+          <div
+            className="w-[272px] bg-cn-surface border-r border-cn-border-default flex flex-col shrink-0 z-20 cn-anim-left min-h-0 h-full"
+            style={{ animationDuration: "var(--cn-dur-settled)" }}
+          >
+            {/* Panel header — same density / pattern as the Library panel
+                (h-10, eyebrow-style title, optional meta on the right). */}
+            <div className="px-3 h-10 border-b border-cn-border-subtle shrink-0 flex items-center justify-between">
+              <span className="cn-display flex items-center gap-2">
+                <Palette className="w-3.5 h-3.5 text-cn-accent" />
+                Tokens
+              </span>
+              <button
+                onClick={() => setTokensPanelOpen(false)}
+                className="cn-btn cn-btn-ghost cn-btn-icon cn-btn-sm"
+                aria-label="Close tokens"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
               </button>
             </div>
-            <div className="flex border-b border-neutral-200 bg-neutral-50/50">
+
+            {/* Source tabs — minimal underline pattern, identical to the
+                inspector tab style for visual consistency. */}
+            <div className="cn-tabs-minimal shrink-0">
               <button
                 onClick={() => setTokensTab("pod")}
-                className={`flex-1 px-3 py-2 text-[11px] font-semibold transition-colors ${
-                  tokensTab === "pod"
-                    ? "text-neutral-900 border-b-2 border-neutral-900 -mb-px"
-                    : "text-neutral-500 hover:text-neutral-700"
-                }`}
+                aria-pressed={tokensTab === "pod"}
+                className={tokensTab === "pod" ? "is-active" : ""}
               >
-                POD Design System
+                POD
               </button>
               <button
                 onClick={() => setTokensTab("legacy")}
-                className={`flex-1 px-3 py-2 text-[11px] font-semibold transition-colors ${
-                  tokensTab === "legacy"
-                    ? "text-neutral-900 border-b-2 border-neutral-900 -mb-px"
-                    : "text-neutral-500 hover:text-neutral-700"
-                }`}
+                aria-pressed={tokensTab === "legacy"}
+                className={tokensTab === "legacy" ? "is-active" : ""}
               >
                 Component
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto p-4">
+
+            <div
+              key={tokensTab}
+              className="flex-1 overflow-y-auto cn-anim-fade"
+              style={{ animationDuration: "var(--cn-dur-snappy)" }}
+            >
               {tokensTab === "pod" ? (
                 <>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] text-neutral-500">Live override of pod-test-tokens</span>
+                  <div className="px-4 py-3 flex items-center justify-between">
+                    <span className="cn-caption">Live override of pod-test-tokens</span>
                     <button
                       onClick={resetPodTokens}
-                      className="text-[10px] text-neutral-500 hover:text-neutral-900 underline"
+                      className="cn-mono-meta hover:text-cn-accent transition-colors"
                     >
                       Reset all
                     </button>
                   </div>
-                  <TokenEditor tokens={globalPodTokens} onChange={updateGlobalPodToken} />
-                  <div className="text-[10px] text-neutral-400 leading-relaxed pt-4 mt-4 border-t border-neutral-200">
-                    In code: <span className="font-mono text-neutral-600">var(--color-accent-default)</span>
+                  <div className="cn-divider mx-4" />
+                  <div className="px-4 py-3">
+                    <TokenEditor tokens={globalPodTokens} onChange={updateGlobalPodToken} />
+                  </div>
+                  <div className="cn-divider mx-4" />
+                  <div className="px-4 py-3 cn-mono-meta leading-relaxed">
+                    In code: <span className="text-cn-text-secondary">var(--color-accent-default)</span>
                   </div>
                 </>
               ) : (
                 <>
-                  <TokenEditor tokens={globalTokens} onChange={updateGlobalToken} />
-                  <div className="text-[10px] text-neutral-400 leading-relaxed pt-4 mt-4 border-t border-neutral-200">
-                    In code: <span className="font-mono text-neutral-600">var(--token-colors-brand)</span>
+                  <div className="px-4 py-3">
+                    <TokenEditor tokens={globalTokens} onChange={updateGlobalToken} />
+                  </div>
+                  <div className="cn-divider mx-4" />
+                  <div className="px-4 py-3 cn-mono-meta leading-relaxed">
+                    In code: <span className="text-cn-text-secondary">var(--token-colors-brand)</span>
                   </div>
                 </>
               )}
@@ -2111,7 +2184,7 @@ export default function ComponentPlayground() {
                     width: xMax - xMin,
                     height: yMax - yMin,
                     borderRadius: 0,
-                    boxShadow: `0 0 0 ${1 / zoom}px rgb(59 130 246)`,
+                    boxShadow: `0 0 0 ${1 / zoom}px var(--cn-selection)`,
                   }}
                 >
                   <ChromeLabel zoom={zoom} side="left" tone="solid">
@@ -2122,48 +2195,65 @@ export default function ComponentPlayground() {
             })()}
             {marquee && (
               <div
-                className="pointer-events-none absolute bg-blue-500/10 dark:bg-blue-400/15"
+                className="pointer-events-none absolute bg-cn-accent-soft"
                 style={{
                   left: Math.min(marquee.x1, marquee.x2),
                   top: Math.min(marquee.y1, marquee.y2),
                   width: Math.abs(marquee.x2 - marquee.x1),
                   height: Math.abs(marquee.y2 - marquee.y1),
-                  boxShadow: `0 0 0 ${1 / zoom}px rgb(59 130 246 / 0.8)`,
+                  boxShadow: `0 0 0 ${1 / zoom}px rgb(251 191 36 / 0.7)`,
                 }}
               />
             )}
             </div>
           </div>
 
-          <div ref={addMenuRef} className="absolute top-4 left-4 z-10">
+          <div ref={addMenuRef} className="absolute top-3 left-3 z-10">
             <button
               onClick={() => setAddMenuOpen(!addMenuOpen)}
-              className={`bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-xs font-medium px-3 py-2 rounded-lg shadow-sm hover:bg-neutral-800 dark:hover:bg-neutral-200 flex items-center gap-1.5 transition-all ${
-                addMenuOpen ? "ring-2 ring-neutral-900/20 dark:ring-neutral-100/20 ring-offset-2 dark:ring-offset-neutral-900" : ""
+              className={`cn-glass rounded-md shadow-lg p-1.5 flex items-center cn-press transition-all ${
+                addMenuOpen
+                  ? "text-cn-accent"
+                  : "text-cn-text-muted hover:text-cn-text-primary"
               }`}
+              title="Add component"
+              aria-label="Add component"
             >
               <Plus className="w-3.5 h-3.5" />
-              Add component
             </button>
 
             {addMenuOpen && (
-              <div className="absolute top-full mt-2 left-0 w-[300px] bg-white dark:bg-neutral-900 rounded-xl shadow-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
-                <div className="px-3 py-2 border-b border-neutral-100 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-800/30">
-                  <div className="text-[10px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Start with</div>
+              <div
+                data-overlay
+                className="absolute top-full mt-2 left-0 w-[280px] rounded-xl shadow-xl overflow-hidden cn-anim-in"
+                style={{
+                  animationDuration: "var(--cn-dur-snappy)",
+                  background: "var(--cn-surface)",
+                  border: "1px solid var(--cn-border-default)",
+                }}
+              >
+                <div className="px-3 h-9 border-b border-cn-border-subtle flex items-center">
+                  <span className="cn-eyebrow">Start with</span>
                 </div>
-                <div className="p-1.5 max-h-[400px] overflow-y-auto">
+                <div className="py-1 max-h-[400px] overflow-y-auto">
                   {Object.entries(TEMPLATES).map(([key, tpl]) => (
                     <button
                       key={key}
                       onClick={() => { addNode(key); setAddMenuOpen(false); }}
-                      className="w-full flex items-start gap-3 p-2.5 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors text-left group"
+                      className="w-full flex items-center gap-2.5 px-3 h-12 hover:bg-cn-elevated text-left group transition-colors"
                     >
-                      <div className="w-8 h-8 rounded-md bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0 text-neutral-500 dark:text-neutral-300 text-lg font-light group-hover:bg-white dark:group-hover:bg-neutral-700 group-hover:shadow-sm transition-all">
+                      <div
+                        className="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-[14px] font-light text-cn-text-secondary transition-colors group-hover:text-cn-accent"
+                        style={{
+                          background: "var(--cn-elevated)",
+                          border: "1px solid var(--cn-border-subtle)",
+                        }}
+                      >
                         {tpl.icon}
                       </div>
-                      <div className="flex-1 min-w-0 pt-0.5">
-                        <div className="text-[13px] font-semibold text-neutral-900 dark:text-neutral-100 leading-tight">{tpl.name}</div>
-                        <div className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-snug mt-0.5">{tpl.description}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="cn-label-strong leading-tight">{tpl.name}</div>
+                        <div className="cn-mono-meta leading-tight mt-0.5 truncate">{tpl.description}</div>
                       </div>
                     </button>
                   ))}
@@ -2173,57 +2263,46 @@ export default function ComponentPlayground() {
           </div>
 
           {nodes.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none cn-anim-fade">
               <div className="text-center max-w-sm px-6">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-                  <Package className="w-5 h-5 text-neutral-400 dark:text-neutral-500" />
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-cn-elevated flex items-center justify-center border border-cn-border-subtle">
+                  <Package className="w-5 h-5 text-cn-text-muted" />
                 </div>
-                <div className="text-sm text-neutral-700 dark:text-neutral-200 font-medium mb-1">Canvas is empty</div>
-                <div className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                  Pick a component from the <span className="font-semibold text-neutral-700 dark:text-neutral-200">POD Components</span> sidebar on the left.
+                <div className="cn-label-strong mb-1">Canvas is empty</div>
+                <div className="cn-caption leading-relaxed">
+                  Pick a component from the <span className="text-cn-text-secondary">Components</span> sidebar on the left,
+                  or hit <span className="cn-chip">⌘K</span> to search.
                 </div>
               </div>
             </div>
           )}
 
-          <div className="absolute bottom-4 right-4 flex items-center gap-0.5 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-sm p-1">
+          {/* Floating reset+measure dock — single capsule that survives
+              alongside the status bar; status bar owns zoom + coords. */}
+          <div className="absolute top-3 right-3 flex items-center gap-0.5 cn-glass rounded-md shadow-lg p-1 cn-anim-down z-10">
             <button
               onClick={() => setMeasureMode(!measureMode)}
-              className={`p-1.5 rounded transition-colors ${
-                measureMode ? "bg-pink-50 dark:bg-pink-950 text-pink-600 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-900" : "hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300"
+              className={`p-1.5 rounded transition-all duration-[var(--cn-dur-snappy)] cn-press ${
+                measureMode
+                  ? "bg-cn-accent-soft text-cn-accent cn-glow-accent"
+                  : "hover:bg-cn-elevated text-cn-text-muted hover:text-cn-text-primary"
               }`}
-              title="Measure mode — hover elements to inspect"
+              title="Measure mode (M)"
             >
               <Ruler className="w-3.5 h-3.5" />
             </button>
-            <div className="w-px h-4 bg-neutral-200 dark:bg-neutral-800 mx-0.5" />
-            <button onClick={() => setZoom((z) => Math.max(0.1, z - 0.1))} className="p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded transition-colors">
-              <ZoomOut className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300" />
+            <div className="cn-divider-vert mx-0.5" />
+            <button
+              onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}
+              className="p-1.5 hover:bg-cn-elevated text-cn-text-muted hover:text-cn-text-primary rounded transition-colors cn-press"
+              title="Reset view (⌘0)"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
             </button>
-            <div className="text-[11px] font-mono text-neutral-600 dark:text-neutral-300 w-10 text-center tabular-nums">
-              {Math.round(zoom * 100)}%
-            </div>
-            <button onClick={() => setZoom((z) => Math.min(4, z + 0.1))} className="p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded transition-colors">
-              <ZoomIn className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300" />
-            </button>
-            <div className="w-px h-4 bg-neutral-200 dark:bg-neutral-800 mx-0.5" />
-            <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded transition-colors" title="Reset (⌘0)">
-              <Maximize2 className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300" />
-            </button>
-          </div>
-
-          <div className="absolute bottom-4 left-4 flex items-center gap-2 text-[10px] text-neutral-500 dark:text-neutral-400 font-mono bg-white/80 dark:bg-neutral-900/80 backdrop-blur px-2.5 py-1.5 rounded-md border border-neutral-200 dark:border-neutral-800">
-            {measureMode ? (
-              <><Ruler className="w-3 h-3 text-pink-600" /> <span className="text-pink-700">measure mode</span> · hover elements</>
-            ) : spaceHeld ? (
-              <><Hand className="w-3 h-3" /> panning</>
-            ) : (
-              <><MousePointer2 className="w-3 h-3" /> scroll to pan · ⌘+scroll to zoom</>
-            )}
           </div>
         </div>
 
-        <div className="w-[360px] border-l border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col shrink-0 z-20">
+        <div className="w-[360px] border-l border-cn-border-default bg-cn-surface flex flex-col shrink-0 z-20 min-h-0 h-full">
           {selectedNode?.type === "group" ? (
             <GroupInspector
               group={selectedNode}
@@ -2235,6 +2314,11 @@ export default function ComponentPlayground() {
                   customSize: { ...(selectedNode.customSize || {}), ...partial },
                 })
               }
+              onUpdateStyle={(partial) =>
+                updateNode(selectedNode.id, {
+                  style: { ...(selectedNode.style || {}), ...partial },
+                })
+              }
               onEnter={() => enterGroup(selectedNode.id)}
               onUngroup={() => ungroup(selectedNode.id)}
               onDelete={() => deleteNode(selectedNode.id)}
@@ -2243,43 +2327,76 @@ export default function ComponentPlayground() {
             />
           ) : selectedNode ? (
             <>
-              <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
-                <label className="text-[10px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase tracking-wider block mb-1">Component</label>
-                <input
-                  value={selectedNode.name}
-                  onChange={(e) => updateNode(selectedNode.id, { name: e.target.value })}
-                  className="w-full text-sm font-medium px-2 py-1 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700 rounded-md focus:border-neutral-400 dark:focus:border-neutral-500 focus:bg-white dark:focus:bg-neutral-800 outline-none transition-colors"
-                />
-                <div className="mt-3">
-                  <label className="text-[10px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <Frame className="w-3 h-3" /> Size
-                  </label>
-                  {selectedNode.customSize && (
-                    <div className="flex gap-1.5 w-full">
-                      <SizeInput
-                        type="width"
-                        value={selectedNode.customSize.width}
-                        mode={selectedNode.customSize.widthMode || "fixed"}
-                        showFill={!!selectedNode.parent}
-                        onChange={(next) => updateNode(selectedNode.id, {
-                          customSize: { ...selectedNode.customSize, width: next.value, widthMode: next.mode }
-                        })}
-                      />
-                      <SizeInput
-                        type="height"
-                        value={selectedNode.customSize.height}
-                        mode={selectedNode.customSize.heightMode || "auto"}
-                        showFill={!!selectedNode.parent}
-                        onChange={(next) => updateNode(selectedNode.id, {
-                          customSize: { ...selectedNode.customSize, height: next.value, heightMode: next.mode }
-                        })}
-                      />
+              {/* Header — flat identity row (no card). Icon + inline
+                  name + inline meta in mono. Size block immediately
+                  underneath, separated by a thin divider. */}
+              <div className="cn-anim-fade">
+                <div className="flex items-start gap-2.5 px-4 pt-4 pb-3">
+                  <div className="w-7 h-7 rounded-md bg-cn-accent-soft text-cn-accent flex items-center justify-center shrink-0 mt-0.5">
+                    <Package className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <input
+                      value={selectedNode.name}
+                      onChange={(e) => updateNode(selectedNode.id, { name: e.target.value })}
+                      className="w-full cn-display bg-transparent outline-none border-b border-transparent focus:border-cn-border-default pb-0.5"
+                    />
+                    <div className="flex items-center gap-1.5 mt-1.5 flex-wrap cn-mono-meta">
+                      <span>{extractComponentName(selectedNode.code) || "component"}</span>
+                      {selectedNode.customSize && (
+                        <>
+                          <span>·</span>
+                          <span>
+                            {selectedNode.customSize.widthMode === "auto" ? "hug" : selectedNode.customSize.widthMode === "fill" ? "fill" : `${Math.round(selectedNode.customSize.width || 0)}`}
+                            {" × "}
+                            {selectedNode.customSize.heightMode === "auto" ? "hug" : selectedNode.customSize.heightMode === "fill" ? "fill" : `${Math.round(selectedNode.customSize.height || 0)}`}
+                          </span>
+                        </>
+                      )}
+                      {selectedNode.parent && (
+                        <>
+                          <span>·</span>
+                          <span className="text-cn-accent">in group</span>
+                        </>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
+                {selectedNode.customSize && (
+                  <>
+                    <div className="cn-divider mx-4 my-0" />
+                    <div className="px-4 py-3 flex flex-col gap-2">
+                      <div className="cn-eyebrow flex items-center gap-1.5">
+                        <Frame className="w-3 h-3" /> Size
+                      </div>
+                      <div className="flex gap-1.5 w-full">
+                        <SizeInput
+                          type="width"
+                          value={selectedNode.customSize.width}
+                          mode={selectedNode.customSize.widthMode || "fixed"}
+                          showFill={!!selectedNode.parent}
+                          onChange={(next) => updateNode(selectedNode.id, {
+                            customSize: { ...selectedNode.customSize, width: next.value, widthMode: next.mode }
+                          })}
+                        />
+                        <SizeInput
+                          type="height"
+                          value={selectedNode.customSize.height}
+                          mode={selectedNode.customSize.heightMode || "auto"}
+                          showFill={!!selectedNode.parent}
+                          onChange={(next) => updateNode(selectedNode.id, {
+                            customSize: { ...selectedNode.customSize, height: next.value, heightMode: next.mode }
+                          })}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
-              <div className="flex items-center border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-800/30 shrink-0">
+              {/* Minimal text tabs — Props · Code · Tokens. Underline
+                  on active, no chip background. */}
+              <div className="cn-tabs-minimal shrink-0">
                 {[
                   { id: "props", icon: SlidersHorizontal, label: "Props" },
                   { id: "code", icon: Code2, label: "Code" },
@@ -2291,11 +2408,8 @@ export default function ComponentPlayground() {
                     <button
                       key={tab.id}
                       onClick={() => setInspectorTab(tab.id)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-[11px] font-medium transition-colors border-b-2 ${
-                        active
-                          ? "border-neutral-900 dark:border-neutral-100 text-neutral-900 dark:text-neutral-100"
-                          : "border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
-                      }`}
+                      aria-pressed={active}
+                      className={`flex items-center gap-1.5 ${active ? "is-active" : ""}`}
                     >
                       <Icon className="w-3 h-3" />
                       {tab.label}
@@ -2306,55 +2420,65 @@ export default function ComponentPlayground() {
 
               <div className="flex-1 overflow-hidden flex flex-col min-h-0">
                 {inspectorTab === "props" && (
-                  <div className="flex-1 overflow-y-auto p-4">
+                  <div
+                    key="props"
+                    className="flex-1 overflow-y-auto p-3 cn-anim-fade"
+                    style={{ animationDuration: "var(--cn-dur-snappy)" }}
+                  >
                     {Object.keys(selectedNode.schema || {}).length === 0 ? (
-                      <div className="text-[11px] text-neutral-400 dark:text-neutral-500 italic py-8 text-center">
-                        No props defined.<br />
-                        <span className="text-neutral-500 dark:text-neutral-400">
-                          Add props to <span className="font-mono">function Component(&#123;...&#125;)</span> in Code tab.
-                        </span>
+                      <div className="cn-card cn-card-bare flex flex-col items-center text-center gap-2 py-8">
+                        <div className="cn-eyebrow">No props defined</div>
+                        <div className="cn-caption">
+                          Add props to <span className="cn-mono text-cn-text-secondary">function Component(&#123;...&#125;)</span> in Code tab.
+                        </div>
                       </div>
                     ) : (
-                      Object.entries(selectedNode.schema)
-                        .filter(([key]) =>
-                          isPropVisibleForVariant(
-                            extractComponentName(selectedNode.code),
-                            key,
-                            selectedNode.props,
-                          ),
-                        )
-                        .map(([key, s]) => (
-                          <PropInput
-                            key={key}
-                            propKey={key}
-                            schema={s}
-                            value={selectedNode.props[key] ?? s.default}
-                            onChange={(v) => updateNodeProp(selectedNode.id, key, v)}
-                          />
-                        ))
+                      <div className="cn-anim-stagger flex flex-col gap-3">
+                        {Object.entries(selectedNode.schema)
+                          .filter(([key]) =>
+                            isPropVisibleForVariant(
+                              extractComponentName(selectedNode.code),
+                              key,
+                              selectedNode.props,
+                            ),
+                          )
+                          .map(([key, s]) => (
+                            <PropInput
+                              key={key}
+                              propKey={key}
+                              schema={s}
+                              value={selectedNode.props[key] ?? s.default}
+                              onChange={(v) => updateNodeProp(selectedNode.id, key, v)}
+                            />
+                          ))}
+                      </div>
                     )}
                   </div>
                 )}
 
                 {inspectorTab === "code" && (
-                  <div className="flex-1 flex flex-col min-h-0">
+                  <div
+                    key="code"
+                    className="flex-1 flex flex-col min-h-0 cn-anim-fade"
+                    style={{ animationDuration: "var(--cn-dur-snappy)" }}
+                  >
                     {(() => {
                       const selfName = extractComponentName(selectedNode.code);
                       const available = Object.keys(registry).filter((n) => n !== selfName);
                       if (available.length === 0) return null;
                       return (
-                        <div className="px-3 py-2 bg-blue-50/50 border-b border-blue-100 text-[10px] text-blue-900 flex items-start gap-1.5">
-                          <Layers className="w-3 h-3 mt-0.5 shrink-0 text-blue-600" />
-                          <div className="leading-relaxed">
-                            <span className="text-blue-600/70">Compose with: </span>
+                        <div className="px-3 py-2 bg-cn-accent-soft border-b border-cn-border-subtle flex items-start gap-2">
+                          <Layers className="w-3 h-3 mt-0.5 shrink-0 text-cn-accent" />
+                          <div className="cn-caption leading-relaxed">
+                            <span>Compose with: </span>
                             {available.map((name, i) => (
                               <span key={name}>
-                                <code className="font-mono font-semibold text-blue-700">{name}</code>
-                                {i < available.length - 1 && <span className="text-blue-600/50">, </span>}
+                                <code className="cn-mono text-cn-accent font-semibold">{name}</code>
+                                {i < available.length - 1 && <span className="text-cn-text-muted">, </span>}
                               </span>
                             ))}
-                            <span className="text-blue-600/70"> — use </span>
-                            <code className="font-mono text-blue-700">h({available[0]}, &#123;...&#125;)</code>
+                            <span> — use </span>
+                            <code className="cn-mono text-cn-accent">h({available[0]}, &#123;...&#125;)</code>
                           </div>
                         </div>
                       );
@@ -2398,35 +2522,44 @@ export default function ComponentPlayground() {
                     }
                   }
                   return (
-                    <div className="flex-1 overflow-y-auto p-4">
-                      <div className="text-[10px] text-neutral-500 dark:text-neutral-400 leading-relaxed mb-4 p-2.5 bg-violet-50 dark:bg-violet-950/30 border border-violet-100 dark:border-violet-900/40 rounded-md">
-                        Override tokens for this component only. Click the reset icon to revert.
+                    <div
+                      key="tokens"
+                      className="flex-1 overflow-y-auto cn-anim-fade"
+                      style={{ animationDuration: "var(--cn-dur-snappy)" }}
+                    >
+                      <div className="px-4 py-3 flex flex-col gap-1">
+                        <div className="cn-caption leading-relaxed">
+                          Override tokens for this component only. Reset to revert.
+                        </div>
                         {scopeNote && (
-                          <div className="mt-1 text-violet-700 dark:text-violet-300 font-medium">{scopeNote}</div>
+                          <div className="cn-mono-meta" style={{ color: "var(--cn-accent)" }}>
+                            {scopeNote}
+                          </div>
                         )}
                       </div>
-                      <TokenEditor
-                        tokens={selectedNode.tokenOverrides || {}}
-                        referenceTokens={refTokens}
-                        isOverride
-                        onChange={(cat, key, val) => updateNodeTokenOverride(selectedNode.id, cat, key, val)}
-                      />
+                      <div className="cn-divider mx-4" />
+                      <div className="px-4 py-3">
+                        <TokenEditor
+                          tokens={selectedNode.tokenOverrides || {}}
+                          referenceTokens={refTokens}
+                          isOverride
+                          onChange={(cat, key, val) => updateNodeTokenOverride(selectedNode.id, cat, key, val)}
+                        />
+                      </div>
                     </div>
                   );
                 })()}
               </div>
 
-              <div className="border-t border-neutral-200 dark:border-neutral-800 p-2 shrink-0">
-                <div className="grid grid-cols-2 gap-1">
-                  <button onClick={() => duplicateNode(selectedNode.id)} className="text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors">
-                    <Copy className="w-3 h-3" />
-                    Duplicate
-                  </button>
-                  <button onClick={() => deleteNode(selectedNode.id)} className="text-[11px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 px-2 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-colors">
-                    <Trash2 className="w-3 h-3" />
-                    Delete
-                  </button>
-                </div>
+              <div className="border-t border-cn-border-subtle p-2 shrink-0 grid grid-cols-2 gap-1.5">
+                <button onClick={() => duplicateNode(selectedNode.id)} className="cn-btn cn-btn-outline cn-btn-sm">
+                  <Copy className="w-3 h-3" />
+                  Duplicate
+                </button>
+                <button onClick={() => deleteNode(selectedNode.id)} className="cn-btn cn-btn-danger cn-btn-sm">
+                  <Trash2 className="w-3 h-3" />
+                  Delete
+                </button>
               </div>
             </>
           ) : selectedNodeIds.size > 1 ? (
@@ -2441,24 +2574,37 @@ export default function ComponentPlayground() {
               onDistribute={distributeSelected}
             />
           ) : (
-            <div className="p-6">
-              <div className="text-center mb-6">
-                <div className="w-10 h-10 mx-auto mb-3 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-                  <MousePointer2 className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
+            <div className="p-6 cn-anim-fade">
+              <div className="text-center mb-5 cn-anim-stagger flex flex-col items-center">
+                <div className="w-10 h-10 mx-auto mb-2 rounded-lg bg-cn-elevated flex items-center justify-center">
+                  <MousePointer2 className="w-4 h-4 text-cn-text-muted" />
                 </div>
-                <div className="text-xs text-neutral-600 dark:text-neutral-300 font-medium mb-1">Nothing selected</div>
-                <div className="text-[11px] text-neutral-400 dark:text-neutral-500 leading-relaxed">
-                  Click a component to edit. Drag to marquee-select. Shift-click for multi.
+                <div className="cn-label-strong mb-1">Nothing selected</div>
+                <div className="cn-caption leading-relaxed max-w-[200px]">
+                  Click a component, drag to marquee, or shift-click for multi.
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setPaletteOpen(true)}
+                  className="cn-btn cn-btn-outline cn-btn-sm mt-3"
+                >
+                  <Search className="w-3 h-3" /> Open palette
+                  <span className="cn-mono-meta ml-1 px-1 py-0.5 border border-cn-border-subtle rounded">⌘K</span>
+                </button>
               </div>
               {nodes.filter((n) => !n.parent).length > 0 && (
-                <div className="text-left">
-                  <div className="text-[10px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase tracking-wider mb-2">Components</div>
+                <div className="text-left mt-5 pt-4 border-t border-cn-border-subtle">
+                  <div className="cn-eyebrow mb-2">On canvas</div>
                   <div className="space-y-0.5">
                     {nodes.filter((n) => !n.parent).map((n) => (
-                      <button key={n.id} onClick={() => setSelectedNodeId(n.id)} className="w-full text-left text-[11px] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-2 py-1.5 rounded flex items-center gap-2 transition-colors">
-                        <div className={`w-1 h-1 rounded-full ${n.type === "group" ? "bg-blue-400" : "bg-neutral-400 dark:bg-neutral-500"}`} />
-                        <span className="font-medium truncate">{n.name}</span>
+                      <button
+                        key={n.id}
+                        onClick={() => setSelectedNodeId(n.id)}
+                        className="cn-row w-full"
+                      >
+                        <span className={`w-1 h-1 rounded-full ${n.type === "group" ? "bg-cn-accent" : "bg-cn-text-muted"}`} />
+                        <span className="font-medium truncate flex-1">{n.name}</span>
+                        <span className="cn-mono-meta">{n.type === "group" ? "group" : "node"}</span>
                       </button>
                     ))}
                   </div>
@@ -2469,57 +2615,97 @@ export default function ComponentPlayground() {
         </div>
       </div>
 
-      {showSyntaxHint && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowSyntaxHint(false)}>
-          <div className="bg-white rounded-xl max-w-lg w-full max-h-[80vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="p-5 border-b border-neutral-200 flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-semibold">Component syntax</h3>
-                <p className="text-[11px] text-neutral-500 mt-0.5">Uses h() helper — alias for React.createElement</p>
-              </div>
-              <button onClick={() => setShowSyntaxHint(false)} className="p-1 hover:bg-neutral-100 rounded transition-colors">
-                <X className="w-4 h-4 text-neutral-500" />
-              </button>
+      {/* Bottom status bar — pinned below everything, owns zoom + coords +
+          tool state + selection summary. Replaces the old floating dock. */}
+      <StatusBar
+        zoom={zoom}
+        pan={pan}
+        selectedNode={selectedNode}
+        selectionCount={selectedNodeIds.size}
+        editingGroup={editingGroupId ? nodes.find((n) => n.id === editingGroupId) : null}
+        measureMode={measureMode}
+        spaceHeld={spaceHeld}
+        canvasRef={canvasRef}
+        onZoomChange={setZoom}
+        onToggleMeasure={() => setMeasureMode(!measureMode)}
+      />
+
+      {/* Command palette — ⌘K / Ctrl+K. Actions are lazy: built on each
+          render from the current playground state (selection, etc.) so
+          the available commands always reflect what's possible. */}
+      <CommandPalette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        actions={[
+          { id: "add-component", group: "Canvas", label: "Add component",  hint: "Open spawn menu", shortcut: "A", icon: Plus, run: () => setAddMenuOpen(true) },
+          { id: "open-tokens",   group: "Canvas", label: "Open Tokens",    hint: "Global design tokens", icon: Palette, run: () => setTokensPanelOpen(true) },
+          { id: "show-components", group: "Panels", label: "Show Components", shortcut: "1", icon: Package, run: () => { setActivityId("components"); setTokensPanelOpen(false); } },
+          { id: "show-layers",   group: "Panels", label: "Show Layers",    shortcut: "2", icon: Layers, run: () => { setActivityId("layers"); setTokensPanelOpen(false); } },
+          { id: "hide-panel",    group: "Panels", label: "Collapse side panel", icon: PanelLeftClose, run: () => { setActivityId(null); setTokensPanelOpen(false); } },
+          { id: "toggle-measure", group: "Tools", label: "Toggle measure mode", shortcut: "M", icon: Ruler, run: () => setMeasureMode((v) => !v) },
+          { id: "reset-view",    group: "View",   label: "Reset zoom & pan", shortcut: "⌘0", icon: Maximize2, run: () => { setZoom(1); setPan({ x: 0, y: 0 }); } },
+          { id: "zoom-in",       group: "View",   label: "Zoom in",  icon: ZoomIn,  run: () => setZoom((z) => Math.min(4, z + 0.1)) },
+          { id: "zoom-out",      group: "View",   label: "Zoom out", icon: ZoomOut, run: () => setZoom((z) => Math.max(0.1, z - 0.1)) },
+          { id: "undo",          group: "Edit",   label: "Undo",     shortcut: "⌘Z",  icon: Undo2, run: undo },
+          { id: "redo",          group: "Edit",   label: "Redo",     shortcut: "⌘⇧Z", icon: Redo2, run: redo },
+          ...(selectedNodeIds.size > 0 ? [
+            { id: "duplicate-sel", group: "Selection", label: "Duplicate selection", shortcut: "D", icon: Copy, run: () => [...selectedNodeIds].forEach((id) => duplicateNode(id)) },
+            { id: "delete-sel",   group: "Selection", label: "Delete selection",    shortcut: "⌫", icon: Trash2, run: () => [...selectedNodeIds].forEach((id) => deleteNode(id)) },
+            { id: "clear-sel",    group: "Selection", label: "Clear selection",     shortcut: "Esc", icon: MousePointerSquareDashed, run: () => setSelectedNodeIds(new Set()) },
+          ] : []),
+          { id: "changelog",     group: "Help",   label: "What's new",     icon: Sparkles, run: () => setChangelogOpen(true) },
+          { id: "syntax",        group: "Help",   label: "Component syntax", icon: Code2,  run: () => setShowSyntaxHint(true) },
+        ]}
+      />
+
+      <Modal
+        open={showSyntaxHint}
+        onClose={() => setShowSyntaxHint(false)}
+        width={520}
+        ariaLabel="Component syntax"
+      >
+        <div className="px-5 py-4 border-b border-cn-border-subtle flex items-center justify-between shrink-0">
+          <div>
+            <h3 className="cn-display">Component syntax</h3>
+            <p className="cn-mono-meta mt-0.5">Uses h() helper — alias for React.createElement</p>
+          </div>
+          <button
+            onClick={() => setShowSyntaxHint(false)}
+            className="cn-btn cn-btn-ghost cn-btn-icon cn-btn-sm"
+            aria-label="Close"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-5 space-y-4 cn-anim-stagger">
+          {[
+            { label: "Signature", code: `h(tag, props, ...children)` },
+            { label: "Simple element", code: `h('div', null, 'Hello')\n// same as: <div>Hello</div>` },
+            { label: "With handlers & style", code: `h('button', {\n  onClick: () => alert('hi'),\n  style: { padding: 10 }\n}, 'Click me')` },
+            { label: "Nested", code: `h('div', null,\n  h('h1', null, 'Title'),\n  h('p', null, 'Description')\n)` },
+            { label: "Design tokens", code: `style: {\n  color: "var(--token-colors-brand)",\n  padding: "var(--token-spacing-btn-y-md)",\n  borderRadius: "var(--token-radius-btn)"\n}` },
+          ].map((s) => (
+            <div key={s.label}>
+              <div className="cn-eyebrow mb-1.5">{s.label}</div>
+              <pre
+                className="cn-mono cn-text-selectable text-[11px] leading-relaxed overflow-x-auto p-3 rounded-md text-cn-text-secondary"
+                style={{ background: "var(--cn-canvas)", border: "1px solid var(--cn-border-subtle)" }}
+              >
+                {s.code}
+              </pre>
             </div>
-            <div className="p-5 space-y-4 text-[12px]">
-              <div>
-                <div className="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider mb-1.5">Signature</div>
-                <pre className="bg-neutral-50 p-3 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto">{`h(tag, props, ...children)`}</pre>
-              </div>
-              <div>
-                <div className="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider mb-1.5">Simple element</div>
-                <pre className="bg-neutral-50 p-3 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto">{`h('div', null, 'Hello')
-// same as: <div>Hello</div>`}</pre>
-              </div>
-              <div>
-                <div className="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider mb-1.5">With handlers & style</div>
-                <pre className="bg-neutral-50 p-3 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto">{`h('button', {
-  onClick: () => alert('hi'),
-  style: { padding: 10 }
-}, 'Click me')`}</pre>
-              </div>
-              <div>
-                <div className="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider mb-1.5">Nested</div>
-                <pre className="bg-neutral-50 p-3 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto">{`h('div', null,
-  h('h1', null, 'Title'),
-  h('p', null, 'Description')
-)`}</pre>
-              </div>
-              <div>
-                <div className="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider mb-1.5">Design tokens</div>
-                <pre className="bg-neutral-50 p-3 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto">{`style: {
-  color: "var(--token-colors-brand)",
-  padding: "var(--token-spacing-btn-y-md)",
-  borderRadius: "var(--token-radius-btn)"
-}`}</pre>
-              </div>
-              <div className="text-[11px] text-neutral-500 pt-2 border-t border-neutral-200 leading-relaxed">
-                Hooks available: <code className="font-mono bg-neutral-100 px-1 rounded">useState</code>, <code className="font-mono bg-neutral-100 px-1 rounded">useEffect</code>, <code className="font-mono bg-neutral-100 px-1 rounded">useRef</code>, <code className="font-mono bg-neutral-100 px-1 rounded">useCallback</code>, <code className="font-mono bg-neutral-100 px-1 rounded">useMemo</code>
-              </div>
-            </div>
+          ))}
+          <div className="cn-caption pt-3 border-t border-cn-border-subtle leading-relaxed">
+            Hooks available:{" "}
+            {["useState", "useEffect", "useRef", "useCallback", "useMemo"].map((h, i, arr) => (
+              <span key={h}>
+                <code className="cn-mono cn-chip">{h}</code>
+                {i < arr.length - 1 && " "}
+              </span>
+            ))}
           </div>
         </div>
-      )}
+      </Modal>
 
       <ChangelogPopup open={changelogOpen} onClose={() => setChangelogOpen(false)} />
     </div>

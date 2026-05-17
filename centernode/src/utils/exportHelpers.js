@@ -352,6 +352,14 @@ export function groupToCode(group, allNodes, format = "jsx-inline") {
   const gHMode = group.customSize?.heightMode || "auto";
   const gW = typeof group.customSize?.width === "number" ? group.customSize.width : null;
   const gH = typeof group.customSize?.height === "number" ? group.customSize.height : null;
+  // Appearance — emit only when set so default groups stay minimal.
+  const fill = group.style?.fill;
+  const isImageFill = typeof fill === "string" && fill.startsWith("url(");
+  const fillColor = !isImageFill && typeof fill === "string" ? fill : null;
+  const fillImage = isImageFill ? fill : null;
+  const radius = typeof group.style?.radius === "number" ? group.style.radius : 0;
+  const sw = typeof group.style?.strokeWidth === "number" ? group.style.strokeWidth : 0;
+  const sc = typeof group.style?.strokeColor === "string" ? group.style.strokeColor : "#ffffff";
   // CSS alignItems mapping — match the same enum we render with.
   const alignItemsCss = {
     start: "flex-start",
@@ -391,7 +399,14 @@ export function groupToCode(group, allNodes, format = "jsx-inline") {
     if (padding > 0) parts.push(`p-[${padding}px]`);
     if (gWMode === "fixed" && gW != null) parts.push(`w-[${gW}px]`);
     if (gHMode === "fixed" && gH != null) parts.push(`h-[${gH}px]`);
-    return `<div className="${parts.join(" ")}">\n${childLines}\n</div>`;
+    if (fillColor) parts.push(`bg-[${fillColor}]`);
+    if (radius > 0) parts.push(`rounded-[${radius}px]`);
+    if (sw > 0) parts.push(`border-[${sw}px]`, `border-[${sc}]`);
+    const cls = parts.join(" ");
+    const inlineStyle = fillImage
+      ? ` style={{ backgroundImage: ${JSON.stringify(fillImage)}, backgroundSize: "cover", backgroundPosition: "center" }}`
+      : "";
+    return `<div className="${cls}"${inlineStyle}>\n${childLines}\n</div>`;
   }
   if (format === "html") {
     const segs = [
@@ -403,6 +418,10 @@ export function groupToCode(group, allNodes, format = "jsx-inline") {
     if (padding > 0) segs.push(`padding:${padding}px`);
     if (gWMode === "fixed" && gW != null) segs.push(`width:${gW}px`);
     if (gHMode === "fixed" && gH != null) segs.push(`height:${gH}px`);
+    if (fillColor) segs.push(`background:${fillColor}`);
+    if (fillImage) segs.push(`background-image:${fillImage}`, `background-size:cover`, `background-position:center`);
+    if (radius > 0) segs.push(`border-radius:${radius}px`);
+    if (sw > 0) segs.push(`border:${sw}px solid ${sc}`);
     return `<div style="${segs.join(";")}">\n${childLines}\n</div>`;
   }
   // Default: JSX with inline style.
@@ -415,6 +434,14 @@ export function groupToCode(group, allNodes, format = "jsx-inline") {
   if (padding > 0) parts.push(`padding: ${padding}`);
   if (gWMode === "fixed" && gW != null) parts.push(`width: ${gW}`);
   if (gHMode === "fixed" && gH != null) parts.push(`height: ${gH}`);
+  if (fillColor) parts.push(`background: ${JSON.stringify(fillColor)}`);
+  if (fillImage) {
+    parts.push(`backgroundImage: ${JSON.stringify(fillImage)}`);
+    parts.push(`backgroundSize: "cover"`);
+    parts.push(`backgroundPosition: "center"`);
+  }
+  if (radius > 0) parts.push(`borderRadius: ${radius}`);
+  if (sw > 0) parts.push(`border: ${JSON.stringify(`${sw}px solid ${sc}`)}`);
   const styleObj = `{ ${parts.join(", ")} }`;
   return `<div style={${styleObj}}>\n${childLines}\n</div>`;
 }

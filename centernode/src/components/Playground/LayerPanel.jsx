@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Layers, Square } from "lucide-react";
+import { ChevronRight, Layers, Square } from "lucide-react";
 
 // Recursive row renderer. `depth` controls left-indent so nested groups
 // stack visibly. Each row click selects the node on canvas; double-click on
@@ -36,12 +36,15 @@ function LayerRow({
           e.stopPropagation();
           if (isGroup) onEnterGroup(node.id);
         }}
-        className={`flex items-center gap-1 pr-2 py-1 rounded-sm cursor-pointer transition-colors ${
+        className={`flex items-center gap-1.5 pr-2 h-7 rounded-md cursor-pointer cn-press ${
           selected
-            ? "bg-blue-500/20 text-blue-300"
-            : "text-neutral-300 hover:bg-neutral-800/60"
-        } ${editing ? "ring-1 ring-inset ring-blue-400/50" : ""}`}
-        style={{ paddingLeft: 6 + depth * 12 }}
+            ? "bg-cn-accent-soft text-cn-accent"
+            : "text-cn-text-secondary hover:bg-cn-elevated hover:text-cn-text-primary"
+        } ${editing ? "ring-1 ring-inset ring-[var(--cn-accent-ring)]" : ""}`}
+        style={{
+          paddingLeft: 6 + depth * 12,
+          transition: "background-color var(--cn-dur-snappy), color var(--cn-dur-snappy), box-shadow var(--cn-dur-normal)",
+        }}
         title={isGroup ? "Double-click to enter group" : node.name}
       >
         {isGroup ? (
@@ -51,30 +54,29 @@ function LayerRow({
               e.stopPropagation();
               onToggleExpand(node.id);
             }}
-            className="p-0.5 hover:bg-neutral-700/60 rounded shrink-0"
+            className="w-3.5 h-3.5 flex items-center justify-center shrink-0 hover:text-cn-text-primary"
+            style={{
+              transition: "transform var(--cn-dur-snappy) var(--cn-ease-spring)",
+              transform: expanded ? "rotate(90deg)" : "rotate(0deg)",
+            }}
             aria-label={expanded ? "Collapse group" : "Expand group"}
           >
-            {expanded ? (
-              <ChevronDown className="w-3 h-3" />
-            ) : (
-              <ChevronRight className="w-3 h-3" />
-            )}
+            <ChevronRight className="w-3 h-3" />
           </button>
         ) : (
-          <div className="w-4 shrink-0" />
+          <div className="w-3.5 shrink-0" />
         )}
         {isGroup ? (
-          <Layers className="w-3 h-3 shrink-0 text-blue-400" />
+          <Layers className={`w-3 h-3 shrink-0 ${selected ? "text-cn-accent" : "text-cn-text-muted"}`} />
         ) : (
-          <Square className="w-3 h-3 shrink-0 text-neutral-500" />
+          <Square className={`w-3 h-3 shrink-0 ${selected ? "text-cn-accent" : "text-cn-text-muted"}`} />
         )}
         <span className="text-[11px] truncate flex-1 font-medium">
           {node.name}
         </span>
         {isGroup && (
-          <span className="text-[9px] font-mono text-neutral-500 shrink-0">
+          <span className="cn-mono-meta shrink-0">
             {node.autolayout?.direction === "row" ? "→" : "↓"}
-            {" "}
             {(node.children || []).length}
           </span>
         )}
@@ -133,14 +135,18 @@ export default function LayerPanel({
 
   if (topLevel.length === 0) {
     return (
-      <div className="p-4 text-[11px] text-neutral-500">
-        Canvas is empty. Add a component from the Components tab.
+      <div className="p-6 flex flex-col items-center text-center gap-2 cn-anim-fade">
+        <div className="w-8 h-8 rounded-md bg-cn-elevated flex items-center justify-center">
+          <Layers className="w-3.5 h-3.5 text-cn-text-muted" />
+        </div>
+        <div className="cn-caption">Canvas is empty</div>
+        <div className="cn-mono-meta">add from Components tab</div>
       </div>
     );
   }
 
   return (
-    <div className="py-2 px-2 space-y-0.5">
+    <div className="py-2 px-2 space-y-0.5 cn-anim-stagger">
       {topLevel.map((n) => (
         <LayerRow
           key={n.id}

@@ -1,6 +1,6 @@
 "use client";
-import { useEffect } from "react";
 import { X, Sparkles } from "lucide-react";
+import Modal from "./Modal";
 
 /**
  * What's New popup — centernode-specific changelog.
@@ -9,6 +9,91 @@ import { X, Sparkles } from "lucide-react";
  */
 
 const ENTRIES = [
+  {
+    version: "0.5",
+    date: "2026-05-17",
+    sections: [
+      {
+        title: "Full UI revamp — warm-dark + amber identity",
+        items: [
+          "Centernode now has its own visual identity instead of looking like a generic dark IDE. Layered warm-dark surfaces (canvas → surface → elevated → overlay) with amber as the signature accent across selection, primary actions, focus rings, and active states.",
+          "Design primitives consolidated into CSS classes: `cn-btn`, `cn-input`, `cn-card`, `cn-chip`, `cn-segmented`, `cn-tabs-minimal`, `cn-row`, `cn-glass`. Every surface reaches for these instead of per-component Tailwind soups — one place to tweak, the whole app responds.",
+          "Typography utilities in mono (`cn-mono-meta` for counts/IDs, `cn-eyebrow` for section headers, `cn-display` for titles). Geist Mono used decoratively in chrome so the tool reads designer-developer hybrid.",
+          "Custom thin scrollbars that tint amber on hover. Border alphas warm-tinted so dividers read softer than typical cold-grey IDE chrome.",
+        ],
+      },
+      {
+        title: "Architectural restructure — Activity Bar + Status Bar + Command Palette",
+        items: [
+          "**Left rail** (44px) — VSCode-style icon dock with Components / Layers / Search / Tokens. Click to open the corresponding floating panel, click again to collapse (canvas gets full width).",
+          "**Status Bar** at the bottom — 22px glass strip with live mouse world coords (RAF-throttled), current tool state, selection summary, and zoom controls. Live caret blinks when editing inside a group, like a debugger HUD.",
+          "**Command Palette (⌘K)** — fuzzy-search every action with icons + keyboard shortcuts + grouped by category (Canvas, Panels, Tools, View, Edit, Selection, Help). Arrow keys + Enter to run. Always-visible search trigger in the top header.",
+          "**Top header** thinned to 40px. Brand logo gets a subtle amber glow; node count + selection chip show in mono as breadcrumb-style metadata.",
+        ],
+      },
+      {
+        title: "Motion system — every interaction eases",
+        items: [
+          "Duration tokens (`--cn-dur-insta` 90ms → `--cn-dur-stage` 520ms) and easing tokens (`out-expo`, `in-expo`, `spring`, `smooth`) drive every transition in the app. Nothing snaps.",
+          "Keyframe library: `cn-anim-fade`, `cn-anim-scale`, `cn-anim-left/right`, `cn-anim-pulse`, plus `cn-anim-stagger` that gives direct children sequential 30ms entrance delays.",
+          "Press feedback baked into `cn-btn` — every button compresses to scale 0.97 on `:active` for tactile feel.",
+          "`@media (prefers-reduced-motion: reduce)` collapses everything to 0.01ms — accessibility-respectful.",
+        ],
+      },
+      {
+        title: "Inspector — flat sectioned layout",
+        items: [
+          "Cards dropped from group / component / multi-select inspectors. Sections are now `cn-eyebrow` + content + `cn-divider` — reads like a doc, not nested boxes.",
+          "Tabs use the minimal text + thin underline pattern (`cn-tabs-minimal`) across Properties / Code on groups, Props / Code / Tokens on components, and POD / Component in the Tokens panel. No chip, no glow.",
+          "Identity rows: icon chip (amber-tinted) + inline-editable name + mono meta line (`2 children · ↓ column`) — same pattern across Group / Component / Multi-select for total visual consistency.",
+          "Inputs transparent by default — just a thin border. Hover lights the border up; focus turns it amber with a soft ring. No filled chrome competing with the value.",
+        ],
+      },
+      {
+        title: "Autolayout — Figma-dense grid + Appearance",
+        items: [
+          "Autolayout section is now a tight grid: direction segmented at the top, then `AlignGrid` 3×3 picker next to gap + padding scrub inputs. Active dot in the grid context-aware — for Column groups, alignment maps to columns; for Row, to rows.",
+          "`ScrubInput` icon variant — single bordered field with leading icon + tiny mono label (`GAP 12`, `PAD 0`). Click-and-drag the icon to scrub, or type. Arrow keys ↑↓ to bump (shift +10).",
+          "**Appearance section** — fill (color picker or image upload via data URL), border radius, stroke (width + color). All optional; default to a transparent frame with 0 radius and no stroke. Code preview emits new props live in JSX / Tailwind / HTML formats.",
+        ],
+      },
+      {
+        title: "Modals — unified wrapper with proper enter/exit",
+        items: [
+          "New `<Modal>` wrapper owns the open/close orchestration so every popup (Changelog, Syntax hint, Command Palette) has the same motion. Panel scales 0.97 → 1 with spring easing, backdrop fades + blurs independently. Close runs in reverse before unmount.",
+          "Modal panel background now matches the inspector sidebar (`cn-surface`) — visually the same layer, separation comes from the dimmed/blurred backdrop instead of a brighter panel color.",
+          "`data-overlay` attribute on every modal — global wheel handler detects it and skips canvas pan/zoom, so scrolling inside a modal doesn't leak through to the canvas behind.",
+          "Esc to close, listener bound only while mounted. Pointer events disable during the exit transition so quick clicks don't bounce off a phantom backdrop.",
+        ],
+      },
+      {
+        title: "Selection chrome — pixel-accurate + zoom-invariant",
+        items: [
+          "Selection ring stroke uses `box-shadow: 0 0 0 (1/zoom)px` so the line stays a constant ~1px on screen at any canvas zoom. No more fat blue lines when zoomed in.",
+          "Resize handles always sit OUTSIDE the selection ring (`offset` prop on ResizeHandles), consistent on both single components and group containers.",
+          "Single-component label: just the node name, no dot indicator, no chrome icons. 8px constant gap to the indicator regardless of zoom. Hidden entirely when canvas zoom < 100%.",
+          "Group / Component identity ring color, edit-mode dashed ring, multi-select frame, marquee drag, hover ring — all amber, all 1px-on-screen. Cohesive selection language.",
+        ],
+      },
+      {
+        title: "⌘Z undo / redo",
+        items: [
+          "Cmd / Ctrl+Z reverts node changes; Cmd / Ctrl+Shift+Z (or Cmd+Y) redoes. History is debounced 250ms — drag and scrub mutations all share one snapshot per resting state, so undo unwinds in logical units instead of per-frame.",
+          "Snapshot stack capped at 50. Skip when an input is focused so the browser's native field-level undo still works for typo correction.",
+        ],
+      },
+      {
+        title: "Misc fixes",
+        items: [
+          "Drag a single component from anywhere on its body (not just the label). 3px threshold before drag commits — tiny twitch = click, not jitter.",
+          "Group drag works when padding = 0 (the old empty-area check meant zero-padding groups were undraggable).",
+          "Performance — `useCallback` for the hot handlers + `React.memo` on `PreviewNode`. Dragging one node no longer re-renders all siblings.",
+          "Layer panel + LayerRow: chevron rotates with spring easing; rows use `cn-row` primitive for uniform hover/active behaviour.",
+          "Tokens panel: now matches Library/Layers panel structure (h-10 header, minimal tabs, flat sections with dividers) instead of looking like a different system.",
+        ],
+      },
+    ],
+  },
   {
     version: "0.4",
     date: "2026-05-15",
@@ -166,89 +251,73 @@ const ENTRIES = [
 ];
 
 export default function ChangelogPopup({ open, onClose }) {
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [open, onClose]);
-
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-      <div
-        className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      <div className="relative w-full max-w-[520px] max-h-[80vh] flex flex-col rounded-2xl bg-white shadow-2xl border border-neutral-200 overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-neutral-100 shrink-0">
-          <div className="w-8 h-8 rounded-md bg-neutral-900 text-amber-300 flex items-center justify-center shrink-0">
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[14px] font-semibold text-neutral-900 leading-tight">What's new</div>
-            <div className="text-[11px] text-neutral-500 leading-tight mt-0.5">Centernode playground changelog</div>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close changelog"
-            className="w-7 h-7 rounded-md flex items-center justify-center text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+    <Modal open={open} onClose={onClose} width={560} ariaLabel="What's new">
+      {/* Header */}
+      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-cn-border-subtle shrink-0">
+        <div
+          className="w-8 h-8 rounded-md bg-cn-accent-soft text-cn-accent flex items-center justify-center shrink-0"
+          style={{ boxShadow: "0 0 12px -2px var(--cn-accent-ring)" }}
+        >
+          <Sparkles className="w-4 h-4" />
         </div>
-
-        {/* Body — scroll if content overflows */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6">
-          {ENTRIES.map((entry, idx) => (
-            <div key={entry.version}>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-[12px] font-semibold text-neutral-900">v{entry.version}</span>
-                <span className="text-[10px] font-mono text-neutral-400">·</span>
-                <span className="text-[11px] text-neutral-500">{entry.date}</span>
-                {idx === 0 && (
-                  <span className="text-[9px] uppercase tracking-wider font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded">
-                    Latest
-                  </span>
-                )}
-              </div>
-
-              <div className="space-y-4">
-                {entry.sections.map((section) => (
-                  <div key={section.title}>
-                    <div className="text-[11px] font-semibold text-neutral-700 mb-1.5">{section.title}</div>
-                    <ul className="space-y-1 ml-3">
-                      {section.items.map((item, i) => (
-                        <li
-                          key={i}
-                          className="text-[12px] leading-relaxed text-neutral-600 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-2 before:w-1 before:h-1 before:rounded-full before:bg-neutral-400"
-                        >
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-
-              {idx < ENTRIES.length - 1 && <div className="mt-6 border-t border-neutral-100" />}
-            </div>
-          ))}
+        <div className="flex-1 min-w-0">
+          <div className="cn-display">What's new</div>
+          <div className="cn-mono-meta mt-0.5">Centernode playground changelog</div>
         </div>
-
-        {/* Footer */}
-        <div className="px-5 py-3 border-t border-neutral-100 text-[10px] text-neutral-400 flex items-center justify-between shrink-0">
-          <span>Press <kbd className="font-mono bg-neutral-100 border border-neutral-200 rounded px-1 py-0.5 text-[9px]">Esc</kbd> to close</span>
-          <span>POD design system tracks separately at <span className="font-mono">/changelog</span> in docs</span>
-        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close changelog"
+          className="cn-btn cn-btn-ghost cn-btn-icon cn-btn-sm"
+        >
+          <X className="w-3.5 h-3.5" />
+        </button>
       </div>
-    </div>
+
+      {/* Body — internal scroll, doesn't leak to canvas behind */}
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6 cn-anim-stagger">
+        {ENTRIES.map((entry, idx) => (
+          <div key={entry.version}>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="cn-display">v{entry.version}</span>
+              <span className="cn-mono-meta">·</span>
+              <span className="cn-mono-meta">{entry.date}</span>
+              {idx === 0 && (
+                <span className="cn-chip cn-chip-accent">LATEST</span>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              {entry.sections.map((section) => (
+                <div key={section.title}>
+                  <div className="cn-label-strong mb-1.5">{section.title}</div>
+                  <ul className="space-y-1.5 ml-3">
+                    {section.items.map((item, i) => (
+                      <li
+                        key={i}
+                        className="text-[12px] leading-relaxed text-cn-text-secondary relative pl-3 before:content-[''] before:absolute before:left-0 before:top-[7px] before:w-1 before:h-1 before:rounded-full before:bg-cn-text-muted"
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            {idx < ENTRIES.length - 1 && <div className="cn-divider mt-6" />}
+          </div>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <div className="px-5 py-2.5 border-t border-cn-border-subtle flex items-center justify-between shrink-0 cn-mono-meta">
+        <span className="flex items-center gap-1.5">
+          Press <span className="cn-chip">Esc</span> to close
+        </span>
+        <span>POD design system tracks separately</span>
+      </div>
+    </Modal>
   );
 }

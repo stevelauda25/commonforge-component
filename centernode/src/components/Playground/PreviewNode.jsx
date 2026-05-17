@@ -179,7 +179,7 @@ function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onSelect, onMeasur
               : showChrome
                 ? "opacity-100"
                 : "opacity-0 group-hover:opacity-100"
-          } ${selected ? "text-blue-600" : "text-neutral-500"}`}
+          } ${selected ? "text-cn-selection" : "text-cn-text-muted"}`}
           style={{
             // top = -(text height + 8px gap) places the label's bottom
             // exactly 8px on-screen above the content wrapper. Both
@@ -269,19 +269,18 @@ function PreviewNode({ node, onUpdate, onDelete, onDuplicate, onSelect, onMeasur
         <div
           className={`absolute pointer-events-none transition-colors ${
             !multiSelected && !showChrome
-              ? "group-hover:[--ring-color:rgb(147_197_253_/_0.6)]"
+              ? "group-hover:[--ring-color:rgb(251_191_36_/_0.5)]"
               : ""
           }`}
           style={{
             inset: 0,
             borderRadius: 0,
-            // Two-layer shadow: one is the selection ring (visible when
-            // showChrome), the other is the hover ring driven by the CSS
-            // variable above (transparent off-hover).
+            // Amber selection ring matches the rest of the chrome — the
+            // hover ring is a softer amber tint via CSS variable.
             boxShadow: multiSelected
               ? "none"
               : `0 0 0 ${1 / zoom}px ${
-                  showChrome ? "rgb(59 130 246)" : "var(--ring-color, transparent)"
+                  showChrome ? "var(--cn-selection)" : "var(--ring-color, transparent)"
                 }`,
           }}
         />
