@@ -6,9 +6,9 @@ import {
   Smartphone, Tablet, Monitor, Frame, SlidersHorizontal, RotateCcw, FileCode, Info,
   Layers, Ruler, Package, Sun, Moon,
   AlignHorizontalDistributeCenter, AlignVerticalDistributeCenter,
-  ArrowRight, ArrowDown, Search, Move, MoveHorizontal, MoveVertical, GitCommitHorizontal,
+  ArrowRight, ArrowDown, Search, Move, GitCommitHorizontal,
   Undo2, Redo2, PanelLeftClose, MousePointerSquareDashed,
-  CornerUpLeft, Minus,
+  CornerUpLeft,
 } from "lucide-react";
 import { DEFAULT_TOKENS, FRAME_PRESETS, TEMPLATES, DEMO_CODE } from "@/constants/playground";
 import { parseSchemaFromCode, extractComponentName, updateCodeWithProp, isJsxSnippet, extractJsxTag, parseJsxSnippetSchema } from "@/utils/parser";
@@ -24,6 +24,7 @@ import ResizeHandles from "./ResizeHandles";
 import ScrubInput from "./ScrubInput";
 import AlignGrid from "./AlignGrid";
 import FillControl from "./FillControl";
+import StrokeControl from "./StrokeControl";
 import TokenEditor from "./TokenEditor";
 import SizeInput from "./SizeInput";
 import PodLibraryPanel from "./PodLibraryPanel";
