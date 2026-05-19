@@ -1,0 +1,177 @@
+{
+  "type": "COMPONENT_SET",
+  "name": "button-group",
+  "variants": {
+    "Quantity=06": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(9, 9, 11, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "layoutMode": "HORIZONTAL",
+      "effects": [],
+      "bindings": {
+        "fills": [
+          "15:4743"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 6,
+      "childNames": [
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item"
+      ]
+    },
+    "Quantity=05": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(9, 9, 11, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "layoutMode": "HORIZONTAL",
+      "effects": [],
+      "bindings": {
+        "fills": [
+          "15:4743"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 5,
+      "childNames": [
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item"
+      ]
+    },
+    "Quantity=04": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(9, 9, 11, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "layoutMode": "HORIZONTAL",
+      "effects": [],
+      "bindings": {
+        "fills": [
+          "15:4743"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 4,
+      "childNames": [
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item"
+      ]
+    },
+    "Quantity=03": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(9, 9, 11, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "layoutMode": "HORIZONTAL",
+      "effects": [],
+      "bindings": {
+        "fills": [
+          "15:4743"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 3,
+      "childNames": [
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item"
+      ]
+    },
+    "Quantity=02": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(9, 9, 11, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 8,
+      "layoutMode": "HORIZONTAL",
+      "effects": [],
+      "bindings": {
+        "fills": [
+          "15:4743"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 2,
+      "childNames": [
+        "INSTANCE:button-group-item",
+        "INSTANCE:button-group-item"
+      ]
+    }
+  },
+  "nonVariantNodes": []
+}

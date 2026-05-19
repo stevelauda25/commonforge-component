@@ -34,14 +34,16 @@ export const routes: RouteEntry[] = [
   { path: '/components/dropdown',      label: 'Dropdown',     category: 'component', status: 'ready',    description: 'Single-select or multi-tag trigger. Stateless — pair with your menu.', load: () => import('../pages/components/Dropdown.mdx') },
   { path: '/components/tab',           label: 'Tab',          category: 'component', status: 'ready',    description: 'Single tab item — menu, underline, screen-nav, or pill style.',                load: () => import('../pages/components/Tab.mdx') },
   { path: '/components/badge',         label: 'Badge',        category: 'component', status: 'ready',    description: 'Compact label for status, count, or category — 11 color variants with optional × remove.', load: () => import('../pages/components/Badge.mdx') },
+  { path: '/components/radio',         label: 'Radio',        category: 'component', status: 'ready',    description: 'Single-select from a small set of options.',                                    load: () => import('../pages/components/Radio.mdx') },
+  { path: '/components/button-group',  label: 'Button Group', category: 'component', status: 'ready',    description: 'Joined cluster of related actions — toggle or segment patterns.',               load: () => import('../pages/components/ButtonGroup.mdx') },
+  { path: '/components/tag',           label: 'Tag',          category: 'component', status: 'ready',    description: 'Compact filter or selection chip — interactive, optionally removable.',         load: () => import('../pages/components/Tag.mdx') },
+  { path: '/components/tooltip',       label: 'Tooltip',       category: 'component', status: 'ready',    description: 'Contextual help on hover/focus — optional title + body, 4 sides × 3 alignments.', load: () => import('../pages/components/Tooltip.mdx') },
 
   // Components — planned
-  { path: '/components/tooltip',      label: 'Tooltip',      category: 'component', status: 'planned', description: 'Contextual help on hover/focus.', load: () => import('../pages/components/Tooltip.mdx') },
   { path: '/components/select',       label: 'Select',       category: 'component', status: 'planned', description: 'Dropdown picker for one of many options.',     load: () => import('../pages/components/Select.mdx') },
   { path: '/components/dialog',       label: 'Dialog',       category: 'component', status: 'planned', description: 'Modal overlay for focused tasks.',             load: () => import('../pages/components/Dialog.mdx') },
   { path: '/components/switch',       label: 'Switch',       category: 'component', status: 'planned', description: 'On/off binary toggle.',                        load: () => import('../pages/components/Switch.mdx') },
   { path: '/components/input',        label: 'Input',        category: 'component', status: 'planned', description: 'Single-line text input.',                      load: () => import('../pages/components/Input.mdx') },
-  { path: '/components/radio',        label: 'Radio',        category: 'component', status: 'planned', description: 'Single-select from a small set of options.',   load: () => import('../pages/components/Radio.mdx') },
   { path: '/components/label',        label: 'Label',        category: 'component', status: 'planned', description: 'Form field label primitive.',                  load: () => import('../pages/components/Label.mdx') },
 
   // Resources

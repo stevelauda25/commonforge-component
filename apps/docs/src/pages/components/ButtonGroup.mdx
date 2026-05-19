@@ -1,0 +1,204 @@
+import { useState } from 'react';
+import { ButtonGroup } from 'pod-test-ui';
+import { LayoutGrid, List, Columns3, Calendar, BarChart3 } from 'lucide-react';
+
+<PageHeader
+  title="Button Group"
+  description="Joined cluster of related actions — toggle, segment, or quick-pick patterns. Items share a single border and dividers between them."
+  status="ready"
+/>
+
+## Usage
+
+<PreviewCard>
+  <UsageExample />
+</PreviewCard>
+
+```tsx
+import { ButtonGroup } from 'pod-test-ui';
+
+const [view, setView] = useState('list');
+
+<ButtonGroup aria-label="View mode">
+  <ButtonGroup.Item active={view === 'list'} onClick={() => setView('list')}>List</ButtonGroup.Item>
+  <ButtonGroup.Item active={view === 'grid'} onClick={() => setView('grid')}>Grid</ButtonGroup.Item>
+  <ButtonGroup.Item active={view === 'cols'} onClick={() => setView('cols')}>Columns</ButtonGroup.Item>
+</ButtonGroup>
+```
+
+## Examples
+
+### Segment toggle (single-select)
+
+The most common use — exactly one item is active at a time. Drive `active` from local state.
+
+<PreviewCard>
+  <SegmentExample />
+</PreviewCard>
+
+```tsx
+const [view, setView] = useState('day');
+const options = ['Day', 'Week', 'Month'];
+
+<ButtonGroup aria-label="Time range">
+  {options.map((label) => (
+    <ButtonGroup.Item
+      key={label}
+      active={view === label.toLowerCase()}
+      onClick={() => setView(label.toLowerCase())}
+    >
+      {label}
+    </ButtonGroup.Item>
+  ))}
+</ButtonGroup>
+```
+
+### Icon-only items
+
+Pass an `icon` and set `iconOnly` for square buttons. Always pair with an `aria-label`.
+
+<PreviewCard>
+  <IconOnlyExample />
+</PreviewCard>
+
+```tsx
+<ButtonGroup aria-label="Layout">
+  <ButtonGroup.Item iconOnly icon={<List className="h-3.5 w-3.5" />}        aria-label="List view"    />
+  <ButtonGroup.Item iconOnly icon={<LayoutGrid className="h-3.5 w-3.5" />}  aria-label="Grid view"    />
+  <ButtonGroup.Item iconOnly icon={<Columns3 className="h-3.5 w-3.5" />}    aria-label="Column view"  />
+</ButtonGroup>
+```
+
+### Quantities
+
+Items render in order with a 1px divider between each. From 2 up to as many as you need.
+
+<PreviewCard>
+  <div className="flex flex-col items-start gap-3">
+    <ButtonGroup aria-label="Two">
+      <ButtonGroup.Item>Day</ButtonGroup.Item>
+      <ButtonGroup.Item>Week</ButtonGroup.Item>
+    </ButtonGroup>
+    <ButtonGroup aria-label="Three">
+      <ButtonGroup.Item>Day</ButtonGroup.Item>
+      <ButtonGroup.Item>Week</ButtonGroup.Item>
+      <ButtonGroup.Item>Month</ButtonGroup.Item>
+    </ButtonGroup>
+    <ButtonGroup aria-label="Four">
+      <ButtonGroup.Item>1h</ButtonGroup.Item>
+      <ButtonGroup.Item>24h</ButtonGroup.Item>
+      <ButtonGroup.Item>7d</ButtonGroup.Item>
+      <ButtonGroup.Item>30d</ButtonGroup.Item>
+    </ButtonGroup>
+    <ButtonGroup aria-label="Five">
+      <ButtonGroup.Item>1m</ButtonGroup.Item>
+      <ButtonGroup.Item>5m</ButtonGroup.Item>
+      <ButtonGroup.Item>15m</ButtonGroup.Item>
+      <ButtonGroup.Item>1h</ButtonGroup.Item>
+      <ButtonGroup.Item>1d</ButtonGroup.Item>
+    </ButtonGroup>
+  </div>
+</PreviewCard>
+
+### Disabled items
+
+Mix interactive and disabled items freely. Disabled blocks pointer events and dims the label.
+
+<PreviewCard>
+  <ButtonGroup aria-label="Plan">
+    <ButtonGroup.Item active>Starter</ButtonGroup.Item>
+    <ButtonGroup.Item>Pro</ButtonGroup.Item>
+    <ButtonGroup.Item disabled>Enterprise</ButtonGroup.Item>
+  </ButtonGroup>
+</PreviewCard>
+
+```tsx
+<ButtonGroup>
+  <ButtonGroup.Item active>Starter</ButtonGroup.Item>
+  <ButtonGroup.Item>Pro</ButtonGroup.Item>
+  <ButtonGroup.Item disabled>Enterprise</ButtonGroup.Item>
+</ButtonGroup>
+```
+
+export function UsageExample() {
+  const [view, setView] = useState('list');
+  return (
+    <ButtonGroup aria-label="View mode">
+      <ButtonGroup.Item active={view === 'list'} onClick={() => setView('list')}>List</ButtonGroup.Item>
+      <ButtonGroup.Item active={view === 'grid'} onClick={() => setView('grid')}>Grid</ButtonGroup.Item>
+      <ButtonGroup.Item active={view === 'cols'} onClick={() => setView('cols')}>Columns</ButtonGroup.Item>
+    </ButtonGroup>
+  );
+}
+
+export function SegmentExample() {
+  const [range, setRange] = useState('week');
+  return (
+    <ButtonGroup aria-label="Time range">
+      {['day', 'week', 'month'].map((option) => (
+        <ButtonGroup.Item
+          key={option}
+          active={range === option}
+          onClick={() => setRange(option)}
+        >
+          {option.charAt(0).toUpperCase() + option.slice(1)}
+        </ButtonGroup.Item>
+      ))}
+    </ButtonGroup>
+  );
+}
+
+export function IconOnlyExample() {
+  const [layout, setLayout] = useState('list');
+  return (
+    <ButtonGroup aria-label="Layout">
+      <ButtonGroup.Item iconOnly active={layout === 'list'} onClick={() => setLayout('list')} icon={<List className="h-3.5 w-3.5" />}      aria-label="List view"   />
+      <ButtonGroup.Item iconOnly active={layout === 'grid'} onClick={() => setLayout('grid')} icon={<LayoutGrid className="h-3.5 w-3.5" />} aria-label="Grid view"   />
+      <ButtonGroup.Item iconOnly active={layout === 'cols'} onClick={() => setLayout('cols')} icon={<Columns3 className="h-3.5 w-3.5" />}   aria-label="Column view" />
+    </ButtonGroup>
+  );
+}
+
+## API Reference
+
+### `<ButtonGroup>`
+
+Container element. Renders a `<div role="group">` with shared border, radius, and dividers.
+
+| Prop        | Type        | Default | Notes |
+|-------------|-------------|---------|-------|
+| `children`  | `ReactNode` | —       | One or more `<ButtonGroup.Item>` children. |
+| `className` | `string`    | —       | Merged onto the container. |
+
+Extends all native `<div>` HTMLAttributes. Always pair with an `aria-label` describing the group's purpose.
+
+### `<ButtonGroup.Item>`
+
+A single item inside the group. Renders as `<button type="button">`.
+
+| Prop        | Type        | Default | Notes |
+|-------------|-------------|---------|-------|
+| `active`    | `boolean`   | `false` | Visual "selected" state. Drives `aria-pressed`. |
+| `iconOnly`  | `boolean`   | `false` | Square aspect, no label space. Pair with `icon` + `aria-label`. |
+| `icon`      | `ReactNode` | —       | Leading icon (or sole icon when `iconOnly`). |
+| `disabled`  | `boolean`   | `false` | Blocks pointer + keyboard interaction. |
+| `children`  | `ReactNode` | —       | Item label. Hidden when `iconOnly` is `true`. |
+
+Extends all native `<button>` HTMLAttributes (minus `children` typing).
+
+## Accessibility
+
+### Group semantics
+
+The container has `role="group"` and accepts `aria-label` (or `aria-labelledby`). Pair with a descriptive name so screen readers announce the purpose ("Time range, three items").
+
+### Selected state
+
+Items toggle `aria-pressed` based on `active`. For single-select segments, the parent must enforce mutual exclusivity — the component itself does not.
+
+### Keyboard
+
+- **Tab** / **Shift+Tab** — move focus between items.
+- **Space** / **Enter** — activate the focused item.
+
+For roving-tab single-select patterns (arrow keys move between items), wrap with your own keydown handler — the primitive stays out of opinion here.

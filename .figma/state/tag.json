@@ -1,0 +1,359 @@
+{
+  "type": "COMPONENT_SET",
+  "name": "Tag",
+  "variants": {
+    "Style=Default, State=Default": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(17, 17, 19, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 6,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "2528:3107"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 2,
+      "childNames": [
+        "INSTANCE:li:circle-dot",
+        "FRAME:Text"
+      ]
+    },
+    "Style=Default, State=Hover": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 6,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "2416:994"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 2,
+      "childNames": [
+        "INSTANCE:li:circle-dot",
+        "FRAME:Text"
+      ]
+    },
+    "Style=Default, State=Active": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(17, 17, 19, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(58, 58, 61, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 6,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "2528:3107"
+        ],
+        "strokes": [
+          "2351:287"
+        ]
+      },
+      "childCount": 2,
+      "childNames": [
+        "INSTANCE:li:circle-dot",
+        "FRAME:Text"
+      ]
+    },
+    "Style=Default, State=Disabled": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(28, 28, 31, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 6,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "2351:286"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 2,
+      "childNames": [
+        "INSTANCE:li:circle-dot",
+        "FRAME:Text"
+      ]
+    },
+    "Style=Gray, State=Default": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 6,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "2416:994"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 2,
+      "childNames": [
+        "INSTANCE:li:circle-dot",
+        "FRAME:Text"
+      ]
+    },
+    "Style=Gray, State=Hover": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(17, 17, 19, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 6,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "2528:3107"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 2,
+      "childNames": [
+        "INSTANCE:li:circle-dot",
+        "FRAME:Text"
+      ]
+    },
+    "Style=Gray, State=Active": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(58, 58, 61, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 6,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "2416:994"
+        ],
+        "strokes": [
+          "2351:287"
+        ]
+      },
+      "childCount": 2,
+      "childNames": [
+        "INSTANCE:li:circle-dot",
+        "FRAME:Text"
+      ]
+    },
+    "Style=Gray, State=Disabled": {
+      "type": "COMPONENT",
+      "fills": [
+        {
+          "type": "SOLID",
+          "color": "rgb(28, 28, 31, a=1)"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "color": "rgb(24, 24, 27, a=1)"
+        }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 6,
+      "paddingLeft": 8,
+      "paddingRight": 8,
+      "paddingTop": 4,
+      "paddingBottom": 4,
+      "itemSpacing": 4,
+      "layoutMode": "HORIZONTAL",
+      "primaryAxisAlignItems": "CENTER",
+      "counterAxisAlignItems": "CENTER",
+      "effects": [],
+      "bindings": {
+        "itemSpacing": "10:1234",
+        "paddingLeft": "10:1236",
+        "paddingTop": "10:1234",
+        "paddingRight": "10:1236",
+        "paddingBottom": "10:1234",
+        "fills": [
+          "2351:286"
+        ],
+        "strokes": [
+          "12:1331"
+        ]
+      },
+      "childCount": 2,
+      "childNames": [
+        "INSTANCE:li:circle-dot",
+        "FRAME:Text"
+      ]
+    }
+  },
+  "nonVariantNodes": []
+}

@@ -1,5 +1,188 @@
+import { Tooltip, Button } from 'pod-test-ui';
+import { Info, HelpCircle, AlertTriangle } from 'lucide-react';
+
 <PageHeader
   title="Tooltip"
-  description="Contextual help for otherwise-terse UI: icon buttons, abbreviations, column headers, or short warnings near an action."/>
+  description="Contextual help on hover or keyboard focus. Optional bold title + body, four sides × three alignments, four semantic variants."
+  status="ready"
+/>
 
-<EmptyComponentState />
+## Usage
+
+<PreviewCard>
+  <div className="flex justify-center py-6">
+    <Tooltip title="Title" content="Placeholder">
+      <Button variant="outline">Hover me</Button>
+    </Tooltip>
+  </div>
+</PreviewCard>
+
+```tsx
+import { Tooltip } from 'pod-test-ui';
+
+<Tooltip title="Title" content="Placeholder">
+  <Button>Hover me</Button>
+</Tooltip>
+```
+
+Wraps a single focusable child via Radix Tooltip primitives. Keyboard focus, Escape to dismiss, and screen-reader semantics come from Radix — we only style.
+
+## Examples
+
+### Title + body
+
+The Figma spec — bold title on top of a muted body row. Use for short headings ("Keyboard shortcut") with a longer explanation.
+
+<PreviewCard>
+  <div className="flex justify-center py-6">
+    <Tooltip title="Keyboard shortcut" content="Press ⌘K to open command palette anywhere.">
+      <Button variant="outline">With title</Button>
+    </Tooltip>
+  </div>
+</PreviewCard>
+
+```tsx
+<Tooltip title="Keyboard shortcut" content="Press ⌘K to open command palette anywhere.">
+  <Button variant="outline">With title</Button>
+</Tooltip>
+```
+
+### Body only
+
+Omit `title` for a single-row tooltip — terse hints near icon buttons or column headers.
+
+<PreviewCard>
+  <div className="flex justify-center py-6">
+    <Tooltip content="View settings">
+      <Button variant="outline" iconOnly aria-label="Settings"><HelpCircle className="h-4 w-4" /></Button>
+    </Tooltip>
+  </div>
+</PreviewCard>
+
+```tsx
+<Tooltip content="View settings">
+  <Button variant="outline" iconOnly aria-label="Settings"><HelpCircle className="h-4 w-4" /></Button>
+</Tooltip>
+```
+
+### Sides
+
+Four sides — `top` (default), `right`, `bottom`, `left`. The arrow follows.
+
+<PreviewCard>
+  <div className="grid grid-cols-2 gap-6 py-10 md:grid-cols-4">
+    <Tooltip side="top"    title="Top"    content="Above the trigger.">
+      <Button variant="outline" className="w-full">Top</Button>
+    </Tooltip>
+    <Tooltip side="right"  title="Right"  content="To the right of trigger.">
+      <Button variant="outline" className="w-full">Right</Button>
+    </Tooltip>
+    <Tooltip side="bottom" title="Bottom" content="Below the trigger.">
+      <Button variant="outline" className="w-full">Bottom</Button>
+    </Tooltip>
+    <Tooltip side="left"   title="Left"   content="To the left of trigger.">
+      <Button variant="outline" className="w-full">Left</Button>
+    </Tooltip>
+  </div>
+</PreviewCard>
+
+```tsx
+<Tooltip side="top"    title="Top"    content="Above the trigger.">  ... </Tooltip>
+<Tooltip side="right"  title="Right"  content="To the right.">       ... </Tooltip>
+<Tooltip side="bottom" title="Bottom" content="Below the trigger.">  ... </Tooltip>
+<Tooltip side="left"   title="Left"   content="To the left.">        ... </Tooltip>
+```
+
+### Alignment
+
+Within a side, `align` shifts the tooltip along the trigger edge — `start`, `center` (default), or `end`. Useful when the trigger is wide or near a viewport edge.
+
+<PreviewCard>
+  <div className="flex flex-wrap justify-center gap-3 py-10">
+    <Tooltip side="top" align="start"  title="Top-start"  content="Anchored to the left edge.">
+      <Button variant="outline">Top start</Button>
+    </Tooltip>
+    <Tooltip side="top" align="center" title="Top-center" content="Centered above the trigger.">
+      <Button variant="outline">Top center</Button>
+    </Tooltip>
+    <Tooltip side="top" align="end"    title="Top-end"    content="Anchored to the right edge.">
+      <Button variant="outline">Top end</Button>
+    </Tooltip>
+  </div>
+</PreviewCard>
+
+```tsx
+<Tooltip side="top" align="start"  title="…" content="…">…</Tooltip>
+<Tooltip side="top" align="center" title="…" content="…">…</Tooltip>
+<Tooltip side="top" align="end"    title="…" content="…">…</Tooltip>
+```
+
+### Semantic variants
+
+`info`, `warning`, and `error` add a colored background and leading icon — use sparingly, for product affordances like inline validation hints or risky-action confirmations.
+
+<PreviewCard>
+  <div className="flex flex-wrap justify-center gap-3 py-10">
+    <Tooltip variant="info"    title="Heads up" content="Informational note.">
+      <Button variant="outline">Info</Button>
+    </Tooltip>
+    <Tooltip variant="warning" title="Careful"  content="Review this before continuing.">
+      <Button variant="outline">Warning</Button>
+    </Tooltip>
+    <Tooltip variant="error"   title="Blocked"  content="Action could not complete.">
+      <Button variant="outline">Error</Button>
+    </Tooltip>
+  </div>
+</PreviewCard>
+
+```tsx
+<Tooltip variant="info"    title="Heads up" content="Informational note.">…</Tooltip>
+<Tooltip variant="warning" title="Careful"  content="Review this before continuing.">…</Tooltip>
+<Tooltip variant="error"   title="Blocked"  content="Action could not complete.">…</Tooltip>
+```
+
+### Controlled
+
+Pass `open` + `onOpenChange` for programmatic control — useful in onboarding flows or when pairing with custom triggers.
+
+```tsx
+const [open, setOpen] = useState(false);
+
+<Tooltip open={open} onOpenChange={setOpen} content="Click me!">
+  <Button>Try it</Button>
+</Tooltip>
+```
+
+## API Reference
+
+| Prop             | Type                                                   | Default     | Notes |
+|------------------|--------------------------------------------------------|-------------|-------|
+| `title`          | `ReactNode`                                            | —           | Bold title row. Omit for single-row body-only tooltips. |
+| `content`        | `ReactNode`                                            | —           | Body row. Required. |
+| `children`       | `ReactElement`                                         | —           | The trigger. Must be a single focusable element (button, anchor). |
+| `variant`        | `'default' \| 'info' \| 'warning' \| 'error'`          | `'default'` | Semantic color. Non-default variants render an inline icon. |
+| `side`           | `'top' \| 'right' \| 'bottom' \| 'left'`               | `'top'`     | Position relative to the trigger. |
+| `align`          | `'start' \| 'center' \| 'end'`                         | `'center'`  | Shift along the trigger edge. |
+| `sideOffset`     | `number`                                               | `6`         | Gap (px) between trigger and tooltip. |
+| `delayDuration`  | `number`                                               | `200`       | ms before opening on hover. Set `0` for instant. |
+| `defaultOpen`    | `boolean`                                              | —           | Uncontrolled initial open state. |
+| `open`           | `boolean`                                              | —           | Controlled open state (pair with `onOpenChange`). |
+| `onOpenChange`   | `(open: boolean) => void`                              | —           | Fires when Radix opens or closes. |
+
+## Accessibility
+
+### Keyboard
+
+Tooltips open on **hover** and **keyboard focus**, and close on **mouseleave**, **blur**, or **Escape**. The trigger must be focusable — wrap a `<button>`, `<a>`, or any element with `tabIndex={0}`.
+
+### Screen readers
+
+Radix exposes the tooltip content via `aria-describedby` on the trigger when open. Don't put critical info in a tooltip — use a permanent label or aria-label for anything required to use the control.
+
+### Disabled triggers
+
+Native disabled `<button>` elements don't fire pointer events, so tooltips won't open. If you need a tooltip on a disabled control, wrap it in a `<span tabIndex={0}>` (or use `aria-disabled` instead of native `disabled`) so focus and hover still reach it.
+
+### Motion
+
+Open/close animations honor `prefers-reduced-motion`. Defaults to 280ms fade + zoom — same family as the rest of POD's [Motion](/foundations/motion) tokens.

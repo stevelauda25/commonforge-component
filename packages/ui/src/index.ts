@@ -1,10 +1,13 @@
 export * from './badges/index.js';
 export * from './button/index.js';
+export * from './button-group/index.js';
 export * from './checkbox/index.js';
 export * from './dropdown/index.js';
+export * from './radio/index.js';
 export * from './search-input/index.js';
 export * from './switch/index.js';
 export * from './tabs/index.js';
+export * from './tag/index.js';
 export * from './text-input/index.js';
 export * from './tooltip/index.js';
 export { cn } from './lib/cn.js';

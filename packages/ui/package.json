@@ -20,6 +20,11 @@
       "import": "./dist/button.mjs",
       "require": "./dist/button.js"
     },
+    "./button-group": {
+      "types": "./dist/button-group.d.ts",
+      "import": "./dist/button-group.mjs",
+      "require": "./dist/button-group.js"
+    },
     "./checkbox": {
       "types": "./dist/checkbox.d.ts",
       "import": "./dist/checkbox.mjs",
@@ -29,6 +34,11 @@
       "types": "./dist/dropdown.d.ts",
       "import": "./dist/dropdown.mjs",
       "require": "./dist/dropdown.js"
+    },
+    "./radio": {
+      "types": "./dist/radio.d.ts",
+      "import": "./dist/radio.mjs",
+      "require": "./dist/radio.js"
     },
     "./search-input": {
       "types": "./dist/search-input.d.ts",
@@ -44,6 +54,11 @@
       "types": "./dist/tabs.d.ts",
       "import": "./dist/tabs.mjs",
       "require": "./dist/tabs.js"
+    },
+    "./tag": {
+      "types": "./dist/tag.d.ts",
+      "import": "./dist/tag.mjs",
+      "require": "./dist/tag.js"
     },
     "./text-input": {
       "types": "./dist/text-input.d.ts",

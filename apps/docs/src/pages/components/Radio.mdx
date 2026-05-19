@@ -1,5 +1,188 @@
+import { useState } from 'react';
+import { Radio } from 'pod-test-ui';
+
 <PageHeader
   title="Radio"
-  description="Single-select from a small set of options."/>
+  description="Single-select from a small set of options. Two sizes, optional label + description, fully controlled."
+  status="ready"
+/>
 
-<EmptyComponentState />
+## Usage
+
+<PreviewCard>
+  <UsageExample />
+</PreviewCard>
+
+```tsx
+import { Radio } from 'pod-test-ui';
+
+const [value, setValue] = useState('email');
+
+<Radio
+  name="contact"
+  value="email"
+  checked={value === 'email'}
+  onCheckedChange={(checked) => checked && setValue('email')}
+  label="Email"
+/>
+```
+
+## Examples
+
+### Sizes
+
+Two sizes — `sm` (16px, default) for dense forms and `md` (20px) for primary settings surfaces.
+
+<PreviewCard>
+  <div className="flex flex-col gap-4">
+    <Radio name="size-demo" defaultChecked size="sm" label="Small (default)" description="16px indicator with 13px label." />
+    <Radio name="size-demo" size="md" label="Medium" description="20px indicator with 14px label." />
+  </div>
+</PreviewCard>
+
+```tsx
+<Radio size="sm" label="Small" />
+<Radio size="md" label="Medium" />
+```
+
+### States
+
+Default, hover, focused (via keyboard), and disabled — all available checked or unchecked.
+
+<PreviewCard>
+  <div className="flex flex-col gap-3">
+    <Radio name="state-demo-1" label="Off" />
+    <Radio name="state-demo-2" defaultChecked label="On" />
+    <Radio name="state-demo-3" disabled label="Disabled (off)" />
+    <Radio name="state-demo-4" disabled defaultChecked label="Disabled (on)" />
+  </div>
+</PreviewCard>
+
+```tsx
+<Radio label="Off" />
+<Radio defaultChecked label="On" />
+<Radio disabled label="Disabled (off)" />
+<Radio disabled defaultChecked label="Disabled (on)" />
+```
+
+### With description
+
+Help text under the label. Linked via `aria-describedby`.
+
+<PreviewCard>
+  <Radio
+    name="desc-demo"
+    defaultChecked
+    label="Email notifications"
+    description="Get a daily digest at 8am of activity in your workspaces."
+  />
+</PreviewCard>
+
+```tsx
+<Radio
+  name="prefs"
+  value="email"
+  label="Email notifications"
+  description="Get a daily digest at 8am of activity in your workspaces."
+/>
+```
+
+### Group — controlled
+
+Radios share state through the `name` attribute and a single state value. Always pass `checked` and update it from `onCheckedChange`.
+
+<PreviewCard>
+  <ControlledGroup />
+</PreviewCard>
+
+```tsx
+function ContactPreference() {
+  const [value, setValue] = useState('email');
+  return (
+    <div className="flex flex-col gap-3">
+      {['email', 'sms', 'push'].map((option) => (
+        <Radio
+          key={option}
+          name="contact"
+          value={option}
+          checked={value === option}
+          onCheckedChange={(checked) => checked && setValue(option)}
+          label={option.toUpperCase()}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+export function UsageExample() {
+  const [value, setValue] = useState('email');
+  return (
+    <div className="flex flex-col gap-3">
+      <Radio
+        name="usage-demo"
+        value="email"
+        checked={value === 'email'}
+        onCheckedChange={(checked) => checked && setValue('email')}
+        label="Email"
+      />
+      <Radio
+        name="usage-demo"
+        value="sms"
+        checked={value === 'sms'}
+        onCheckedChange={(checked) => checked && setValue('sms')}
+        label="SMS"
+      />
+    </div>
+  );
+}
+
+export function ControlledGroup() {
+  const [value, setValue] = useState('email');
+  return (
+    <div className="flex flex-col gap-3">
+      {['email', 'sms', 'push'].map((option) => (
+        <Radio
+          key={option}
+          name="group-demo"
+          value={option}
+          checked={value === option}
+          onCheckedChange={(checked) => checked && setValue(option)}
+          label={option === 'email' ? 'Email' : option === 'sms' ? 'SMS' : 'Push notification'}
+          description={value === option ? 'Selected' : undefined}
+        />
+      ))}
+    </div>
+  );
+}
+
+## API Reference
+
+| Prop              | Type                          | Default | Notes |
+|-------------------|-------------------------------|---------|-------|
+| `size`            | `'sm' \| 'md'`                | `'sm'`  | `sm` = 16px indicator, `md` = 20px. |
+| `checked`         | `boolean`                     | —       | Controlled state. Omit + use `defaultChecked` for uncontrolled. |
+| `onCheckedChange` | `(checked: boolean) => void`  | —       | Fires on user toggle. Pair with sibling radios via `name`. |
+| `label`           | `ReactNode`                   | —       | Renders as `<label>` linked via `htmlFor`. |
+| `description`     | `ReactNode`                   | —       | Help text under the label. Linked via `aria-describedby`. |
+| `disabled`        | `boolean`                     | `false` | Dims the control and blocks pointer events. |
+| `name`            | `string`                      | —       | Required for grouping native radios. |
+| `id`              | `string`                      | auto    | Auto-generated via `useId` when omitted. |
+
+Extends all native `<input type="radio">` HTMLAttributes (minus `type`, `size`, `onChange`).
+
+## Accessibility
+
+### Grouping
+
+Native `<input type="radio">` — sibling radios with the same `name` form a group. Arrow keys move selection between them; Tab moves focus to the next focusable element.
+
+### Label association
+
+When `label` is provided, the component generates an `id` (via `useId`) and renders the visible label tied to the `<input>`. Pass your own `id` to override. For label-less usage, supply `aria-label` directly.
+
+### Keyboard
+
+- **Space** — selects the focused radio (no-op if already selected).
+- **Arrow keys** — move selection within the group.
+- **Tab** / **Shift+Tab** — move focus between groups.

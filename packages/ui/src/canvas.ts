@@ -4,12 +4,16 @@
 import type { CanvasManifest } from './canvas-types.js';
 import { badgesCanvas } from './badges/canvas.js';
 import { buttonCanvas } from './button/canvas.js';
+import { buttonGroupCanvas } from './button-group/canvas.js';
 import { checkboxCanvas } from './checkbox/canvas.js';
 import { dropdownCanvas } from './dropdown/canvas.js';
+import { radioCanvas } from './radio/canvas.js';
 import { searchInputCanvas } from './search-input/canvas.js';
 import { switchCanvas } from './switch/canvas.js';
 import { tabsCanvas } from './tabs/canvas.js';
+import { tagCanvas } from './tag/canvas.js';
 import { textInputCanvas } from './text-input/canvas.js';
+import { tooltipCanvas } from './tooltip/canvas.js';
 
 export * from './canvas-types.js';
 
@@ -18,11 +22,15 @@ export const canvasManifest: CanvasManifest = {
   components: [
     badgesCanvas,
     buttonCanvas,
+    buttonGroupCanvas,
     checkboxCanvas,
     dropdownCanvas,
+    radioCanvas,
     searchInputCanvas,
     switchCanvas,
     tabsCanvas,
+    tagCanvas,
     textInputCanvas,
+    tooltipCanvas,
   ],
 };

@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "slug": "tag",
+  "fileKey": "TCd9exLXTUMciyw1VqnPSK",
+  "nodeId": "2467:3796",
+  "syncedAt": "2026-05-19T15:10:00Z",
+  "comment": "Auto-populated by /new-item via MCP get_variable_defs.",
+  "variables": {
+    "1": "1",
+    "icon/muted": "#a1a1aa",
+    "text/muted": "#a1a1aa",
+    "text-xs/regular": "Font(family: \"Inter\", style: Regular, size: 13, weight: 400, lineHeight: 18, letterSpacing: 0)",
+    "padding-3xs": "2",
+    "padding-2xs": "4",
+    "padding-s": "8",
+    "radius-s": "6",
+    "bg/surface": "#111113",
+    "border/default": "#18181b",
+    "bg/muted": "#18181b",
+    "icon/strong": "#fafafa",
+    "text/strong": "#fafafa",
+    "border/subtle": "#3a3a3d",
+    "icon/disabled": "#3a3a3d",
+    "text/disabled": "#3a3a3d",
+    "bg/disabled": "#1c1c1f",
+    "bg/canvas": "#09090b"
+  }
+}
