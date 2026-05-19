@@ -8,41 +8,41 @@
 <SwatchGrid>
   <Swatch bg="bg-canvas"  name="canvas"  value="page background" />
   <Swatch bg="bg-surface" name="surface" value="cards, inputs" />
-  <Swatch bg="bg-raised"  name="raised"  value="popovers, tooltips" />
+  <Swatch bg="bg-elevated"  name="raised"  value="popovers, tooltips" />
   <Swatch bg="bg-muted"   name="muted"   value="ghost-button hover, chips" />
 </SwatchGrid>
 
 ## Text
 
 <SwatchGrid>
-  <Swatch bg="bg-text-primary"   name="text-primary"   value="primary text" />
-  <Swatch bg="bg-text-secondary" name="text-secondary" value="secondary text" />
-  <Swatch bg="bg-text-muted"     name="text-muted"     value="muted / hint text" />
-  <Swatch bg="bg-text-disabled"  name="text-disabled"  value="disabled labels" />
+  <Swatch bg="--color-text-default" name="text-default" value="primary text" />
+  <Swatch bg="--color-text-subtle" name="text-subtle" value="secondary / muted text" />
+  <Swatch bg="--color-text-muted" name="text-muted" value="muted / hint text" />
+  <Swatch bg="--color-text-disabled" name="text-disabled" value="disabled labels" />
 </SwatchGrid>
 
 ## Borders
 
 <SwatchGrid>
-  <Swatch bg="bg-border-subtle"  name="border-subtle"  value="hairline" />
-  <Swatch bg="bg-border-default" name="border-default" value="default border" />
-  <Swatch bg="bg-border-strong"  name="border-strong"  value="strong / hover border" />
-  <Swatch bg="bg-border-focus"   name="border-focus"   value="focus ring" />
+  <Swatch bg="--color-border-subtle" name="border-subtle" value="hairline" />
+  <Swatch bg="--color-border-default" name="border-default" value="default border" />
+  <Swatch bg="--color-border-strong" name="border-strong" value="strong / hover border" />
+  <Swatch bg="--color-border-brand" name="border-brand" value="focus ring (uses brand)" />
 </SwatchGrid>
 
 ## Accent — POD brand green
 
 <SwatchGrid>
-  <Swatch bg="bg-accent"        name="accent"         value="default" />
-  <Swatch bg="bg-accent-hover"  name="accent-hover"   value="hover" />
-  <Swatch bg="bg-accent-active" name="accent-active"  value="active" />
-  <Swatch bg="bg-accent-subtle" name="accent-subtle"  value="subtle (badges)" />
+  <Swatch bg="bg-brand"        name="accent"         value="default" />
+  <Swatch bg="bg-brand-hover"  name="accent-hover"   value="hover" />
+  <Swatch bg="bg-brand-hover" name="accent-active"  value="active" />
+  <Swatch bg="bg-brand-subtle" name="accent-subtle"  value="subtle (badges)" />
 </SwatchGrid>
 
 ## Feedback
 
 <SwatchGrid>
-  <Swatch bg="bg-danger"  name="danger"  value="errors, destructive" />
+  <Swatch bg="bg-destructive"  name="danger"  value="errors, destructive" />
   <Swatch bg="bg-warning" name="warning" value="warnings" />
   <Swatch bg="bg-success" name="success" value="success states" />
   <Swatch bg="bg-info"    name="info"    value="informational" />
@@ -55,7 +55,7 @@ Switch the theme toggle in the topbar — every swatch above re-paints from the 
 ## Usage
 
 ```tsx
-<div className="bg-surface text-text-primary border border-border-default">
+<div className="bg-surface text-default border border-default">
   Token-driven container
 </div>
 ```

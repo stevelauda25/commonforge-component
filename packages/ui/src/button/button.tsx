@@ -27,24 +27,24 @@ const base =
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-accent-hover text-accent-fg ' +
-    'outline outline-1 outline-accent [outline-offset:-1px] ' +
+    'bg-brand text-on-brand ' +
+    'outline outline-1 outline-border-brand [outline-offset:-1px] ' +
     'shadow-glow-accent-inset ' +
-    'hover:bg-accent-hover ' +
+    'hover:bg-brand-hover ' +
     'hover:shadow-glow-accent-inset-strong ' +
-    'active:bg-accent-active',
+    'active:bg-brand-hover',
   outline:
-    'bg-transparent text-text-muted ' +
+    'bg-transparent text-muted ' +
     'outline outline-1 outline-border-default [outline-offset:-1px] ' +
-    'hover:text-text-primary hover:shadow-glow-accent-inset ' +
-    'active:text-text-primary active:shadow-glow-accent-inset',
-  // Note: Outline hover bg → see experiment-zinc-700 override in className composition below.
+    'hover:text-default hover:shadow-glow-accent-inset ' +
+    'active:text-default active:shadow-glow-accent-inset',
+  // Note: Outline hover bg → see bg-elevated override in className composition below.
   error:
-    'bg-danger-hover text-danger-fg ' +
-    'outline outline-1 outline-danger [outline-offset:-1px] ' +
+    'bg-destructive text-on-destructive ' +
+    'outline outline-1 outline-border-destructive [outline-offset:-1px] ' +
     'shadow-glow-danger-inset ' +
     'hover:shadow-glow-danger-inset-strong ' +
-    'active:bg-danger-active',
+    'active:bg-destructive-hover',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -91,18 +91,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           focusRing,
           variantClasses[variant],
           iconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
-          // Experimental: Outline/Hover bg = #1c1c1f (zinc/700) for non-icon-only sizes.
+          // Outline hover bg = bg-elevated for non-icon-only sizes.
           variant === 'outline' && !iconOnly &&
-            'hover:bg-experiment-zinc-700',
-          // Experimental: Primary/Hover bg = #0a662d (raw hex from Figma, no token binding)
-          // for non-icon-only sizes (sourced from sync-figma).
-          variant === 'primary' && !iconOnly &&
-            'hover:!bg-experiment-primary-hover-dark',
-          // NOTE: Figma had primary-test-500 (#1f71ff) override on Primary/Default/Large
-          // variant. Removed 2026-05-11 — consumer feedback: experiment should NOT
-          // affect production rendering until designer promotes it explicitly.
-          // Token `--color-experiment-primary-test` retained in theme.css for future
-          // opt-in use; just no active override here.
+            'hover:bg-elevated',
           className,
         )}
         {...rest}

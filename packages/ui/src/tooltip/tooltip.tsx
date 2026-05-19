@@ -21,13 +21,13 @@ export interface TooltipProps {
 
 const variantStyles: Record<TooltipVariant, string> = {
   default:
-    'bg-text-primary text-text-inverse',
+    'bg-inverse text-inverse',
   info:
-    'bg-info text-info-fg',
+    'bg-info text-on-info',
   warning:
-    'bg-warning text-warning-fg',
+    'bg-warning text-on-warning',
   error:
-    'bg-danger text-danger-fg',
+    'bg-destructive text-on-destructive',
 };
 
 const variantIcon: Record<TooltipVariant, React.ReactNode | null> = {
@@ -86,10 +86,10 @@ export function Tooltip({
             <RadixTooltip.Arrow
               className={cn(
                 'fill-current',
-                variant === 'default' && 'text-text-primary',
+                variant === 'default' && 'text-default',
                 variant === 'info' && 'text-info',
                 variant === 'warning' && 'text-warning',
-                variant === 'error' && 'text-danger',
+                variant === 'error' && 'text-destructive',
               )}
               width={10}
               height={5}

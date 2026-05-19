@@ -14,24 +14,24 @@ export function ComponentTile({ entry }: Props) {
   return (
     <div
       className={cn(
-        'group flex min-h-[200px] flex-col overflow-hidden rounded-lg border border-border-default bg-canvas',
-        'transition-colors hover:border-border-strong',
+        'group flex min-h-[200px] flex-col overflow-hidden rounded-lg border border-default bg-canvas',
+        'transition-colors hover:border-strong',
       )}
     >
       <Link
         to={entry.path}
-        className="flex items-center justify-between border-b border-border-subtle px-3 py-2 hover:bg-muted/40 transition-colors"
+        className="flex items-center justify-between border-b border-subtle px-3 py-2 hover:bg-muted/40 transition-colors"
       >
         <span
           className={cn(
             'text-xs font-medium',
-            isReady ? 'text-text-secondary' : 'text-text-muted',
+            isReady ? 'text-subtle' : 'text-muted',
           )}
         >
           {entry.label}
         </span>
         {!isReady && (
-          <span className="text-[10px] uppercase tracking-wider text-text-muted">
+          <span className="text-[10px] uppercase tracking-wider text-muted">
             Coming soon
           </span>
         )}
@@ -45,7 +45,7 @@ export function ComponentTile({ entry }: Props) {
         {isReady && Example ? (
           <Example />
         ) : (
-          <span className="text-xs text-text-muted">—</span>
+          <span className="text-xs text-muted">—</span>
         )}
       </div>
     </div>

@@ -40,7 +40,7 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
           'transition-colors duration-base ease-standard',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           cls.track,
-          value ? 'bg-accent' : 'bg-muted',
+          value ? 'bg-brand' : 'bg-muted',
           className,
         )}
       >

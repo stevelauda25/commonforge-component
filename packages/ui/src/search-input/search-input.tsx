@@ -84,7 +84,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     return (
       <div className={cn('flex flex-col gap-1.5', className)}>
         {label && (
-          <span className="text-sm font-normal leading-5 text-text-primary">
+          <span className="text-sm font-normal leading-5 text-default">
             {label}
           </span>
         )}
@@ -97,16 +97,16 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
             error
               ? cn('border-danger', FOCUS_RING_ERROR)
               : cn(
-                  'border-border-default',
-                  'hover:border-experiment-input-stroke-active',
-                  'focus-within:border-experiment-input-stroke-active',
-                  'focus-within:bg-experiment-input-bg-focused',
+                  'border-default',
+                  'hover:border-subtle',
+                  'focus-within:border-subtle',
+                  'focus-within:bg-subtle',
                   FOCUS_RING_GRAY,
                 ),
             disabled && 'cursor-not-allowed opacity-50',
           )}
         >
-          <span className="shrink-0 text-text-muted" aria-hidden="true">
+          <span className="shrink-0 text-muted" aria-hidden="true">
             {leftIcon ?? <Search className="h-4 w-4" />}
           </span>
           <input
@@ -122,7 +122,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
             aria-describedby={errorId ?? hintId}
             className={cn(
               'min-w-0 flex-1 bg-transparent outline-none',
-              'text-[13px] leading-[18px] text-text-primary placeholder:text-text-disabled',
+              'text-[13px] leading-[18px] text-default placeholder:text-disabled',
               'disabled:cursor-not-allowed',
               // Suppress browser-native clear button — we render our own controlled variant.
               '[&::-webkit-search-cancel-button]:appearance-none',
@@ -134,7 +134,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
               {shortcutKeys.map((k, i) => (
                 <kbd
                   key={`${k}-${i}`}
-                  className="inline-flex items-center justify-center rounded-xs bg-experiment-zinc-700 px-1.5 text-[13px] leading-[18px] text-text-muted"
+                  className="inline-flex items-center justify-center rounded-xs bg-elevated px-1.5 text-[13px] leading-[18px] text-muted"
                 >
                   {k}
                 </kbd>
@@ -147,7 +147,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
               tabIndex={-1}
               onClick={handleClear}
               aria-label="Clear search"
-              className="shrink-0 text-text-muted transition-colors duration-fast ease-standard hover:text-text-primary"
+              className="shrink-0 text-muted transition-colors duration-fast ease-standard hover:text-default"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -157,7 +157,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         {error ? (
           <span
             id={errorId}
-            className="flex items-center gap-1 text-[13px] leading-[18px] text-danger"
+            className="flex items-center gap-1 text-[13px] leading-[18px] text-destructive"
           >
             <Info className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             {error}
@@ -165,7 +165,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         ) : hint ? (
           <span
             id={hintId}
-            className="flex items-center gap-1 text-[13px] leading-[18px] text-text-muted"
+            className="flex items-center gap-1 text-[13px] leading-[18px] text-muted"
           >
             <Info className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             {hint}

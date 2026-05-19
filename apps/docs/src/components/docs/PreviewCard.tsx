@@ -20,7 +20,7 @@ export function PreviewCard({ children, noClip = false, align = 'center' }: Prop
   const items = align === 'start' ? 'items-start' : 'items-center';
   return (
     <div
-      className={`preview-card my-6 rounded-lg border border-border-default bg-canvas ${
+      className={`preview-card my-6 rounded-lg border border-default bg-canvas ${
         noClip ? '' : 'overflow-hidden'
       }`}
     >

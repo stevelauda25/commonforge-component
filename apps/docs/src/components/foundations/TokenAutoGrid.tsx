@@ -61,14 +61,14 @@ export function TokenAutoGrid({
     setTokens(filtered);
   }, [kind, filter]);
 
-  if (tokens.length === 0) return <p className="text-sm text-text-muted">Loading tokens…</p>;
+  if (tokens.length === 0) return <p className="text-sm text-muted">Loading tokens…</p>;
 
   if (variant === 'table') {
     return (
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="border-b border-border-default">
-            <tr className="text-left text-xs uppercase tracking-wide text-text-muted">
+          <thead className="border-b border-default">
+            <tr className="text-left text-xs uppercase tracking-wide text-muted">
               <th className="py-2 pr-4 font-medium">Token</th>
               <th className="py-2 pr-4 font-medium">Value</th>
               <th className="py-2 font-medium">Class</th>
@@ -76,12 +76,12 @@ export function TokenAutoGrid({
           </thead>
           <tbody>
             {tokens.map((t) => (
-              <tr key={t.name} className="border-b border-border-subtle">
+              <tr key={t.name} className="border-b border-subtle">
                 <td className="py-2 pr-4">
                   <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{t.cssVar}</code>
                 </td>
                 <td className="py-2 pr-4">
-                  <code className="text-xs text-text-secondary">{t.computed || '—'}</code>
+                  <code className="text-xs text-subtle">{t.computed || '—'}</code>
                 </td>
                 <td className="py-2">
                   <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{t.className}</code>
@@ -103,11 +103,11 @@ export function TokenAutoGrid({
       {tokens.map((t) => (
         <div key={t.name} className="flex flex-col items-center gap-3">
           {kind === 'radius' ? (
-            <div className={`h-14 w-14 bg-accent ${t.className}`} />
+            <div className={`h-14 w-14 bg-brand ${t.className}`} />
           ) : (
-            <div className={`h-20 w-20 rounded-lg border border-border-default bg-canvas ${t.className}`} />
+            <div className={`h-20 w-20 rounded-lg border border-default bg-canvas ${t.className}`} />
           )}
-          <code className="font-mono text-[11px] text-text-secondary text-center break-all">
+          <code className="font-mono text-[11px] text-subtle text-center break-all">
             {t.className}
           </code>
         </div>
@@ -121,7 +121,7 @@ export function TokenAutoGrid({
   // overflow-hidden clips large shadows.
   if (isShadow) {
     return (
-      <div className="my-6 rounded-lg border border-border-default bg-canvas px-8 pt-12 pb-24">
+      <div className="my-6 rounded-lg border border-default bg-canvas px-8 pt-12 pb-24">
         {inner}
       </div>
     );

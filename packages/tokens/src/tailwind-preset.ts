@@ -4,116 +4,187 @@ import type { Config } from 'tailwindcss';
  * Tailwind preset — the single bridge between CSS variables in theme.css
  * and the utility classes used by components.
  *
- * Keep this file boring: any new semantic token added in theme.css should
- * get a matching entry here (and nothing else). No component-specific tokens.
+ * Uses per-utility theme keys (backgroundColor, borderColor, textColor,
+ * ringColor, outlineColor, ringOffsetColor) so each utility has its own
+ * flat color map. This gives clean class names: `bg-canvas`, `text-default`,
+ * `border-brand`, `ring-brand`, `outline-border-brand`.
+ *
+ * `bg-` and `text-` maps include icon-* and fg-* aliases so SVG color
+ * cascades and decorative-foreground use sites can pick the right semantic.
+ * Badge `accent` ring color is dual-registered in backgroundColor and
+ * textColor (component-scoped 3rd badge layer).
  */
 
 const rgbVar = (name: string) => `rgb(var(--color-${name}) / <alpha-value>)`;
+
+const BADGE_COLORS = [
+  'orange', 'lime', 'purple', 'green', 'indigo', 'sky', 'blue', 'red', 'yellow',
+] as const;
+
+const badgeBg = Object.fromEntries(
+  BADGE_COLORS.flatMap((c) => [
+    [`badge-${c}`, rgbVar(`bg-badge-${c}`)],
+    [`badge-${c}-accent`, rgbVar(`badge-${c}-accent`)],
+  ]),
+);
+
+const badgeText = Object.fromEntries(
+  BADGE_COLORS.flatMap((c) => [
+    [`badge-${c}`, rgbVar(`text-badge-${c}`)],
+    [`badge-${c}-accent`, rgbVar(`badge-${c}-accent`)],
+  ]),
+);
+
+const backgroundColor = {
+  canvas:   rgbVar('bg-canvas'),
+  surface:  rgbVar('bg-surface'),
+  elevated: rgbVar('bg-elevated'),
+  muted:    rgbVar('bg-muted'),
+  subtle:   rgbVar('bg-subtle'),
+  disabled: rgbVar('bg-disabled'),
+  inverse:  rgbVar('bg-inverse'),
+  neutral:  rgbVar('bg-neutral'),
+  brand:                rgbVar('bg-brand'),
+  'brand-hover':        rgbVar('bg-brand-hover'),
+  'brand-subtle':       rgbVar('bg-brand-subtle'),
+  destructive:          rgbVar('bg-destructive'),
+  'destructive-hover':  rgbVar('bg-destructive-hover'),
+  'destructive-subtle': rgbVar('bg-destructive-subtle'),
+  error:           rgbVar('bg-error'),
+  'error-subtle':  rgbVar('bg-error-subtle'),
+  success:          rgbVar('bg-success'),
+  'success-subtle': rgbVar('bg-success-subtle'),
+  warning:          rgbVar('bg-warning'),
+  'warning-subtle': rgbVar('bg-warning-subtle'),
+  info:           rgbVar('bg-info'),
+  'info-subtle':  rgbVar('bg-info-subtle'),
+  ...badgeBg,
+  // fg aliases (bg-fg-default for decorative usage as bg)
+  'fg-default':  rgbVar('fg-default'),
+  'fg-subtle':   rgbVar('fg-subtle'),
+  'fg-disabled': rgbVar('fg-disabled'),
+  'fg-brand':    rgbVar('fg-brand'),
+  'fg-on-brand': rgbVar('fg-on-brand'),
+  overlay: 'rgb(var(--color-overlay) / <alpha-value>)',
+};
+
+const borderColor = {
+  DEFAULT:               rgbVar('border-default'),
+  default:               rgbVar('border-default'),
+  subtle:                rgbVar('border-subtle'),
+  strong:                rgbVar('border-strong'),
+  brand:                 rgbVar('border-brand'),
+  destructive:           rgbVar('border-destructive'),
+  'destructive-subtle':  rgbVar('border-destructive-subtle'),
+  disabled:              rgbVar('border-disabled'),
+  error:                 rgbVar('border-error'),
+  info:                  rgbVar('border-info'),
+  inverse:               rgbVar('border-inverse'),
+  success:               rgbVar('border-success'),
+  warning:               rgbVar('border-warning'),
+};
+
+const textColor = {
+  default:     rgbVar('text-default'),
+  strong:      rgbVar('text-strong'),
+  subtle:      rgbVar('text-subtle'),
+  muted:       rgbVar('text-muted'),
+  disabled:    rgbVar('text-disabled'),
+  placeholder: rgbVar('text-placeholder'),
+  inverse:     rgbVar('text-inverse'),
+  brand:       rgbVar('text-brand'),
+  success:     rgbVar('text-success'),
+  destructive: rgbVar('text-destructive'),
+  error:       rgbVar('text-error'),
+  warning:     rgbVar('text-warning'),
+  info:        rgbVar('text-info'),
+  'on-brand':       rgbVar('text-on-brand'),
+  'on-destructive': rgbVar('text-on-destructive'),
+  'on-success':     rgbVar('text-on-success'),
+  'on-warning':     rgbVar('text-on-warning'),
+  'on-info':        rgbVar('text-on-info'),
+  // icon aliases — used as text-icon-{key} (color cascades to SVG currentColor)
+  'icon-default':        rgbVar('icon-default'),
+  'icon-strong':         rgbVar('icon-strong'),
+  'icon-subtle':         rgbVar('icon-subtle'),
+  'icon-muted':          rgbVar('icon-muted'),
+  'icon-disabled':       rgbVar('icon-disabled'),
+  'icon-placeholder':    rgbVar('icon-placeholder'),
+  'icon-inverse':        rgbVar('icon-inverse'),
+  'icon-brand':          rgbVar('icon-brand'),
+  'icon-success':        rgbVar('icon-success'),
+  'icon-destructive':    rgbVar('icon-destructive'),
+  'icon-error':          rgbVar('icon-error'),
+  'icon-warning':        rgbVar('icon-warning'),
+  'icon-info':           rgbVar('icon-info'),
+  'icon-on-brand':       rgbVar('icon-on-brand'),
+  'icon-on-destructive': rgbVar('icon-on-destructive'),
+  'icon-on-success':     rgbVar('icon-on-success'),
+  'icon-on-warning':     rgbVar('icon-on-warning'),
+  'icon-on-info':        rgbVar('icon-on-info'),
+  // fg aliases — used as text-fg-{key} for decorative foreground rendering
+  'fg-default':  rgbVar('fg-default'),
+  'fg-subtle':   rgbVar('fg-subtle'),
+  'fg-disabled': rgbVar('fg-disabled'),
+  'fg-brand':    rgbVar('fg-brand'),
+  'fg-on-brand': rgbVar('fg-on-brand'),
+  ...badgeText,
+};
+
+const ringColor = {
+  DEFAULT:               rgbVar('border-brand'),
+  brand:                 rgbVar('border-brand'),
+  destructive:           rgbVar('border-destructive'),
+  // Allow `ring-border-X` synonyms (used in component code that wants explicit family)
+  'border-brand':        rgbVar('border-brand'),
+  'border-default':      rgbVar('border-default'),
+  'border-subtle':       rgbVar('border-subtle'),
+  'border-strong':       rgbVar('border-strong'),
+  'border-destructive':  rgbVar('border-destructive'),
+};
+
+const outlineColor = {
+  DEFAULT:               rgbVar('border-default'),
+  'border-brand':        rgbVar('border-brand'),
+  'border-default':      rgbVar('border-default'),
+  'border-destructive':  rgbVar('border-destructive'),
+  'border-subtle':       rgbVar('border-subtle'),
+  'border-strong':       rgbVar('border-strong'),
+};
+
+const ringOffsetColor = {
+  'bg-canvas':  rgbVar('bg-canvas'),
+  'bg-surface': rgbVar('bg-surface'),
+};
 
 export const preset: Partial<Config> = {
   darkMode: 'class',
   theme: {
     extend: {
+      backgroundColor,
+      borderColor,
+      textColor,
+      ringColor,
+      outlineColor,
+      ringOffsetColor,
       colors: {
-        // Backgrounds
-        canvas:  rgbVar('bg-canvas'),
-        surface: rgbVar('bg-surface'),
-        raised:  rgbVar('bg-raised'),
-        muted:   rgbVar('bg-muted'),
-
-        // Text
-        'text-primary':   rgbVar('text-primary'),
-        'text-secondary': rgbVar('text-secondary'),
-        'text-muted':     rgbVar('text-muted'),
-        'text-disabled':  rgbVar('text-disabled'),
-        'text-inverse':   rgbVar('text-inverse'),
-
-        // Borders
-        'border-subtle':  rgbVar('border-subtle'),
-        'border-default': rgbVar('border-default'),
-        'border-strong':  rgbVar('border-strong'),
-        'border-focus':   rgbVar('border-focus'),
-
-        // Accent
-        accent: {
-          DEFAULT: rgbVar('accent-default'),
-          hover:   rgbVar('accent-hover'),
-          active:  rgbVar('accent-active'),
-          fg:      rgbVar('accent-fg'),
-          subtle:  rgbVar('accent-subtle'),
-        },
-
-        // Feedback
-        danger: {
-          DEFAULT: rgbVar('danger-default'),
-          hover:   rgbVar('danger-hover'),
-          active:  rgbVar('danger-active'),
-          fg:      rgbVar('danger-fg'),
-          subtle:  rgbVar('danger-subtle'),
-        },
-        warning: {
-          DEFAULT: rgbVar('warning-default'),
-          fg:      rgbVar('warning-fg'),
-          subtle:  rgbVar('warning-subtle'),
-        },
-        success: {
-          DEFAULT: rgbVar('success-default'),
-          fg:      rgbVar('success-fg'),
-          subtle:  rgbVar('success-subtle'),
-        },
-        info: {
-          DEFAULT: rgbVar('info-default'),
-          fg:      rgbVar('info-fg'),
-          subtle:  rgbVar('info-subtle'),
-        },
-
-        // Neutral overlay (for modal scrims etc.)
-        overlay: rgbVar('overlay'),
-
-        // Experimental — Figma-introduced primitives, see theme.css block
-        'experiment-zinc-700':            rgbVar('experiment-zinc-700'),
-        'experiment-primary-test':        rgbVar('experiment-primary-test'),
-        'experiment-input-stroke-active': rgbVar('experiment-input-stroke-active'),
-        'experiment-input-bg-focused':    rgbVar('experiment-input-bg-focused'),
-        'experiment-cb-border':           rgbVar('experiment-cb-border'),
-        'experiment-cb-disabled-bg':      rgbVar('experiment-cb-disabled-bg'),
-        'experiment-cb-disabled-icon':    rgbVar('experiment-cb-disabled-icon'),
-        'experiment-primary-hover-dark':  rgbVar('experiment-primary-hover-dark'),
-        'experiment-tab-base':            rgbVar('experiment-tab-base'),
-        'experiment-tab-chip':            rgbVar('experiment-tab-chip'),
-        'experiment-tab-indigo':          rgbVar('experiment-tab-indigo'),
-        'experiment-tab-border':          rgbVar('experiment-tab-border'),
-        'experiment-tab-text':            rgbVar('experiment-tab-text'),
-        'experiment-tab-text-disabled':   rgbVar('experiment-tab-text-disabled'),
-        'experiment-badge-orange-bg':     rgbVar('experiment-badge-orange-bg'),
-        'experiment-badge-orange-tag':    rgbVar('experiment-badge-orange-tag'),
-        'experiment-badge-orange-fg':     rgbVar('experiment-badge-orange-fg'),
-        'experiment-badge-lime-bg':       rgbVar('experiment-badge-lime-bg'),
-        'experiment-badge-lime-tag':      rgbVar('experiment-badge-lime-tag'),
-        'experiment-badge-lime-fg':       rgbVar('experiment-badge-lime-fg'),
-        'experiment-badge-purple-bg':     rgbVar('experiment-badge-purple-bg'),
-        'experiment-badge-purple-tag':    rgbVar('experiment-badge-purple-tag'),
-        'experiment-badge-purple-fg':     rgbVar('experiment-badge-purple-fg'),
-        'experiment-badge-green-bg':      rgbVar('experiment-badge-green-bg'),
-        'experiment-badge-green-tag':     rgbVar('experiment-badge-green-tag'),
-        'experiment-badge-green-fg':      rgbVar('experiment-badge-green-fg'),
-        'experiment-badge-indigo-bg':     rgbVar('experiment-badge-indigo-bg'),
-        'experiment-badge-indigo-tag':    rgbVar('experiment-badge-indigo-tag'),
-        'experiment-badge-indigo-fg':     rgbVar('experiment-badge-indigo-fg'),
-        'experiment-badge-sky-bg':        rgbVar('experiment-badge-sky-bg'),
-        'experiment-badge-sky-tag':       rgbVar('experiment-badge-sky-tag'),
-        'experiment-badge-sky-fg':        rgbVar('experiment-badge-sky-fg'),
-        'experiment-badge-blue-bg':       rgbVar('experiment-badge-blue-bg'),
-        'experiment-badge-blue-tag':      rgbVar('experiment-badge-blue-tag'),
-        'experiment-badge-blue-fg':       rgbVar('experiment-badge-blue-fg'),
-        'experiment-badge-red-bg':        rgbVar('experiment-badge-red-bg'),
-        'experiment-badge-red-tag':       rgbVar('experiment-badge-red-tag'),
-        'experiment-badge-red-fg':        rgbVar('experiment-badge-red-fg'),
-        'experiment-badge-yellow-bg':     rgbVar('experiment-badge-yellow-bg'),
-        'experiment-badge-yellow-tag':    rgbVar('experiment-badge-yellow-tag'),
-        'experiment-badge-yellow-fg':     rgbVar('experiment-badge-yellow-fg'),
+        // Generic fallback — keep overlay accessible as `bg-overlay`, `text-overlay`
+        overlay: 'rgb(var(--color-overlay) / <alpha-value>)',
       },
-
+      boxShadow: {
+        'foundation-xs':  'var(--shadow-foundation-xs)',
+        'foundation-sm':  'var(--shadow-foundation-sm)',
+        'foundation-md':  'var(--shadow-foundation-md)',
+        'foundation-lg':  'var(--shadow-foundation-lg)',
+        'foundation-xl':  'var(--shadow-foundation-xl)',
+        'foundation-2xl': 'var(--shadow-foundation-2xl)',
+        'foundation-3xl': 'var(--shadow-foundation-3xl)',
+        'glow-accent-inset':        'var(--shadow-glow-accent-inset)',
+        'glow-accent-inset-strong': 'var(--shadow-glow-accent-inset-strong)',
+        'glow-danger-inset':        'var(--shadow-glow-danger-inset)',
+        'glow-danger-inset-strong': 'var(--shadow-glow-danger-inset-strong)',
+        'glow-accent-text':         'var(--shadow-glow-accent-text)',
+      },
       borderRadius: {
         none: 'var(--radius-none)',
         xxs:  'var(--radius-xxs)',
@@ -122,40 +193,21 @@ export const preset: Partial<Config> = {
         md:   'var(--radius-md)',
         lg:   'var(--radius-lg)',
         xl:   'var(--radius-xl)',
-        '2xl':'var(--radius-2xl)',
-        '3xl':'var(--radius-3xl)',
-        '4xl':'var(--radius-4xl)',
+        '2xl': 'var(--radius-2xl)',
+        '3xl': 'var(--radius-3xl)',
+        '4xl': 'var(--radius-4xl)',
         full: 'var(--radius-full)',
       },
-
-      boxShadow: {
-        // Foundation scale from Figma — canonical drop-shadow scale
-        'foundation-xs':  'var(--shadow-foundation-xs)',
-        'foundation-sm':  'var(--shadow-foundation-sm)',
-        'foundation-md':  'var(--shadow-foundation-md)',
-        'foundation-lg':  'var(--shadow-foundation-lg)',
-        'foundation-xl':  'var(--shadow-foundation-xl)',
-        'foundation-2xl': 'var(--shadow-foundation-2xl)',
-        'foundation-3xl': 'var(--shadow-foundation-3xl)',
-        // Brand glows (sacred — never modified by sync)
-        'glow-accent-inset':        'var(--shadow-glow-accent-inset)',
-        'glow-accent-inset-strong': 'var(--shadow-glow-accent-inset-strong)',
-        'glow-danger-inset':        'var(--shadow-glow-danger-inset)',
-        'glow-danger-inset-strong': 'var(--shadow-glow-danger-inset-strong)',
-      },
-
       transitionDuration: {
         fast: 'var(--duration-fast)',
         base: 'var(--duration-base)',
         slow: 'var(--duration-slow)',
       },
-
       transitionTimingFunction: {
         standard:   'var(--ease-standard)',
         emphasized: 'var(--ease-emphasized)',
         press:      'var(--ease-press)',
       },
-
       fontFamily: {
         sans: [
           'Inter',
@@ -167,7 +219,6 @@ export const preset: Partial<Config> = {
           'sans-serif',
         ],
       },
-
       fontSize: {
         xs:   ['0.75rem',  { lineHeight: '1rem' }],    // 12
         sm:   ['0.8125rem',{ lineHeight: '1.125rem' }],// 13 — dashboard default
@@ -178,7 +229,6 @@ export const preset: Partial<Config> = {
         '2xl':['1.25rem',  { lineHeight: '1.75rem' }], // 20
         '3xl':['1.5rem',   { lineHeight: '2rem' }],    // 24
       },
-
       // Motion keyframes — POD-defined, consumers get them via the preset.
       // Pair with `--duration-*` and `--ease-*` CSS variables for token-driven motion.
       keyframes: {

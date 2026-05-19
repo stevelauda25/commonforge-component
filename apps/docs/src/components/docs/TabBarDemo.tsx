@@ -31,7 +31,7 @@ export function TabBarDemo({ tabType, items, initialActive, caption }: Props) {
   return (
     <div className="flex w-full items-center gap-4">
       {caption && (
-        <div className="w-24 shrink-0 text-xs font-medium uppercase tracking-wider text-text-muted">
+        <div className="w-24 shrink-0 text-xs font-medium uppercase tracking-wider text-muted">
           {caption}
         </div>
       )}

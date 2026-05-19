@@ -31,11 +31,11 @@ export const checkboxCanvas: CanvasComponent = {
     { label: 'Disabled', props: { disabled: true } },
   ],
   tokens: [
-    'text-primary',
+    'text-default',
     'bg-canvas',
     'bg-muted',
     'border-default',
-    'border-focus',
-    'accent-default',
+    'border-brand',
+    'bg-brand',
   ],
 };

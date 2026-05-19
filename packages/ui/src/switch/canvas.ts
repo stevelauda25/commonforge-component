@@ -10,5 +10,5 @@ export const switchCanvas: CanvasComponent = {
     { label: 'Off', props: { defaultChecked: false } },
     { label: 'Disabled', props: { disabled: true } },
   ],
-  tokens: ['accent-default', 'bg-canvas', 'bg-muted'],
+  tokens: ['bg-brand', 'bg-canvas', 'bg-muted'],
 };

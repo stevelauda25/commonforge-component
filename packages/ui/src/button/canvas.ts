@@ -10,12 +10,12 @@ export const buttonCanvas: CanvasComponent = {
     { label: 'Loading', props: { loading: true, children: 'Saving…' } },
     { label: 'Disabled', props: { disabled: true, children: 'Save changes' } },
   ],
-  // Common — every Button variant uses border-focus for the keyboard focus ring.
-  tokens: ['border-focus'],
+  // Common — every Button variant uses border-brand for the keyboard focus ring.
+  tokens: ['border-brand'],
   // Per-variant token scope. Panel shows union(common + variantTokens[selected]).
   variantTokens: {
-    primary: ['accent-default', 'accent-hover', 'accent-active', 'accent-fg', 'accent-subtle'],
-    outline: ['border-default', 'text-muted', 'text-primary', 'accent-default', 'accent-subtle'],
-    error: ['danger-default', 'danger-hover', 'danger-active', 'danger-fg'],
+    primary: ['bg-brand', 'bg-brand-hover', 'text-on-brand', 'border-brand', 'bg-brand-subtle'],
+    outline: ['border-default', 'text-muted', 'text-default', 'border-brand'],
+    error: ['bg-destructive', 'bg-destructive-hover', 'text-on-destructive', 'border-destructive'],
   },
 };

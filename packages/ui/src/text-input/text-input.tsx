@@ -86,7 +86,7 @@ function PasswordToggle({
       onClick={onToggle}
       disabled={disabled}
       aria-label={visible ? 'Hide password' : 'Show password'}
-      className="shrink-0 text-text-muted hover:text-text-primary disabled:cursor-not-allowed"
+      className="shrink-0 text-muted hover:text-default disabled:cursor-not-allowed"
     >
       {visible ? (
         <EyeOff className="h-4 w-4" aria-hidden="true" />
@@ -116,7 +116,7 @@ function CompactSelectCell({
       tabIndex={-1}
       disabled={disabled}
       className={cn(
-        'flex shrink-0 items-center gap-2 text-[13px] leading-[18px] text-text-primary',
+        'flex shrink-0 items-center gap-2 text-[13px] leading-[18px] text-default',
         'disabled:cursor-not-allowed',
         paddingClass,
       )}
@@ -124,7 +124,7 @@ function CompactSelectCell({
     >
       <span aria-hidden="true">{flag}</span>
       <span>{label}</span>
-      <ChevronDown className="h-3 w-3 text-text-muted" aria-hidden="true" />
+      <ChevronDown className="h-3 w-3 text-muted" aria-hidden="true" />
     </button>
   );
 }
@@ -245,10 +245,10 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
     const containerState = error
       ? cn('border-danger', FOCUS_RING_ERROR)
       : cn(
-          'border-border-default',
-          'hover:border-experiment-input-stroke-active',
-          'focus-within:border-experiment-input-stroke-active',
-          'focus-within:bg-experiment-input-bg-focused',
+          'border-default',
+          'hover:border-subtle',
+          'focus-within:border-subtle',
+          'focus-within:bg-subtle',
           FOCUS_RING_GRAY,
         );
 
@@ -258,7 +258,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
 
     const inputClassName = cn(
       'min-w-0 flex-1 bg-transparent outline-none',
-      'text-[13px] leading-[18px] text-text-primary placeholder:text-text-disabled',
+      'text-[13px] leading-[18px] text-default placeholder:text-disabled',
       'disabled:cursor-not-allowed',
     );
 
@@ -266,19 +266,19 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       <div className={cn('flex flex-col gap-1.5', className)}>
         {label && (
           <div className="flex items-center gap-px">
-            <span className="text-sm font-normal leading-5 text-text-primary">
+            <span className="text-sm font-normal leading-5 text-default">
               {label}
             </span>
             {required && (
-              <span className="text-sm font-normal leading-5 text-danger">*</span>
+              <span className="text-sm font-normal leading-5 text-destructive">*</span>
             )}
             {sublabel && (
-              <span className="text-sm font-normal leading-5 text-text-muted">
+              <span className="text-sm font-normal leading-5 text-muted">
                 {sublabel}
               </span>
             )}
             {labelInfo && (
-              <Info className="ml-0.5 h-3 w-3 text-text-muted" aria-hidden="true" />
+              <Info className="ml-0.5 h-3 w-3 text-muted" aria-hidden="true" />
             )}
           </div>
         )}
@@ -301,7 +301,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
               />
               <div
                 className={cn(
-                  'flex flex-1 min-w-0 items-center gap-2 border-l border-border-default',
+                  'flex flex-1 min-w-0 items-center gap-2 border-l border-default',
                   paddingClass,
                 )}
               >
@@ -326,12 +326,12 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             <>
               <div
                 className={cn(
-                  'flex flex-1 min-w-0 items-center gap-2 border-r border-border-default',
+                  'flex flex-1 min-w-0 items-center gap-2 border-r border-default',
                   paddingClass,
                 )}
               >
                 <span
-                  className="shrink-0 text-[13px] leading-[18px] text-text-muted"
+                  className="shrink-0 text-[13px] leading-[18px] text-muted"
                   aria-hidden="true"
                 >
                   $
@@ -362,7 +362,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
           {!isCompound && (
             <>
               {effectiveLeftIcon && (
-                <span className="shrink-0 text-text-muted">
+                <span className="shrink-0 text-muted">
                   {effectiveLeftIcon}
                 </span>
               )}
@@ -380,7 +380,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
                 {...valueProps}
               />
               {effectiveRightIcon && (
-                <span className="shrink-0 text-text-muted">
+                <span className="shrink-0 text-muted">
                   {effectiveRightIcon}
                 </span>
               )}
@@ -389,12 +389,12 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
         </div>
 
         {error ? (
-          <span id={errorId} className="flex items-center gap-1 text-[13px] leading-[18px] text-danger">
+          <span id={errorId} className="flex items-center gap-1 text-[13px] leading-[18px] text-destructive">
             <Info className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             {error}
           </span>
         ) : hint ? (
-          <span id={hintId} className="flex items-center gap-1 text-[13px] leading-[18px] text-text-muted">
+          <span id={hintId} className="flex items-center gap-1 text-[13px] leading-[18px] text-muted">
             <Info className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             {hint}
           </span>

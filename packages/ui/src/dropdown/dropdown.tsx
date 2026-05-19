@@ -45,9 +45,8 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
         ref={ref}
         role="listbox"
         className={cn(
-          // bg-experiment-tab-base = Figma bg/medium (#111113 dark) — the
-          // canonical popover surface across Tab, Badge, Dropdown.
-          'overflow-hidden rounded-md border border-border-default bg-experiment-tab-base shadow-foundation-lg',
+          // bg-surface — Figma bg.surface for dropdown menu container
+          'overflow-hidden rounded-md border border-default bg-surface shadow-foundation-lg',
           'flex flex-col',
           // POD motion: 250ms blur+scale+fade reveal. origin-top so the scale
           // grows down from the trigger edge instead of expanding from center.
@@ -107,12 +106,12 @@ export const DropdownItem = React.forwardRef<HTMLButtonElement, DropdownItemProp
     },
     ref,
   ) {
-    const colorClass = destructive || error ? 'text-danger' : 'text-text-primary';
+    const colorClass = destructive || error ? 'text-destructive' : 'text-default';
     const trailing =
       rightAdornment !== undefined
         ? rightAdornment
         : selected && showSelectedMark
-          ? <Check className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
+          ? <Check className="h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
           : null;
 
     return (
@@ -129,13 +128,13 @@ export const DropdownItem = React.forwardRef<HTMLButtonElement, DropdownItemProp
             'flex w-full items-center gap-2 rounded-sm px-2.5 py-2 text-left text-[13px] leading-[18px]',
             'transition-colors duration-fast ease-standard',
             // Suppress browser default focus outline; use focus-visible: only
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/40',
+            'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40',
             colorClass,
             !disabled && (
               selected
                 ? 'bg-muted'
                 : error
-                  ? 'hover:bg-danger-subtle'
+                  ? 'hover:bg-destructive-subtle'
                   : 'hover:bg-muted'
             ),
             disabled && 'cursor-not-allowed opacity-50',
@@ -278,15 +277,15 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
       <div className={cn('flex flex-col gap-1.5', className)}>
         {label && (
           <div className="flex items-center gap-px">
-            <span className="text-sm font-normal leading-5 text-text-primary">{label}</span>
+            <span className="text-sm font-normal leading-5 text-default">{label}</span>
             {required && (
-              <span className="text-sm font-normal leading-5 text-danger">*</span>
+              <span className="text-sm font-normal leading-5 text-destructive">*</span>
             )}
             {sublabel && (
-              <span className="text-sm font-normal leading-5 text-text-muted">{sublabel}</span>
+              <span className="text-sm font-normal leading-5 text-muted">{sublabel}</span>
             )}
             {labelInfo && (
-              <Info className="ml-0.5 h-3 w-3 text-text-muted" aria-hidden="true" />
+              <Info className="ml-0.5 h-3 w-3 text-muted" aria-hidden="true" />
             )}
           </div>
         )}
@@ -313,14 +312,14 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                 ? cn('border-danger', FOCUS_RING_ERROR)
                 : open
                   ? cn(
-                      'border-experiment-input-stroke-active',
-                      'bg-experiment-input-bg-focused',
+                      'border-subtle',
+                      'bg-subtle',
                       FOCUS_RING_GRAY,
                     )
                   : cn(
-                      'border-border-default',
-                      'hover:border-experiment-input-stroke-active',
-                      'focus-visible:border-experiment-input-stroke-active',
+                      'border-default',
+                      'hover:border-subtle',
+                      'focus-visible:border-subtle',
                       FOCUS_RING_GRAY,
                     )
             ),
@@ -330,14 +329,14 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
           {isTagsVariant ? (
             <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
               {tags.length === 0 && (
-                <span className="text-[13px] leading-[18px] text-text-muted">{placeholder}</span>
+                <span className="text-[13px] leading-[18px] text-muted">{placeholder}</span>
               )}
               {tags.map((t) => (
                 <span
                   key={t.value}
                   className="inline-flex items-center gap-0.5 rounded-xs bg-muted px-1 py-0.5"
                 >
-                  <span className="font-mono text-[13px] leading-4 text-text-muted">{t.label}</span>
+                  <span className="font-mono text-[13px] leading-4 text-muted">{t.label}</span>
                   {onRemoveTag && !disabled && (
                     // Span (not button) — the parent trigger is already a <button>,
                     // and nesting buttons is invalid HTML (React hydration error).
@@ -348,7 +347,7 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
                         e.stopPropagation();
                         onRemoveTag(t.value);
                       }}
-                      className="ml-0.5 inline-flex cursor-pointer items-center justify-center text-text-muted transition-colors duration-fast ease-standard hover:text-text-primary"
+                      className="ml-0.5 inline-flex cursor-pointer items-center justify-center text-muted transition-colors duration-fast ease-standard hover:text-default"
                     >
                       <X className="h-3.5 w-3.5" aria-hidden="true" />
                     </span>
@@ -360,13 +359,13 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
             <span
               className={cn(
                 'min-w-0 flex-1 truncate text-[13px] leading-[18px]',
-                isFilled ? 'text-text-primary' : 'text-text-muted',
+                isFilled ? 'text-default' : 'text-muted',
               )}
             >
               {selectedLabel ?? placeholder}
             </span>
           )}
-          <ChevronIcon className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
+          <ChevronIcon className="h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
           </button>
           {popup && open && (
             <div className="absolute left-0 right-0 top-full z-10 mt-1">
@@ -376,12 +375,12 @@ export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
         </div>
 
         {error ? (
-          <span id={errorId} className="flex items-center gap-1 text-[13px] leading-[18px] text-danger">
+          <span id={errorId} className="flex items-center gap-1 text-[13px] leading-[18px] text-destructive">
             <Info className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             {error}
           </span>
         ) : hint ? (
-          <span id={hintId} className="flex items-center gap-1 text-[13px] leading-[18px] text-text-muted">
+          <span id={hintId} className="flex items-center gap-1 text-[13px] leading-[18px] text-muted">
             <Info className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             {hint}
           </span>

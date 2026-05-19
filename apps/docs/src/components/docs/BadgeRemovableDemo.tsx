@@ -33,7 +33,7 @@ export function BadgeRemovableDemo() {
         <button
           type="button"
           onClick={reset}
-          className="text-xs font-medium text-text-muted underline-offset-4 hover:text-text-primary hover:underline transition-colors animate-fade-in"
+          className="text-xs font-medium text-muted underline-offset-4 hover:text-default hover:underline transition-colors animate-fade-in"
         >
           Reset preview
         </button>

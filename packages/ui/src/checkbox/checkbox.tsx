@@ -72,13 +72,13 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               'peer appearance-none shrink-0',
               'h-4 w-4 rounded-xs border-[1.5px]',
               'transition-colors duration-fast ease-standard',
-              'bg-canvas border-experiment-cb-border shadow-foundation-xs',
-              'checked:bg-text-primary checked:border-text-primary checked:shadow-none',
-              'indeterminate:bg-text-primary indeterminate:border-text-primary indeterminate:shadow-none',
-              'hover:border-text-primary',
-              'disabled:bg-experiment-cb-disabled-bg disabled:border-experiment-cb-disabled-bg disabled:shadow-none disabled:cursor-not-allowed',
-              'disabled:hover:border-experiment-cb-disabled-bg',
-              error && 'border-danger hover:border-danger',
+              'bg-canvas border-strong shadow-foundation-xs',
+              'checked:bg-inverse checked:border-inverse checked:shadow-none',
+              'indeterminate:bg-inverse indeterminate:border-inverse indeterminate:shadow-none',
+              'hover:border-inverse',
+              'disabled:bg-disabled disabled:border-disabled disabled:shadow-none disabled:cursor-not-allowed',
+              'disabled:hover:border-disabled',
+              error && 'border-error hover:border-error',
               focusRing,
             )}
             {...rest}
@@ -88,7 +88,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               aria-hidden="true"
               className={cn(
                 'pointer-events-none absolute inset-0 flex items-center justify-center',
-                'text-canvas peer-disabled:text-experiment-cb-disabled-icon',
+                'text-inverse peer-disabled:text-icon-disabled',
               )}
             >
               {isIndeterminate ? (
@@ -107,7 +107,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
                 htmlFor={inputId}
                 className={cn(
                   'text-sm leading-none font-medium select-none',
-                  disabled ? 'text-text-disabled cursor-not-allowed' : 'text-text-primary cursor-pointer',
+                  disabled ? 'text-disabled cursor-not-allowed' : 'text-default cursor-pointer',
                 )}
               >
                 {label}
@@ -116,13 +116,13 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             {description && !error && (
               <span
                 id={descriptionId}
-                className="text-xs text-text-muted"
+                className="text-xs text-muted"
               >
                 {description}
               </span>
             )}
             {error && (
-              <span id={errorId} className="text-xs text-danger">
+              <span id={errorId} className="text-xs text-destructive">
                 {error}
               </span>
             )}

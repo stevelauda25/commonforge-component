@@ -29,10 +29,10 @@ Each step is a discrete value — pick from the ladder, never invent in-between 
       { name: 'spacing-11xl', tw: 'p-40',   px: 160 },
     ].map((s) => (
       <div key={s.name} className="grid grid-cols-[140px_60px_1fr_60px] items-center gap-4 text-sm">
-        <code className="font-mono text-xs text-text-muted">{s.name}</code>
+        <code className="font-mono text-xs text-muted">{s.name}</code>
         <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{s.tw}</code>
-        <div className="h-3 bg-accent" style={{ width: `${s.px}px` }} aria-hidden="true" />
-        <span className="font-mono text-xs text-text-muted text-right">{s.px}px</span>
+        <div className="h-3 bg-brand" style={{ width: `${s.px}px` }} aria-hidden="true" />
+        <span className="font-mono text-xs text-muted text-right">{s.px}px</span>
       </div>
     ))}
   </div>
@@ -65,15 +65,15 @@ Layout containers — page max-widths, content columns, modal frames. Use these 
       { name: 'width-6xl', px: 1920 },
     ].map((w) => (
       <div key={w.name} className="grid grid-cols-[140px_1fr_80px] items-center gap-4 text-sm">
-        <code className="font-mono text-xs text-text-muted">{w.name}</code>
+        <code className="font-mono text-xs text-muted">{w.name}</code>
         <div className="relative h-2 rounded-full bg-muted overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 bg-accent rounded-full"
+            className="absolute inset-y-0 left-0 bg-brand rounded-full"
             style={{ width: `${Math.min((w.px / 1920) * 100, 100)}%` }}
             aria-hidden="true"
           />
         </div>
-        <span className="font-mono text-xs text-text-muted text-right tabular-nums">{w.px}px</span>
+        <span className="font-mono text-xs text-muted text-right tabular-nums">{w.px}px</span>
       </div>
     ))}
   </div>
@@ -91,25 +91,25 @@ Tokens for canonical page shell — always-present padding for body content, max
 
 <PreviewCard>
   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-    <div className="rounded-lg border border-border-default bg-surface p-4">
-      <div className="text-xs uppercase tracking-wide text-text-muted">paragraph-max-width</div>
-      <div className="mt-1 font-mono text-base text-text-primary">720px</div>
-      <div className="mt-2 text-xs text-text-secondary">Body copy column. Long-form readable line length.</div>
+    <div className="rounded-lg border border-default bg-surface p-4">
+      <div className="text-xs uppercase tracking-wide text-muted">paragraph-max-width</div>
+      <div className="mt-1 font-mono text-base text-default">720px</div>
+      <div className="mt-2 text-xs text-subtle">Body copy column. Long-form readable line length.</div>
     </div>
-    <div className="rounded-lg border border-border-default bg-surface p-4">
-      <div className="text-xs uppercase tracking-wide text-text-muted">container-padding-mobile</div>
-      <div className="mt-1 font-mono text-base text-text-primary">16px</div>
-      <div className="mt-2 text-xs text-text-secondary">Horizontal page padding on mobile (`px-4`).</div>
+    <div className="rounded-lg border border-default bg-surface p-4">
+      <div className="text-xs uppercase tracking-wide text-muted">container-padding-mobile</div>
+      <div className="mt-1 font-mono text-base text-default">16px</div>
+      <div className="mt-2 text-xs text-subtle">Horizontal page padding on mobile (`px-4`).</div>
     </div>
-    <div className="rounded-lg border border-border-default bg-surface p-4">
-      <div className="text-xs uppercase tracking-wide text-text-muted">container-padding-desktop</div>
-      <div className="mt-1 font-mono text-base text-text-primary">32px</div>
-      <div className="mt-2 text-xs text-text-secondary">Horizontal page padding on desktop (`px-8`).</div>
+    <div className="rounded-lg border border-default bg-surface p-4">
+      <div className="text-xs uppercase tracking-wide text-muted">container-padding-desktop</div>
+      <div className="mt-1 font-mono text-base text-default">32px</div>
+      <div className="mt-2 text-xs text-subtle">Horizontal page padding on desktop (`px-8`).</div>
     </div>
-    <div className="rounded-lg border border-border-default bg-surface p-4 sm:col-span-3">
-      <div className="text-xs uppercase tracking-wide text-text-muted">container-max-width-desktop</div>
-      <div className="mt-1 font-mono text-base text-text-primary">1280px</div>
-      <div className="mt-2 text-xs text-text-secondary">Desktop content shell — wraps everything in `mx-auto max-w-[1280px]`.</div>
+    <div className="rounded-lg border border-default bg-surface p-4 sm:col-span-3">
+      <div className="text-xs uppercase tracking-wide text-muted">container-max-width-desktop</div>
+      <div className="mt-1 font-mono text-base text-default">1280px</div>
+      <div className="mt-2 text-xs text-subtle">Desktop content shell — wraps everything in `mx-auto max-w-[1280px]`.</div>
     </div>
   </div>
 </PreviewCard>

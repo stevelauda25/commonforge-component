@@ -36,7 +36,7 @@ Two layers, bridged by Tailwind:
 
 - **Primitives** (`packages/tokens/src/primitives.ts`) — raw color scales (zinc, green, red, …) as `"R G B"` triples for alpha composition.
 - **Semantic** (`packages/tokens/src/theme.css`) — what components consume: `bg-canvas`, `text-primary`, `accent.*`. Two scopes: `:root` (light) and `.dark`.
-- **Preset** (`packages/tokens/src/tailwind-preset.ts`) — every semantic variable becomes a Tailwind utility (`bg-canvas`, `border-border-default`, …).
+- **Preset** (`packages/tokens/src/tailwind-preset.ts`) — every semantic variable becomes a Tailwind utility (`bg-canvas`, `border-default`, …).
 
 Components never read tokens directly. They consume utility classes only.
 

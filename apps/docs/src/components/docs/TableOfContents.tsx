@@ -52,10 +52,10 @@ export function TableOfContents() {
 
   return (
     <aside className="hidden xl:block w-56 shrink-0 sticky top-14 self-start max-h-[calc(100vh-3.5rem)] overflow-y-auto py-8 pr-4">
-      <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+      <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-muted">
         On this page
       </p>
-      <ul className="relative flex flex-col gap-1 border-l border-border-default">
+      <ul className="relative flex flex-col gap-1 border-l border-default">
         {headings.map((h) => {
           const isActive = activeId === h.id;
           return (
@@ -63,7 +63,7 @@ export function TableOfContents() {
               {isActive && (
                 <span
                   aria-hidden="true"
-                  className="absolute left-[-1px] top-0 h-full w-[2px] bg-accent"
+                  className="absolute left-[-1px] top-0 h-full w-[2px] bg-brand"
                 />
               )}
               <a
@@ -72,8 +72,8 @@ export function TableOfContents() {
                   'block py-1 text-sm transition-colors duration-fast',
                   h.level === 3 ? 'pl-6' : 'pl-3',
                   isActive
-                    ? 'font-medium text-text-primary'
-                    : 'text-text-secondary hover:text-text-primary',
+                    ? 'font-medium text-default'
+                    : 'text-subtle hover:text-default',
                 )}
               >
                 {h.text}

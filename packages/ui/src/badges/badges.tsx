@@ -47,60 +47,59 @@ interface BadgeColorTokens {
 
 const colorTokens: Record<BadgeColor, BadgeColorTokens> = {
   orange: {
-    bg: 'bg-experiment-badge-orange-bg',
-    tag: 'bg-experiment-badge-orange-tag',
-    fg: 'text-experiment-badge-orange-fg',
+    bg: 'bg-badge-orange',
+    tag: 'bg-badge-orange-accent',
+    fg: 'text-badge-orange',
   },
   lime: {
-    bg: 'bg-experiment-badge-lime-bg',
-    tag: 'bg-experiment-badge-lime-tag',
-    fg: 'text-experiment-badge-lime-fg',
+    bg: 'bg-badge-lime',
+    tag: 'bg-badge-lime-accent',
+    fg: 'text-badge-lime',
   },
   purple: {
-    bg: 'bg-experiment-badge-purple-bg',
-    tag: 'bg-experiment-badge-purple-tag',
-    fg: 'text-experiment-badge-purple-fg',
+    bg: 'bg-badge-purple',
+    tag: 'bg-badge-purple-accent',
+    fg: 'text-badge-purple',
   },
   green: {
-    bg: 'bg-experiment-badge-green-bg',
-    tag: 'bg-experiment-badge-green-tag',
-    fg: 'text-experiment-badge-green-fg',
+    bg: 'bg-badge-green',
+    tag: 'bg-badge-green-accent',
+    fg: 'text-badge-green',
   },
   indigo: {
-    bg: 'bg-experiment-badge-indigo-bg',
-    tag: 'bg-experiment-badge-indigo-tag',
-    fg: 'text-experiment-badge-indigo-fg',
+    bg: 'bg-badge-indigo',
+    tag: 'bg-badge-indigo-accent',
+    fg: 'text-badge-indigo',
   },
   sky: {
-    bg: 'bg-experiment-badge-sky-bg',
-    tag: 'bg-experiment-badge-sky-tag',
-    fg: 'text-experiment-badge-sky-fg',
+    bg: 'bg-badge-sky',
+    tag: 'bg-badge-sky-accent',
+    fg: 'text-badge-sky',
   },
   blue: {
-    bg: 'bg-experiment-badge-blue-bg',
-    tag: 'bg-experiment-badge-blue-tag',
-    fg: 'text-experiment-badge-blue-fg',
+    bg: 'bg-badge-blue',
+    tag: 'bg-badge-blue-accent',
+    fg: 'text-badge-blue',
   },
   red: {
-    bg: 'bg-experiment-badge-red-bg',
-    tag: 'bg-experiment-badge-red-tag',
-    fg: 'text-experiment-badge-red-fg',
+    bg: 'bg-badge-red',
+    tag: 'bg-badge-red-accent',
+    fg: 'text-badge-red',
   },
   yellow: {
-    bg: 'bg-experiment-badge-yellow-bg',
-    tag: 'bg-experiment-badge-yellow-tag',
-    fg: 'text-experiment-badge-yellow-fg',
+    bg: 'bg-badge-yellow',
+    tag: 'bg-badge-yellow-accent',
+    fg: 'text-badge-yellow',
   },
-  // Gray variants reuse experiment-tab-* tokens — same Figma bindings.
   'soft-gray': {
-    bg: 'bg-experiment-tab-chip',
-    tag: 'bg-experiment-tab-text-disabled',
-    fg: 'text-experiment-tab-text',
+    bg: 'bg-elevated',
+    tag: 'bg-disabled',
+    fg: 'text-subtle',
   },
   'dark-gray': {
-    bg: 'bg-experiment-tab-base border border-experiment-tab-border',
-    tag: 'bg-experiment-tab-text-disabled',
-    fg: 'text-experiment-tab-text',
+    bg: 'bg-surface border border-strong',
+    tag: 'bg-disabled',
+    fg: 'text-subtle',
   },
 };
 
@@ -213,7 +212,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
             type="button"
             onClick={handleClose}
             aria-label="Remove"
-            className="shrink-0 inline-flex items-center justify-center opacity-80 hover:opacity-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-border-focus/60 [&>svg]:h-3.5 [&>svg]:w-3.5"
+            className="shrink-0 inline-flex items-center justify-center opacity-80 hover:opacity-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-brand/60 [&>svg]:h-3.5 [&>svg]:w-3.5"
           >
             <X />
           </button>

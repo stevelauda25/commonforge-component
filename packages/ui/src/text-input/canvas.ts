@@ -14,9 +14,9 @@ export const textInputCanvas: CanvasComponent = {
     'bg-canvas',
     'bg-muted',
     'border-default',
-    'border-focus',
-    'danger-default',
-    'text-primary',
+    'border-brand',
+    'bg-destructive',
+    'text-default',
     'text-muted',
   ],
 };

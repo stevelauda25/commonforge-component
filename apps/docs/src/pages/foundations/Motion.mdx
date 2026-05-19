@@ -7,11 +7,11 @@
   <div className="flex flex-col items-center gap-4 py-6">
     <div className="relative h-3 w-64 overflow-hidden rounded-full bg-muted">
       <div
-        className="absolute inset-y-0 left-0 w-full bg-accent animate-[motion-demo_2s_cubic-bezier(0.2,0,0,1)_infinite]"
+        className="absolute inset-y-0 left-0 w-full bg-brand animate-[motion-demo_2s_cubic-bezier(0.2,0,0,1)_infinite]"
         style={{ animationDuration: '2s' }}
       />
     </div>
-    <code className="text-xs text-text-muted">duration-base · ease-standard</code>
+    <code className="text-xs text-muted">duration-base · ease-standard</code>
   </div>
 </PreviewCard>
 
@@ -68,19 +68,19 @@ Common recipes — copy & paste, all token-driven, no magic numbers.
 ### Color hover (most common)
 
 <PreviewCard>
-  <button className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-fg transition-colors duration-fast ease-standard hover:bg-accent-hover">
+  <button className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-on-brand transition-colors duration-fast ease-standard hover:bg-brand-hover">
     Hover me
   </button>
 </PreviewCard>
 
 ```tsx
-className="transition-colors duration-fast ease-standard hover:bg-accent-hover"
+className="transition-colors duration-fast ease-standard hover:bg-brand-hover"
 ```
 
 ### Button press (tactile)
 
 <PreviewCard>
-  <button className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-fg transition-transform duration-fast ease-press active:scale-[0.96]">
+  <button className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-on-brand transition-transform duration-fast ease-press active:scale-[0.96]">
     Press me
   </button>
 </PreviewCard>
@@ -103,9 +103,9 @@ className="transition-[transform,box-shadow] duration-base ease-standard
 ### Reveal / fade in (details)
 
 <PreviewCard>
-  <details className="group rounded-lg border border-border-default bg-surface px-4 py-2">
-    <summary className="cursor-pointer text-sm font-medium text-text-primary">Click to reveal</summary>
-    <p className="mt-2 text-sm text-text-secondary opacity-0 transition-opacity duration-base ease-standard group-open:opacity-100">
+  <details className="group rounded-lg border border-default bg-surface px-4 py-2">
+    <summary className="cursor-pointer text-sm font-medium text-default">Click to reveal</summary>
+    <p className="mt-2 text-sm text-subtle opacity-0 transition-opacity duration-base ease-standard group-open:opacity-100">
       Hidden content fades in.
     </p>
   </details>
@@ -150,7 +150,7 @@ Motion for in-flight UI — show progress without claiming completion. Always lo
 
 ```tsx
 <div
-  className="h-6 w-6 rounded-full border-2 border-border-default border-t-accent"
+  className="h-6 w-6 rounded-full border-2 border-default border-t-accent"
   style={{ animation: 'motion-spin 0.7s linear infinite' }}
 />
 ```
@@ -243,10 +243,10 @@ Looping motion for status — keep amplitude small. These are wallpaper, not fea
 ```tsx
 <span className="relative inline-flex h-2.5 w-2.5">
   <span
-    className="absolute inset-0 rounded-full bg-accent/60"
+    className="absolute inset-0 rounded-full bg-brand/60"
     style={{ animation: 'motion-pulse-dot 1.4s var(--ease-standard) infinite' }}
   />
-  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
+  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand" />
 </span>
 ```
 

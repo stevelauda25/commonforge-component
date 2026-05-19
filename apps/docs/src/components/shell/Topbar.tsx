@@ -9,7 +9,7 @@ interface Props {
 
 export function Topbar({ onMenuClick }: Props) {
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border-default bg-canvas/80 px-6 backdrop-blur">
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-default bg-canvas/80 px-6 backdrop-blur">
       <div className="flex items-center gap-3">
         <Button
           variant="outline"
@@ -22,9 +22,9 @@ export function Topbar({ onMenuClick }: Props) {
           <Menu className="h-4 w-4" />
         </Button>
         <Link to="/" className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-text-primary">POD</span>
-          <span className="text-sm text-text-muted">Design System</span>
-          <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs font-mono text-text-muted">
+          <span className="text-sm font-semibold text-default">POD</span>
+          <span className="text-sm text-muted">Design System</span>
+          <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs font-mono text-muted">
             v0.1.0
           </span>
         </Link>

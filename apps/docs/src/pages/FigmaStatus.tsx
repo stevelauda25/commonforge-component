@@ -75,8 +75,8 @@ function StatusBadge({ kind }: { kind: 'sync' | 'drift' | 'error' | 'never' }) {
   const map = {
     sync:  { color: 'bg-success/15 text-success border-success/30', icon: <Check size={12} />, label: 'IN SYNC' },
     drift: { color: 'bg-warning/15 text-warning border-warning/40', icon: <AlertCircle size={12} />, label: 'DRIFTED' },
-    error: { color: 'bg-danger/15 text-danger border-danger/40',    icon: <AlertCircle size={12} />, label: 'ERROR' },
-    never: { color: 'bg-muted text-text-muted border-border-default', icon: <AlertCircle size={12} />, label: 'NEVER BLESSED' },
+    error: { color: 'bg-destructive/15 text-destructive border-danger/40',    icon: <AlertCircle size={12} />, label: 'ERROR' },
+    never: { color: 'bg-muted text-muted border-default', icon: <AlertCircle size={12} />, label: 'NEVER BLESSED' },
   } as const;
   const { color, icon, label } = map[kind];
   return (
@@ -88,25 +88,25 @@ function StatusBadge({ kind }: { kind: 'sync' | 'drift' | 'error' | 'never' }) {
 }
 
 function DisplayCell({ v }: { v: DisplayValue }) {
-  if (v.kind === 'empty')  return <span className="text-text-disabled">∅</span>;
+  if (v.kind === 'empty')  return <span className="text-disabled">∅</span>;
   if (v.kind === 'color')  return (
     <span className="inline-flex items-center gap-2">
-      <span className="inline-block h-4 w-6 rounded border border-border-default" style={{ background: v.css }} />
+      <span className="inline-block h-4 w-6 rounded border border-default" style={{ background: v.css }} />
       <code className="text-xs font-medium">{v.hex}</code>
-      {v.name && <span className="text-xs text-text-muted">({v.name})</span>}
+      {v.name && <span className="text-xs text-muted">({v.name})</span>}
     </span>
   );
   if (v.kind === 'binding') return <code className="text-xs">id {v.id}</code>;
-  if (v.kind === 'object')  return <code className="text-xs text-text-muted truncate max-w-[280px] block">{v.json}</code>;
+  if (v.kind === 'object')  return <code className="text-xs text-muted truncate max-w-[280px] block">{v.json}</code>;
   return <code className="text-xs">{v.text}</code>;
 }
 
 function ChangeRow({ ch }: { ch: EnrichedChange }) {
   return (
     <div className="grid grid-cols-[140px_1fr_auto_1fr] items-center gap-3 py-1 text-sm">
-      <span className="text-accent">{ch.label}</span>
+      <span className="text-brand">{ch.label}</span>
       <DisplayCell v={ch.beforeDisplay} />
-      <span className="text-text-disabled">→</span>
+      <span className="text-disabled">→</span>
       <DisplayCell v={ch.afterDisplay} />
     </div>
   );
@@ -119,21 +119,21 @@ function DriftedCard({ comp }: { comp: ComponentStatus }) {
     : { add: 0, mod: 0, rem: 0 };
 
   return (
-    <div className="rounded-xl border border-border-default bg-surface overflow-hidden">
+    <div className="rounded-xl border border-default bg-surface overflow-hidden">
       <div className="flex items-start justify-between gap-4 p-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2">
             <h3 className="text-lg font-semibold">{comp.slug}</h3>
             <StatusBadge kind={comp.lastSync ? 'drift' : 'never'} />
           </div>
-          <div className="text-sm text-text-muted space-y-0.5">
-            <div>Last sync: <span className="text-text-secondary">{relativeTime(comp.lastSync)}</span></div>
+          <div className="text-sm text-muted space-y-0.5">
+            <div>Last sync: <span className="text-subtle">{relativeTime(comp.lastSync)}</span></div>
             <div>NodeId: <code className="text-xs">{comp.nodeId}</code></div>
             {comp.diff && (
               <div className="flex gap-3 mt-1">
                 {counts.add > 0 && <span className="text-success">+{counts.add} added</span>}
                 {counts.mod > 0 && <span className="text-warning">~{counts.mod} modified</span>}
-                {counts.rem > 0 && <span className="text-danger">−{counts.rem} removed</span>}
+                {counts.rem > 0 && <span className="text-destructive">−{counts.rem} removed</span>}
               </div>
             )}
           </div>
@@ -144,7 +144,7 @@ function DriftedCard({ comp }: { comp: ComponentStatus }) {
               href={comp.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border-default text-text-muted hover:text-text-primary hover:bg-muted transition-colors"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-default text-muted hover:text-default hover:bg-muted transition-colors"
               aria-label="Open in Figma"
             >
               <ExternalLink size={14} />
@@ -159,25 +159,25 @@ function DriftedCard({ comp }: { comp: ComponentStatus }) {
           <button
             type="button"
             onClick={() => setExpanded((e) => !e)}
-            className="w-full border-t border-border-default px-4 py-2 text-left text-xs text-text-muted hover:bg-muted transition-colors"
+            className="w-full border-t border-default px-4 py-2 text-left text-xs text-muted hover:bg-muted transition-colors"
           >
             {expanded ? '▾ Hide changes' : '▸ Show changes'}
           </button>
           {expanded && (
-            <div className="border-t border-border-default px-4 py-3 space-y-4">
+            <div className="border-t border-default px-4 py-3 space-y-4">
               {comp.diff.added.length > 0 && (
                 <div>
                   <h4 className="text-xs font-semibold text-success mb-2">Added ({comp.diff.added.length})</h4>
                   <ul className="space-y-1 text-sm">
-                    {comp.diff.added.map((v) => <li key={v} className="text-text-secondary">+ {v}</li>)}
+                    {comp.diff.added.map((v) => <li key={v} className="text-subtle">+ {v}</li>)}
                   </ul>
                 </div>
               )}
               {comp.diff.removed.length > 0 && (
                 <div>
-                  <h4 className="text-xs font-semibold text-danger mb-2">Removed ({comp.diff.removed.length})</h4>
+                  <h4 className="text-xs font-semibold text-destructive mb-2">Removed ({comp.diff.removed.length})</h4>
                   <ul className="space-y-1 text-sm">
-                    {comp.diff.removed.map((v) => <li key={v} className="text-text-secondary">− {v}</li>)}
+                    {comp.diff.removed.map((v) => <li key={v} className="text-subtle">− {v}</li>)}
                   </ul>
                 </div>
               )}
@@ -187,7 +187,7 @@ function DriftedCard({ comp }: { comp: ComponentStatus }) {
                   <div className="space-y-3">
                     {comp.diff.modified.map((m) => (
                       <div key={m.variant}>
-                        <div className="text-xs font-medium text-text-secondary mb-1">{m.variant}</div>
+                        <div className="text-xs font-medium text-subtle mb-1">{m.variant}</div>
                         <div className="pl-3 border-l-2 border-warning/40">
                           {m.changes.map((ch, i) => <ChangeRow key={i} ch={ch} />)}
                         </div>
@@ -206,12 +206,12 @@ function DriftedCard({ comp }: { comp: ComponentStatus }) {
 
 function InSyncCard({ comp }: { comp: ComponentStatus }) {
   return (
-    <div className="rounded-xl border border-border-default bg-surface p-4 flex items-center justify-between gap-4">
+    <div className="rounded-xl border border-default bg-surface p-4 flex items-center justify-between gap-4">
       <div className="flex items-center gap-3 min-w-0">
         <StatusBadge kind="sync" />
         <div>
           <div className="font-semibold">{comp.slug}</div>
-          <div className="text-xs text-text-muted">
+          <div className="text-xs text-muted">
             Last sync: {relativeTime(comp.lastSync)} · <code>{comp.nodeId}</code>
           </div>
         </div>
@@ -221,7 +221,7 @@ function InSyncCard({ comp }: { comp: ComponentStatus }) {
           href={comp.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border-default text-text-muted hover:text-text-primary hover:bg-muted transition-colors"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-default text-muted hover:text-default hover:bg-muted transition-colors"
           aria-label="Open in Figma"
         >
           <ExternalLink size={14} />
@@ -255,7 +255,7 @@ function partitionByTab(items: ComponentStatus[], tab: Tab) {
 
 function SkeletonCard() {
   return (
-    <div className="rounded-xl border border-border-default bg-surface p-4 animate-pulse">
+    <div className="rounded-xl border border-default bg-surface p-4 animate-pulse">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <div className="h-6 w-20 rounded-full bg-muted" />
@@ -352,7 +352,7 @@ export default function FigmaStatus() {
   // Render tab bar — always visible once manifest loaded (instant), so user
   // sees structure even while drift check is running.
   const tabBar = manifest ? (
-    <div role="tablist" aria-label="Tracked Figma items" className="flex items-center gap-1 border-b border-border-default">
+    <div role="tablist" aria-label="Tracked Figma items" className="flex items-center gap-1 border-b border-default">
       {(['component', 'foundation'] as const).map((t) => {
         const active = tab === t;
         const c = tabCounts[t];
@@ -365,13 +365,13 @@ export default function FigmaStatus() {
             onClick={() => setTab(t)}
             className={`relative -mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
               active
-                ? 'border-accent text-text-primary'
-                : 'border-transparent text-text-muted hover:text-text-primary'
+                ? 'border-accent text-default'
+                : 'border-transparent text-muted hover:text-default'
             }`}
           >
             <span className="capitalize">{t === 'component' ? 'Components' : 'Foundations'}</span>
             <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${
-              active ? 'bg-accent/15 text-accent' : 'bg-muted text-text-muted'
+              active ? 'bg-brand/15 text-brand' : 'bg-muted text-muted'
             }`}>
               {c.total}
             </span>
@@ -424,14 +424,14 @@ export default function FigmaStatus() {
       )}
 
       {loading && !manifest && (
-        <div className="text-text-muted text-sm flex items-center gap-2">
+        <div className="text-muted text-sm flex items-center gap-2">
           <RefreshCw size={14} className="animate-spin" />
           Reading manifest…
         </div>
       )}
 
       {!loading && !status && (
-        <div className="rounded-xl border border-dashed border-border-default p-8 text-center text-text-muted">
+        <div className="rounded-xl border border-dashed border-default p-8 text-center text-muted">
           <AlertCircle size={32} className="mx-auto mb-3 opacity-50" />
           <p>No status data found.</p>
           <p className="text-xs mt-2">Generate by running: <code className="rounded bg-muted px-2 py-0.5">node scripts/figma/check.mjs --json &gt; apps/docs/public/figma-status.json</code></p>
@@ -443,9 +443,9 @@ export default function FigmaStatus() {
           {tabBar}
 
           {status.file && (
-            <div className="text-xs text-text-muted">
-              File: <code className="text-text-secondary">{status.file.name}</code>
-              <span className="mx-2 text-text-disabled">·</span>
+            <div className="text-xs text-muted">
+              File: <code className="text-subtle">{status.file.name}</code>
+              <span className="mx-2 text-disabled">·</span>
               {tabCounts[tab].total} tracked in {tab === 'component' ? 'Components' : 'Foundations'}
             </div>
           )}
@@ -474,12 +474,12 @@ export default function FigmaStatus() {
 
           {status.errors.length > 0 && (
             <section>
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-danger mb-3">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-destructive mb-3">
                 Errors ({status.errors.length})
               </h2>
               <div className="space-y-2">
                 {status.errors.map((e) => (
-                  <div key={e.slug} className="rounded-lg border border-danger/40 bg-danger/10 p-3 text-sm">
+                  <div key={e.slug} className="rounded-lg border border-danger/40 bg-destructive/10 p-3 text-sm">
                     <span className="font-medium">{e.slug}</span> — {e.message}
                   </div>
                 ))}
@@ -488,7 +488,7 @@ export default function FigmaStatus() {
           )}
 
           {drifted.length === 0 && inSync.length === 0 && (
-            <div className="rounded-xl border border-dashed border-border-default p-8 text-center text-text-muted">
+            <div className="rounded-xl border border-dashed border-default p-8 text-center text-muted">
               <p className="text-sm">No {tab === 'component' ? 'components' : 'foundations'} tracked yet.</p>
             </div>
           )}

@@ -20,17 +20,15 @@ export interface TabProps
 const baseCommon =
   'inline-flex items-center justify-center relative whitespace-nowrap select-none ' +
   'transition-colors duration-fast ease-standard ' +
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/40 ' +
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 ' +
   'disabled:cursor-not-allowed';
 
 // ── Container classes — split by state to avoid Tailwind cascade conflicts ─
 // Color mapping (dark, all from Figma):
 //   bg-canvas             = #09090b ≡ bg/strong (Menu default/hover/disabled fill)
-//   experiment-tab-base   = #111113 ≡ bg/medium (Pill/ScreenNav/Menu-Active fill)
-//   bg-surface            = #18181b ≡ bg/muted   (ScreenNav/Pill hover fill)
-//   experiment-tab-border = #18181b ≡ stroke/strong (Menu/Pill active stroke)
-//   experiment-tab-text   = #7c7e84 ≡ text/soft + icon/soft (all inactive label/icon)
-//   experiment-tab-text-disabled = #3a3a3d ≡ text/disabled + icon/disabled
+// Tab states map to foundation semantic tokens: bg-surface / bg-elevated
+// for containers, text-subtle/text-disabled for labels, border-strong for
+// active stroke, badge-indigo-accent for Menu/Active leading icon tint.
 const baseLayout: Record<TabType, string> = {
   menu: 'gap-1 px-3 py-1.5 rounded-sm',
   underline: 'gap-1 px-2 py-1.5',
@@ -40,26 +38,26 @@ const baseLayout: Record<TabType, string> = {
 
 const inactiveClasses: Record<TabType, string> = {
   menu:
-    'bg-canvas text-experiment-tab-text hover:text-text-primary ' +
-    'disabled:text-experiment-tab-text-disabled disabled:hover:text-experiment-tab-text-disabled',
+    'bg-canvas text-subtle hover:text-default ' +
+    'disabled:text-disabled disabled:hover:text-disabled',
   underline:
-    'text-experiment-tab-text hover:text-text-primary ' +
-    'disabled:text-experiment-tab-text-disabled disabled:hover:text-experiment-tab-text-disabled',
+    'text-subtle hover:text-default ' +
+    'disabled:text-disabled disabled:hover:text-disabled',
   'screen-nav':
-    'bg-experiment-tab-base text-experiment-tab-text ' +
-    'hover:bg-surface hover:text-experiment-tab-text ' +
-    'disabled:text-experiment-tab-text-disabled disabled:hover:bg-experiment-tab-base',
+    'bg-surface text-subtle ' +
+    'hover:bg-surface hover:text-subtle ' +
+    'disabled:text-disabled disabled:hover:bg-surface',
   pill:
-    'bg-experiment-tab-base text-experiment-tab-text ' +
+    'bg-surface text-subtle ' +
     'hover:bg-surface ' +
-    'disabled:text-experiment-tab-text-disabled disabled:hover:bg-experiment-tab-base',
+    'disabled:text-disabled disabled:hover:bg-surface',
 };
 
 const activeClasses: Record<TabType, string> = {
-  menu: 'bg-experiment-tab-base border border-experiment-tab-border text-text-primary',
-  underline: 'text-text-primary',
-  'screen-nav': 'bg-experiment-tab-base text-text-primary',
-  pill: 'bg-experiment-tab-base border border-experiment-tab-border text-text-primary',
+  menu: 'bg-surface border border-strong text-default',
+  underline: 'text-default',
+  'screen-nav': 'bg-surface text-default',
+  pill: 'bg-surface border border-strong text-default',
 };
 
 const fontByType: Record<TabType, string> = {
@@ -87,7 +85,7 @@ export const Tab = React.forwardRef<HTMLButtonElement, TabProps>(function Tab(
   const isMenu = tabType === 'menu';
 
   // Menu/Active uses indigo-tinted leading icon (per Figma).
-  const iconTint = isMenu && active ? 'text-experiment-tab-indigo' : 'text-experiment-tab-text';
+  const iconTint = isMenu && active ? 'text-badge-indigo-accent' : 'text-subtle';
 
   return (
     <button
@@ -109,7 +107,7 @@ export const Tab = React.forwardRef<HTMLButtonElement, TabProps>(function Tab(
           aria-hidden="true"
           className={cn(
             'shrink-0 inline-flex items-center justify-center [&>svg]:h-3.5 [&>svg]:w-3.5',
-            disabled ? 'text-experiment-tab-text-disabled' : iconTint,
+            disabled ? 'text-disabled' : iconTint,
           )}
         >
           {icon}
@@ -123,7 +121,7 @@ export const Tab = React.forwardRef<HTMLButtonElement, TabProps>(function Tab(
           aria-hidden="true"
           className={cn(
             'shrink-0 inline-flex items-center justify-center [&>svg]:h-4 [&>svg]:w-4',
-            disabled ? 'text-experiment-tab-text-disabled' : 'text-experiment-tab-text',
+            disabled ? 'text-disabled' : 'text-subtle',
           )}
         >
           {trailingIcon}
@@ -134,9 +132,9 @@ export const Tab = React.forwardRef<HTMLButtonElement, TabProps>(function Tab(
         <span
           aria-hidden="true"
           className={cn(
-            'shrink-0 inline-flex items-center justify-center w-5 rounded-xs px-1.5 bg-experiment-tab-chip',
+            'shrink-0 inline-flex items-center justify-center w-5 rounded-xs px-1.5 bg-elevated',
             'text-[14px] leading-5 font-medium',
-            disabled ? 'text-experiment-tab-text-disabled' : 'text-experiment-tab-text',
+            disabled ? 'text-disabled' : 'text-subtle',
           )}
         >
           {shortcut}

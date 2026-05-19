@@ -38,7 +38,7 @@ function NavItem({ to, label, status, onNavigate }: NavItemProps) {
       <div
         aria-disabled="true"
         title="Coming soon"
-        className="relative flex cursor-not-allowed items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm text-text-secondary opacity-50"
+        className="relative flex cursor-not-allowed items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm text-subtle opacity-50"
       >
         <span className="truncate">{label}</span>
       </div>
@@ -54,8 +54,8 @@ function NavItem({ to, label, status, onNavigate }: NavItemProps) {
         cn(
           'relative flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors duration-fast ease-standard',
           isActive
-            ? 'bg-muted text-text-primary font-medium'
-            : 'text-text-secondary hover:bg-muted/60 hover:text-text-primary',
+            ? 'bg-muted text-default font-medium'
+            : 'text-subtle hover:bg-muted/60 hover:text-default',
         )
       }
     >
@@ -87,7 +87,7 @@ function Group({ id, label, children }: GroupProps) {
         type="button"
         aria-expanded={open}
         onClick={toggle}
-        className="flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-text-muted transition-colors duration-fast hover:text-text-secondary"
+        className="flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted transition-colors duration-fast hover:text-subtle"
       >
         <span>{label}</span>
         <ChevronDown
@@ -103,7 +103,7 @@ function Group({ id, label, children }: GroupProps) {
         style={{ gridTemplateRows: open ? '1fr' : '0fr' }}
       >
         <div className="min-h-0 overflow-hidden">
-          <div className="mt-1 flex flex-col gap-px border-l border-border-subtle ml-[15px] pl-[7px]">
+          <div className="mt-1 flex flex-col gap-px border-l border-subtle ml-[15px] pl-[7px]">
             {children}
           </div>
         </div>
@@ -120,7 +120,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
   const top = routes.filter((r) => r.category === 'top');
 
   return (
-    <aside className="sticky top-14 flex h-[calc(100vh-3.5rem)] w-64 shrink-0 flex-col gap-3 overflow-y-auto border-r border-border-default bg-canvas px-3 py-5">
+    <aside className="sticky top-14 flex h-[calc(100vh-3.5rem)] w-64 shrink-0 flex-col gap-3 overflow-y-auto border-r border-default bg-canvas px-3 py-5">
       <nav className="flex flex-col gap-px">
         {top.map((r) => (
           <NavItem
