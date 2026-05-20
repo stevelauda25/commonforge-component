@@ -96,7 +96,7 @@
     "@radix-ui/react-tooltip": "^1.1.2",
     "clsx": "^2.1.1",
     "lucide-react": "^0.428.0",
-    "pod-test-tokens": "0.1.12",
+    "pod-test-tokens": "workspace:*",
     "tailwind-merge": "^2.4.0"
   },
   "devDependencies": {
