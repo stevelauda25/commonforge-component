@@ -7,27 +7,35 @@
  */
 import { Badge } from "pod-test-ui/badges";
 import { Button } from "pod-test-ui/button";
+import { ButtonGroup } from "pod-test-ui/button-group";
 import { Checkbox } from "pod-test-ui/checkbox";
 import { Dropdown, DropdownMenu, DropdownItem, DropdownBadge } from "pod-test-ui/dropdown";
+import { Radio } from "pod-test-ui/radio";
 import { SearchInput } from "pod-test-ui/search-input";
 import { Switch } from "pod-test-ui/switch";
 import { Tab } from "pod-test-ui/tabs";
+import { Tag } from "pod-test-ui/tag";
 import { TextInput } from "pod-test-ui/text-input";
+import { Tooltip } from "pod-test-ui/tooltip";
 import { canvasManifest } from "pod-test-ui/canvas";
 import { transform } from "sucrase";
 
 export const POD_COMPONENTS = {
   Badge,
   Button,
+  ButtonGroup,
   Checkbox,
   Dropdown,
   DropdownMenu,
   DropdownItem,
   DropdownBadge,
+  Radio,
   SearchInput,
   Switch,
   Tab,
-  TextInput
+  Tag,
+  TextInput,
+  Tooltip
 };
 export { canvasManifest };
 
