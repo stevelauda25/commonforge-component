@@ -10,4 +10,5 @@
 export const VARIANT_PROP_ALIAS = {
   Badge: "color",     // 11 color variants → Badge.color
   Tab:   "tabType",   // 4 style variants  → Tab.tabType
+  Tag:   "color",     // 2 color variants  → Tag.color
 };

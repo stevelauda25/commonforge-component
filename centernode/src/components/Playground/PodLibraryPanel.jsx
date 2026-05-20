@@ -10,7 +10,25 @@ import { Switch as PodSwitch } from "pod-test-ui/switch";
 import { Dropdown as PodDropdown } from "pod-test-ui/dropdown";
 import { Badge as PodBadge } from "pod-test-ui/badges";
 import { Tab as PodTab } from "pod-test-ui/tabs";
+import { Radio as PodRadio } from "pod-test-ui/radio";
+import { Tag as PodTag } from "pod-test-ui/tag";
+import { ButtonGroup as PodButtonGroup } from "pod-test-ui/button-group";
 import { VARIANT_PROP_ALIAS } from "../../utils/variantAliases.js";
+
+// ButtonGroup composite — manifest examples use `quantity` to spawn N
+// ButtonGroup.Item children. Default to 3 segments for the variant cell.
+function ButtonGroupPreview({ quantity = 3, ...rest }) {
+  const items = Array.from({ length: quantity });
+  return (
+    <PodButtonGroup {...rest}>
+      {items.map((_, i) => (
+        <PodButtonGroup.Item key={i} active={i === 0}>
+          {`Item ${i + 1}`}
+        </PodButtonGroup.Item>
+      ))}
+    </PodButtonGroup>
+  );
+}
 
 const POD_PREVIEW = {
   Button: PodButton,
@@ -21,6 +39,9 @@ const POD_PREVIEW = {
   Dropdown: PodDropdown,
   Badge: PodBadge,
   Tab: PodTab,
+  Radio: PodRadio,
+  Tag: PodTag,
+  ButtonGroup: ButtonGroupPreview,
 };
 
 /**
@@ -39,6 +60,9 @@ const PREVIEW_HINTS = {
   Dropdown:    { width: 200, scale: 0.9 },
   Badge:       { scale: 1.05, padded: true },
   Tab:         { scale: 1, padded: true },
+  Radio:       { scale: 1, padded: true },
+  Tag:         { scale: 1.05, padded: true },
+  ButtonGroup: { scale: 0.85, padded: true },
 };
 
 // Per-component preview adornments — sometimes the raw defaultProps don't
@@ -55,11 +79,11 @@ function decorateForPreview(name, props) {
       ],
     };
   }
-  if (name === "Checkbox") {
-    // Strip synthetic props (variant, size) — Checkbox primitive doesn't
-    // accept them. Also drop label/description when variant says they
-    // shouldn't render (mirrors composite conditional logic).
-    const { variant, size, label, description, ...rest } = props;
+  if (name === "Checkbox" || name === "Radio") {
+    // Strip synthetic props (variant, size beyond what the primitive accepts).
+    // Drop label/description when variant says they shouldn't render
+    // (mirrors composite conditional logic).
+    const { variant, label, description, ...rest } = props;
     return {
       ...rest,
       ...(variant !== "only" && label ? { label } : {}),
@@ -344,7 +368,15 @@ export default function PodLibraryPanel({
     onAddPodNode({ componentName, code, props, dark: previewDark });
   };
 
-  const count = manifest?.components?.length ?? 0;
+  // Tooltip is an interaction wrapper (focus/hover trigger), not a layout
+  // primitive — excluded from the spawn-able library. Designers who want to
+  // mock up an annotated tooltip can drop a static layout shape via Text
+  // node + Badge, or wait for a dedicated TooltipLayout primitive.
+  const INTERACTION_ONLY = new Set(["Tooltip"]);
+  const visibleComponents = (manifest?.components || []).filter(
+    (c) => !INTERACTION_ONLY.has(c.name),
+  );
+  const count = visibleComponents.length;
   const showLayers = activeTab === "layers";
 
   return (
@@ -409,7 +441,7 @@ export default function PodLibraryPanel({
                 </button>
               </div>
             </div>
-            {manifest?.components?.map((c, i) => (
+            {visibleComponents.map((c, i) => (
               <ComponentRow
                 key={c.name}
                 component={c}
