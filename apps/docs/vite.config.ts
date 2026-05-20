@@ -1,10 +1,6 @@
-// @ts-expect-error — node built-ins, no @types/node installed in this workspace
 import { spawn } from 'node:child_process';
-// @ts-expect-error — node built-ins
 import { resolve, dirname } from 'node:path';
-// @ts-expect-error — node built-ins
 import { fileURLToPath } from 'node:url';
-// @ts-expect-error — node built-ins
 import { readFileSync } from 'node:fs';
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
