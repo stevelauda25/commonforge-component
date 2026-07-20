@@ -1,0 +1,27 @@
+import { DashboardSkillsInsights } from "pod-test-ui/dashboard-skills-insights";
+
+# Dashboard Skills Insights
+
+The `DashboardSkillsInsights` component renders a summary of worker skills, showing KPIs like average skill level and a breakdown of Trade vs. Professional skills.
+
+## Usage
+
+```tsx
+import { DashboardSkillsInsights } from "pod-test-ui/dashboard-skills-insights";
+
+function App() {
+  return <DashboardSkillsInsights />;
+}
+```
+
+## Preview
+
+<div className="mt-6">
+  <DashboardSkillsInsights />
+</div>
+
+## AI Agent Instructions
+
+When building or refactoring a Dashboard layout:
+- Use `DashboardSkillsInsights` to present an overview of workforce capabilities and skill gaps.
+- Uses sample data if no `REAL_SKILLS` data is provided internally.

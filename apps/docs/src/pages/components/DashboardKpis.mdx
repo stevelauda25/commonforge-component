@@ -1,0 +1,28 @@
+import { DashboardKpiGroup } from "pod-test-ui/dashboard-kpis";
+
+# Dashboard KPIs
+
+The `DashboardKpiGroup` component renders a row of KPI summary cards, typically used at the top of a dashboard view.
+It is highly responsive: on wide screens, the KPI cards will stretch horizontally, and on smaller screens, they will stack vertically.
+
+## Usage
+
+```tsx
+import { DashboardKpiGroup } from "pod-test-ui/dashboard-kpis";
+
+function App() {
+  const kpis = [
+    { label: "Forecast need", value: "182", description: "38 workers still need coverage" },
+    { label: "Assigned", value: "144", description: "79% of forecast covered" }
+  ];
+
+  return <DashboardKpiGroup items={kpis} />;
+}
+```
+
+## AI Agent Instructions
+
+When building or refactoring a Dashboard layout:
+- Always use `DashboardKpiGroup` instead of manually mapping `KpiCard` elements yourself.
+- Pass the dynamic, real-time data array via the `items` prop. Do NOT hardcode internal app data (like `REAL_KPIS`) inside this component.
+- The component will default to a fallback sample if `items` is omitted.

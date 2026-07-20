@@ -22,7 +22,7 @@ export function Topbar({ onMenuClick }: Props) {
           <Menu className="h-4 w-4" />
         </Button>
         <Link to="/" className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-default">POD</span>
+          <span className="text-sm font-semibold text-default">CommonForge</span>
           <span className="text-sm text-muted">Design System</span>
           <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs font-mono text-muted">
             v0.1.0

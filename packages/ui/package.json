@@ -25,25 +25,110 @@
       "import": "./dist/button-group.mjs",
       "require": "./dist/button-group.js"
     },
+    "./chart-tooltip": {
+      "types": "./dist/chart-tooltip.d.ts",
+      "import": "./dist/chart-tooltip.mjs",
+      "require": "./dist/chart-tooltip.js"
+    },
     "./checkbox": {
       "types": "./dist/checkbox.d.ts",
       "import": "./dist/checkbox.mjs",
       "require": "./dist/checkbox.js"
+    },
+    "./dashboard-forecast-chart": {
+      "types": "./dist/dashboard-forecast-chart.d.ts",
+      "import": "./dist/dashboard-forecast-chart.mjs",
+      "require": "./dist/dashboard-forecast-chart.js"
+    },
+    "./dashboard-jobs-insights": {
+      "types": "./dist/dashboard-jobs-insights.d.ts",
+      "import": "./dist/dashboard-jobs-insights.mjs",
+      "require": "./dist/dashboard-jobs-insights.js"
+    },
+    "./dashboard-kpis": {
+      "types": "./dist/dashboard-kpis.d.ts",
+      "import": "./dist/dashboard-kpis.mjs",
+      "require": "./dist/dashboard-kpis.js"
+    },
+    "./dashboard-map-budget": {
+      "types": "./dist/dashboard-map-budget.d.ts",
+      "import": "./dist/dashboard-map-budget.mjs",
+      "require": "./dist/dashboard-map-budget.js"
+    },
+    "./dashboard-skills-insights": {
+      "types": "./dist/dashboard-skills-insights.d.ts",
+      "import": "./dist/dashboard-skills-insights.mjs",
+      "require": "./dist/dashboard-skills-insights.js"
+    },
+    "./date-picker": {
+      "types": "./dist/date-picker.d.ts",
+      "import": "./dist/date-picker.mjs",
+      "require": "./dist/date-picker.js"
+    },
+    "./day": {
+      "types": "./dist/day.d.ts",
+      "import": "./dist/day.mjs",
+      "require": "./dist/day.js"
     },
     "./dropdown": {
       "types": "./dist/dropdown.d.ts",
       "import": "./dist/dropdown.mjs",
       "require": "./dist/dropdown.js"
     },
+    "./kpi-card": {
+      "types": "./dist/kpi-card.d.ts",
+      "import": "./dist/kpi-card.mjs",
+      "require": "./dist/kpi-card.js"
+    },
+    "./legend": {
+      "types": "./dist/legend.d.ts",
+      "import": "./dist/legend.mjs",
+      "require": "./dist/legend.js"
+    },
+    "./list-base": {
+      "types": "./dist/list-base.d.ts",
+      "import": "./dist/list-base.mjs",
+      "require": "./dist/list-base.js"
+    },
+    "./overlay-scroll-area": {
+      "types": "./dist/overlay-scroll-area.d.ts",
+      "import": "./dist/overlay-scroll-area.mjs",
+      "require": "./dist/overlay-scroll-area.js"
+    },
+    "./progress-bar": {
+      "types": "./dist/progress-bar.d.ts",
+      "import": "./dist/progress-bar.mjs",
+      "require": "./dist/progress-bar.js"
+    },
+    "./progress-bar-base": {
+      "types": "./dist/progress-bar-base.d.ts",
+      "import": "./dist/progress-bar-base.mjs",
+      "require": "./dist/progress-bar-base.js"
+    },
+    "./progress-value-bar": {
+      "types": "./dist/progress-value-bar.d.ts",
+      "import": "./dist/progress-value-bar.mjs",
+      "require": "./dist/progress-value-bar.js"
+    },
     "./radio": {
       "types": "./dist/radio.d.ts",
       "import": "./dist/radio.mjs",
       "require": "./dist/radio.js"
     },
+    "./search-field": {
+      "types": "./dist/search-field.d.ts",
+      "import": "./dist/search-field.mjs",
+      "require": "./dist/search-field.js"
+    },
     "./search-input": {
       "types": "./dist/search-input.d.ts",
       "import": "./dist/search-input.mjs",
       "require": "./dist/search-input.js"
+    },
+    "./segmented-button": {
+      "types": "./dist/segmented-button.d.ts",
+      "import": "./dist/segmented-button.mjs",
+      "require": "./dist/segmented-button.js"
     },
     "./switch": {
       "types": "./dist/switch.d.ts",
@@ -94,12 +179,19 @@
   },
   "dependencies": {
     "@radix-ui/react-tooltip": "^1.1.2",
+    "@untitledui/icons": "^0.0.22",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^0.428.0",
     "pod-test-tokens": "workspace:*",
+    "react-leaflet": "^5.0.0",
     "tailwind-merge": "^2.4.0"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.21",
+    "@types/leaflet.markercluster": "^1.5.6",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "react": "^18.3.1",

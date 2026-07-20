@@ -1,0 +1,27 @@
+import { DashboardJobsInsights } from "pod-test-ui/dashboard-jobs-insights";
+
+# Dashboard Jobs Insights
+
+The `DashboardJobsInsights` component renders a comprehensive view of job status, including projected versus actual hours by phase. It provides an overview of various jobs and their phases.
+
+## Usage
+
+```tsx
+import { DashboardJobsInsights } from "pod-test-ui/dashboard-jobs-insights";
+
+function App() {
+  return <DashboardJobsInsights />;
+}
+```
+
+## Preview
+
+<div className="mt-6">
+  <DashboardJobsInsights />
+</div>
+
+## AI Agent Instructions
+
+When building or refactoring a Dashboard layout:
+- Use `DashboardJobsInsights` to display project phases and hours.
+- It displays a sample set of data if no real data is found internally.

@@ -1,0 +1,27 @@
+import { DashboardForecastChart } from "pod-test-ui/dashboard-forecast-chart";
+
+# Dashboard Forecast Chart
+
+The `DashboardForecastChart` component renders an interactive area chart projecting labor needs over time. It features a range selector (e.g. 1W, 2W, 1M, 3M, 1Y, 2Y) and multiple configurable series (Assigned workers, In-progress, 90% win, 60% win, Potential).
+
+## Usage
+
+```tsx
+import { DashboardForecastChart } from "pod-test-ui/dashboard-forecast-chart";
+
+function App() {
+  return <DashboardForecastChart />;
+}
+```
+
+## Preview
+
+<div className="mt-6">
+  <DashboardForecastChart />
+</div>
+
+## AI Agent Instructions
+
+When building or refactoring a Dashboard layout:
+- Use `DashboardForecastChart` when presenting long-term projections or staffing forecasts over time.
+- The component currently falls back to synthetic data if real data isn't provided through internal state (like `REAL_FORECAST`). In the future, this should accept a `data` prop.
