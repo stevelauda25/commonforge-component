@@ -1,0 +1,328 @@
+/* ============================================================
+   SPARC design tokens — foundation
+   Extracted 2026-07-21 from carltonLaborPlanning-main/src/app/globals.css
+   (verified identical to commonforge-sparc-ui/src/index.css, plus the
+   cool-gray ramp which only 3001 had tokenized).
+
+   Changelog 2026-07-21:
+   - --primary renamed to --text-primary (it is a text color; actions
+     are crimson-500). --color-primary mapping kept for compatibility.
+   - --danger-foreground: dark red removed → rgba(255,255,255,0.95).
+   - mono font token intentionally NOT shipped — apps fall back to the
+     platform monospace stack (Tailwind's default font-mono).
+   - --radius-xs (4px) added.
+   - Typography scale extended: font-size body 14px / body-lg 16px,
+     line-height body 20px / body-lg 24px.
+
+   Layer model:
+   1. :root  — real, always-present CSS variables (single source of truth)
+   2. @theme inline — maps them into Tailwind v4 so utilities generate
+      without re-emitting the vars
+   Adaptation note: font stacks are inlined here (the app referenced
+   next/font variables); everything else is value-for-value identical.
+   ============================================================ */
+
+:root {
+  /* neutral (warm) */
+  --neutral-25: #FBFAF9;
+  --neutral-50: #F6F4F1;
+  --neutral-100: #EFEBE6;
+  --neutral-200: #E2DCD4;
+  --neutral-300: #CFC7BC;
+  --neutral-400: #B0A699;
+  --neutral-500: #8B8175;
+  --neutral-600: #6B6259;
+  --neutral-700: #4E4640;
+  --neutral-800: #352E29;
+  --neutral-900: #26201C;
+  --neutral-950: #201B18;
+
+  /* crimson (brand) */
+  --crimson-25: #FFF5F4;
+  --crimson-50: #FFE3E1;
+  --crimson-100: #FED0CD;
+  --crimson-200: #FCA29C;
+  --crimson-300: #F9766C;
+  --crimson-400: #F5493D;
+  --crimson-500: #C0180C;
+  --crimson-600: #98150B;
+  --crimson-700: #721009;
+  --crimson-800: #5E0E08;
+  --crimson-900: #4A0C07;
+  --crimson-950: #370906;
+
+  /* green (success) */
+  --green-25: #ECFDF3;
+  --green-50: #D2F8E0;
+  --green-100: #A8EFC6;
+  --green-200: #72E0A6;
+  --green-300: #41CB85;
+  --green-400: #1FB06B;
+  --green-500: #129457;
+  --green-600: #0E7847;
+  --green-700: #0C5E39;
+  --green-800: #0A4A2D;
+  --green-900: #083A24;
+  --green-950: #052718;
+
+  /* amber (warning) */
+  --amber-25: #FFF8E6;
+  --amber-50: #FDECBE;
+  --amber-100: #FAD884;
+  --amber-200: #F5C24A;
+  --amber-300: #EFAD20;
+  --amber-400: #E59C0E;
+  --amber-500: #D18B0C;
+  --amber-600: #AE720A;
+  --amber-700: #8B5B08;
+  --amber-800: #6F4906;
+  --amber-900: #593B05;
+  --amber-950: #3E2904;
+
+  /* red (error, distinct from crimson) */
+  --red-25: #FFF0F1;
+  --red-50: #FFDADD;
+  --red-100: #FFB8BE;
+  --red-200: #FB8A93;
+  --red-300: #F65B68;
+  --red-400: #F13546;
+  --red-500: #E51D31;
+  --red-600: #C2152A;
+  --red-700: #9C1122;
+  --red-800: #7C0D1B;
+  --red-900: #630B16;
+  --red-950: #44060E;
+
+  /* gray (cool, from Figma Primitives) */
+  --gray-25: #FAFAFA;
+  --gray-50: #F5F5F5;
+  --gray-75: #F0F0F0;
+  --gray-100: #EBEBEB;
+  --gray-150: #E0E0E0;
+  --gray-200: #D6D6D6;
+  --gray-250: #CCCCCC;
+  --gray-300: #C2C2C2;
+  --gray-350: #B8B8B8;
+  --gray-400: #A3A3A3;
+  --gray-500: #8F8F8F;
+  --gray-600: #7A7A7A;
+  --gray-700: #666666;
+  --gray-800: #525252;
+  --gray-900: #3D3D3D;
+  --gray-950: #141414;
+  --gray-975: #0A0A0A;
+
+  /* typography — sans only. No mono token: mono usages in the apps
+     (code snippets, job numbers, JSON logs) fall back to the platform
+     monospace stack via Tailwind's default font-mono. */
+  --font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+
+  /* font-size scale — 9–16px. xs (12px) = Tailwind's text-xs; body (14px)
+     and body-lg (16px) = text-sm/text-base — all documented as one scale. */
+  --font-size-3xs: 9px;
+  --font-size-2xs: 10px;
+  --font-size-caption: 11px;
+  --font-size-xs: 12px;
+  --font-size-body-sm: 13px;
+  --font-size-body: 14px;
+  --font-size-body-lg: 16px;
+
+  /* line-height scale — 13–24px, paired with the font sizes above
+     (leading-xs 16px = Tailwind's leading-4) */
+  --line-height-tight: 13px;
+  --line-height-snug: 14px;
+  --line-height-caption: 15px;
+  --line-height-xs: 16px;
+  --line-height-body-sm: 18px;
+  --line-height-body: 20px;
+  --line-height-body-lg: 24px;
+
+  /* semantic (theme later = swap this layer only) */
+  --background: #FBFAF9;
+  --surface: #FFFFFF;
+  --surface-sunken: #F6F4F1;
+  --foreground: #201B18;
+  --secondary: #525252;
+  --muted-foreground: #6B6259;
+  --subtle-foreground: #8B8175;
+  --border-hairline: #E2DCD4;
+  --border-strong: #CFC7BC;
+  /* text tokens — resolved 2026-07-21: the black "primary" was always the
+     primary TEXT color, not the action color (actions are crimson-500) */
+  --text-primary: #000000;
+  --primary-hover: #98150B;        /* text hover → crimson-600 */
+  --primary-foreground: #FFFFFF;   /* text on dark/primary surfaces */
+  --danger: #E51D31;
+  /* resolved 2026-07-21: dark red removed; near-white alpha instead.
+     (token currently unused in app code) */
+  --danger-foreground: rgba(255, 255, 255, 0.95);
+}
+
+@theme inline {
+  --font-sans: var(--font-sans);
+
+  --color-neutral-25: var(--neutral-25);
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+  --color-neutral-950: var(--neutral-950);
+
+  --color-crimson-25: var(--crimson-25);
+  --color-crimson-50: var(--crimson-50);
+  --color-crimson-100: var(--crimson-100);
+  --color-crimson-200: var(--crimson-200);
+  --color-crimson-300: var(--crimson-300);
+  --color-crimson-400: var(--crimson-400);
+  --color-crimson-500: var(--crimson-500);
+  --color-crimson-600: var(--crimson-600);
+  --color-crimson-700: var(--crimson-700);
+  --color-crimson-800: var(--crimson-800);
+  --color-crimson-900: var(--crimson-900);
+  --color-crimson-950: var(--crimson-950);
+
+  --color-green-25: var(--green-25);
+  --color-green-50: var(--green-50);
+  --color-green-100: var(--green-100);
+  --color-green-200: var(--green-200);
+  --color-green-300: var(--green-300);
+  --color-green-400: var(--green-400);
+  --color-green-500: var(--green-500);
+  --color-green-600: var(--green-600);
+  --color-green-700: var(--green-700);
+  --color-green-800: var(--green-800);
+  --color-green-900: var(--green-900);
+  --color-green-950: var(--green-950);
+
+  --color-amber-25: var(--amber-25);
+  --color-amber-50: var(--amber-50);
+  --color-amber-100: var(--amber-100);
+  --color-amber-200: var(--amber-200);
+  --color-amber-300: var(--amber-300);
+  --color-amber-400: var(--amber-400);
+  --color-amber-500: var(--amber-500);
+  --color-amber-600: var(--amber-600);
+  --color-amber-700: var(--amber-700);
+  --color-amber-800: var(--amber-800);
+  --color-amber-900: var(--amber-900);
+  --color-amber-950: var(--amber-950);
+
+  --color-red-25: var(--red-25);
+  --color-red-50: var(--red-50);
+  --color-red-100: var(--red-100);
+  --color-red-200: var(--red-200);
+  --color-red-300: var(--red-300);
+  --color-red-400: var(--red-400);
+  --color-red-500: var(--red-500);
+  --color-red-600: var(--red-600);
+  --color-red-700: var(--red-700);
+  --color-red-800: var(--red-800);
+  --color-red-900: var(--red-900);
+  --color-red-950: var(--red-950);
+
+  --color-gray-25: var(--gray-25);
+  --color-gray-50: var(--gray-50);
+  --color-gray-75: var(--gray-75);
+  --color-gray-100: var(--gray-100);
+  --color-gray-150: var(--gray-150);
+  --color-gray-200: var(--gray-200);
+  --color-gray-250: var(--gray-250);
+  --color-gray-300: var(--gray-300);
+  --color-gray-350: var(--gray-350);
+  --color-gray-400: var(--gray-400);
+  --color-gray-500: var(--gray-500);
+  --color-gray-600: var(--gray-600);
+  --color-gray-700: var(--gray-700);
+  --color-gray-800: var(--gray-800);
+  --color-gray-900: var(--gray-900);
+  --color-gray-950: var(--gray-950);
+  --color-gray-975: var(--gray-975);
+
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-foreground: var(--foreground);
+  --color-secondary: var(--secondary);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-border: var(--border-hairline);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--text-primary); /* keeps the text-primary class working */
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+
+  --radius-none: 0px;  /* sharp corners */
+  --radius-2xs: 2px;   /* subtle rounding on tiny controls */
+  --radius-xs: 4px; /* added 2026-07-21 — badges, tags, day cells */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-10: 10px;   /* between md and lg */
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px; /* pills & circles — avatar, switch, progress bars, map pins */
+
+  --shadow-elev-1: 0 1px 2px rgba(32,27,24,.05), 0 4px 10px rgba(32,27,24,.04);
+  --shadow-elev-2: 0 1px 2px rgba(32,27,24,.05), 0 5px 14px rgba(32,27,24,.05);
+  --shadow-pop: 0 1px 2px rgba(32,27,24,.06), 0 12px 30px rgba(32,27,24,.16);
+  /* component shadows — registered 2026-07-21 from spec recipes */
+  --shadow-button: 0 4px 8px -4px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.15), 0 1px 2px -1px rgba(0,0,0,0.2), inset 0 0 0 0.5px rgba(0,0,0,0.1), inset 0 -0.5px 0.5px 0 rgba(0,0,0,0.1), inset 0 0.5px 1px 0 rgba(255,255,255,0.25);
+  --shadow-frame: 0 1px 2px -1px rgba(0,0,0,0.2), 0 2px 4px -2px rgba(0,0,0,0.15), 0 4px 6px -4px rgba(0,0,0,0.1), inset 0 0.5px 0.5px 0 rgba(255,255,255,0.1), inset 0 -0.5px 0.5px 0 rgba(0,0,0,0.1);
+  --shadow-card: 0 2px 6px -4px rgba(0,0,0,0.05), 0 1px 3px -2px rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1), inset 0 -0.5px 0.5px 0 rgba(0,0,0,0.1), inset 0 0.5px 0.5px 0 rgba(255,255,255,0.1);
+}
+
+/* ============================================================
+   Typography utilities — @utility is the Tailwind v4 way to
+   register static utilities in generated CSS.
+   ============================================================ */
+@utility text-3xs {
+  font-size: var(--font-size-3xs);
+}
+@utility text-2xs {
+  font-size: var(--font-size-2xs);
+}
+@utility text-caption {
+  font-size: var(--font-size-caption);
+}
+@utility text-body-sm {
+  font-size: var(--font-size-body-sm);
+}
+@utility text-body {
+  font-size: var(--font-size-body);
+}
+@utility text-body-lg {
+  font-size: var(--font-size-body-lg);
+}
+
+@utility leading-tight {
+  line-height: var(--line-height-tight);
+}
+@utility leading-snug {
+  line-height: var(--line-height-snug);
+}
+@utility leading-caption {
+  line-height: var(--line-height-caption);
+}
+@utility leading-body-sm {
+  line-height: var(--line-height-body-sm);
+}
+@utility leading-body {
+  line-height: var(--line-height-body);
+}
+@utility leading-body-lg {
+  line-height: var(--line-height-body-lg);
+}
+
+/* THE ONE KNOB. The base size the whole UI scales from. Everything is
+   authored in rem, so raising this enlarges the entire app uniformly.
+   Fixed value, never tied to the viewport. */
+html {
+  font-size: 16px;
+}

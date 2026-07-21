@@ -109,6 +109,9 @@ export const preset: Partial<Config> = {
         'elev-1': 'var(--shadow-elev-1)',
         'elev-2': 'var(--shadow-elev-2)',
         'pop':    'var(--shadow-pop)',
+        'button': 'var(--shadow-button)',
+        'frame':  'var(--shadow-frame)',
+        'card':   'var(--shadow-card)',
       },
       fontFamily: {
         sans: ["Geist", "Inter", "system-ui", "-apple-system", "sans-serif"],

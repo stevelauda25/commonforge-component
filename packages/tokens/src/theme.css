@@ -59,6 +59,10 @@
   --shadow-elev-1: 0 1px 2px rgba(32,27,24,.05), 0 4px 10px rgba(32,27,24,.04);
   --shadow-elev-2: 0 1px 2px rgba(32,27,24,.05), 0 5px 14px rgba(32,27,24,.05);
   --shadow-pop: 0 1px 2px rgba(32,27,24,.06), 0 12px 30px rgba(32,27,24,.16);
+  /* component shadows — registered 2026-07-21 from spec recipes */
+  --shadow-button: 0 4px 8px -4px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.15), 0 1px 2px -1px rgba(0,0,0,0.2), inset 0 0 0 0.5px rgba(0,0,0,0.1), inset 0 -0.5px 0.5px 0 rgba(0,0,0,0.1), inset 0 0.5px 1px 0 rgba(255,255,255,0.25);
+  --shadow-frame: 0 1px 2px -1px rgba(0,0,0,0.2), 0 2px 4px -2px rgba(0,0,0,0.15), 0 4px 6px -4px rgba(0,0,0,0.1), inset 0 0.5px 0.5px 0 rgba(255,255,255,0.1), inset 0 -0.5px 0.5px 0 rgba(0,0,0,0.1);
+  --shadow-card: 0 2px 6px -4px rgba(0,0,0,0.05), 0 1px 3px -2px rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1), inset 0 -0.5px 0.5px 0 rgba(0,0,0,0.1), inset 0 0.5px 0.5px 0 rgba(255,255,255,0.1);
   --duration-fast: 120ms;
   --duration-base: 180ms;
   --duration-slow: 240ms;

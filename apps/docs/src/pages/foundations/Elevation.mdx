@@ -17,8 +17,9 @@ import { SparcShadowGrid } from '../../components/foundations/SparcFoundation';
 
 ## Token shadows
 
-Three token shadows: `elev-1` for cards, `elev-2` for raised cards, `pop` for
-modals. All use the warm charcoal `rgba(32,27,24,…)` base.
+Six token shadows: three surface elevations (`elev-1`, `elev-2`, `pop`) using the
+warm charcoal `rgba(32,27,24,…)` base, and three component shadows registered
+2026-07-21 (`button`, `frame`, `card`).
 
 <SparcShadowGrid />
 
@@ -27,17 +28,18 @@ modals. All use the warm charcoal `rgba(32,27,24,…)` base.
 | `shadow-elev-1` | cards |
 | `shadow-elev-2` | raised cards |
 | `shadow-pop` | modals |
+| `shadow-button` | button, segmented pill, date-picker Apply (6 layers incl. inset highlights) |
+| `shadow-frame` | dashboard frame surface — the #F7F7F7 container (3 layers + inset hairlines) |
+| `shadow-card` | white cards/panels inside the frame — kpi-card, dashboard panels, job cards (5 layers) |
 
-## Shared shadow recipes (not yet tokens)
+## Documented shadow recipes (not tokens)
 
-Four multi-layer shadow recipes live in component code, identical in both SPARC
-apps — candidates to promote into tokens:
+Two recipes remain in component code, documented here for reference:
 
 | Recipe | Used by |
 |---|---|
-| Button shadow (6 layers incl. inset highlights) | button, segmented pill, date-picker Apply |
-| Card shadow "003" (5 layers) | kpi-card, dashboard panels, job cards |
-| Popover/menu shadow (3 layers) | dropdowns, menus, date-picker card |
+| Popover/menu shadow (3 layers, all `rgba(0,0,0,0.05)`) | dropdowns, menus, date-picker card |
+| Chart tooltip shadow (6 layers) | chart-tooltip |
 | Chart tooltip shadow (6 layers) | chart-tooltip |
 
 ## Source of truth
