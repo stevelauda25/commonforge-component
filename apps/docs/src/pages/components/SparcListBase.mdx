@@ -1,0 +1,36 @@
+import { ListBase } from '@sparc-ui';
+import { Home, ChevronRight, Trash2 } from 'lucide-react';
+
+<PageHeader
+  title="SPARC List Base"
+  description="Shared row primitive for lists, menus, and selects."
+/>
+
+## Sizes
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-1">
+    <ListBase size="sm" leading={<Home size={12} />}>Small item</ListBase>
+    <ListBase size="md" leading={<Home size={14} />}>Medium item</ListBase>
+  </div>
+</PreviewCard>
+
+## States
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-1">
+    <ListBase>Default</ListBase>
+    <ListBase state="hover">Hover</ListBase>
+    <ListBase state="selected">Selected</ListBase>
+    <ListBase state="disabled">Disabled</ListBase>
+  </div>
+</PreviewCard>
+
+## Slots
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-1">
+    <ListBase leading={<Home size={14} />} trailing={<ChevronRight size={14} />}>With leading + trailing</ListBase>
+    <ListBase tone="danger" leading={<Trash2 size={14} />}>Danger tone</ListBase>
+  </div>
+</PreviewCard>

@@ -1,0 +1,26 @@
+import { Avatar } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Avatar"
+  description="Circular user image with initials fallback."
+/>
+
+## Image
+
+<PreviewCard>
+  <div className="flex flex-wrap items-center gap-4">
+    <Avatar src="https://i.pravatar.cc/150?img=11" alt="User" size={24} />
+    <Avatar src="https://i.pravatar.cc/150?img=33" alt="User" size={32} />
+    <Avatar src="https://i.pravatar.cc/150?img=47" alt="User" size={48} />
+  </div>
+</PreviewCard>
+
+## Fallback initials
+
+<PreviewCard>
+  <div className="flex flex-wrap items-center gap-4">
+    <Avatar fallback="AB" size={24} />
+    <Avatar fallback="CD" size={32} />
+    <Avatar fallback="EF" size={48} />
+  </div>
+</PreviewCard>

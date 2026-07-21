@@ -15,7 +15,19 @@ export default {
     './index.html',
     './src/**/*.{ts,tsx,mdx}',
     '../../packages/ui/src/**/*.{ts,tsx}',
+    '../../../design-system-testing-abdillah/packages/ui/src/**/*.{ts,tsx}',
   ],
+  theme: {
+    extend: {
+      colors: {
+        primary: 'rgb(var(--color-text-default) / <alpha-value>)',
+        foreground: 'rgb(var(--color-text-default) / <alpha-value>)',
+        crimson: {
+          500: '#C0180C',
+        },
+      },
+    },
+  },
   safelist: [
     ...radiusKeys.map((k) => `rounded-${k}`),
     ...shadowKeys.map((k) => `shadow-${k}`),

@@ -1,0 +1,24 @@
+import { Slider } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Slider"
+  description="Range input with default, range, and empty modes."
+/>
+
+## Default
+
+<PreviewCard>
+  <Slider defaultValue={60} />
+</PreviewCard>
+
+## Range
+
+<PreviewCard>
+  <Slider mode="range" defaultStartValue={20} defaultValue={70} />
+</PreviewCard>
+
+## Empty
+
+<PreviewCard>
+  <Slider mode="empty" />
+</PreviewCard>

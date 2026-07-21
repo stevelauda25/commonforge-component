@@ -1,0 +1,27 @@
+import { Radio } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Radio"
+  description="Single-select control in three sizes."
+/>
+
+## Sizes
+
+<PreviewCard>
+  <div className="flex flex-wrap items-center gap-4">
+    <Radio size="sm" defaultChecked />
+    <Radio size="md" defaultChecked />
+    <Radio size="lg" defaultChecked />
+  </div>
+</PreviewCard>
+
+## States
+
+<PreviewCard>
+  <div className="flex flex-wrap items-center gap-4">
+    <Radio />
+    <Radio checked />
+    <Radio checked disabled />
+    <Radio disabled />
+  </div>
+</PreviewCard>

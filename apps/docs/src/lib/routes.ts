@@ -25,6 +25,13 @@ export const routes: RouteEntry[] = [
   { path: '/foundations/elevation',  label: 'Elevation',  category: 'foundation', load: () => import('../pages/foundations/Elevation.mdx') },
   { path: '/foundations/motion',     label: 'Motion',     category: 'foundation', load: () => import('../pages/foundations/Motion.mdx') },
 
+  // SPARC staging — externally collected tokens, pending review (not pod-test-tokens)
+  { path: '/foundations/sparc-color',      label: 'SPARC Color',      category: 'foundation', load: () => import('../pages/foundations/SparcColor.mdx') },
+  { path: '/foundations/sparc-typography', label: 'SPARC Typography', category: 'foundation', load: () => import('../pages/foundations/SparcTypography.mdx') },
+  { path: '/foundations/sparc-spacing',    label: 'SPARC Spacing',    category: 'foundation', load: () => import('../pages/foundations/SparcSpacing.mdx') },
+  { path: '/foundations/sparc-radius',     label: 'SPARC Radius',     category: 'foundation', load: () => import('../pages/foundations/SparcRadius.mdx') },
+  { path: '/foundations/sparc-elevation',  label: 'SPARC Elevation',  category: 'foundation', load: () => import('../pages/foundations/SparcElevation.mdx') },
+
   // Components — ready
   { path: '/components/button',       label: 'Button',       category: 'component', status: 'ready',   description: 'Primary action element.',         load: () => import('../pages/components/Button.mdx') },
   { path: '/components/checkbox',     label: 'Checkbox',     category: 'component', status: 'ready',   description: 'Multi-select boolean input.',     load: () => import('../pages/components/Checkbox.mdx') },
@@ -43,6 +50,23 @@ export const routes: RouteEntry[] = [
   { path: '/components/dashboard-jobs-insights',   label: 'Dashboard Jobs Insights',   category: 'component', status: 'ready',    description: 'Comprehensive view of job status and hours by phase.', load: () => import('../pages/components/DashboardJobsInsights.mdx') },
   { path: '/components/dashboard-map-budget',      label: 'Dashboard Map Budget',      category: 'component', status: 'ready',    description: 'Interactive Leaflet map alongside budget KPIs.', load: () => import('../pages/components/DashboardMapBudget.mdx') },
   { path: '/components/dashboard-skills-insights', label: 'Dashboard Skills Insights', category: 'component', status: 'ready',    description: 'Summary of worker skills and capabilities.', load: () => import('../pages/components/DashboardSkillsInsights.mdx') },
+
+  // SPARC Phase-1 atoms (collected in design-system-testing-abdillah)
+  { path: '/components/sparc-button',           label: 'SPARC Button',           category: 'component', status: 'ready', description: 'Phase-1 button atom from the SPARC Figma spec.',           load: () => import('../pages/components/SparcButton.mdx') },
+  { path: '/components/sparc-badge',            label: 'SPARC Badge',            category: 'component', status: 'ready', description: 'Phase-1 badge atom from the SPARC Figma spec.',            load: () => import('../pages/components/SparcBadge.mdx') },
+  { path: '/components/sparc-checkbox',         label: 'SPARC Checkbox',         category: 'component', status: 'ready', description: 'Phase-1 checkbox atom from the SPARC Figma spec.',         load: () => import('../pages/components/SparcCheckbox.mdx') },
+  { path: '/components/sparc-switch',           label: 'SPARC Switch',           category: 'component', status: 'ready', description: 'Phase-1 switch atom from the SPARC Figma spec.',           load: () => import('../pages/components/SparcSwitch.mdx') },
+  { path: '/components/sparc-tag',              label: 'SPARC Tag',              category: 'component', status: 'ready', description: 'Phase-1 tag atom from the SPARC Figma spec.',              load: () => import('../pages/components/SparcTag.mdx') },
+  { path: '/components/sparc-input',            label: 'SPARC Input',            category: 'component', status: 'ready', description: 'Phase-1 text-input atom from the SPARC Figma spec.',       load: () => import('../pages/components/SparcInput.mdx') },
+  { path: '/components/sparc-textarea',         label: 'SPARC Text Area',        category: 'component', status: 'ready', description: 'Phase-1 text-area atom from the SPARC Figma spec.',        load: () => import('../pages/components/SparcTextArea.mdx') },
+  { path: '/components/sparc-radio',            label: 'SPARC Radio',            category: 'component', status: 'ready', description: 'Phase-1 radio atom from the SPARC Figma spec.',            load: () => import('../pages/components/SparcRadio.mdx') },
+  { path: '/components/sparc-segmented-button', label: 'SPARC Segmented Button', category: 'component', status: 'ready', description: 'Phase-1 segmented-button atom from the SPARC Figma spec.', load: () => import('../pages/components/SparcSegmentedButton.mdx') },
+  { path: '/components/sparc-slider',           label: 'SPARC Slider',           category: 'component', status: 'ready', description: 'Phase-1 slider atom from the SPARC Figma spec.',           load: () => import('../pages/components/SparcSlider.mdx') },
+  { path: '/components/sparc-loading-spinner',  label: 'SPARC Loading Spinner',  category: 'component', status: 'ready', description: 'Phase-1 loading-spinner atom from the SPARC Figma spec.',  load: () => import('../pages/components/SparcLoadingSpinner.mdx') },
+  { path: '/components/sparc-avatar',           label: 'SPARC Avatar',           category: 'component', status: 'ready', description: 'Phase-1 avatar atom from the SPARC Figma spec.',           load: () => import('../pages/components/SparcAvatar.mdx') },
+  { path: '/components/sparc-separator',        label: 'SPARC Separator',        category: 'component', status: 'ready', description: 'Phase-1 separator atom from the SPARC Figma spec.',        load: () => import('../pages/components/SparcSeparator.mdx') },
+  { path: '/components/sparc-list-base',        label: 'SPARC List Base',        category: 'component', status: 'ready', description: 'Phase-1 list-base atom from the SPARC Figma spec.',        load: () => import('../pages/components/SparcListBase.mdx') },
+  { path: '/components/sparc-tooltip',          label: 'SPARC Tooltip',          category: 'component', status: 'ready', description: 'Phase-1 tooltip atom from the SPARC Figma spec.',          load: () => import('../pages/components/SparcTooltip.mdx') },
 
   // Components — planned
   { path: '/components/select',       label: 'Select',       category: 'component', status: 'planned', description: 'Dropdown picker for one of many options.',     load: () => import('../pages/components/Select.mdx') },

@@ -158,3 +158,28 @@ html.dark      .mdx-content code span { color: var(--shiki-dark);  }
   0%, 100% { transform: scale(1);   opacity: 1; }
   50%      { transform: scale(1.4); opacity: 0.6; }
 }
+
+/* ── SPARC theme scope for Phase-1 atom pages ───────────────────────────── */
+/* Wraps /components/sparc-* pages so they render with SPARC foundation
+   tokens + Geist font while the rest of the doc site keeps POD styling. */
+.sparc-theme {
+  font-family: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+
+  --color-bg-canvas: 251 250 249;
+  --color-bg-surface: 255 255 255;
+  --color-bg-muted: 246 244 241;
+  --color-bg-subtle: 246 244 241;
+
+  --color-text-default: 32 27 24;
+  --color-text-strong: 0 0 0;
+  --color-text-subtle: 82 82 82;
+  --color-text-muted: 107 98 89;
+
+  --color-border-default: 226 220 212;
+  --color-border-subtle: 226 220 212;
+  --color-border-strong: 207 199 188;
+}
+
+html.dark .sparc-theme {
+  /* SPARC does not define a dark mode; keep POD dark values when forced. */
+}

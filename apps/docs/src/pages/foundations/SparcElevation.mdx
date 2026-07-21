@@ -1,0 +1,50 @@
+import { SparcShadowGrid } from '../../components/foundations/SparcFoundation';
+
+<PageHeader
+  title="SPARC Elevation (staging)"
+  description="Shadow tokens externally collected from the SPARC apps (carltonLaborPlanning globals.css, verified identical to commonforge-sparc-ui). Extracted 2026-07-21 — pending review, not yet merged into pod-test-tokens."
+/>
+
+<div className="my-6 rounded-lg border border-warning/40 bg-warning/15 p-4 text-sm text-default">
+  <p className="font-semibold text-warning">⚠ Staging content — not official POD tokens</p>
+  <p className="mt-1 text-subtle">
+    Everything on this page was collected from external SPARC app code for review
+    (status: <em>collected, ready for review; not yet merged into design-system</em>).
+    Values are rendered straight from <code>src/data/sparc-foundation.json</code> via
+    inline styles — no <code>pod-test-tokens</code> classes exist for them yet. Do not
+    reference these tokens in production components.
+  </p>
+</div>
+
+## Token shadows
+
+Three token shadows: `elev-1` for cards, `elev-2` for raised cards, `pop` for
+modals. All use the warm charcoal `rgba(32,27,24,…)` base.
+
+<SparcShadowGrid />
+
+| Token | Use |
+|---|---|
+| `shadow-elev-1` | cards |
+| `shadow-elev-2` | raised cards |
+| `shadow-pop` | modals |
+
+## Shared shadow recipes (not yet tokens)
+
+Four multi-layer shadow recipes live in component code, identical in both SPARC
+apps — candidates to promote into tokens:
+
+| Recipe | Used by |
+|---|---|
+| Button shadow (6 layers incl. inset highlights) | button, segmented pill, date-picker Apply |
+| Card shadow "003" (5 layers) | kpi-card, dashboard panels, job cards |
+| Popover/menu shadow (3 layers) | dropdowns, menus, date-picker card |
+| Chart tooltip shadow (6 layers) | chart-tooltip |
+
+## Source of truth
+
+Values on this page come from `apps/docs/src/data/sparc-foundation.json`, copied
+unchanged from the external collection (`design-system-testing-abdillah/foundation/tokens.json`,
+v0.2.0); recipes documented from `foundation.md` §3. If adopted, they move into
+`packages/tokens` and this page is replaced by the standard auto-rendered
+Elevation page.

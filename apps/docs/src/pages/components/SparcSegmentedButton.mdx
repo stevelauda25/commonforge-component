@@ -1,0 +1,36 @@
+import { SegmentedButton } from '@sparc-ui';
+
+export const options = [
+  { value: 'week', label: 'Week', count: 12 },
+  { value: 'month', label: 'Month', count: 4 },
+  { value: 'quarter', label: 'Quarter', count: 1 },
+];
+
+<PageHeader
+  title="SPARC Segmented Button"
+  description="Single-select button group with sliding selection pill."
+/>
+
+## Small
+
+<PreviewCard>
+  <SegmentedButton size="small" options={options} defaultValue="week" />
+</PreviewCard>
+
+## Medium
+
+<PreviewCard>
+  <SegmentedButton size="medium" options={options} defaultValue="week" />
+</PreviewCard>
+
+## Fill
+
+<PreviewCard>
+  <SegmentedButton fill options={options} defaultValue="week" className="w-full max-w-md" />
+</PreviewCard>
+
+## No dividers
+
+<PreviewCard>
+  <SegmentedButton dividers={false} options={options} defaultValue="week" />
+</PreviewCard>

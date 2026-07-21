@@ -1,0 +1,26 @@
+import { Switch } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Switch"
+  description="Binary on/off control in small and medium sizes."
+/>
+
+## Sizes
+
+<PreviewCard>
+  <div className="flex flex-wrap items-center gap-6">
+    <Switch size="sm" defaultChecked />
+    <Switch size="md" defaultChecked />
+  </div>
+</PreviewCard>
+
+## States
+
+<PreviewCard>
+  <div className="flex flex-wrap items-center gap-6">
+    <Switch />
+    <Switch defaultChecked />
+    <Switch disabled />
+    <Switch defaultChecked disabled />
+  </div>
+</PreviewCard>

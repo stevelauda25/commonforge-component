@@ -1,0 +1,43 @@
+import { TextInput } from '@sparc-ui';
+import { Search, X } from 'lucide-react';
+
+<PageHeader
+  title="SPARC Input"
+  description="Single-line text field with sizes, icons, and error state."
+/>
+
+## Sizes
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-3">
+    <TextInput placeholder="Medium input" />
+    <TextInput size="sm" placeholder="Small input" />
+  </div>
+</PreviewCard>
+
+## With icons
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-3">
+    <TextInput leading={<Search size={18} />} placeholder="Search..." />
+    <TextInput trailing={<X size={18} />} placeholder="Clearable..." />
+  </div>
+</PreviewCard>
+
+## States
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-3">
+    <TextInput disabled placeholder="Disabled" />
+    <TextInput error placeholder="Error state" />
+  </div>
+</PreviewCard>
+
+## Add-ons
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-3">
+    <TextInput prefix={<span className="text-sm text-muted">https://</span>} placeholder="domain.com" />
+    <TextInput suffix={<span className="text-sm text-muted">USD</span>} placeholder="0.00" />
+  </div>
+</PreviewCard>

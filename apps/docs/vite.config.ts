@@ -10,6 +10,7 @@ import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeSlug from 'rehype-slug';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const sparcUiRoot = resolve(__dirname, '../../../design-system-testing-abdillah/packages/ui/src');
 
 /**
  * Dev-only endpoints for FigmaStatus page:
@@ -112,6 +113,11 @@ export default defineConfig({
     react({ include: /\.(jsx|tsx|md|mdx)$/ }),
     figmaCheckPlugin(),
   ],
+  resolve: {
+    alias: {
+      '@sparc-ui': sparcUiRoot,
+    },
+  },
   server: {
     port: 5174,
   },

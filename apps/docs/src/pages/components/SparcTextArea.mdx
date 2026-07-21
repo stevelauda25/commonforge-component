@@ -1,0 +1,23 @@
+import { TextArea } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Text Area"
+  description="Multi-line text field with character counter."
+/>
+
+## Default
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm">
+    <TextArea placeholder="Type something..." />
+  </div>
+</PreviewCard>
+
+## States
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-3">
+    <TextArea disabled placeholder="Disabled" />
+    <TextArea error placeholder="Error state" />
+  </div>
+</PreviewCard>

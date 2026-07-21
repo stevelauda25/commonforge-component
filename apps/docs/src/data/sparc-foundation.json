@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "name": "SPARC Design Foundation",
+    "version": "0.3.3",
+    "extracted": "2026-07-21",
+    "source": "carltonLaborPlanning-main/src/app/globals.css (verified identical to commonforge-sparc-ui/src/index.css + cool-gray ramp)",
+    "status": "collected, ready for review; not yet merged into design-system",
+    "changelog": "2026-07-21: primary→text-primary; danger-foreground→rgba(255,255,255,0.95); mono font dropped; radius scale extended to 9 steps (none 0, 2, xs 4, sm 6, md 8, 10, lg 12, xl 16, full 9999); typography scale extended (xs 12px/16px, body 14px/20px, body-lg 16px/24px)"
+  },
+  "color": {
+    "neutral": { "25": "#FBFAF9", "50": "#F6F4F1", "100": "#EFEBE6", "200": "#E2DCD4", "300": "#CFC7BC", "400": "#B0A699", "500": "#8B8175", "600": "#6B6259", "700": "#4E4640", "800": "#352E29", "900": "#26201C", "950": "#201B18" },
+    "crimson": { "25": "#FFF5F4", "50": "#FFE3E1", "100": "#FED0CD", "200": "#FCA29C", "300": "#F9766C", "400": "#F5493D", "500": "#C0180C", "600": "#98150B", "700": "#721009", "800": "#5E0E08", "900": "#4A0C07", "950": "#370906" },
+    "green": { "25": "#ECFDF3", "50": "#D2F8E0", "100": "#A8EFC6", "200": "#72E0A6", "300": "#41CB85", "400": "#1FB06B", "500": "#129457", "600": "#0E7847", "700": "#0C5E39", "800": "#0A4A2D", "900": "#083A24", "950": "#052718" },
+    "amber": { "25": "#FFF8E6", "50": "#FDECBE", "100": "#FAD884", "200": "#F5C24A", "300": "#EFAD20", "400": "#E59C0E", "500": "#D18B0C", "600": "#AE720A", "700": "#8B5B08", "800": "#6F4906", "900": "#593B05", "950": "#3E2904" },
+    "red": { "25": "#FFF0F1", "50": "#FFDADD", "100": "#FFB8BE", "200": "#FB8A93", "300": "#F65B68", "400": "#F13546", "500": "#E51D31", "600": "#C2152A", "700": "#9C1122", "800": "#7C0D1B", "900": "#630B16", "950": "#44060E" },
+    "gray": { "25": "#FAFAFA", "50": "#F5F5F5", "75": "#F0F0F0", "100": "#EBEBEB", "150": "#E0E0E0", "200": "#D6D6D6", "250": "#CCCCCC", "300": "#C2C2C2", "350": "#B8B8B8", "400": "#A3A3A3", "500": "#8F8F8F", "600": "#7A7A7A", "700": "#666666", "800": "#525252", "900": "#3D3D3D", "950": "#141414", "975": "#0A0A0A" },
+    "semantic": {
+      "background": "#FBFAF9",
+      "surface": "#FFFFFF",
+      "surface-sunken": "#F6F4F1",
+      "foreground": "#201B18",
+      "secondary": "#525252",
+      "muted-foreground": "#6B6259",
+      "subtle-foreground": "#8B8175",
+      "border-hairline": "#E2DCD4",
+      "border-strong": "#CFC7BC",
+      "text-primary": "#000000",
+      "primary-hover": "#98150B",
+      "primary-foreground": "#FFFFFF",
+      "danger": "#E51D31",
+      "danger-foreground": "rgba(255, 255, 255, 0.95)"
+    }
+  },
+  "radius": {
+    "none": "0px",
+    "2xs": "2px",
+    "xs": "4px",
+    "sm": "6px",
+    "md": "8px",
+    "10": "10px",
+    "lg": "12px",
+    "xl": "16px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "elev-1": "0 1px 2px rgba(32,27,24,.05), 0 4px 10px rgba(32,27,24,.04)",
+    "elev-2": "0 1px 2px rgba(32,27,24,.05), 0 5px 14px rgba(32,27,24,.05)",
+    "pop": "0 1px 2px rgba(32,27,24,.06), 0 12px 30px rgba(32,27,24,.16)"
+  },
+  "typography": {
+    "fontFamily": {
+      "sans": "\"Geist\", \"Inter\", system-ui, -apple-system, sans-serif"
+    },
+    "fontFamilyNote": "No mono token by decision (2026-07-21). Mono usages (code, job numbers, logs) fall back to the platform monospace stack via Tailwind's default font-mono.",
+    "fontSize": { "3xs": "9px", "2xs": "10px", "caption": "11px", "xs": "12px", "body-sm": "13px", "body": "14px", "body-lg": "16px" },
+    "lineHeight": { "tight": "13px", "snug": "14px", "caption": "15px", "xs": "16px", "body-sm": "18px", "body": "20px", "body-lg": "24px" },
+    "rootFontSize": "16px",
+    "note": "All component sizing is authored in rem against rootFontSize (the 'one knob' scaling model). body (14px) and body-lg (16px) overlap Tailwind's text-sm/text-base but are part of the documented scale."
+  },
+  "spacing": {
+    "custom": false,
+    "note": "No custom spacing tokens exist. Both apps use Tailwind's default 4px-based scale, with component dimensions authored in rem. See foundation.md for the fixed dimensions used per component."
+  }
+}
