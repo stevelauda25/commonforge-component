@@ -2,6 +2,17 @@ import { cn } from "../lib/cn.js"
 
 export type LegendVariant = "square" | "line"
 
+export type LegendLineStyle = "dashed" | "dotted" | "solid"
+
+const LINE_STYLE_PROPS: Record<
+  LegendLineStyle,
+  { strokeDasharray?: string; strokeLinecap?: "round" }
+> = {
+  dashed: { strokeDasharray: "6 4" },
+  dotted: { strokeDasharray: "1.5 3", strokeLinecap: "round" },
+  solid: {},
+}
+
 export interface LegendProps {
   variant?: LegendVariant
   color: string
@@ -9,6 +20,7 @@ export interface LegendProps {
   value?: string
   percent?: string
   dashed?: boolean
+  lineStyle?: LegendLineStyle
   bordered?: boolean
   className?: string
 }
@@ -17,15 +29,29 @@ function LegendSwatch({
   variant,
   color,
   dashed,
+  lineStyle,
   bordered,
-}: Pick<LegendProps, "variant" | "color" | "dashed" | "bordered">) {
+}: Pick<LegendProps, "variant" | "color" | "dashed" | "lineStyle" | "bordered">) {
   if (variant === "line") {
+    const resolvedLineStyle = lineStyle ?? (dashed ? "dashed" : "solid")
     return (
-      <span
+      <svg
         aria-hidden="true"
-        className="h-px w-2.5 shrink-0 border-t"
-        style={{ borderColor: color, borderTopStyle: dashed ? "dashed" : "solid" }}
-      />
+        width="16"
+        height="2"
+        viewBox="0 0 16 2"
+        className="shrink-0"
+      >
+        <line
+          x1="0"
+          y1="1"
+          x2="16"
+          y2="1"
+          stroke={color}
+          strokeWidth={2}
+          {...LINE_STYLE_PROPS[resolvedLineStyle]}
+        />
+      </svg>
     )
   }
   return (
@@ -44,6 +70,7 @@ export function Legend({
   value,
   percent,
   dashed = true,
+  lineStyle,
   bordered = false,
   className,
 }: LegendProps) {
@@ -57,7 +84,7 @@ export function Legend({
       )}
     >
       <span className="flex items-center gap-1">
-        <LegendSwatch variant={variant} color={color} dashed={dashed} bordered={bordered} />
+        <LegendSwatch variant={variant} color={color} dashed={dashed} lineStyle={lineStyle} bordered={bordered} />
         <span className="text-[#525252]">{label}</span>
       </span>
       {hasValue && (

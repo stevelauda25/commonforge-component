@@ -1,7 +1,7 @@
 import { cn } from "../lib/cn.js"
 
-export type LoadingSpinnerSize = "xs" | "sm" | "md" | "lg" | "xl"
-export type LoadingSpinnerVariant = "solid" | "stroke"
+export type LoadingSpinnerSize = "xs" | "s" | "md" | "lg" | "xl"
+export type LoadingSpinnerVariant = "filled" | "stroke" | "ring" | "dot"
 
 export interface LoadingSpinnerProps {
   size?: LoadingSpinnerSize
@@ -10,35 +10,39 @@ export interface LoadingSpinnerProps {
   className?: string
 }
 
-const sizes: Record<LoadingSpinnerSize, number> = { xs: 12, sm: 16, md: 20, lg: 24, xl: 32 }
+const sizes: Record<LoadingSpinnerSize, string> = {
+  xs: "h-3 w-3",
+  s: "h-4 w-4",
+  md: "h-5 w-5",
+  lg: "h-6 w-6",
+  xl: "h-8 w-8",
+}
+
+const filledThickness: Record<LoadingSpinnerSize, number> = { xs: 3, s: 4, md: 5, lg: 6, xl: 7 }
+const strokeThickness: Record<LoadingSpinnerSize, number> = { xs: 1.4, s: 1.7, md: 2, lg: 2.4, xl: 3 }
 
 export function LoadingSpinner({
   size = "md",
-  variant = "solid",
+  variant = "filled",
   label = "Loading",
   className,
 }: LoadingSpinnerProps) {
-  const dimension = sizes[size]
-  const strokeWidth = variant === "solid" ? 4 : 2
+  // Spec quirk: `isStroke = stroke || dot`, so `ring` falls into the filled branch.
+  const isStroke = variant === "stroke" || variant === "dot"
+  const thickness = (isStroke ? strokeThickness : filledThickness)[size]
+  const track = isStroke ? "transparent" : "rgba(0,0,0,0.10)"
 
   return (
-    <span role="status" aria-label={label} className={cn("inline-flex text-[#26201C]", className)}>
-      <svg
-        width={dimension}
-        height={dimension}
-        viewBox="0 0 24 24"
-        fill="none"
+    <span role="status" aria-label={label} className={cn("inline-flex", className)}>
+      <span
         aria-hidden="true"
-        className="animate-spin motion-reduce:animate-none"
-      >
-        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity="0.12" strokeWidth={strokeWidth} />
-        <path
-          d="M12 3a9 9 0 0 1 8.78 7"
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-        />
-      </svg>
+        className={cn("animate-spin rounded-full motion-reduce:animate-none", sizes[size])}
+        style={{
+          background: `conic-gradient(from 15deg, #26201C 0deg 255deg, ${track} 255deg 360deg)`,
+          maskImage: `radial-gradient(farthest-side, transparent calc(100% - ${thickness}px), #000 calc(100% - ${thickness}px))`,
+          WebkitMaskImage: `radial-gradient(farthest-side, transparent calc(100% - ${thickness}px), #000 calc(100% - ${thickness}px))`,
+        }}
+      />
     </span>
   )
 }

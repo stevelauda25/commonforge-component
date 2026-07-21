@@ -1,13 +1,15 @@
 import type { ReactNode } from "react"
 import { X } from "lucide-react"
+import { Button } from "../button/index.js"
+import { LoadingSpinner } from "../loading-spinner/index.js"
 import { cn } from "../lib/cn.js"
 
 export type ToastVariant = "default" | "error" | "success" | "warning"
 
 export interface ToastProps {
   variant?: ToastVariant
-  title: string
-  description: string
+  title?: string
+  description?: string
   actionLabel?: string
   onAction?: () => void
   onDismiss?: () => void
@@ -24,8 +26,8 @@ const colors: Record<ToastVariant, { title: string; body: string; ring: string }
 
 export function Toast({
   variant = "default",
-  title,
-  description,
+  title = "Plan saved",
+  description = "Your staffing plan was saved to Holly Hills.",
   actionLabel = "View plan",
   onAction,
   onDismiss,
@@ -39,42 +41,42 @@ export function Toast({
     <div
       role={role}
       className={cn(
-        "flex min-h-20 w-full max-w-[540px] items-center gap-4 rounded-xl bg-white p-4 shadow-[0_4px_8px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.15),0_0.5px_2px_rgba(0,0,0,0.10),inset_0_0.5px_1px_rgba(255,255,255,0.25)]",
+        "flex h-20 w-[540px] max-w-full items-center gap-6 rounded-xl border-[0.5px] border-black/10 bg-white p-4 shadow-[0_4px_8px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.15),0_0.5px_2px_rgba(0,0,0,0.10),inset_0_0.5px_1px_rgba(255,255,255,0.25)]",
         className,
       )}
     >
       <div className="flex min-w-0 flex-1 items-center gap-4">
         {icon ?? (
           <>
-            <span className={cn("size-6 shrink-0 rounded-full border-2", palette.ring)} aria-hidden="true" />
-            <span
-              className="size-6 shrink-0 rounded-full border-[3px] border-black border-r-transparent"
-              aria-hidden="true"
-            />
+            <span className={cn("size-6 shrink-0 rounded-full border-2 bg-white", palette.ring)} aria-hidden="true" />
+            <span aria-hidden="true" className="shrink-0">
+              <LoadingSpinner size="lg" variant="stroke" />
+            </span>
           </>
         )}
         <div className="min-w-0">
           <p className={cn("text-base font-medium leading-6", palette.title)}>{title}</p>
-          <p className={cn("text-sm leading-5", palette.body)}>{description}</p>
+          <p className={cn("mt-1 whitespace-nowrap text-sm leading-5", palette.body)}>{description}</p>
         </div>
       </div>
       {onAction && (
-        <button
-          type="button"
+        <Button
+          size="xs"
+          variant="inverse"
           onClick={onAction}
-          className="h-8 shrink-0 rounded-[6px] border-[0.5px] border-white/10 bg-[#26201C] px-3 text-xs font-medium leading-4 text-white shadow-[0_4px_8px_-4px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.15),0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_rgba(0,0,0,0.1),inset_0_0.5px_1px_rgba(255,255,255,0.25)] outline-none hover:bg-neutral-800 focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2"
+          className="h-8 shrink-0 px-3 py-2 text-xs leading-4"
         >
           {actionLabel}
-        </button>
+        </Button>
       )}
       {onDismiss && (
         <button
           type="button"
           onClick={onDismiss}
-          className="flex size-8 shrink-0 items-center justify-center rounded-[4px] text-[#525252] outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black/20"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm text-[#525252] outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black/20"
           aria-label="Dismiss notification"
         >
-          <X size={10} aria-hidden="true" />
+          <X className="h-5 w-5" aria-hidden="true" />
         </button>
       )}
     </div>

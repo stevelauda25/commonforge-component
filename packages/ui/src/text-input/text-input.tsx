@@ -23,7 +23,7 @@ export interface TextInputProps
 /**
  * text-input — the raw input field.
  *
- * From Figma: fill gray-50 (#F5F5F5), 1px black/10 border, 6px radius. Focus
+ * From Figma: fill gray-50 (#F5F5F5), 0.5px black/10 border, 6px radius. Focus
  * (via focus-within) turns the border black and adds a 3px black/10 ring;
  * error uses the red-500 border; disabled uses gray-100 fill with #8F8F8F
  * text. 14px text, #525252 placeholder. Cool grays are arbitrary values for
@@ -56,7 +56,7 @@ export function TextInput({
   return (
     <div
       className={cn(
-        "flex items-stretch overflow-hidden rounded-[6px] border border-solid",
+        "flex items-stretch overflow-hidden rounded-[6px] border-[0.5px]",
         sizeClass,
         disabled
           ? "border-black/10 bg-[#EBEBEB]"

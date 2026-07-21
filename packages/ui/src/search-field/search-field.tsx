@@ -60,9 +60,10 @@ export function SearchField({
 
       {showResults && (
         <div
+          role="listbox"
           className={cn(
-            "absolute left-0 top-full z-10 mt-1.5 w-full rounded-[6px] border border-[#E0E0E0] bg-surface p-2",
-            "shadow-[0_4px_6px_0_rgba(0,0,0,0.05),0_8px_12px_-2px_rgba(0,0,0,0.05),0_2px_12px_-8px_rgba(0,0,0,0.05)]",
+            "absolute left-0 top-full z-10 mt-1.5 w-full rounded-[6px] border-[0.5px] border-[#E0E0E0] bg-surface p-2",
+            "shadow-[0_1px_1px_0_rgba(0,0,0,0.05),0_4px_8px_0_rgba(0,0,0,0.05),0_2px_4px_0_rgba(0,0,0,0.05)]",
           )}
         >
           <div className="flex flex-col gap-2">

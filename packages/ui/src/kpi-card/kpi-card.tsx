@@ -23,9 +23,9 @@ export interface KpiCardProps {
   className?: string
 }
 
-const LABEL = "text-[14px] leading-[1.2] font-normal text-[#525252]"
+const LABEL = "text-[12px] leading-[16px] font-normal text-[#525252]"
 const VALUE = "font-sans text-[20px] leading-[1.2] font-medium tracking-normal text-black tabular-nums"
-const DESC = "text-[12px] leading-[14px] font-normal text-[#525252]"
+const DESC = "text-[11px] leading-[15px] font-normal text-[#525252]"
 
 function Triangle({ down }: { down?: boolean }) {
   return (
@@ -91,7 +91,7 @@ export function KpiCard({
     <article className={cn(CARD, "flex items-start gap-4 rounded-[6px]", className)}>
       <div className="flex h-20 min-w-0 flex-1 flex-col items-start justify-between">
         <p className={LABEL}>{label}</p>
-        <div className="flex flex-col items-start gap-[4px]">
+        <div className="flex flex-col items-start gap-[6px]">
           <ValueRow value={value} trend={trend} suffix={suffix} />
           {description != null && <p className={DESC}>{description}</p>}
         </div>

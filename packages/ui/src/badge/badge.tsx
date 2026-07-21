@@ -19,9 +19,9 @@ const badge = cva(
         // Backwards-compatible alias for the previous "destructive" variant.
         destructive: "border-red-200 bg-red-25 text-red-500",
         warning: "border-amber-200 bg-amber-25 text-amber-500",
-        neutral: "border-neutral-200 bg-neutral-100 text-neutral-600",
+        neutral: "border-[#CFC7BC] bg-[#F6F4F1] text-[#525252]",
         // Backwards-compatible alias for the previous "default" variant.
-        default: "border-neutral-200 bg-neutral-100 text-neutral-600",
+        default: "border-[#CFC7BC] bg-[#F6F4F1] text-[#525252]",
         outline: "border-neutral-300 bg-surface text-foreground",
         purple: "border-[#BC97F7] bg-[#F7F1FF] text-[#7635D9]",
       },

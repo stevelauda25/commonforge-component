@@ -3,7 +3,7 @@ import { cn } from "../lib/cn.js"
 export type ProgressRingSize = "sm" | "md" | "lg"
 
 export interface ProgressRingProps {
-  value: number
+  value?: number
   size?: ProgressRingSize
   showPercent?: boolean
   label?: string
@@ -11,13 +11,13 @@ export interface ProgressRingProps {
 }
 
 const dimensions: Record<ProgressRingSize, { size: number; stroke: number; text: string }> = {
-  sm: { size: 40, stroke: 4, text: "text-xs leading-4" },
-  md: { size: 56, stroke: 5, text: "text-sm leading-5" },
-  lg: { size: 72, stroke: 6, text: "text-base leading-5" },
+  sm: { size: 40, stroke: 5, text: "text-xs leading-4" },
+  md: { size: 56, stroke: 7, text: "text-sm leading-5" },
+  lg: { size: 72, stroke: 9, text: "text-base leading-5" },
 }
 
 export function ProgressRing({
-  value,
+  value = 50,
   size = "md",
   showPercent = size !== "sm",
   label = "Progress",
@@ -45,7 +45,7 @@ export function ProgressRing({
           cy={spec.size / 2}
           r={radius}
           fill="none"
-          stroke="rgba(0,0,0,0.08)"
+          stroke="rgba(0,0,0,0.10)"
           strokeWidth={spec.stroke}
         />
         <circle
@@ -53,14 +53,18 @@ export function ProgressRing({
           cy={spec.size / 2}
           r={radius}
           fill="none"
-          stroke="var(--crimson-500)"
+          stroke="#26201C"
           strokeWidth={spec.stroke}
-          strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
         />
       </svg>
-      <span className={cn("absolute font-medium text-black", spec.text)}>
+      <span
+        aria-hidden="true"
+        className="absolute rounded-full bg-white"
+        style={{ inset: spec.stroke }}
+      />
+      <span className={cn("absolute font-medium text-black tabular-nums", spec.text)}>
         {Math.round(normalizedValue)}{showPercent ? "%" : ""}
       </span>
     </div>

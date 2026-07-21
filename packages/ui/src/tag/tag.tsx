@@ -11,23 +11,24 @@ export interface TagProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export function Tag({ variant = "default", children, className, ...props }: TagProps) {
   const isPlaceholder = variant === "placeholder"
-  const isSelected = variant === "selected" || variant === "removable"
+  const isSelected = variant === "selected"
+  const hasPlus = variant === "add" || isPlaceholder
 
   return (
     <button
       {...props}
       type={props.type ?? "button"}
       className={cn(
-        "inline-flex h-[21px] items-center gap-1 whitespace-nowrap rounded-[4px] border-[0.5px] px-2 py-1 text-[10px] leading-[13px] outline-none focus-visible:ring-2 focus-visible:ring-black/15",
+        "inline-flex h-[21px] items-center gap-1 whitespace-nowrap rounded-[4px] border px-2 py-1 text-[10px] leading-[13px] outline-none focus-visible:ring-2 focus-visible:ring-[#CFC7BC]",
         isPlaceholder
-          ? "border-[#8F8F8F] bg-transparent text-[#8F8F8F]"
+          ? "border-dashed border-black/15 bg-transparent text-[#8F8F8F]"
           : isSelected
-            ? "border-black bg-white text-black"
+            ? "border-neutral-900 bg-neutral-900 text-white"
             : "border-[#A3A3A3] bg-white text-[#525252]",
         className,
       )}
     >
-      {variant === "add" && <Plus size={8} aria-hidden="true" />}
+      {hasPlus && <Plus size={8} aria-hidden="true" />}
       <span>{children}</span>
       {variant === "removable" && <X size={8} aria-hidden="true" />}
     </button>

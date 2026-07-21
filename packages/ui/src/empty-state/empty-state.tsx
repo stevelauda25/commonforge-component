@@ -1,8 +1,9 @@
 import type { ReactNode } from "react"
-import { Bell, Plus, RefreshCw, UserPlus } from "lucide-react"
+import { Bell, UserPlus } from "lucide-react"
 import { cn } from "../lib/cn.js"
+import { Button } from "../button/index.js"
 
-export type EmptyStateVariant = "notifications" | "team" | "compact"
+export type EmptyStateVariant = "default" | "avatar" | "compact"
 
 export interface EmptyStateProps {
   variant?: EmptyStateVariant
@@ -15,12 +16,12 @@ export interface EmptyStateProps {
 }
 
 const defaults: Record<EmptyStateVariant, { title: string; description: string; action: string }> = {
-  notifications: {
+  default: {
     title: "No notifications yet",
     description: "Updates about staffing plans and assignments will appear here.",
     action: "Refresh",
   },
-  team: {
+  avatar: {
     title: "No team members",
     description: "Invite people to start building your workforce.",
     action: "Invite team",
@@ -33,7 +34,7 @@ const defaults: Record<EmptyStateVariant, { title: string; description: string; 
 }
 
 export function EmptyState({
-  variant = "notifications",
+  variant = "default",
   title,
   description,
   actionLabel,
@@ -42,35 +43,35 @@ export function EmptyState({
   className,
 }: EmptyStateProps) {
   const content = defaults[variant]
-  const isTeam = variant === "team"
+  const isAvatar = variant === "avatar"
   const isCompact = variant === "compact"
-  const Icon = isTeam ? UserPlus : Bell
-  const ActionIcon = isTeam ? Plus : RefreshCw
+  const Icon = isAvatar ? UserPlus : Bell
 
   return (
-    <div className={cn("flex max-w-[277px] flex-col items-center text-center", className)}>
+    <div
+      className={cn(
+        "flex flex-col items-center rounded-md border-[0.5px] border-dashed border-black/10 bg-white text-center",
+        isCompact ? "min-h-32 p-4" : "min-h-48 p-6",
+        className,
+      )}
+    >
       {!isCompact && (
-        <span className="mb-4 flex size-10 items-center justify-center rounded-full bg-neutral-50 text-neutral-700">
+        <span
+          className={cn(
+            "mb-3 flex h-10 w-10 items-center justify-center rounded-full",
+            isAvatar ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-700",
+          )}
+        >
           {icon ?? <Icon size={20} aria-hidden="true" />}
         </span>
       )}
       <div>
-        <h3 className="text-lg font-medium leading-7 text-black">{title ?? content.title}</h3>
-        <p className="mt-0.5 text-base leading-6 text-[#525252]">{description ?? content.description}</p>
+        <h3 className="text-sm font-medium leading-5 text-black">{title ?? content.title}</h3>
+        <p className="mt-1 max-w-72 text-xs leading-4 text-secondary">{description ?? content.description}</p>
       </div>
-      <button
-        type="button"
-        onClick={onAction}
-        className={cn(
-          "mt-4 inline-flex h-9 items-center gap-2 rounded-[6px] border-[0.5px] px-4 py-2 text-sm font-medium leading-5 outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2",
-          isTeam
-            ? "border-white/10 bg-[#26201C] text-white hover:bg-neutral-800"
-            : "border-black/10 bg-white text-black hover:bg-neutral-50",
-        )}
-      >
-        <ActionIcon size={20} aria-hidden="true" />
+      <Button size="sm" variant="inverse" className="mt-4" onClick={onAction}>
         {actionLabel ?? content.action}
-      </button>
+      </Button>
     </div>
   )
 }

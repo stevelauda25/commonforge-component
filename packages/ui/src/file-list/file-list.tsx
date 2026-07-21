@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, FileText, RefreshCw, Trash2, X } from "lucide-react"
+import { AlertCircle, CheckCircle2, FileText, RefreshCw, X } from "lucide-react"
 import { cn } from "../lib/cn.js"
 
 export type FileListState = "default" | "uploading" | "success" | "failed"
@@ -38,15 +38,25 @@ export function FileList({
       )}
     >
       <div className="flex min-w-0 items-center gap-3">
-        <span className="flex size-12 shrink-0 items-center justify-center rounded-[2px] bg-[#F0F0F0] text-black">
+        <span
+          className={cn(
+            "flex size-12 shrink-0 items-center justify-center rounded-[2px]",
+            state === "failed" ? "bg-red-25 text-red-500" : "bg-[#F0F0F0] text-black",
+          )}
+        >
           <FileText size={24} aria-hidden="true" />
         </span>
         <div className="min-w-0">
           <p className="truncate text-sm leading-5 text-black">{fileName}</p>
-          <div className="mt-1 flex items-center gap-1 text-xs leading-4 text-[#8F8F8F]">
+          <div
+            className={cn(
+              "mt-1 flex items-center gap-1 text-xs leading-4",
+              state === "uploading" || state === "success" ? "text-[#525252]" : "text-[#8F8F8F]",
+            )}
+          >
             <span>{fileSize}</span>
             <span aria-hidden="true">·</span>
-            <span className={cn(state === "failed" && "text-red-500", state === "success" && "text-green-500")}>
+            <span className={cn(state === "failed" && "text-red-500")}>
               {status}
             </span>
           </div>
@@ -74,10 +84,10 @@ export function FileList({
           <button
             type="button"
             onClick={onRemove}
-            className="flex size-9 items-center justify-center rounded-[6px] text-[#525252] outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black/20"
+            className="flex size-9 items-center justify-center rounded-full p-0 text-[#525252] outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black/20"
             aria-label={`Remove ${fileName}`}
           >
-            {state === "uploading" ? <X size={16} aria-hidden="true" /> : <Trash2 size={16} aria-hidden="true" />}
+            <X size={16} aria-hidden="true" />
           </button>
         )}
       </div>

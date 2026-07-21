@@ -29,7 +29,7 @@ const buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#C0180C_0%,#C0180C_100%)] hover:text-white/80",
           "active:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#C0180C_0%,#C0180C_100%)]",
-          "[&:disabled:not([data-loading=true])]:bg-[#FADBD8] [&:disabled:not([data-loading=true])]:text-[#7A1710] [&:disabled:not([data-loading=true])]:shadow-none",
+          "[&:disabled:not([data-loading=true])]:bg-[#F9766C] [&:disabled:not([data-loading=true])]:text-white/50 [&:disabled:not([data-loading=true])]:shadow-none",
           "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
         ),
         // Backwards-compatible alias for the previous "default" variant.
@@ -39,7 +39,7 @@ const buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#C0180C_0%,#C0180C_100%)] hover:text-white/80",
           "active:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#C0180C_0%,#C0180C_100%)]",
-          "[&:disabled:not([data-loading=true])]:bg-[#FADBD8] [&:disabled:not([data-loading=true])]:text-[#7A1710] [&:disabled:not([data-loading=true])]:shadow-none",
+          "[&:disabled:not([data-loading=true])]:bg-[#F9766C] [&:disabled:not([data-loading=true])]:text-white/50 [&:disabled:not([data-loading=true])]:shadow-none",
           "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
         ),
         danger: cn(
@@ -48,7 +48,7 @@ const buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#E51D31_0%,#E51D31_100%)] hover:text-white/80",
           "active:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#E51D31_0%,#E51D31_100%)]",
-          "[&:disabled:not([data-loading=true])]:bg-[#FAD7DB] [&:disabled:not([data-loading=true])]:text-[#7A1020] [&:disabled:not([data-loading=true])]:shadow-none",
+          "[&:disabled:not([data-loading=true])]:bg-[#F65B68] [&:disabled:not([data-loading=true])]:text-white/50 [&:disabled:not([data-loading=true])]:shadow-none",
           "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
         ),
         // Backwards-compatible alias for the previous "destructive" variant.
@@ -58,7 +58,7 @@ const buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#E51D31_0%,#E51D31_100%)] hover:text-white/80",
           "active:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#E51D31_0%,#E51D31_100%)]",
-          "[&:disabled:not([data-loading=true])]:bg-[#FAD7DB] [&:disabled:not([data-loading=true])]:text-[#7A1020] [&:disabled:not([data-loading=true])]:shadow-none",
+          "[&:disabled:not([data-loading=true])]:bg-[#F65B68] [&:disabled:not([data-loading=true])]:text-white/50 [&:disabled:not([data-loading=true])]:shadow-none",
           "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
         ),
         secondary: cn(
@@ -66,20 +66,20 @@ const buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:bg-[#F5F5F5] hover:text-primary/80",
           "active:bg-[#F0F0F0] active:text-primary/60",
-          "[&:disabled:not([data-loading=true])]:bg-[#E0E0E0] [&:disabled:not([data-loading=true])]:text-primary/50",
+          "[&:disabled:not([data-loading=true])]:bg-[#E0E0E0] [&:disabled:not([data-loading=true])]:text-primary/30",
           "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
         ),
         outline: cn(
           "border border-[#8F8F8F] bg-white text-primary",
           "hover:border-[#666666] hover:bg-[#F5F5F5] hover:text-primary/80",
           "active:border-[#666666] active:bg-[#F0F0F0] active:text-primary/60",
-          "[&:disabled:not([data-loading=true])]:border-[#C2C2C2] [&:disabled:not([data-loading=true])]:bg-[#E0E0E0] [&:disabled:not([data-loading=true])]:text-primary/50"
+          "[&:disabled:not([data-loading=true])]:border-[#C2C2C2] [&:disabled:not([data-loading=true])]:bg-[#E0E0E0] [&:disabled:not([data-loading=true])]:text-primary/30"
         ),
         ghost: cn(
           "bg-transparent text-[#525252]",
           "hover:bg-[#F5F5F5] hover:text-primary/80",
           "active:bg-[#F0F0F0] active:text-primary/60",
-          "[&:disabled:not([data-loading=true])]:text-primary/50"
+          "[&:disabled:not([data-loading=true])]:text-primary/30"
         ),
         inverse: cn(
           "border border-white/10 text-white",
@@ -87,7 +87,7 @@ const buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:text-white/80",
           "active:text-white/60",
-          "[&:disabled:not([data-loading=true])]:bg-[#26201C] [&:disabled:not([data-loading=true])]:text-white/50 [&:disabled:not([data-loading=true])]:shadow-none",
+          "[&:disabled:not([data-loading=true])]:bg-[#26201C] [&:disabled:not([data-loading=true])]:text-white/30 [&:disabled:not([data-loading=true])]:shadow-none",
           "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
         ),
       },
@@ -195,10 +195,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
               isLightText && "text-[#FFFFFF] drop-shadow-[0_4px_2px_rgba(0,0,0,0.08)]",
               disabled && !loading &&
                 (resolvedVariant === "primary" || resolvedVariant === "default") &&
-                "text-[#7A1710] drop-shadow-none",
+                "text-white/50 drop-shadow-none",
               disabled && !loading &&
                 (resolvedVariant === "danger" || resolvedVariant === "destructive") &&
-                "text-[#7A1020] drop-shadow-none",
+                "text-white/50 drop-shadow-none",
+              disabled && !loading &&
+                resolvedVariant === "inverse" &&
+                "text-white/30 drop-shadow-none",
             )}
           >
             {children}

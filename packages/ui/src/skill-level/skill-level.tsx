@@ -1,7 +1,8 @@
 import { cn } from "../lib/cn.js"
 
 export interface SkillLevelProps {
-  level: 1 | 2 | 3 | 4 | 5
+  level?: 1 | 2 | 3 | 4 | 5
+  max?: number
   className?: string
   label?: string
 }
@@ -14,10 +15,10 @@ const levelColors = {
   5: "bg-green-400",
 } as const
 
-export function SkillLevel({ level, className, label = `Skill level ${level} of 5` }: SkillLevelProps) {
+export function SkillLevel({ level = 3, max = 5, className, label = `Skill level ${level} of ${max}` }: SkillLevelProps) {
   return (
     <span className={cn("inline-flex items-center gap-[3px]", className)} role="img" aria-label={label}>
-      {[1, 2, 3, 4, 5].map((dot) => (
+      {Array.from({ length: max }, (_, i) => i + 1).map((dot) => (
         <span
           key={dot}
           aria-hidden="true"

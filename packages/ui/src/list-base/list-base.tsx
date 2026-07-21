@@ -17,12 +17,12 @@ import { cn } from "../lib/cn.js"
 export type ListBaseSize = "sm" | "md"
 
 const listBase = cva(
-  "flex items-center gap-2 rounded-sm select-none",
+  "flex min-h-6 items-center gap-2 rounded-sm select-none",
   {
     variants: {
       size: {
-        sm: "min-h-5 px-1.5 py-0.5 text-[10px] leading-3",
-        md: "min-h-6 px-2 py-1 text-xs leading-4",
+        sm: "px-2 py-1 text-xs leading-4 [&_svg]:size-3",
+        md: "px-3 py-2 text-sm leading-5 [&_svg]:size-3.5",
       },
       state: {
         default: "text-[#525252] hover:bg-[#F5F5F5]",
@@ -44,14 +44,14 @@ const listBase = cva(
       { tone: "danger", state: "selected", class: "text-red-500 bg-red-50" },
       { tone: "danger", state: "disabled", class: "text-red-200" },
     ],
-    defaultVariants: { size: "md", state: "default", tone: "default" },
+    defaultVariants: { size: "sm", state: "default", tone: "default" },
   },
 )
 
 export interface ListBaseProps
   extends HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof listBase> {
-  /** row height and text size (default `md`) */
+  /** row height and text size (default `sm`) */
   size?: ListBaseSize
   /** leading slot — icon, radio, checkbox, avatar */
   leading?: ReactNode

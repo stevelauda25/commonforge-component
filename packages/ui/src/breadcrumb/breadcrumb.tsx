@@ -87,7 +87,7 @@ function EllipsisMenu({ items }: { items: BreadcrumbItem[] }) {
       {open && (
         <div
           role="menu"
-          className="absolute left-0 top-full z-20 mt-1 flex w-[216px] flex-col gap-1 rounded-[6px] border-[0.5px] border-black/10 bg-white px-1 py-2 shadow-[0_1px_1px_rgba(0,0,0,0.1),0_2px_2px_rgba(0,0,0,0.05),0_2px_3px_rgba(0,0,0,0.05),inset_0_0.5px_1px_rgba(255,255,255,0.25)]"
+          className="absolute left-0 top-full z-20 mt-1 flex w-[216px] flex-col gap-1 rounded-[6px] border-[0.5px] border-black/10 bg-white px-1 py-2 shadow-[0_1px_1px_0_rgba(0,0,0,0.05),0_4px_8px_0_rgba(0,0,0,0.05),0_2px_4px_0_rgba(0,0,0,0.05)]"
         >
           {items.map((item, i) => (
             <ListBase
@@ -118,7 +118,7 @@ export function Breadcrumb({ items, maxItems = 4, className }: BreadcrumbProps) 
     : items
 
   return (
-    <nav aria-label="Breadcrumb" className={cn("flex items-center gap-[14px]", className)}>
+    <nav aria-label="Breadcrumb" className={cn("flex items-center gap-[10px]", className)}>
       {nodes.map((node, i) => {
         const last = i === nodes.length - 1
         return (

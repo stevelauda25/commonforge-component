@@ -30,7 +30,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div
         className={cn(
-          "flex h-[136px] w-full flex-col rounded-[6px] border bg-[#F5F5F5] p-3 transition-shadow focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
+          "flex min-h-[136px] w-full flex-col rounded-[6px] border-[0.5px] bg-[#F5F5F5] p-3 transition-shadow focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
           error ? "border-red-500" : "border-black/10",
           disabled && "border-black/10 bg-[#EBEBEB] focus-within:shadow-none",
           containerClassName,
@@ -50,14 +50,14 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             onChange?.(event)
           }}
           className={cn(
-            "min-h-0 flex-1 resize-none bg-transparent text-sm leading-5 text-black outline-none placeholder:text-[#525252]",
+            "min-h-24 flex-1 resize-none bg-transparent text-sm leading-5 text-[#525252] outline-none placeholder:text-[#8F8F8F]",
             disabled && "text-[#8F8F8F] placeholder:text-[#8F8F8F]",
             className,
           )}
         />
         <span
           id={counterId}
-          className={cn("mt-2 text-right text-xs leading-3 text-[#8F8F8F]", disabled && "text-[#CCCCCC]")}
+          className={cn("text-right text-xs leading-3 text-[#8F8F8F] tabular-nums", disabled && "text-[#CCCCCC]")}
         >
           {currentValue.length}/{maxLength}
         </span>

@@ -5,6 +5,7 @@ import { cn } from "../lib/cn.js"
 
 export interface SwitchProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
   size?: "sm" | "md"
+  state?: "default" | "hover"
   checked?: boolean
   defaultChecked?: boolean
   onCheckedChange?: (checked: boolean) => void
@@ -12,6 +13,7 @@ export interface SwitchProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
 
 export function Switch({
   size = "md",
+  state = "default",
   checked,
   defaultChecked = false,
   disabled,
@@ -39,19 +41,21 @@ export function Switch({
       disabled={disabled}
       onClick={toggle}
       className={cn(
-        "relative inline-flex shrink-0 items-center rounded-full border-[0.5px] border-white/5 p-0.5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2",
+        "relative inline-flex shrink-0 items-center rounded-full border-[0.5px] border-white/5 p-0.5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20",
         isSmall ? "h-5 w-9" : "h-6 w-11",
-        isChecked ? "bg-green-600 hover:bg-green-800" : "bg-[#F5F5F5] hover:bg-[#EBEBEB]",
-        disabled && "cursor-not-allowed bg-[#F5F5F5] hover:bg-[#F5F5F5]",
+        isChecked
+          ? cn("bg-green-600 hover:bg-green-800", state === "hover" && "bg-green-800")
+          : cn("border-black/10 bg-[#F5F5F5] hover:bg-[#EBEBEB]", state === "hover" && "bg-[#EBEBEB]"),
+        disabled && "cursor-not-allowed border-black/5 bg-[#F5F5F5] hover:bg-[#F5F5F5]",
         className,
       )}
     >
       <span
         aria-hidden="true"
         className={cn(
-          "block rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.16)] transition-transform duration-150",
+          "block rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.18)] transition-transform duration-150",
           isSmall ? "size-4" : "size-5",
-          disabled ? "bg-[#D1D1D1]" : "bg-white",
+          disabled ? "bg-[#D4D4D4]" : "bg-white",
           isChecked ? (isSmall ? "translate-x-4" : "translate-x-5") : "translate-x-0",
         )}
       />

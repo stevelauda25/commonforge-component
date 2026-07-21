@@ -2,21 +2,23 @@ import { useRef, useState, type DragEvent, type InputHTMLAttributes } from "reac
 import { CloudUpload } from "lucide-react"
 import { cn } from "../lib/cn.js"
 
-export type DropZoneState = "default" | "hover" | "multiple" | "dragging"
+export type DropZoneVisualState = "default" | "active" | "dragging"
 
 export interface DropZoneProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
-  state?: DropZoneState
+  state?: DropZoneVisualState
   description?: string
+  maxSizeLabel?: string
   onFiles?: (files: File[]) => void
   className?: string
 }
 
 export function DropZone({
   state = "default",
-  description = "Supports .txt, .docx, .pdf (max 10MB)",
+  maxSizeLabel = "max 10MB",
+  description = `Supports .txt, .docx, .pdf (${maxSizeLabel})`,
   disabled,
   multiple,
-  accept,
+  accept = ".txt,.docx,.pdf",
   onFiles,
   className,
   ...inputProps
@@ -27,7 +29,7 @@ export function DropZone({
   const headline =
     activeState === "dragging"
       ? "Release to drop"
-      : activeState === "multiple" || multiple
+      : multiple
         ? "Drop files here, or click to browse"
         : "Drop file here, or click to browse"
 
@@ -42,45 +44,52 @@ export function DropZone({
   }
 
   return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={() => inputRef.current?.click()}
-      onDragEnter={(event) => {
-        event.preventDefault()
-        if (!disabled) setIsDragging(true)
-      }}
-      onDragOver={(event) => event.preventDefault()}
-      onDragLeave={() => setIsDragging(false)}
-      onDrop={handleDrop}
+    <div
       className={cn(
-        "flex h-[148px] w-full max-w-[422px] items-center justify-center rounded-[6px] border border-dashed border-black/20 bg-[#F5F5F5] p-0.5 outline-none transition-colors focus-visible:border-black focus-visible:ring-4 focus-visible:ring-black/10",
-        activeState === "hover" && "bg-[#EBEBEB]",
-        activeState === "dragging" && "border-solid border-crimson-500 bg-crimson-25",
-        disabled && "cursor-not-allowed opacity-50",
+        "h-[148px] w-full rounded-md border-[0.5px] border-black/5 bg-[#F5F5F5] p-0.5",
+        disabled && "bg-[#EBEBEB]",
         className,
       )}
     >
-      <span className="flex h-[144px] w-full flex-col items-center justify-center gap-2 rounded-[5px]">
-        <CloudUpload size={24} className="text-[#525252]" aria-hidden="true" />
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => inputRef.current?.click()}
+        onDragEnter={(event) => {
+          event.preventDefault()
+          if (!disabled) setIsDragging(true)
+        }}
+        onDragOver={(event) => event.preventDefault()}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={handleDrop}
+        className={cn(
+          "flex h-full w-full flex-col items-center justify-center gap-2 rounded-[5px] border border-black/10 bg-white outline-none transition-colors focus-visible:ring-2 focus-visible:ring-crimson-500/30 focus-visible:ring-offset-1",
+          (activeState === "active" || activeState === "dragging") && "border-crimson-500",
+          disabled && "cursor-not-allowed bg-[#F5F5F5]",
+        )}
+      >
+        <CloudUpload
+          className={cn("h-8 w-8 opacity-80", disabled ? "text-[#CCCCCC]" : "text-[#8F8F8F]")}
+          aria-hidden="true"
+        />
         <span className="flex flex-col items-center gap-1">
-          <span className="text-xs font-medium leading-[14px] text-black">{headline}</span>
-          <span className="text-[10px] leading-3 text-[#8F8F8F]">
+          <span className="text-xs leading-[14px] opacity-80">{headline}</span>
+          <span className="text-[10px] leading-3 text-[#525252] opacity-80">
             {activeState === "dragging" ? "Drop your files" : description}
           </span>
         </span>
-      </span>
-      <input
-        {...inputProps}
-        ref={inputRef}
-        type="file"
-        accept={accept}
-        multiple={multiple}
-        disabled={disabled}
-        className="sr-only"
-        onChange={(event) => handleFiles(event.target.files)}
-        tabIndex={-1}
-      />
-    </button>
+        <input
+          {...inputProps}
+          ref={inputRef}
+          type="file"
+          accept={accept}
+          multiple={multiple}
+          disabled={disabled}
+          className="sr-only"
+          onChange={(event) => handleFiles(event.target.files)}
+          tabIndex={-1}
+        />
+      </button>
+    </div>
   )
 }

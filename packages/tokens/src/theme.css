@@ -64,4 +64,16 @@
   --duration-slow: 240ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-emphasized: cubic-bezier(0.3, 0, 0.8, 0.15);
+  /* Brand ramp anchor — for direct var() consumers (e.g. SVG strokes) */
+  --crimson-500: #C0180C;
+  --color-crimson-500: var(--crimson-500);
+}
+
+@keyframes progress-bar-indeterminate {
+  from {
+    transform: translateX(-115%);
+  }
+  to {
+    transform: translateX(315%);
+  }
 }

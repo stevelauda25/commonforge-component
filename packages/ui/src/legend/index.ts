@@ -1,2 +1,2 @@
 export { Legend } from './legend.js';
-export type { LegendProps, LegendVariant } from './legend.js';
+export type { LegendLineStyle, LegendProps, LegendVariant } from './legend.js';

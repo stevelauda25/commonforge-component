@@ -29,7 +29,7 @@ export function AccountSwitcher({
   className,
 }: AccountSwitcherProps) {
   return (
-    <div className={cn("flex w-[calc(100%+2px)] items-center gap-2 rounded-sm py-2 pl-1 pr-0", className)}>
+    <div className={cn("flex h-10 w-full items-center gap-2 rounded-[6px] bg-[#FBFAF9] pl-1 pr-[6px]", className)}>
       <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
         <button
           type="button"
@@ -38,7 +38,7 @@ export function AccountSwitcher({
         >
           <Avatar src={avatarSrc} fallback={initials} alt={name} size={20} />
           <span className="truncate text-sm leading-5 text-black">{name}</span>
-          <ChevronDown className="size-3 shrink-0 text-muted-foreground" />
+          <ChevronDown className="size-3 shrink-0 text-subtle" />
         </button>
         {role && (
           <Badge variant="purple" size="sm" className="shrink-0 px-1.5 py-0.5">
@@ -50,7 +50,7 @@ export function AccountSwitcher({
         type="button"
         onClick={onToggleSidebar}
         aria-label="Collapse sidebar"
-        className="flex shrink-0 items-center justify-center rounded-sm p-1 text-muted-foreground outline-none hover:bg-[#F5F5F5] hover:text-foreground focus-visible:ring-2 focus-visible:ring-[#CFC7BC]"
+        className="flex shrink-0 items-center justify-center rounded-sm p-1 text-subtle outline-none hover:bg-[#F5F5F5] hover:text-black focus-visible:ring-2 focus-visible:ring-[#CFC7BC]"
       >
         <PanelLeft className="size-4" />
       </button>

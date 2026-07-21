@@ -1,4 +1,4 @@
-import type { ComponentType, MouseEventHandler, SVGProps } from "react"
+import type { ComponentType, KeyboardEvent, MouseEvent, MouseEventHandler, SVGProps } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import { cn } from "../lib/cn.js"
 import { ListBase } from "../list-base/index.js"
@@ -45,6 +45,7 @@ export function NavItem({
     <ListBase
       role="button"
       tabIndex={disabled ? -1 : 0}
+      size="sm"
       aria-current={current ? "page" : undefined}
       aria-expanded={expandable ? expanded : undefined}
       aria-disabled={disabled || undefined}
@@ -53,6 +54,17 @@ export function NavItem({
       leading={!sub && Icon ? <Icon className={NAV_ICON_CLASS} /> : undefined}
       trailing={expandable ? <Chevron className={cn(NAV_ICON_CLASS, "text-[#525252]")} /> : undefined}
       onClick={disabled ? undefined : onClick}
+      onKeyDown={
+        disabled
+          ? undefined
+          : // a div with role="button" doesn't activate on Enter/Space natively
+            (event: KeyboardEvent<HTMLDivElement>) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault()
+                onClick?.(event as unknown as MouseEvent<HTMLDivElement>)
+              }
+            }
+      }
       className={cn(
         "outline-none",
         !disabled && "cursor-pointer",

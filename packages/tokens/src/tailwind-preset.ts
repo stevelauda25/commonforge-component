@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import { primitives } from './primitives.js';
 
 /**
  * Tailwind preset — bridge between CSS variables in theme.css
@@ -6,6 +7,32 @@ import type { Config } from 'tailwindcss';
  */
 
 const rgbVar = (name: string) => `rgb(var(--color-${name}) / <alpha-value>)`;
+
+/** '255 240 241' → '#FFF0F1' */
+const tripletToHex = (triplet: string) =>
+  `#${triplet
+    .split(' ')
+    .map((channel) => Number(channel).toString(16).padStart(2, '0'))
+    .join('')}`.toUpperCase();
+
+const ramp = (scale: Record<string, string>) =>
+  Object.fromEntries(
+    Object.entries(scale).map(([shade, triplet]) => [shade, tripletToHex(triplet)]),
+  );
+
+/**
+ * SPARC primitive color ramps (from primitives.ts), registered as static
+ * hexes so utilities like `bg-red-25`, `bg-green-400` or `text-red-500`
+ * resolve to SPARC values instead of the Tailwind default palette.
+ */
+const colors = {
+  neutral: ramp(primitives.neutral),
+  crimson: ramp(primitives.crimson),
+  green:   ramp(primitives.green),
+  amber:   ramp(primitives.amber),
+  red:     ramp(primitives.red),
+  gray:    ramp(primitives.gray),
+};
 
 const backgroundColor = {
   canvas:   rgbVar('bg-canvas'),
@@ -63,6 +90,7 @@ const textColor = {
 export const preset: Partial<Config> = {
   theme: {
     extend: {
+      colors,
       backgroundColor,
       borderColor,
       textColor,

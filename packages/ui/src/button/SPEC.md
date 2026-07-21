@@ -22,7 +22,7 @@ Primary action element. Digunakan untuk CTA utama, submit form, atau aksi lain y
 
 | Size | Height | Padding horizontal | Font size | Line height | Icon size |
 |---|---|---|---|---|---|
-| `xs` | 27px | 8px | 10px (`text-caption`) | 13px | 12px |
+| `xs` | 27px | 8px | 11px (`text-caption`) | 15px | 12px |
 | `sm` | 36px | 12px | 12px | 16px | 16px |
 | `md` (default) | 44px | 16px | 14px | 20px | 20px |
 | `lg` | 56px | 24px | 16px | 24px | 24px |
@@ -37,9 +37,12 @@ Primary action element. Digunakan untuk CTA utama, submit form, atau aksi lain y
 
 ### 4.2 Disabled
 
-- Primary / default: background `#FADBD8`, teks `#7A1710`, shadow lebih tipis.
-- Danger / destructive: background `#FAD7DB`, teks `#7A1020`.
-- Secondary / outline / ghost: opacity / grayscale (lih. implementasi).
+- Primary / default: background `#F9766C`, teks `text-white/50`, disabled shadow lebih tipis.
+- Danger / destructive: background `#F65B68`, teks `text-white/50`.
+- Secondary: background `#E0E0E0`, teks `text-primary/30`.
+- Outline: border `#C2C2C2`, background `#E0E0E0`, teks `text-primary/30`.
+- Ghost: teks `text-primary/30` (background tetap transparent).
+- Inverse: background `#26201C`, teks `text-white/30`.
 
 ### 4.3 Loading
 
@@ -75,8 +78,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 | Danger background | `#E51D31` | SPARC danger red |
 | Inverse background | `#26201C` | Warm dark |
 | Secondary/outline border | `border-white/10`, `border-[#8F8F8F]` |  |
-| Disabled primary bg | `#FADBD8` |  |
-| Disabled primary text | `#7A1710` |  |
+| Disabled primary bg | `#F9766C` |  |
+| Disabled primary text | `text-white/50` |  |
 | Focus ring | `ring-2 ring-black/25` |  |
 | Border radius | `rounded-[6px]` |  |
 | Shadow recipe | 3 drop shadows + 3 inner shadows | Lihat `BUTTON_SHADOW` di `button.tsx` |
