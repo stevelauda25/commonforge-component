@@ -1,145 +1,44 @@
+import { SparcSpacingScale } from '../../components/foundations/SparcFoundation';
+
 <PageHeader
   title="Spacing"
-  description="Working from a defined spacing scale lets you eliminate guesswork during design and development. POD uses Tailwind's 4px-based scale, mirrors Figma's named ladder, plus a container width scale for layout primitives."
+  description="Spacing conventions observed in the SPARC apps during the 2026-07-21 foundation collection."
 />
+
+<div className="my-6 rounded-lg border border-default bg-muted/40 p-4 text-sm text-default">
+  <p className="font-semibold text-subtle">Provenance</p>
+  <p className="mt-1 text-subtle">
+    These tokens were collected from the SPARC apps (carltonLaborPlanning +
+    commonforge-sparc-ui) on 2026-07-21 and are this repo's token source.
+  </p>
+</div>
 
 ## Spacing scale
 
-Each step is a discrete value — pick from the ladder, never invent in-between numbers. Tailwind classes shown are what you'll write; pixel values are the resolved size.
+SPARC defines no custom spacing tokens — both apps use Tailwind's default
+4px-based scale. This is that scale:
 
-<PreviewCard>
-  <div className="flex flex-col gap-3">
-    {[
-      { name: 'spacing-none', tw: 'p-0',    px: 0 },
-      { name: 'spacing-xxs',  tw: 'p-0.5',  px: 2 },
-      { name: 'spacing-xs',   tw: 'p-1',    px: 4 },
-      { name: 'spacing-sm',   tw: 'p-1.5',  px: 6 },
-      { name: 'spacing-md',   tw: 'p-2',    px: 8 },
-      { name: 'spacing-lg',   tw: 'p-3',    px: 12 },
-      { name: 'spacing-xl',   tw: 'p-4',    px: 16 },
-      { name: 'spacing-2xl',  tw: 'p-5',    px: 20 },
-      { name: 'spacing-3xl',  tw: 'p-6',    px: 24 },
-      { name: 'spacing-4xl',  tw: 'p-8',    px: 32 },
-      { name: 'spacing-5xl',  tw: 'p-10',   px: 40 },
-      { name: 'spacing-6xl',  tw: 'p-12',   px: 48 },
-      { name: 'spacing-7xl',  tw: 'p-16',   px: 64 },
-      { name: 'spacing-8xl',  tw: 'p-20',   px: 80 },
-      { name: 'spacing-9xl',  tw: 'p-24',   px: 96 },
-      { name: 'spacing-10xl', tw: 'p-32',   px: 128 },
-      { name: 'spacing-11xl', tw: 'p-40',   px: 160 },
-    ].map((s) => (
-      <div key={s.name} className="grid grid-cols-[140px_60px_1fr_60px] items-center gap-4 text-sm">
-        <code className="font-mono text-xs text-muted">{s.name}</code>
-        <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{s.tw}</code>
-        <div className="h-3 bg-brand" style={{ width: `${s.px}px` }} aria-hidden="true" />
-        <span className="font-mono text-xs text-muted text-right">{s.px}px</span>
-      </div>
-    ))}
-  </div>
-</PreviewCard>
+<SparcSpacingScale />
 
-```tsx
-<div className="flex items-center gap-2 p-4">
-  <Icon className="h-4 w-4" />
-  <span>Label</span>
-</div>
-```
+## The rem sizing model
 
-## Width scale
+Component dimensions (panel heights, input heights, icon sizes) are authored in
+rem against the fixed **16px root font-size — "THE ONE KNOB"** — so the whole UI
+scales proportionally from that single value. See
+[Typography](/foundations/typography) for the type tokens
+that share this model.
 
-Layout containers — page max-widths, content columns, modal frames. Use these as `max-w-[Npx]` in code, or wrap a layout in a fixed shell.
+## Fixed component dimensions
 
-<PreviewCard>
-  <div className="flex flex-col gap-2">
-    {[
-      { name: 'width-xxs', px: 320 },
-      { name: 'width-xs',  px: 384 },
-      { name: 'width-sm',  px: 480 },
-      { name: 'width-md',  px: 560 },
-      { name: 'width-lg',  px: 640 },
-      { name: 'width-xl',  px: 768 },
-      { name: 'width-2xl', px: 1024 },
-      { name: 'width-3xl', px: 1280 },
-      { name: 'width-4xl', px: 1440 },
-      { name: 'width-5xl', px: 1600 },
-      { name: 'width-6xl', px: 1920 },
-    ].map((w) => (
-      <div key={w.name} className="grid grid-cols-[140px_1fr_80px] items-center gap-4 text-sm">
-        <code className="font-mono text-xs text-muted">{w.name}</code>
-        <div className="relative h-2 rounded-full bg-muted overflow-hidden">
-          <div
-            className="absolute inset-y-0 left-0 bg-brand rounded-full"
-            style={{ width: `${Math.min((w.px / 1920) * 100, 100)}%` }}
-            aria-hidden="true"
-          />
-        </div>
-        <span className="font-mono text-xs text-muted text-right tabular-nums">{w.px}px</span>
-      </div>
-    ))}
-  </div>
-</PreviewCard>
+Fixed dimensions (e.g. panel heights, sidebar width `15rem`) are not tokens —
+they are documented per-component in the collection's component inventories. If
+the design system wants a spacing scale later, that is a new decision, not an
+extraction.
 
-```tsx
-<main className="mx-auto max-w-[1280px] px-8">
-  {/* width-3xl — desktop content shell */}
-</main>
-```
+## Source of truth
 
-## Container
-
-Tokens for canonical page shell — always-present padding for body content, max-width for desktop.
-
-<PreviewCard>
-  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-    <div className="rounded-lg border border-default bg-surface p-4">
-      <div className="text-xs uppercase tracking-wide text-muted">paragraph-max-width</div>
-      <div className="mt-1 font-mono text-base text-default">720px</div>
-      <div className="mt-2 text-xs text-subtle">Body copy column. Long-form readable line length.</div>
-    </div>
-    <div className="rounded-lg border border-default bg-surface p-4">
-      <div className="text-xs uppercase tracking-wide text-muted">container-padding-mobile</div>
-      <div className="mt-1 font-mono text-base text-default">16px</div>
-      <div className="mt-2 text-xs text-subtle">Horizontal page padding on mobile (`px-4`).</div>
-    </div>
-    <div className="rounded-lg border border-default bg-surface p-4">
-      <div className="text-xs uppercase tracking-wide text-muted">container-padding-desktop</div>
-      <div className="mt-1 font-mono text-base text-default">32px</div>
-      <div className="mt-2 text-xs text-subtle">Horizontal page padding on desktop (`px-8`).</div>
-    </div>
-    <div className="rounded-lg border border-default bg-surface p-4 sm:col-span-3">
-      <div className="text-xs uppercase tracking-wide text-muted">container-max-width-desktop</div>
-      <div className="mt-1 font-mono text-base text-default">1280px</div>
-      <div className="mt-2 text-xs text-subtle">Desktop content shell — wraps everything in `mx-auto max-w-[1280px]`.</div>
-    </div>
-  </div>
-</PreviewCard>
-
-```tsx
-<div className="mx-auto max-w-[1280px] px-4 md:px-8">
-  <article className="mx-auto max-w-[720px]">
-    {/* page body content */}
-  </article>
-</div>
-```
-
-## Common usage
-
-| Class         | Pixels | Use case |
-|---------------|--------|----------|
-| `gap-1`       | 4      | tight icon ↔ label gap |
-| `gap-2`       | 8      | default form-control gap |
-| `gap-3`       | 12     | between buttons |
-| `gap-4`       | 16     | between sections |
-| `p-3`         | 12     | card padding (compact) |
-| `p-4`         | 16     | card padding (default) |
-| `p-6`         | 24     | page section padding |
-| `px-8`        | 32     | wide horizontal padding (desktop container) |
-| `space-y-6`   | 24     | between stacked card sections |
-| `mt-12`       | 48     | between major page blocks |
-
-## Things to watch
-
-- The named scale (`spacing-xs`, `spacing-md`, etc.) lives in **Figma**, not in the codebase. In code you use Tailwind classes directly — `p-1` not `p-spacing-xs`. The naming map is reference-only.
-- Width scale values are not exposed as `max-w-*` Tailwind classes by the preset. Use `max-w-[Npx]` arbitrary syntax for the exact Figma values — the docs site does this throughout.
-- There is no `spacing-sm` named token in Figma's variable list, but the 6px step is canonical. It comes from `Spacing/1.5 (6px)` and maps to Tailwind `p-1.5`.
-- Don't invent in-between values (`p-[7px]`, `gap-[5px]`). If the design needs a value not on the scale, push back on the design — usually it's a snap to the nearest legal step.
+Findings summarized from the external collection
+(`design-system-testing-abdillah/foundation/foundation.md` §5 and
+`tokens.json` → `spacing.note`). The JSON states `"custom": false` — there is no
+spacing data to render on this page; the scale above is Tailwind's documented
+default, shown for reference.

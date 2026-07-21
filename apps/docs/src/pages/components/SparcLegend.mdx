@@ -1,0 +1,36 @@
+import { Legend } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Legend"
+  description="Compact chart legend with swatch, label, value, and percentage."
+/>
+
+## Square swatch
+
+<PreviewCard>
+  <div className="flex flex-wrap gap-6">
+    <Legend color="#201B18" label="Electrical" />
+    <Legend color="#E51D31" label="Plumbing" />
+    <Legend color="#129457" label="HVAC" />
+  </div>
+</PreviewCard>
+
+## With value and percent
+
+<PreviewCard>
+  <div className="flex flex-col gap-2">
+    <Legend color="#201B18" label="Electrical" value="320" percent="(40%)" />
+    <Legend color="#E51D31" label="Plumbing" value="180" percent="(22%)" />
+    <Legend color="#129457" label="HVAC" value="300" percent="(38%)" />
+  </div>
+</PreviewCard>
+
+## Line variant
+
+<PreviewCard>
+  <div className="flex flex-wrap gap-6">
+    <Legend variant="line" color="#201B18" label="Actual" />
+    <Legend variant="line" color="#E51D31" label="Forecast" dashed={false} />
+    <Legend variant="line" color="#129457" label="Target" dashed />
+  </div>
+</PreviewCard>

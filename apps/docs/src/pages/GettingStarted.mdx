@@ -1,6 +1,6 @@
 <PageHeader
   title="Getting Started"
-  description="POD is a small internal design system: token primitives, a Tailwind preset, and React components. Light/dark and accessible by default."
+  description="This design system packages the SPARC tokens and React atoms: token primitives, a Tailwind preset, and components. Light/dark and accessible by default."
 />
 
 ## Install
@@ -30,13 +30,20 @@ export default {
 };
 ```
 
+Both packages are local workspace packages in this repo: `packages/tokens`
+(published name `pod-test-tokens`) and `packages/ui` (`pod-test-ui`).
+
 ## How tokens work
 
 Two layers, bridged by Tailwind:
 
-- **Primitives** (`packages/tokens/src/primitives.ts`) — raw color scales (zinc, green, red, …) as `"R G B"` triples for alpha composition.
+- **Primitives** (`packages/tokens/src/primitives.ts`) — raw color scales as `"R G B"` triples for alpha composition.
 - **Semantic** (`packages/tokens/src/theme.css`) — what components consume: `bg-canvas`, `text-primary`, `accent.*`. Two scopes: `:root` (light) and `.dark`.
 - **Preset** (`packages/tokens/src/tailwind-preset.ts`) — every semantic variable becomes a Tailwind utility (`bg-canvas`, `border-default`, …).
+
+The token values were collected from the SPARC apps (carltonLaborPlanning +
+commonforge-sparc-ui) on 2026-07-21 and are this repo's token source — see the
+Foundations pages for the full scales.
 
 Components never read tokens directly. They consume utility classes only.
 
@@ -44,11 +51,8 @@ Components never read tokens directly. They consume utility classes only.
 
 - **TypeScript + React 18**, `forwardRef`, semicolons, plain exports.
 - Classes composed via `cn()` (clsx + tailwind-merge) so consumers can override with `className` safely.
-- Focus affordance is shared (`packages/ui/src/lib/focus-ring.ts`).
-- **No hardcoded hex values** in `packages/ui/src/` — verifiable by grep.
 
 ## What's shipped
 
-- **[Button](/components/button)** — three variants × four sizes, with icon-only mode.
+- **15 atoms** — [Button](/components/button), [Badge](/components/badge), [Checkbox](/components/checkbox), [Switch](/components/switch), [Tag](/components/tag), [Input](/components/input), [Text Area](/components/text-area), [Radio](/components/radio), [Segmented Button](/components/segmented-button), [Slider](/components/slider), [Loading Spinner](/components/loading-spinner), [Avatar](/components/avatar), [Separator](/components/separator), [List Base](/components/list-base), [Tooltip](/components/tooltip).
 - **Foundations** — [Color](/foundations/color), [Typography](/foundations/typography), [Spacing](/foundations/spacing), [Radius](/foundations/radius), [Elevation](/foundations/elevation).
-- Everything else (Checkbox, Tooltip, Dialog, …) is in the sidebar marked **Coming soon**.

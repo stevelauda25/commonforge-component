@@ -1,0 +1,41 @@
+import { Breadcrumb } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Breadcrumb"
+  description="Horizontal navigation trail that collapses long paths into an ellipsis menu."
+/>
+
+## Default
+
+<PreviewCard>
+  <Breadcrumb
+    items={[
+      { label: 'Home', href: '/' },
+      { label: 'Projects', href: '/projects' },
+      { label: 'Settings', href: '/settings' },
+      { label: 'Billing', href: '/billing' },
+    ]}
+  />
+</PreviewCard>
+
+## Collapsed
+
+<PreviewCard>
+  <Breadcrumb
+    maxItems={4}
+    items={[
+      { label: 'Home', href: '/' },
+      { label: 'Projects', href: '/projects' },
+      { label: 'Phase 1', href: '/phase-1' },
+      { label: 'Electrical', href: '/electrical' },
+      { label: 'Labor Plan', href: '/labor-plan' },
+      { label: 'Budget', href: '/budget' },
+    ]}
+  />
+</PreviewCard>
+
+## Current page only
+
+<PreviewCard>
+  <Breadcrumb items={[{ label: 'Dashboard' }]} />
+</PreviewCard>

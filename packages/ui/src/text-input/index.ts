@@ -1,2 +1,2 @@
-export { TextInput } from './text-input.js';
-export type { TextInputProps, TextInputSize } from './text-input.js';
+export { TextInput, Input } from './text-input.js';
+export type { TextInputProps, InputProps } from './text-input.js';

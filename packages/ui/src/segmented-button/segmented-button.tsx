@@ -1,5 +1,7 @@
+"use client";
+
 import { Fragment, useLayoutEffect, useRef, useState } from "react"
-import { cn } from "../lib/cn"
+import { cn } from "../lib/cn.js"
 
 export interface SegmentedButtonOption {
   value: string
@@ -46,11 +48,11 @@ function CountBadge({ count, selected, cls }: { count: number; selected: boolean
   return (
     <span
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-full font-normal leading-none",
+        "flex shrink-0 items-center justify-center rounded-full font-normal leading-none tabular-nums",
         cls,
         selected
           ? "bg-white/20 text-white"
-          : "bg-black/5 text-[#8f8f8f] group-hover:bg-black/10 group-hover:text-primary",
+          : "bg-black/5 text-[#8f8f8f] group-hover:bg-black/10 group-hover:text-black",
       )}
     >
       {count}
@@ -143,7 +145,7 @@ export function SegmentedButton({
                 "group relative z-10 flex cursor-pointer items-center justify-center font-normal outline-none focus-visible:ring-2 focus-visible:ring-black/25 motion-safe:transition-colors",
                 s.button,
                 fill ? "min-w-0 flex-1 basis-0 px-0" : cn("shrink-0", s.hugPx),
-                selected ? "text-white" : "text-secondary hover:bg-black/5",
+                selected ? "text-white" : "text-[#525252] hover:bg-black/5",
               )}
             >
               {option.label}

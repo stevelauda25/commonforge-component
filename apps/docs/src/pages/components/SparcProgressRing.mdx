@@ -1,0 +1,34 @@
+import { ProgressRing } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Progress Ring"
+  description="Circular progress indicator with percentage label."
+/>
+
+## Sizes
+
+<PreviewCard>
+  <div className="flex items-center gap-6">
+    <ProgressRing value={65} size="sm" />
+    <ProgressRing value={65} size="md" />
+    <ProgressRing value={65} size="lg" />
+  </div>
+</PreviewCard>
+
+## Without percent
+
+<PreviewCard>
+  <div className="flex items-center gap-6">
+    <ProgressRing value={42} size="sm" showPercent={false} />
+    <ProgressRing value={42} size="md" showPercent={false} />
+  </div>
+</PreviewCard>
+
+## Full and empty
+
+<PreviewCard>
+  <div className="flex items-center gap-6">
+    <ProgressRing value={0} />
+    <ProgressRing value={100} />
+  </div>
+</PreviewCard>

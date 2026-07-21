@@ -1,167 +1,18 @@
 <PageHeader
   title="Changelog"
-  description="Notable changes to POD Design System. Versions track `pod-test-ui` on npm; `pod-test-tokens` ships in lockstep."
+  description="Notable changes to this design system. `pod-test-ui` and `pod-test-tokens` are local workspace packages and ship in lockstep."
 />
 
-## v0.1.12 — 2026-05-15
+## 2026-07-21 — SPARC token + atom collection
 
-> ⚠ **Botched release** — `dist/styles.css` was missing from the published tarball again (same regression as 0.1.7). Re-shipped 0.1.12 with the compiled stylesheet present.
+### Foundations
 
----
+- Color, typography, spacing, radius, and elevation tokens collected from the SPARC apps (carltonLaborPlanning + commonforge-sparc-ui). This collection is this repo's token source; see the Foundations pages for the full scales and decision log.
 
-## v0.1.11 — 2026-05-15
+### Components
 
-### Process
-
-- AGENTS.md rule propagated across consumers: all component state strings (error / hint / label / placeholder / canvas example props) authored in **English only**. Conversation language stays whatever the team uses (Indonesian in our case); copy doesn't.
-- Version-only bump for both `pod-test-ui` and `pod-test-tokens` — no source change, kept lockstep.
+- 15 atoms documented from the SPARC apps: Button, Badge, Checkbox, Switch, Tag, Input, Text Area, Radio, Segmented Button, Slider, Loading Spinner, Avatar, Separator, List Base, Tooltip.
 
 ---
 
-## v0.1.10 — 2026-05-15
-
-### Fixes
-
-- **Badge label truncation regression.** 0.1.9 introduced built-in exit motion, which locked the badge wrapper to `max-width: <measured>px` + `overflow: hidden` in the IDLE state. Combined with a stray `truncate` on the label span, any sub-pixel reflow (font load, browser zoom, pixel rounding) caused labels to ellipsize — `Bug` rendered as `B…`, `READY` as `REA…`.
-- Refactored to a three-phase state machine: `idle` (no max-width, label renders naturally) → `closing` (snapshot measured width, mount transition) → `exiting` (animate to 0 width). Idle badges no longer carry a wrapper width at all.
-
----
-
-## v0.1.9 — 2026-05-15
-
-### Badge — built-in exit motion
-
-- `Badge` now plays POD's 280ms exit motion (opacity + blur + scale + width-collapse + margin-collapse) **internally** on × click before invoking the consumer's `onClose`. Consumers no longer need a wrapper component to get smooth removal:
-  ```tsx
-  <Badge color="indigo" onClose={() => setItems(prev => prev.filter(...))}>FILTER</Badge>
-  ```
-  State updates instantly inside `onClose`; the badge animates its own DOM presence during the transition window.
-- Width measured via `useLayoutEffect` on mount so `max-width: <measured>px → 0` actually animates (CSS won't animate from `auto`).
-- New **`instantRemove`** prop (default `false`) opts out of per-item animation for bulk-clear scenarios where staggered exits would feel laggy.
-- `BadgeRemovableDemo` in docs simplified — exit motion lives in the primitive now, demo is just a filtered state list + Reset button.
-
----
-
-## v0.1.8 — 2026-05-15
-
-### Fixes
-
-- **`Checkbox` row alignment with error text.** When `error` was provided, the checkbox box used to vertically center against the full label + error block — so the box drifted down as the error wrapped. Wrapper now top-aligns the box to the first line of the label regardless of how tall the error block becomes.
-
-### Docs
-
-- `BadgeRemovableDemo` added to `apps/docs` as the reference implementation for the 280ms exit motion — copy the timer/ref/width pattern for any new dismissal interaction.
-
----
-
-## v0.1.7 — 2026-05-14
-
-> ⚠ **Botched release** — published with `dist/styles.css` missing from the tarball. Re-shipped as **0.1.7** with the compiled stylesheet present after consumers reported unstyled components on first install.
-
-### Centernode integration fixes
-
-- `podRuntime.js` import names corrected — `Badge` and `Tab` (not `Badges` / `Tabs`). Fix to `scripts/canvas/sync.mjs`: per-component `name:` field is now read from each `canvas.ts` instead of being derived from the kebab-case folder name. Unblocks plural-folder / singular-export components.
-- `variantAliases.js` utility in centernode — `Badge` (`color`) and `Tab` (`tabType`) now treat their respective props as the variant pill source. Pill selector in centernode's Props panel renders 11 colors for Badge / 4 styles for Tab.
-
----
-
-## v0.1.6 — 2026-05-14
-
-### New components
-
-- **`Badge`** — 11 colour variants (Green / Lime / Orange / Yellow / Red / Purple / Indigo / Sky / Blue / Soft Gray / Dark Gray). Tag-dot indicator + IBM Plex Mono label. Closable variant ships with an × icon (exit motion baked in as of 0.1.9).
-- **`Tab`** — 4 style variants (Menu / Underline / ScreenNav / Pill). Underline variant renders the canonical green success bar on the active state only. Full 16-state per-cell audit against Figma node `2412:1375` — every fill / stroke / text / icon colour matched.
-- **`Dropdown`** — controlled select with keyboard navigation, focus-trap, and dark-mode-aware popup. Mapped to Figma + integrated into the centernode playground.
-
-### New experimental tokens
-
-- `experiment-tab-border` (#18181b), `experiment-tab-text` (#7c7e84), `experiment-tab-text-disabled` (#3a3a3d) — values from Figma `stroke/strong` and `text/soft|disabled` that didn't map cleanly to existing semantic tokens. Scoped to Tab; sacred brand tokens untouched.
-
-### Centernode flow change — npm, not workspace
-
-- `centernode` now consumes `pod-test-ui` + `pod-test-tokens` via npm versions (`^0.1.x`) instead of pnpm workspace `file:` resolution. **Implication:** local edits to `packages/ui` no longer auto-propagate to centernode — you must `/publish` a new npm version first. `apps/docs` still uses workspace resolution and reflects edits instantly.
-- `/publish` slash command auto-bumps `centernode/package.json` (and `client-test/package.json`) to the new published version as part of the release flow.
-
-### Deploy — per-app Vercel projects
-
-- Each app (`apps/docs`, `centernode`, `client-test`) now has its own `vercel.json` with the correct monorepo build commands. One `git push origin main` → all auto-rebuild in parallel under their own Vercel projects.
-- Centernode pinned to Node 20.x + `pnpm@latest` to bypass an `ERR_INVALID_THIS` regression in pnpm@9.7.0 on Node 20+.
-
-### Spec
-
-- `CENTERNODE-RULES.md` documents three non-negotiables for component spawn logic — (1) variant pill always in Props panel, (2) props ↔ code bidirectional sync, (3) variant must flow through code.
-
----
-
-## v0.1.4 — 2026-05-13
-
-### New components
-
-- **`SearchInput`** — single-line search field. Default search icon, ⌘K shortcut hint (visual), optional clear (X) button when filled. Same dark-aware input pattern as `TextInput`. Variants `default` × sizes `sm`/`md`. Figma source: `search-input` (node `2408:3610`).
-- **`Switch`** — controlled / uncontrolled boolean toggle. Sizes `sm`/`md`. **Experimental — not yet in Figma. Confirm with designer before shipping.**
-
-### New subpath exports
-
-- **`pod-test-ui/canvas`** — neutral manifest (`name`, `variants`, `sizes`, `defaultProps`, `examples`) for infinite-canvas / playground tools to auto-discover POD components.
-- **`pod-test-ui/styles.css`** — pre-compiled Tailwind utility bundle for consumers that don't run Tailwind themselves. `@tailwind base` intentionally omitted (was leaking element-level preflight into host apps).
-
-### Build pipeline
-
-- `scripts/canvas/sync.mjs` codegen: per-component metadata at `src/<dir>/canvas.ts` auto-aggregates to `tsup.config.ts`, `package.json` exports, the `canvas` manifest, and centernode runtime registry.
-- Adding a new component is now **3 files + 1 command** (`npm run canvas:sync`, or `npm run build`).
-- AGENTS.md ground truth refreshed: `manifest_version: 1`, `last_updated: 2026-05-13`.
-
-### Slash commands (repo workflow)
-
-- **`/run [docs|centernode|client-test|all]`** — idempotent dev-server launcher.
-- **`/restart-server [docs|centernode|all]`** — force kill + cache clear + restart. Use when UI doesn't reflect file changes.
-- **`/verify-component <slug>`** — standalone post-sync fidelity audit. Pulls fresh Figma data, builds variant matrix table per `(variant, state, size)`, reports mismatches with severity.
-- `/sync-figma` FIRST-SYNC GUARD strengthened with mandatory variant matrix audit for new-from-scratch components (>1 variant or >2 sizes). Routine sync of validated components stays FAST PATH.
-
-### Centernode (infinite-canvas playground) integration
-
-- POD components show up in a left sidebar with live mini-previews per variant.
-- Light / dark preview toggle in sidebar header. Mode is **locked at spawn** — newly placed nodes keep their mode; existing nodes don't ripple when toggle changes.
-- POD-aware Tokens panel (per-node + global). Override `accent-default`, `accent-hover`, `danger-*` etc. live; all POD components on canvas auto-shift.
-- JSX snippet runtime via Sucrase: drag a component → canvas code editor shows familiar JSX (`<Button variant="primary" size="md">Save changes</Button>`) instead of raw `h()` calls.
-
----
-
-## v0.1.3 — 2026-05-12
-
-### Fixes
-
-- **Primary / Large button** no longer hardcoded blue. The `experiment-primary-test` override was removed — designer asked experimental tokens not affect production rendering until explicit promotion. Token retained in `theme.css` for future opt-in.
-
-### Build
-
-- `dist/` re-emitted (previous 0.1.2 publish shipped stale dist).
-
----
-
-## v0.1.2 — 2026-05-12
-
-> ⚠ **Botched release** — published with stale dist. Skip and use **0.1.3** instead.
-
----
-
-## v0.1.1 — 2026-05-11
-
-### Fixes
-
-- **Primary button hover** no longer renders maroon. Root cause: `hover:bg-destructive` (`#991b1b`) was wrongly applied to primary variant — `accent` and `danger` are separate sacred namespaces and may not cross-map.
-
-### Spec
-
-- `/sync-figma` step 4 now enforces the sacred-namespace boundary explicitly (Figma `surface-primary*` may only map to `accent-*`, never `danger-*`). Grep-able guard added to spec.
-
----
-
-## v0.1.0 — 2026-04-27
-
-### Initial release
-
-- Token package (`pod-test-tokens`): CSS variables + Tailwind preset.
-- Component package (`pod-test-ui`): `Button` (3 variants × 4 sizes), `Checkbox` (incl. indeterminate), `Tooltip` (4 variants).
-- Light + dark mode via semantic CSS variables.
-- Playground app (`apps/playground`) and docs site (`apps/docs`) with kumo-style component grid and asto-style sidebar IA.
+> Earlier POD-era release entries (v0.1.0 – v0.1.12) were removed: they cover components and release infrastructure that do not exist on this branch.

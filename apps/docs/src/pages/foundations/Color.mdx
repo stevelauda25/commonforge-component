@@ -1,63 +1,102 @@
+import {
+  SparcColorRamp,
+  SparcSemanticColors,
+} from '../../components/foundations/SparcFoundation';
+
 <PageHeader
   title="Color"
-  description="Semantic tokens for surface, text, border, accents, and feedback states. All values come from pod-test-tokens."
+  description="Color tokens collected from the SPARC apps (carltonLaborPlanning globals.css, verified identical to commonforge-sparc-ui plus the cool-gray ramp). Collected 2026-07-21."
 />
 
-## Backgrounds
-
-<SwatchGrid>
-  <Swatch bg="bg-canvas"  name="canvas"  value="page background" />
-  <Swatch bg="bg-surface" name="surface" value="cards, inputs" />
-  <Swatch bg="bg-elevated"  name="raised"  value="popovers, tooltips" />
-  <Swatch bg="bg-muted"   name="muted"   value="ghost-button hover, chips" />
-</SwatchGrid>
-
-## Text
-
-<SwatchGrid>
-  <Swatch bg="--color-text-default" name="text-default" value="primary text" />
-  <Swatch bg="--color-text-subtle" name="text-subtle" value="secondary / muted text" />
-  <Swatch bg="--color-text-muted" name="text-muted" value="muted / hint text" />
-  <Swatch bg="--color-text-disabled" name="text-disabled" value="disabled labels" />
-</SwatchGrid>
-
-## Borders
-
-<SwatchGrid>
-  <Swatch bg="--color-border-subtle" name="border-subtle" value="hairline" />
-  <Swatch bg="--color-border-default" name="border-default" value="default border" />
-  <Swatch bg="--color-border-strong" name="border-strong" value="strong / hover border" />
-  <Swatch bg="--color-border-brand" name="border-brand" value="focus ring (uses brand)" />
-</SwatchGrid>
-
-## Accent — POD brand green
-
-<SwatchGrid>
-  <Swatch bg="bg-brand"        name="accent"         value="default" />
-  <Swatch bg="bg-brand-hover"  name="accent-hover"   value="hover" />
-  <Swatch bg="bg-brand-hover" name="accent-active"  value="active" />
-  <Swatch bg="bg-brand-subtle" name="accent-subtle"  value="subtle (badges)" />
-</SwatchGrid>
-
-## Feedback
-
-<SwatchGrid>
-  <Swatch bg="bg-destructive"  name="danger"  value="errors, destructive" />
-  <Swatch bg="bg-warning" name="warning" value="warnings" />
-  <Swatch bg="bg-success" name="success" value="success states" />
-  <Swatch bg="bg-info"    name="info"    value="informational" />
-</SwatchGrid>
-
-## Light vs dark
-
-Switch the theme toggle in the topbar — every swatch above re-paints from the `.dark` overrides defined in `pod-test-tokens/theme.css`. Components consume the same Tailwind class names; the variables swap underneath.
-
-## Usage
-
-```tsx
-<div className="bg-surface text-default border border-default">
-  Token-driven container
+<div className="my-6 rounded-lg border border-default bg-muted/40 p-4 text-sm text-default">
+  <p className="font-semibold text-subtle">Provenance</p>
+  <p className="mt-1 text-subtle">
+    These tokens were collected from the SPARC apps (carltonLaborPlanning +
+    commonforge-sparc-ui) on 2026-07-21 and are this repo's token source. Values
+    are rendered straight from <code>src/data/sparc-foundation.json</code> via
+    inline styles.
+  </p>
 </div>
-```
 
-Never embed hex values in components or MDX. If you need a color that isn't in the semantic set, propose a new token rather than reaching for a primitive.
+## Palette ramps
+
+Six ramps extracted value-for-value from the running apps. `neutral` is the warm
+brand ramp (cream/charcoal), `crimson` is the brand/action ramp (500 `#C0180C` =
+primary buttons), and `red` is deliberately distinct from crimson for error states.
+The cool `gray` ramp comes from Figma Primitives (18 shades incl. the 75/150/250/350/975
+half-steps) — only the 3001 app had it tokenized.
+
+### Neutral (warm)
+
+<SparcColorRamp ramp="neutral" />
+
+### Crimson (brand)
+
+<SparcColorRamp ramp="crimson" />
+
+### Green (success)
+
+<SparcColorRamp ramp="green" />
+
+### Amber (warning)
+
+<SparcColorRamp ramp="amber" />
+
+### Red (error)
+
+<SparcColorRamp ramp="red" />
+
+### Gray (cool)
+
+<SparcColorRamp ramp="gray" />
+
+## Semantic colors
+
+<SparcSemanticColors />
+
+Notes from the collection doc:
+
+- `secondary` is a **cool gray inside a warm system** — intentional, matches Figma.
+- `border-hairline` exists, but most components actually use `border-black/10` at
+  0.5px instead of the hairline token.
+- `muted-foreground` / `subtle-foreground` are rarely used in components so far.
+
+## Decisions applied 2026-07-21
+
+1. **`--primary: #000000` → renamed to `--text-primary`** — it is a text color.
+   The black was always the primary *text* color (~70 usages of the `text-primary`
+   class), not the action color. Actions are crimson-500. The `--color-primary`
+   theme mapping now points at `--text-primary`, so existing `text-primary`
+   classes keep working.
+2. **`--danger-foreground: #9C1122` → removed**, replaced with
+   `rgba(255, 255, 255, 0.95)` (near-white alpha). The token is currently unused
+   in app code, so this is a safe default for future danger buttons.
+3. `primary-hover` (`#98150B`, crimson-600) was **kept** — it is the text hover
+   state (`hover:text-primary-hover` in JobCard/JobCardV2).
+4. `primary-foreground` (`#FFFFFF`) was **kept** — text on dark/primary surfaces
+   (used by dashboard widgets).
+
+## Hardcoded colors left out of this round
+
+Per the 2026-07-21 review, promoting these to tokens was **declined for now** —
+they stay hardcoded in component code and are documented here instead:
+
+| Hex | Used for |
+|---|---|
+| `#4169D6` | job status "In-progress", chart series |
+| `#DB4C86` | job status "Potential" |
+| `#0072E4` | Actuals bars, skills level 5 |
+| `#00A97F` | Calendar bars, budget "on track" |
+| `#0D76F2` | map pins (staffed) |
+| `#EB6214` | skills level 2 |
+| `#BC97F7` / `#F7F1FF` / `#7635D9` | badge `purple` variant |
+| `#2D251F` | progress-bar default fill |
+| `#A2A19A` / `#D3D2CF` | gantt bar default/disabled |
+| `#211D1A` | chart tooltip background |
+
+## Source of truth
+
+Values on this page come from `apps/docs/src/data/sparc-foundation.json`, copied
+unchanged from the original collection (`design-system-testing-abdillah/foundation/tokens.json`,
+v0.2.0). See that repo's `foundation.md` for the full decision log. This
+collection is this repo's token source.

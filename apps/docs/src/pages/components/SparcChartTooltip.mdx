@@ -1,0 +1,31 @@
+import { ChartTooltip } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Chart Tooltip"
+  description="Dark floating tooltip for charts with title and colored item rows."
+/>
+
+## Default
+
+<PreviewCard>
+  <ChartTooltip
+    title="Jul 21, 2026"
+    items={[
+      { label: 'Electrical', value: '120 hrs', color: '#201B18' },
+      { label: 'Plumbing', value: '85 hrs', color: '#E51D31' },
+      { label: 'HVAC', value: '64 hrs', color: '#129457' },
+    ]}
+  />
+</PreviewCard>
+
+## Without markers
+
+<PreviewCard>
+  <ChartTooltip
+    title="Total hours"
+    items={[
+      { label: 'Scheduled', value: '1,248' },
+      { label: 'Remaining', value: '432' },
+    ]}
+  />
+</PreviewCard>

@@ -1,0 +1,58 @@
+import { KpiCard } from '@sparc-ui';
+import { DollarSign, Users, Clock, TrendingUp } from 'lucide-react';
+
+<PageHeader
+  title="SPARC KPI Card"
+  description="Summary metric card with trend indicator, suffix, and compact layout."
+/>
+
+## Default
+
+<PreviewCard>
+  <div className="grid gap-4 sm:grid-cols-2">
+    <KpiCard
+      label="Total labor hours"
+      value="1,248"
+      suffix="/hr"
+      icon={<Clock size={20} />}
+    />
+    <KpiCard
+      label="Budget used"
+      value="68"
+      suffix="%"
+      icon={<DollarSign size={20} />}
+    />
+  </div>
+</PreviewCard>
+
+## With trend
+
+<PreviewCard>
+  <div className="grid gap-4 sm:grid-cols-2">
+    <KpiCard
+      label="Workers scheduled"
+      value="42"
+      trend={{ direction: 'up', value: '6' }}
+      icon={<Users size={20} />}
+    />
+    <KpiCard
+      label="Overdue tasks"
+      value="3"
+      trend={{ direction: 'down', value: '2' }}
+      icon={<TrendingUp size={20} />}
+    />
+  </div>
+</PreviewCard>
+
+## Compact
+
+<PreviewCard>
+  <div className="w-64">
+    <KpiCard
+      label="Active jobs"
+      value="12"
+      size="compact"
+      icon={<Users size={20} />}
+    />
+  </div>
+</PreviewCard>

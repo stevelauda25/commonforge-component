@@ -1,1 +1,1 @@
-export * from "./progress-bar-base"
+export * from './progress-bar-base.js';

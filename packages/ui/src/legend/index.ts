@@ -1,2 +1,2 @@
-export { Legend } from "./legend"
-export type { LegendProps, LegendVariant } from "./legend"
+export { Legend } from './legend.js';
+export type { LegendProps, LegendVariant } from './legend.js';

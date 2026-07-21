@@ -1,0 +1,25 @@
+import { ProgressBarBase } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Progress Bar Base"
+  description="Low-level progress track and fill, used by ProgressBar and custom composite components."
+/>
+
+## Sizes
+
+<PreviewCard>
+  <div className="w-full max-w-md space-y-4">
+    <ProgressBarBase percent={40} size="sm" />
+    <ProgressBarBase percent={60} size="md" />
+    <ProgressBarBase percent={80} size="lg" />
+  </div>
+</PreviewCard>
+
+## Custom color
+
+<PreviewCard>
+  <div className="w-full max-w-md space-y-4">
+    <ProgressBarBase percent={50} color="#E51D31" />
+    <ProgressBarBase percent={75} color="#129457" />
+  </div>
+</PreviewCard>

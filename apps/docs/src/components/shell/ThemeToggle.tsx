@@ -9,16 +9,14 @@ export function ThemeToggle() {
   return (
     <Button
       variant="outline"
-      iconOnly
       size="sm"
       onClick={toggle}
       aria-label={`Switch to ${next} mode`}
-    >
-      {theme === 'light' ? (
+      leftIcon={theme === 'light' ? (
         <Moon className="h-4 w-4" />
       ) : (
         <Sun className="h-4 w-4" />
       )}
-    </Button>
+    />
   );
 }

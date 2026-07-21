@@ -1,329 +1,67 @@
 /*
- * Semantic theme tokens — light + dark.
- *
- * Sourced from Figma exports in packages/tokens/figma-exports/.
- *
- * Values are "R G B" triples (no `rgb()` wrapper), so Tailwind can compose them
- * with opacity modifiers via the `<alpha-value>` placeholder in
- * tailwind-preset.ts. Example: `bg-canvas/80` → rgb(var(--color-bg-canvas) / 0.8).
- *
- * Components consume the Tailwind class names (bg-canvas, text-default, …).
- * They never read these variables directly.
+ * Semantic theme tokens — light mode.
+ * Generated from foundation/tokens.json.
+ * Values are "R G B" triples so Tailwind can compose opacity modifiers.
  */
-
 :root {
-  /* ── Backgrounds ──────────────────────────────────────────────────── */
-  --color-bg-canvas:        250 250 250;   /* #FAFAFA */
-  --color-bg-surface:       255 255 255;   /* #FFFFFF */
-  --color-bg-elevated:      234 234 237;   /* #EAEAED */
-  --color-bg-muted:         244 244 245;   /* #F4F4F5 */
-  --color-bg-subtle:        244 244 245;   /* #F4F4F5 */
-  --color-bg-disabled:      244 244 245;   /* #F4F4F5 */
-  --color-bg-inverse:         9   9  11;   /* #09090B */
-  --color-bg-neutral:       124 126 132;   /* #7C7E84 */
-  --color-bg-brand:          21 128  61;   /* #15803D */
-  --color-bg-brand-hover:    22 101  52;   /* #166534 */
-  --color-bg-brand-subtle:  240 253 244;   /* #F0FDF4 */
-  --color-bg-destructive:        185  28  28;  /* #B91C1C */
-  --color-bg-destructive-hover:  153  27  27;  /* #991B1B */
-  --color-bg-destructive-subtle: 254 242 242;  /* #FEF2F2 */
-  --color-bg-error:          220  38  38;  /* #DC2626 */
-  --color-bg-error-subtle:   254 242 242;  /* #FEF2F2 */
-  --color-bg-success:         22 163  74;  /* #16A34A */
-  --color-bg-success-subtle: 240 253 244;  /* #F0FDF4 */
-  --color-bg-warning:        234 179   8;  /* #EAB308 */
-  --color-bg-warning-subtle: 254 252 232;  /* #FEFCE8 */
-  --color-bg-info:            37  99 235;  /* #2563EB */
-  --color-bg-info-subtle:    239 246 255;  /* #EFF6FF */
-
-  /* Badge backgrounds — pastel pill in light, dark pill in dark */
-  --color-bg-badge-green:    240 253 244;  /* #F0FDF4 */
-  --color-bg-badge-blue:     239 246 255;  /* #EFF6FF */
-  --color-bg-badge-orange:   255 247 237;  /* #FFF7ED */
-  --color-bg-badge-lime:     247 254 231;  /* #F7FEE7 */
-  --color-bg-badge-indigo:   238 242 255;  /* #EEF2FF */
-  --color-bg-badge-red:      254 242 242;  /* #FEF2F2 */
-  --color-bg-badge-purple:   250 245 255;  /* #FAF5FF */
-  --color-bg-badge-sky:      240 249 255;  /* #F0F9FF */
-  --color-bg-badge-yellow:   254 252 232;  /* #FEFCE8 */
-
-  /* Badge middle-ring accent — primitive {color}/500, same in both modes */
-  --color-badge-orange-accent: 249 115  22;  /* #F97316 */
-  --color-badge-lime-accent:   132 204  22;  /* #84CC16 */
-  --color-badge-purple-accent: 168  85 247;  /* #A855F7 */
-  --color-badge-green-accent:   34 197  94;  /* #22C55E */
-  --color-badge-indigo-accent:  99 102 241;  /* #6366F1 */
-  --color-badge-sky-accent:     14 165 233;  /* #0EA5E9 */
-  --color-badge-blue-accent:    59 130 246;  /* #3B82F6 */
-  --color-badge-red-accent:    239  68  68;  /* #EF4444 */
-  --color-badge-yellow-accent: 234 179   8;  /* #EAB308 */
-
-  /* ── Borders ──────────────────────────────────────────────────────── */
-  --color-border-default:           234 234 237;  /* #EAEAED */
-  --color-border-subtle:            212 212 216;  /* #D4D4D8 */
-  --color-border-strong:            212 212 216;  /* #D4D4D8 */
-  --color-border-brand:              22 163  74;  /* #16A34A */
-  --color-border-destructive:       220  38  38;  /* #DC2626 */
-  --color-border-destructive-subtle: 252 165 165; /* #FCA5A5 */
-  --color-border-disabled:          234 234 237;  /* #EAEAED */
-  --color-border-error:             220  38  38;  /* #DC2626 */
-  --color-border-info:               37  99 235;  /* #2563EB */
-  --color-border-inverse:             9   9  11;  /* #09090B */
-  --color-border-success:            22 163  74;  /* #16A34A */
-  --color-border-warning:           202 138   4;  /* #CA8A04 */
-
-  /* ── Text ─────────────────────────────────────────────────────────── */
-  --color-text-default:        17  17  19;  /* #111113 */
-  --color-text-strong:          9   9  11;  /* #09090B */
-  --color-text-subtle:        124 126 132;  /* #7C7E84 */
-  --color-text-muted:         124 126 132;  /* #7C7E84 */
-  --color-text-disabled:      161 161 170;  /* #A1A1AA */
-  --color-text-placeholder:   161 161 170;  /* #A1A1AA */
-  --color-text-inverse:       250 250 250;  /* #FAFAFA */
-  --color-text-brand:          21 128  61;  /* #15803D */
-  --color-text-success:        21 128  61;  /* #15803D */
-  --color-text-destructive:   220  38  38;  /* #DC2626 */
-  --color-text-error:         220  38  38;  /* #DC2626 */
-  --color-text-warning:       161  98   7;  /* #A16207 */
-  --color-text-info:           29  78 216;  /* #1D4ED8 */
-  --color-text-on-brand:       250 250 250; /* #FAFAFA */
-  --color-text-on-destructive: 250 250 250; /* #FAFAFA */
-  --color-text-on-success:     250 250 250; /* #FAFAFA */
-  --color-text-on-warning:       9   9  11; /* #09090B */
-  --color-text-on-info:        250 250 250; /* #FAFAFA */
-
-  /* Badge text — chromatic in light, pastel in dark */
-  --color-text-badge-green:   34 197  94;   /* #22C55E */
-  --color-text-badge-blue:    59 130 246;   /* #3B82F6 */
-  --color-text-badge-orange: 249 115  22;   /* #F97316 */
-  --color-text-badge-lime:   132 204  22;   /* #84CC16 */
-  --color-text-badge-indigo:  99 102 241;   /* #6366F1 */
-  --color-text-badge-red:    239  68  68;   /* #EF4444 */
-  --color-text-badge-purple: 168  85 247;   /* #A855F7 */
-  --color-text-badge-sky:     14 165 233;   /* #0EA5E9 */
-  --color-text-badge-yellow: 234 179   8;   /* #EAB308 */
-
-  /* ── Icon ─────────────────────────────────────────────────────────── */
-  --color-icon-default:        17  17  19;  /* #111113 */
-  --color-icon-strong:          9   9  11;  /* #09090B */
-  --color-icon-subtle:        124 126 132;  /* #7C7E84 */
-  --color-icon-muted:         161 161 170;  /* #A1A1AA */
-  --color-icon-disabled:      161 161 170;  /* #A1A1AA */
-  --color-icon-placeholder:   161 161 170;  /* #A1A1AA */
-  --color-icon-inverse:       250 250 250;  /* #FAFAFA */
-  --color-icon-brand:          21 128  61;  /* #15803D */
-  --color-icon-success:        21 128  61;  /* #15803D */
-  --color-icon-destructive:   220  38  38;  /* #DC2626 */
-  --color-icon-error:         220  38  38;  /* #DC2626 */
-  --color-icon-warning:       161  98   7;  /* #A16207 */
-  --color-icon-info:           29  78 216;  /* #1D4ED8 */
-  --color-icon-on-brand:       250 250 250; /* #FAFAFA */
-  --color-icon-on-destructive: 250 250 250; /* #FAFAFA */
-  --color-icon-on-success:     250 250 250; /* #FAFAFA */
-  --color-icon-on-warning:       9   9  11; /* #09090B */
-  --color-icon-on-info:        250 250 250; /* #FAFAFA */
-
-  /* ── Foreground (decorative) ──────────────────────────────────────── */
-  --color-fg-default:    17  17  19;  /* #111113 */
-  --color-fg-subtle:    234 234 237;  /* #EAEAED */
-  --color-fg-disabled:  234 234 237;  /* #EAEAED */
-  --color-fg-brand:      22 163  74;  /* #16A34A */
-  --color-fg-on-brand:    9   9  11;  /* #09090B — NOTE: intentionally dark on brand bg */
-
-  /* ── Overlays ─────────────────────────────────────────────────────── */
-  --color-overlay: 0 0 0;           /* used with /alpha */
-
-  /* ── Radius ───────────────────────────────────────────────────────── */
+  --color-bg-canvas: 251 250 249;
+  --color-bg-surface: 255 255 255;
+  --color-bg-muted: 246 244 241;
+  --color-bg-subtle: 246 244 241;
+  --color-bg-disabled: 246 244 241;
+  --color-bg-inverse: 10 10 10;
+  --color-bg-neutral: 139 129 117;
+  --color-bg-brand: 192 24 12;
+  --color-bg-brand-hover: 152 21 11;
+  --color-bg-brand-subtle: 255 245 244;
+  --color-bg-destructive: 229 29 49;
+  --color-bg-destructive-hover: 194 21 42;
+  --color-bg-destructive-subtle: 255 240 241;
+  --color-bg-error: 229 29 49;
+  --color-bg-error-subtle: 255 240 241;
+  --color-bg-success: 18 148 87;
+  --color-bg-success-subtle: 236 253 243;
+  --color-bg-warning: 209 139 12;
+  --color-bg-warning-subtle: 255 248 230;
+  --color-border-default: 226 220 212;
+  --color-border-subtle: 226 220 212;
+  --color-border-strong: 207 199 188;
+  --color-border-brand: 192 24 12;
+  --color-border-destructive: 229 29 49;
+  --color-border-error: 229 29 49;
+  --color-border-success: 18 148 87;
+  --color-border-warning: 209 139 12;
+  --color-text-default: 32 27 24;
+  --color-text-strong: 0 0 0;
+  --color-text-subtle: 82 82 82;
+  --color-text-muted: 107 98 89;
+  --color-text-disabled: 163 163 163;
+  --color-text-placeholder: 163 163 163;
+  --color-text-inverse: 250 250 250;
+  --color-text-brand: 192 24 12;
+  --color-text-success: 18 148 87;
+  --color-text-destructive: 229 29 49;
+  --color-text-error: 229 29 49;
+  --color-text-warning: 174 114 10;
+  --color-text-on-brand: 250 250 250;
+  --color-text-on-destructive: 255 255 255;
+  --color-text-on-success: 255 255 255;
+  --color-text-on-warning: 20 20 20;
+  --radius-10: 10px;
   --radius-none: 0px;
-  --radius-xxs:  2px;
-  --radius-xs:   4px;
-  --radius-sm:   6px;
-  --radius-md:   8px;
-  --radius-lg:   10px;
-  --radius-xl:   12px;
-  --radius-2xl:  16px;
-  --radius-3xl:  20px;
-  --radius-4xl:  24px;
+  --radius-2xs: 2px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
   --radius-full: 9999px;
-
-  /* ── Shadows ──────────────────────────────────────────────────────── */
-  --shadow-foundation-xs:  0 2px 2px 0 rgb(0 0 0 / 0.08);
-  --shadow-foundation-sm:
-    0 4px 4px 0 rgb(0 0 0 / 0.08),
-    0 2px 2px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-md:
-    0 4px 8px 0 rgb(0 0 0 / 0.08),
-    0 2px 4px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-lg:
-    0 8px 12px 0 rgb(0 0 0 / 0.08),
-    0 4px 8px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-xl:
-    0 16px 20px 0 rgb(0 0 0 / 0.08),
-    0 12px 16px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-2xl:
-    0 24px 32px 0 rgb(0 0 0 / 0.08),
-    0 20px 24px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-3xl:
-    0 32px 40px 0 rgb(0 0 0 / 0.08),
-    0 24px 32px 0 rgb(0 0 0 / 0.04);
-
-  /* ── Glow effects (brand) ─────────────────────────────────────────── */
-  --shadow-glow-accent-inset:
-    inset 0 0 4px rgb(194 255 204 / 0.25);
-  --shadow-glow-accent-inset-strong:
-    inset 0 0 4px rgb(194 255 204 / 0.25),
-    inset 0 0 12px 4px rgb(194 255 204 / 0.25);
-  --shadow-glow-danger-inset:
-    inset 0 0 4px rgb(254 202 202 / 0.25);
-  --shadow-glow-danger-inset-strong:
-    inset 0 0 4px rgb(254 202 202 / 0.25),
-    inset 0 0 12px 4px rgb(254 202 202 / 0.25);
-  --shadow-glow-accent-text: 0 0 11px rgb(28 175 89);
-
-  /* ── Motion ───────────────────────────────────────────────────────── */
-  --duration-fast:  120ms;
-  --duration-base:  180ms;
-  --duration-slow:  240ms;
-  --ease-standard:   cubic-bezier(0.2, 0, 0, 1);
+  --shadow-elev-1: 0 1px 2px rgba(32,27,24,.05), 0 4px 10px rgba(32,27,24,.04);
+  --shadow-elev-2: 0 1px 2px rgba(32,27,24,.05), 0 5px 14px rgba(32,27,24,.05);
+  --shadow-pop: 0 1px 2px rgba(32,27,24,.06), 0 12px 30px rgba(32,27,24,.16);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 240ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-emphasized: cubic-bezier(0.3, 0, 0.8, 0.15);
-  --ease-press:      cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.dark {
-  /* ── Backgrounds ──────────────────────────────────────────────────── */
-  --color-bg-canvas:          9   9  11;   /* #09090B */
-  --color-bg-surface:        17  17  19;   /* #111113 */
-  --color-bg-elevated:       28  28  31;   /* #1C1C1F */
-  --color-bg-muted:          24  24  27;   /* #18181B */
-  --color-bg-subtle:         17  17  19;   /* #111113 */
-  --color-bg-disabled:       28  28  31;   /* #1C1C1F */
-  --color-bg-inverse:       250 250 250;   /* #FAFAFA */
-  --color-bg-neutral:       124 126 132;   /* #7C7E84 */
-  --color-bg-brand:          21 128  61;   /* #15803D */
-  --color-bg-brand-hover:    21 128  61;   /* #15803D */
-  --color-bg-brand-subtle:   11  33  21;   /* #0B2115 */
-  --color-bg-destructive:        153  27  27;  /* #991B1B */
-  --color-bg-destructive-hover:  153  27  27;  /* #991B1B */
-  --color-bg-destructive-subtle:  38  13  14;  /* #260D0E */
-  --color-bg-error:          239  68  68;  /* #EF4444 */
-  --color-bg-error-subtle:    38  13  14;  /* #260D0E */
-  --color-bg-success:         34 197  94;  /* #22C55E */
-  --color-bg-success-subtle:  11  33  21;  /* #0B2115 */
-  --color-bg-warning:        234 179   8;  /* #EAB308 */
-  --color-bg-warning-subtle:  66  32   6;  /* #422006 */
-  --color-bg-info:            59 130 246;  /* #3B82F6 */
-  --color-bg-info-subtle:     23  37  84;  /* #172554 */
-
-  --color-bg-badge-green:    11  33  21;   /* #0B2115 */
-  --color-bg-badge-blue:     23  37  84;   /* #172554 */
-  --color-bg-badge-orange:   67  20   7;   /* #431407 */
-  --color-bg-badge-lime:     26  46   5;   /* #1A2E05 */
-  --color-bg-badge-indigo:   30  27  75;   /* #1E1B4B */
-  --color-bg-badge-red:      38  13  14;   /* #260D0E */
-  --color-bg-badge-purple:   59   7 100;   /* #3B0764 */
-  --color-bg-badge-sky:       8  47  73;   /* #082F49 */
-  --color-bg-badge-yellow:   66  32   6;   /* #422006 */
-
-  /* badge-{c}-accent: same values in dark (primitive 500 stops) */
-  --color-badge-orange-accent: 249 115  22;
-  --color-badge-lime-accent:   132 204  22;
-  --color-badge-purple-accent: 168  85 247;
-  --color-badge-green-accent:   34 197  94;
-  --color-badge-indigo-accent:  99 102 241;
-  --color-badge-sky-accent:     14 165 233;
-  --color-badge-blue-accent:    59 130 246;
-  --color-badge-red-accent:    239  68  68;
-  --color-badge-yellow-accent: 234 179   8;
-
-  /* ── Borders ──────────────────────────────────────────────────────── */
-  --color-border-default:           24  24  27;   /* #18181B */
-  --color-border-subtle:            58  58  61;   /* #3A3A3D */
-  --color-border-strong:            28  28  31;   /* #1C1C1F */
-  --color-border-brand:             22 163  74;   /* #16A34A */
-  --color-border-destructive:      185  28  28;   /* #B91C1C */
-  --color-border-destructive-subtle: 127  29  29; /* #7F1D1D */
-  --color-border-disabled:          58  58  61;   /* #3A3A3D */
-  --color-border-error:            239  68  68;   /* #EF4444 */
-  --color-border-info:              59 130 246;   /* #3B82F6 */
-  --color-border-inverse:          250 250 250;   /* #FAFAFA */
-  --color-border-success:           34 197  94;   /* #22C55E */
-  --color-border-warning:          234 179   8;   /* #EAB308 */
-
-  /* ── Text ─────────────────────────────────────────────────────────── */
-  --color-text-default:       244 244 245;  /* #F4F4F5 */
-  --color-text-strong:        250 250 250;  /* #FAFAFA */
-  --color-text-subtle:        124 126 132;  /* #7C7E84 */
-  --color-text-muted:         161 161 170;  /* #A1A1AA */
-  --color-text-disabled:       58  58  61;  /* #3A3A3D */
-  --color-text-placeholder:    58  58  61;  /* #3A3A3D */
-  --color-text-inverse:         9   9  11;  /* #09090B */
-  --color-text-brand:          74 222 128;  /* #4ADE80 */
-  --color-text-success:        74 222 128;  /* #4ADE80 */
-  --color-text-destructive:   248 113 113;  /* #F87171 */
-  --color-text-error:         239  68  68;  /* #EF4444 */
-  --color-text-warning:       250 204  21;  /* #FACC15 */
-  --color-text-info:           96 165 250;  /* #60A5FA */
-  --color-text-on-brand:       250 250 250; /* #FAFAFA */
-  --color-text-on-destructive: 250 250 250; /* #FAFAFA */
-  --color-text-on-success:     250 250 250; /* #FAFAFA */
-  --color-text-on-warning:       9   9  11; /* #09090B */
-  --color-text-on-info:        250 250 250; /* #FAFAFA */
-
-  --color-text-badge-green:  220 252 231;   /* #DCFCE7 */
-  --color-text-badge-blue:   219 234 254;   /* #DBEAFE */
-  --color-text-badge-orange: 255 237 213;   /* #FFEDD5 */
-  --color-text-badge-lime:   236 252 203;   /* #ECFCCB */
-  --color-text-badge-indigo: 224 231 255;   /* #E0E7FF */
-  --color-text-badge-red:    254 226 226;   /* #FEE2E2 */
-  --color-text-badge-purple: 243 232 255;   /* #F3E8FF */
-  --color-text-badge-sky:    224 242 254;   /* #E0F2FE */
-  --color-text-badge-yellow: 254 249 195;   /* #FEF9C3 */
-
-  /* ── Icon ─────────────────────────────────────────────────────────── */
-  --color-icon-default:       244 244 245;  /* #F4F4F5 */
-  --color-icon-strong:        250 250 250;  /* #FAFAFA */
-  --color-icon-subtle:        124 126 132;  /* #7C7E84 */
-  --color-icon-muted:         161 161 170;  /* #A1A1AA */
-  --color-icon-disabled:       58  58  61;  /* #3A3A3D */
-  --color-icon-placeholder:    58  58  61;  /* #3A3A3D */
-  --color-icon-inverse:         9   9  11;  /* #09090B */
-  --color-icon-brand:          74 222 128;  /* #4ADE80 */
-  --color-icon-success:        74 222 128;  /* #4ADE80 */
-  --color-icon-destructive:   248 113 113;  /* #F87171 */
-  --color-icon-error:         239  68  68;  /* #EF4444 */
-  --color-icon-warning:       250 204  21;  /* #FACC15 */
-  --color-icon-info:           96 165 250;  /* #60A5FA */
-  --color-icon-on-brand:       250 250 250; /* #FAFAFA */
-  --color-icon-on-destructive: 250 250 250; /* #FAFAFA */
-  --color-icon-on-success:     250 250 250; /* #FAFAFA */
-  --color-icon-on-warning:       9   9  11; /* #09090B */
-  --color-icon-on-info:        250 250 250; /* #FAFAFA */
-
-  /* ── Foreground ───────────────────────────────────────────────────── */
-  --color-fg-default:   244 244 245;  /* #F4F4F5 */
-  --color-fg-subtle:     58  58  61;  /* #3A3A3D */
-  --color-fg-disabled:   58  58  61;  /* #3A3A3D */
-  --color-fg-brand:      34 197  94;  /* #22C55E */
-  --color-fg-on-brand:  250 250 250;  /* #FAFAFA */
-
-  /* Foundation shadows — same values in dark mode */
-  --shadow-foundation-xs:  0 2px 2px 0 rgb(0 0 0 / 0.08);
-  --shadow-foundation-sm:
-    0 4px 4px 0 rgb(0 0 0 / 0.08),
-    0 2px 2px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-md:
-    0 4px 8px 0 rgb(0 0 0 / 0.08),
-    0 2px 4px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-lg:
-    0 8px 12px 0 rgb(0 0 0 / 0.08),
-    0 4px 8px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-xl:
-    0 16px 20px 0 rgb(0 0 0 / 0.08),
-    0 12px 16px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-2xl:
-    0 24px 32px 0 rgb(0 0 0 / 0.08),
-    0 20px 24px 0 rgb(0 0 0 / 0.04);
-  --shadow-foundation-3xl:
-    0 32px 40px 0 rgb(0 0 0 / 0.08),
-    0 24px 32px 0 rgb(0 0 0 / 0.04);
 }

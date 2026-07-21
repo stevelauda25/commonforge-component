@@ -1,0 +1,42 @@
+import { AccountSwitcher } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Account Switcher"
+  description="Sidebar footer control showing the current user, role badge, and sidebar collapse toggle."
+/>
+
+## Default
+
+<PreviewCard>
+  <div className="w-64">
+    <AccountSwitcher
+      name="Jason Heim"
+      initials="JH"
+      role="Admin"
+    />
+  </div>
+</PreviewCard>
+
+## With avatar image
+
+<PreviewCard>
+  <div className="w-64">
+    <AccountSwitcher
+      name="Sarah Chen"
+      avatarSrc="https://i.pravatar.cc/150?img=5"
+      initials="SC"
+      role="Editor"
+    />
+  </div>
+</PreviewCard>
+
+## Without role
+
+<PreviewCard>
+  <div className="w-64">
+    <AccountSwitcher
+      name="Alex Rivera"
+      initials="AR"
+    />
+  </div>
+</PreviewCard>

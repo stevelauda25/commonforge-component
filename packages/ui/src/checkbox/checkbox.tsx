@@ -1,134 +1,77 @@
-import * as React from 'react';
-import { Check, Minus } from 'lucide-react';
-import { cn } from '../lib/cn.js';
-import { focusRing } from '../lib/focus-ring.js';
+import type { ButtonHTMLAttributes } from "react"
+import { cn } from "../lib/cn.js"
 
-export type CheckboxChecked = boolean | 'indeterminate';
+type CheckboxSize = "small" | "medium" | "large"
 
-export interface CheckboxProps
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    'type' | 'checked' | 'onChange' | 'size'
-  > {
-  checked: CheckboxChecked;
-  onCheckedChange?: (checked: boolean) => void;
-  label?: React.ReactNode;
-  description?: React.ReactNode;
-  error?: string;
+// box + radius + checkmark size per Figma size variant (small 12 / medium 16 / large 20)
+const SIZES: Record<CheckboxSize, { box: string; radius: string; check: string }> = {
+  small: { box: "size-3", radius: "rounded-[3px]", check: "size-2" },
+  medium: { box: "size-4", radius: "rounded-[4px]", check: "size-[10px]" },
+  large: { box: "size-5", radius: "rounded-[5px]", check: "size-[13px]" },
 }
 
-let checkboxIdCounter = 0;
-const nextId = () => `pod-checkbox-${++checkboxIdCounter}`;
+export interface CheckboxProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
+  /** on (checked) vs off (unchecked) */
+  checked?: boolean
+  /** box size: small 12, medium 16, large 20 */
+  size?: CheckboxSize
+  /** fires with the next checked value when toggled */
+  onCheckedChange?: (checked: boolean) => void
+}
 
-export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  function Checkbox(
-    {
-      checked,
-      onCheckedChange,
-      label,
-      description,
-      error,
-      disabled,
-      id,
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    const reactId = React.useId?.() ?? '';
-    const inputId = React.useMemo(() => id ?? reactId ?? nextId(), [id, reactId]);
-    const descriptionId = description ? `${inputId}-desc` : undefined;
-    const errorId = error ? `${inputId}-err` : undefined;
-
-    const isIndeterminate = checked === 'indeterminate';
-    const isChecked = checked === true;
-
-    const internalRef = React.useRef<HTMLInputElement | null>(null);
-    const setRefs = (node: HTMLInputElement | null) => {
-      internalRef.current = node;
-      if (typeof ref === 'function') ref(node);
-      else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
-    };
-
-    React.useEffect(() => {
-      if (internalRef.current) {
-        internalRef.current.indeterminate = isIndeterminate;
-      }
-    }, [isIndeterminate]);
-
-    return (
-      <div className={cn('flex gap-2.5', description || error ? 'items-start' : 'items-center', className)}>
-        <span className="relative inline-flex items-center justify-center">
-          <input
-            ref={setRefs}
-            id={inputId}
-            type="checkbox"
-            checked={isChecked}
-            disabled={disabled}
-            aria-describedby={cn(descriptionId, errorId) || undefined}
-            aria-invalid={error ? true : undefined}
-            onChange={(event) => onCheckedChange?.(event.target.checked)}
-            className={cn(
-              'peer appearance-none shrink-0',
-              'h-4 w-4 rounded-xs border-[1.5px]',
-              'transition-colors duration-fast ease-standard',
-              'bg-canvas border-strong shadow-foundation-xs',
-              'checked:bg-inverse checked:border-inverse checked:shadow-none',
-              'indeterminate:bg-inverse indeterminate:border-inverse indeterminate:shadow-none',
-              'hover:border-inverse',
-              'disabled:bg-disabled disabled:border-disabled disabled:shadow-none disabled:cursor-not-allowed',
-              'disabled:hover:border-disabled',
-              error && 'border-error hover:border-error',
-              focusRing,
-            )}
-            {...rest}
+/**
+ * checkbox — the on/off control (Figma component-set "checkbox", node 2169:5148).
+ *
+ * Three states across three sizes (small / medium / large):
+ *   off     #b8b8b8 hairline, white fill
+ *   hover   border darkens to #000000 (CSS :hover)
+ *   on      #2b2b2b fill, white check (matches the date picker's selected fill)
+ *
+ * Disabled dims to 50%. Built as a role="checkbox" button so it keyboard-toggles
+ * (Space / Enter) and merges className.
+ */
+export function Checkbox({
+  checked = false,
+  size = "medium",
+  disabled = false,
+  className,
+  onCheckedChange,
+  onClick,
+  ...props
+}: CheckboxProps) {
+  const s = SIZES[size]
+  return (
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={(event) => {
+        onCheckedChange?.(!checked)
+        onClick?.(event)
+      }}
+      className={cn(
+        "inline-flex shrink-0 items-center justify-center border outline-none focus-visible:ring-2 focus-visible:ring-[#CFC7BC] motion-safe:transition-colors motion-reduce:transition-none",
+        s.box,
+        s.radius,
+        checked ? "border-transparent bg-[#2b2b2b] text-white" : "border-[#b8b8b8] bg-white",
+        !disabled && !checked && "hover:border-[#000000]",
+        disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
+        className,
+      )}
+      {...props}
+    >
+      {checked && (
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className={s.check}>
+          <path
+            d="M4 8.5L6.75 11.25L12 5"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
-          {(isChecked || isIndeterminate) && (
-            <span
-              aria-hidden="true"
-              className={cn(
-                'pointer-events-none absolute inset-0 flex items-center justify-center',
-                'text-inverse peer-disabled:text-icon-disabled',
-              )}
-            >
-              {isIndeterminate ? (
-                <Minus className="h-2.5 w-2.5" strokeWidth={3.5} />
-              ) : (
-                <Check className="h-2.5 w-2.5" strokeWidth={3.5} />
-              )}
-            </span>
-          )}
-        </span>
-
-        {(label || description || error) && (
-          <div className="flex min-w-0 flex-col gap-0.5">
-            {label && (
-              <label
-                htmlFor={inputId}
-                className={cn(
-                  'text-sm leading-none font-medium select-none',
-                  disabled ? 'text-disabled cursor-not-allowed' : 'text-default cursor-pointer',
-                )}
-              >
-                {label}
-              </label>
-            )}
-            {description && !error && (
-              <span
-                id={descriptionId}
-                className="text-xs text-muted"
-              >
-                {description}
-              </span>
-            )}
-            {error && (
-              <span id={errorId} className="text-xs text-destructive">
-                {error}
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  },
-);
+        </svg>
+      )}
+    </button>
+  )
+}

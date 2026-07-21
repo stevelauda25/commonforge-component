@@ -1,60 +1,60 @@
-import * as React from 'react';
-import { cn } from '../lib/cn.js';
+"use client";
 
-export type SwitchSize = 'sm' | 'md';
+import { useState, type ButtonHTMLAttributes } from "react"
+import { cn } from "../lib/cn.js"
 
-export interface SwitchProps {
-  checked?: boolean;
-  defaultChecked?: boolean;
-  onCheckedChange?: (next: boolean) => void;
-  size?: SwitchSize;
-  disabled?: boolean;
-  className?: string;
+export interface SwitchProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
+  size?: "sm" | "md"
+  checked?: boolean
+  defaultChecked?: boolean
+  onCheckedChange?: (checked: boolean) => void
 }
 
-const sizeClasses: Record<SwitchSize, { track: string; thumb: string; on: string }> = {
-  sm: { track: 'h-4 w-7', thumb: 'h-3 w-3', on: 'translate-x-3' },
-  md: { track: 'h-5 w-9', thumb: 'h-4 w-4', on: 'translate-x-4' },
-};
+export function Switch({
+  size = "md",
+  checked,
+  defaultChecked = false,
+  disabled,
+  onCheckedChange,
+  className,
+  ...props
+}: SwitchProps) {
+  const [internalChecked, setInternalChecked] = useState(defaultChecked)
+  const isChecked = checked ?? internalChecked
+  const isSmall = size === "sm"
 
-export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
-  function Switch({ checked, defaultChecked = false, onCheckedChange, size = 'md', disabled, className }, ref) {
-    const [internal, setInternal] = React.useState(defaultChecked);
-    const isControlled = checked !== undefined;
-    const value = isControlled ? checked : internal;
-    const cls = sizeClasses[size];
-    return (
-      <button
-        ref={ref}
-        type="button"
-        role="switch"
-        aria-checked={value}
-        disabled={disabled}
-        onClick={() => {
-          const next = !value;
-          if (!isControlled) setInternal(next);
-          onCheckedChange?.(next);
-        }}
+  function toggle() {
+    if (disabled) return
+    const next = !isChecked
+    if (checked === undefined) setInternalChecked(next)
+    onCheckedChange?.(next)
+  }
+
+  return (
+    <button
+      {...props}
+      type={props.type ?? "button"}
+      role="switch"
+      aria-checked={isChecked}
+      disabled={disabled}
+      onClick={toggle}
+      className={cn(
+        "relative inline-flex shrink-0 items-center rounded-full border-[0.5px] border-white/5 p-0.5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2",
+        isSmall ? "h-5 w-9" : "h-6 w-11",
+        isChecked ? "bg-green-600 hover:bg-green-800" : "bg-[#F5F5F5] hover:bg-[#EBEBEB]",
+        disabled && "cursor-not-allowed bg-[#F5F5F5] hover:bg-[#F5F5F5]",
+        className,
+      )}
+    >
+      <span
+        aria-hidden="true"
         className={cn(
-          'relative inline-flex shrink-0 cursor-pointer rounded-full',
-          'transition-colors duration-base ease-standard',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
-          cls.track,
-          value ? 'bg-brand' : 'bg-muted',
-          className,
+          "block rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.16)] transition-transform duration-150",
+          isSmall ? "size-4" : "size-5",
+          disabled ? "bg-[#D1D1D1]" : "bg-white",
+          isChecked ? (isSmall ? "translate-x-4" : "translate-x-5") : "translate-x-0",
         )}
-      >
-        <span
-          aria-hidden
-          className={cn(
-            'inline-block rounded-full bg-canvas shadow-foundation-xs',
-            'transition-transform duration-base ease-standard',
-            cls.thumb,
-            'absolute top-1/2 -translate-y-1/2',
-            value ? cls.on : 'translate-x-0.5',
-          )}
-        />
-      </button>
-    );
-  },
-);
+      />
+    </button>
+  )
+}

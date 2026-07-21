@@ -1,59 +1,48 @@
+import { SparcShadowGrid } from '../../components/foundations/SparcFoundation';
+
 <PageHeader
   title="Elevation"
-  description="Drop shadows + brand glows. Defined in pod-test-tokens/theme.css. Values match Figma node 2352:159 exactly. Auto-rendered from preset."
+  description="Shadow tokens collected from the SPARC apps (carltonLaborPlanning globals.css, verified identical to commonforge-sparc-ui). Collected 2026-07-21."
 />
 
-POD has two shadow groups:
+<div className="my-6 rounded-lg border border-default bg-muted/40 p-4 text-sm text-default">
+  <p className="font-semibold text-subtle">Provenance</p>
+  <p className="mt-1 text-subtle">
+    These tokens were collected from the SPARC apps (carltonLaborPlanning +
+    commonforge-sparc-ui) on 2026-07-21 and are this repo's token source. Values
+    are rendered straight from <code>src/data/sparc-foundation.json</code> via
+    inline styles.
+  </p>
+</div>
 
-- **Drop shadows** — the elevation ramp `shadow-foundation-*`, matched 1:1
-  to Figma's `shadows/shadow-*` tokens. Note: the Figma scale is intentionally
-  subtle (alpha 0.08 / 0.04) — `xs` and `s` look similar; `2xl`/`3xl`
-  extend far beyond the swatch.
-- **Brand glow** — `shadow-glow-accent-*` and `shadow-glow-danger-*` baked
-  into the primary/error button states. Sacred — never modified by sync.
+## Token shadows
 
-## Drop shadows
+Three token shadows: `elev-1` for cards, `elev-2` for raised cards, `pop` for
+modals. All use the warm charcoal `rgba(32,27,24,…)` base.
 
-<TokenAutoGrid kind="shadow" filter="foundation" />
+<SparcShadowGrid />
 
-<TokenAutoGrid kind="shadow" filter="foundation" variant="table" />
+| Token | Use |
+|---|---|
+| `shadow-elev-1` | cards |
+| `shadow-elev-2` | raised cards |
+| `shadow-pop` | modals |
 
-```tsx
-// Subtle inline lift
-<div className="rounded-lg bg-canvas shadow-foundation-xs">…</div>
+## Shared shadow recipes (not yet tokens)
 
-// Card / popover
-<div className="rounded-lg bg-canvas shadow-foundation-md p-4">…</div>
+Four multi-layer shadow recipes live in component code, identical in both SPARC
+apps — candidates to promote into tokens:
 
-// Floating dropdown
-<div className="rounded-xl bg-elevated shadow-foundation-lg p-4">…</div>
-
-// Modal / drawer
-<div className="rounded-xl bg-elevated shadow-foundation-xl p-6">…</div>
-
-// Modal-over-modal (rare)
-<div className="shadow-foundation-2xl">…</div>
-```
-
-## Brand glow (sacred)
-
-Inset highlights baked into Primary/Error buttons. **Never** modified by
-sync — they define POD's brand identity.
-
-<TokenAutoGrid kind="shadow" filter="glow" variant="table" />
-
-```tsx
-// Already wired into <Button variant="primary"> — don't apply manually
-// unless you're rolling a custom primitive.
-<button className="bg-brand-hover shadow-glow-accent-inset hover:shadow-glow-accent-inset-strong">
-  Primary
-</button>
-```
+| Recipe | Used by |
+|---|---|
+| Button shadow (6 layers incl. inset highlights) | button, segmented pill, date-picker Apply |
+| Card shadow "003" (5 layers) | kpi-card, dashboard panels, job cards |
+| Popover/menu shadow (3 layers) | dropdowns, menus, date-picker card |
+| Chart tooltip shadow (6 layers) | chart-tooltip |
 
 ## Source of truth
 
-Values defined in [`packages/tokens/src/theme.css`](https://github.com/) under
-`/* ── Shadows ── */` and `/* ── Glow effects ── */`. Exposed via
-[`packages/tokens/src/tailwind-preset.ts`](https://github.com/) `boxShadow`.
-This page reads from the preset directly — adding a new shadow there shows
-up here automatically.
+Values on this page come from `apps/docs/src/data/sparc-foundation.json`, copied
+unchanged from the original collection (`design-system-testing-abdillah/foundation/tokens.json`,
+v0.2.0); recipes documented from `foundation.md` §3. This collection is this
+repo's token source.

@@ -1,2 +1,2 @@
-export { SearchField } from "./search-field"
-export type { SearchFieldProps, SearchResult } from "./search-field"
+export { SearchField } from './search-field.js';
+export type { SearchFieldProps, SearchResult } from './search-field.js';

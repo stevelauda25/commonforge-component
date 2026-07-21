@@ -1,126 +1,81 @@
-import * as React from 'react';
-import * as RadixTooltip from '@radix-ui/react-tooltip';
-import { Info, AlertTriangle, AlertCircle } from 'lucide-react';
-import { cn } from '../lib/cn.js';
+"use client";
 
-export type TooltipVariant = 'default' | 'info' | 'warning' | 'error';
-export type TooltipSide = 'top' | 'right' | 'bottom' | 'left';
-export type TooltipAlign = 'start' | 'center' | 'end';
+import { useState, type ReactElement, type ReactNode } from "react"
+import { cn } from "../lib/cn.js"
+
+export type TooltipSide = "top" | "right" | "bottom" | "left"
 
 export interface TooltipProps {
-  /** Bold title row (top). Optional — omit for a single-row tooltip. */
-  title?: React.ReactNode;
-  /** Body row. Required. Renders alone if no `title` is set. */
-  content: React.ReactNode;
-  children: React.ReactElement;
-  variant?: TooltipVariant;
-  side?: TooltipSide;
-  align?: TooltipAlign;
-  sideOffset?: number;
-  delayDuration?: number;
-  defaultOpen?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  children: ReactElement
+  body: ReactNode
+  title?: ReactNode
+  side?: TooltipSide
+  open?: boolean
+  defaultOpen?: boolean
+  className?: string
 }
 
-const variantStyles: Record<TooltipVariant, string> = {
-  default: 'bg-surface',
-  info:    'bg-info',
-  warning: 'bg-warning',
-  error:   'bg-destructive',
-};
+const positionClasses: Record<TooltipSide, string> = {
+  top: "bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2",
+  right: "left-[calc(100%+10px)] top-1/2 -translate-y-1/2",
+  bottom: "left-1/2 top-[calc(100%+10px)] -translate-x-1/2",
+  left: "right-[calc(100%+10px)] top-1/2 -translate-y-1/2",
+}
 
-const variantTitleColor: Record<TooltipVariant, string> = {
-  default: 'text-strong',
-  info:    'text-on-info',
-  warning: 'text-on-warning',
-  error:   'text-on-destructive',
-};
-
-const variantBodyColor: Record<TooltipVariant, string> = {
-  default: 'text-muted',
-  info:    'text-on-info',
-  warning: 'text-on-warning',
-  error:   'text-on-destructive',
-};
-
-const variantArrowFill: Record<TooltipVariant, string> = {
-  default: 'fill-[rgb(var(--color-bg-surface))]',
-  info:    'fill-[rgb(var(--color-bg-info))]',
-  warning: 'fill-[rgb(var(--color-bg-warning))]',
-  error:   'fill-[rgb(var(--color-bg-destructive))]',
-};
-
-const variantIcon: Record<TooltipVariant, React.ReactNode | null> = {
-  default: null,
-  info:    <Info className="h-3.5 w-3.5" />,
-  warning: <AlertTriangle className="h-3.5 w-3.5" />,
-  error:   <AlertCircle className="h-3.5 w-3.5" />,
-};
+const arrowClasses: Record<TooltipSide, string> = {
+  top: "-bottom-[5px] left-1/2 -translate-x-1/2",
+  right: "-left-[5px] top-1/2 -translate-y-1/2",
+  bottom: "-top-[5px] left-1/2 -translate-x-1/2",
+  left: "-right-[5px] top-1/2 -translate-y-1/2",
+}
 
 export function Tooltip({
-  title,
-  content,
   children,
-  variant = 'default',
-  side = 'top',
-  align = 'center',
-  sideOffset = 6,
-  delayDuration = 200,
-  defaultOpen,
+  body,
+  title,
+  side = "top",
   open,
-  onOpenChange,
+  defaultOpen = false,
+  className,
 }: TooltipProps) {
-  const hasTitle = title != null && title !== '';
+  const [internalOpen, setInternalOpen] = useState(defaultOpen)
+  const isOpen = open ?? internalOpen
 
   return (
-    <RadixTooltip.Provider delayDuration={delayDuration}>
-      <RadixTooltip.Root
-        defaultOpen={defaultOpen}
-        open={open}
-        onOpenChange={onOpenChange}
-      >
-        <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>
-        <RadixTooltip.Portal>
-          <RadixTooltip.Content
-            side={side}
-            align={align}
-            sideOffset={sideOffset}
-            className={cn(
-              'z-50 max-w-xs',
-              'rounded-sm px-4 py-2 text-xs leading-4',
-              'shadow-foundation-md',
-              'inline-flex items-start gap-1.5',
-              'data-[state=delayed-open]:animate-in data-[state=closed]:animate-out',
-              'data-[state=closed]:fade-out-0 data-[state=delayed-open]:fade-in-0',
-              'data-[state=delayed-open]:zoom-in-95 data-[state=closed]:zoom-out-95',
-              'duration-fast ease-standard',
-              variantStyles[variant],
-            )}
-          >
-            {variantIcon[variant] && (
-              <span aria-hidden="true" className={cn('shrink-0 pt-px', variantTitleColor[variant])}>
-                {variantIcon[variant]}
-              </span>
-            )}
-            <span className="flex min-w-0 flex-col gap-0.5">
-              {hasTitle && (
-                <span className={cn('font-medium', variantTitleColor[variant])}>
-                  {title}
-                </span>
+    <span
+      className="relative inline-flex"
+      onMouseEnter={() => open === undefined && setInternalOpen(true)}
+      onMouseLeave={() => open === undefined && setInternalOpen(false)}
+      onFocusCapture={() => open === undefined && setInternalOpen(true)}
+      onBlurCapture={() => open === undefined && setInternalOpen(false)}
+    >
+      {children}
+      {isOpen && (
+        <span
+          role="tooltip"
+          className={cn(
+            "absolute z-50 w-max max-w-64 rounded-[12px] bg-white px-4 py-[10px] text-left shadow-[0_4px_8px_-4px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.15),0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0.5px_1px_0_rgba(255,255,255,0.25)]",
+            positionClasses[side],
+            className,
+          )}
+        >
+          <span className={cn("flex flex-col", title != null && "gap-1")}>
+            {title != null && <span className="text-sm font-medium leading-5 text-black">{title}</span>}
+            <span
+              className={cn(
+                "block text-black",
+                title != null ? "text-xs leading-4 text-[#525252]" : "text-sm leading-5",
               )}
-              <span className={cn(hasTitle ? variantBodyColor[variant] : variantTitleColor[variant])}>
-                {content}
-              </span>
+            >
+              {body}
             </span>
-            <RadixTooltip.Arrow
-              className={cn('drop-shadow-sm', variantArrowFill[variant])}
-              width={12}
-              height={6}
-            />
-          </RadixTooltip.Content>
-        </RadixTooltip.Portal>
-      </RadixTooltip.Root>
-    </RadixTooltip.Provider>
-  );
+          </span>
+          <span
+            aria-hidden="true"
+            className={cn("absolute size-[10px] rotate-45 bg-white", arrowClasses[side])}
+          />
+        </span>
+      )}
+    </span>
+  )
 }

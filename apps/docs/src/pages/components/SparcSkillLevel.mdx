@@ -1,0 +1,18 @@
+import { SkillLevel } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Skill Level"
+  description="Five-dot indicator for worker skill or proficiency rating."
+/>
+
+## Levels
+
+<PreviewCard>
+  <div className="flex flex-col gap-2">
+    <div className="flex items-center gap-3"><span className="text-sm">Level 1</span><SkillLevel level={1} /></div>
+    <div className="flex items-center gap-3"><span className="text-sm">Level 2</span><SkillLevel level={2} /></div>
+    <div className="flex items-center gap-3"><span className="text-sm">Level 3</span><SkillLevel level={3} /></div>
+    <div className="flex items-center gap-3"><span className="text-sm">Level 4</span><SkillLevel level={4} /></div>
+    <div className="flex items-center gap-3"><span className="text-sm">Level 5</span><SkillLevel level={5} /></div>
+  </div>
+</PreviewCard>

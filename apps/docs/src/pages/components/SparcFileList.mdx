@@ -1,0 +1,38 @@
+import { FileList } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC File List"
+  description="File upload row showing name, size, progress, and status actions."
+/>
+
+## States
+
+<PreviewCard>
+  <div className="flex flex-col gap-3">
+    <FileList
+      fileName="labor-plan.pdf"
+      fileSize="1.68 MB"
+      onRemove={() => {}}
+    />
+    <FileList
+      state="uploading"
+      fileName="labor-plan.pdf"
+      fileSize="1.68 MB"
+      progress={68}
+      onRemove={() => {}}
+    />
+    <FileList
+      state="success"
+      fileName="labor-plan.pdf"
+      fileSize="1.68 MB"
+      onRemove={() => {}}
+    />
+    <FileList
+      state="failed"
+      fileName="labor-plan.pdf"
+      fileSize="1.68 MB"
+      onRetry={() => {}}
+      onRemove={() => {}}
+    />
+  </div>
+</PreviewCard>

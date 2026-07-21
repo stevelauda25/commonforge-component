@@ -15,7 +15,6 @@ export default {
     './index.html',
     './src/**/*.{ts,tsx,mdx}',
     '../../packages/ui/src/**/*.{ts,tsx}',
-    '../../../design-system-testing-abdillah/packages/ui/src/**/*.{ts,tsx}',
   ],
   theme: {
     extend: {

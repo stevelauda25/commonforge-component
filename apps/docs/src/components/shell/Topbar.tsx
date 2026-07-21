@@ -13,14 +13,12 @@ export function Topbar({ onMenuClick }: Props) {
       <div className="flex items-center gap-3">
         <Button
           variant="outline"
-          iconOnly
           size="sm"
           onClick={onMenuClick}
           aria-label="Open navigation"
           className="md:hidden"
-        >
-          <Menu className="h-4 w-4" />
-        </Button>
+          leftIcon={<Menu className="h-4 w-4" />}
+        />
         <Link to="/" className="flex items-center gap-2">
           <span className="text-sm font-semibold text-default">CommonForge</span>
           <span className="text-sm text-muted">Design System</span>

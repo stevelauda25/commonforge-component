@@ -1,0 +1,32 @@
+import { NavItem, NavSection } from '@sparc-ui';
+import { Home, Users, Settings } from 'lucide-react';
+
+<PageHeader
+  title="SPARC Nav Section"
+  description="Labeled grouping container for navigation items."
+/>
+
+## With label
+
+<PreviewCard>
+  <div className="w-56 space-y-1">
+    <NavSection label="Workspace">
+      <NavItem icon={Home} label="Dashboard" current />
+      <NavItem icon={Users} label="Team" />
+    </NavSection>
+    <NavSection label="Account">
+      <NavItem icon={Settings} label="Settings" />
+    </NavSection>
+  </div>
+</PreviewCard>
+
+## Without label
+
+<PreviewCard>
+  <div className="w-56 space-y-1">
+    <NavSection>
+      <NavItem icon={Home} label="Home" />
+      <NavItem icon={Users} label="Members" />
+    </NavSection>
+  </div>
+</PreviewCard>

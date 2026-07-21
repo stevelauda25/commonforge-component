@@ -1,0 +1,47 @@
+import { NavItem, NavSection } from '@sparc-ui';
+import { Home, Users, Settings, LogOut } from 'lucide-react';
+
+<PageHeader
+  title="SPARC Nav Item"
+  description="Navigation row for sidebar menus, with support for icons, selection, expansion, and sub-items."
+/>
+
+## Default states
+
+<PreviewCard>
+  <div className="w-56 space-y-1">
+    <NavItem icon={Home} label="Dashboard" />
+    <NavItem icon={Users} label="Team" current />
+    <NavItem icon={Settings} label="Settings" />
+  </div>
+</PreviewCard>
+
+## Expandable
+
+<PreviewCard>
+  <div className="w-56 space-y-1">
+    <NavItem icon={Users} label="Projects" expandable />
+    <NavItem icon={Users} label="Projects" expandable expanded />
+  </div>
+</PreviewCard>
+
+## Sub-items
+
+<PreviewCard>
+  <div className="w-56 space-y-1">
+    <NavItem icon={Settings} label="Settings" expandable expanded />
+    <NavSection>
+      <NavItem sub label="General" />
+      <NavItem sub label="Security" current />
+      <NavItem sub label="Billing" />
+    </NavSection>
+  </div>
+</PreviewCard>
+
+## Danger
+
+<PreviewCard>
+  <div className="w-56">
+    <NavItem icon={LogOut} label="Log out" danger />
+  </div>
+</PreviewCard>

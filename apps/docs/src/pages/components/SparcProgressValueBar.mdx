@@ -1,0 +1,16 @@
+import { ProgressValueBar } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Progress Value Bar"
+  description="Progress bar that shows a label and value label inside the track."
+/>
+
+## Default
+
+<PreviewCard>
+  <div className="w-full max-w-md space-y-3">
+    <ProgressValueBar label="Electrical" valueLabel="40%" percent={40} color="#201B18" />
+    <ProgressValueBar label="Plumbing" valueLabel="25%" percent={25} color="#E51D31" />
+    <ProgressValueBar label="HVAC" valueLabel="35%" percent={35} color="#129457" />
+  </div>
+</PreviewCard>

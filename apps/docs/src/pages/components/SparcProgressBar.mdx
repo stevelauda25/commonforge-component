@@ -1,0 +1,43 @@
+import { ProgressBar } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Progress Bar"
+  description="Horizontal progress indicator with labeled, default, and indeterminate variants."
+/>
+
+## Default
+
+<PreviewCard>
+  <div className="w-full max-w-md space-y-4">
+    <ProgressBar value={25} />
+    <ProgressBar value={50} />
+    <ProgressBar value={75} />
+  </div>
+</PreviewCard>
+
+## Labeled
+
+<PreviewCard>
+  <div className="w-full max-w-md space-y-4">
+    <ProgressBar variant="labeled" label="Upload progress" value={45} />
+    <ProgressBar variant="labeled" label="Budget used" value={72} />
+  </div>
+</PreviewCard>
+
+## Sizes
+
+<PreviewCard>
+  <div className="w-full max-w-md space-y-4">
+    <ProgressBar size="small" value={60} />
+    <ProgressBar size="medium" value={60} />
+    <ProgressBar size="large" value={60} />
+  </div>
+</PreviewCard>
+
+## Indeterminate
+
+<PreviewCard>
+  <div className="w-full max-w-md">
+    <ProgressBar variant="indeterminate" />
+  </div>
+</PreviewCard>

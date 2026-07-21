@@ -1,0 +1,27 @@
+import { EmptyState } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Empty State"
+  description="Placeholder illustration for empty lists, notifications, or search results."
+/>
+
+## Variants
+
+<PreviewCard>
+  <div className="grid gap-6 sm:grid-cols-3">
+    <EmptyState variant="notifications" />
+    <EmptyState variant="team" />
+    <EmptyState variant="compact" />
+  </div>
+</PreviewCard>
+
+## Custom content
+
+<PreviewCard>
+  <EmptyState
+    title="No results found"
+    description="Try adjusting your filters or search query."
+    actionLabel="Clear filters"
+    onAction={() => {}}
+  />
+</PreviewCard>

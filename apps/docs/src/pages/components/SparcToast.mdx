@@ -1,0 +1,48 @@
+import { Toast } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Toast"
+  description="Dismissible notification banner with status variants and optional action."
+/>
+
+## Variants
+
+<PreviewCard>
+  <div className="flex flex-col gap-3">
+    <Toast
+      title="Plan updated"
+      description="Your staffing plan has been saved."
+      onDismiss={() => {}}
+    />
+    <Toast
+      variant="error"
+      title="Upload failed"
+      description="We could not process the file."
+      onDismiss={() => {}}
+    />
+    <Toast
+      variant="success"
+      title="Success"
+      description="Changes saved."
+      onDismiss={() => {}}
+    />
+    <Toast
+      variant="warning"
+      title="Warning"
+      description="Review required."
+      onDismiss={() => {}}
+    />
+  </div>
+</PreviewCard>
+
+## With action
+
+<PreviewCard>
+  <Toast
+    title="With action"
+    description="An item needs your approval."
+    actionLabel="View"
+    onAction={() => {}}
+    onDismiss={() => {}}
+  />
+</PreviewCard>

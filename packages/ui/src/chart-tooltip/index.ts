@@ -1,1 +1,1 @@
-export * from "./chart-tooltip"
+export * from './chart-tooltip.js';

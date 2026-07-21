@@ -1,0 +1,56 @@
+import { SearchField } from '@sparc-ui';
+import { useState } from 'react';
+
+export function SearchFieldDemo() {
+  const [query, setQuery] = useState('');
+  const results = query.length > 0 ? [
+    { id: '1', label: 'Project Alpha' },
+    { id: '2', label: 'Project Beta' },
+    { id: '3', label: 'Project Gamma' },
+  ] : [];
+  return (
+    <div className="w-80">
+      <SearchField
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        results={results}
+        placeholder="Search projects"
+      />
+    </div>
+  );
+}
+
+<PageHeader
+  title="SPARC Search Field"
+  description="Search input with icon, optional shortcut hint, and result dropdown."
+/>
+
+## Default
+
+<PreviewCard>
+  <div className="w-80">
+    <SearchField placeholder="Search projects" />
+  </div>
+</PreviewCard>
+
+## With shortcut badge
+
+<PreviewCard>
+  <div className="w-80">
+    <SearchField placeholder="Search" shortcut="⌘K" />
+  </div>
+</PreviewCard>
+
+## With live results
+
+<PreviewCard>
+  <SearchFieldDemo />
+</PreviewCard>
+
+## Small size
+
+<PreviewCard>
+  <div className="w-72">
+    <SearchField size="sm" placeholder="Quick search" />
+  </div>
+</PreviewCard>

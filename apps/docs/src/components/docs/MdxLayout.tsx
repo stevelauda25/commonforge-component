@@ -4,13 +4,14 @@ import { cn } from 'pod-test-ui';
 import { TableOfContents } from './TableOfContents.js';
 
 // TOC auto-shows on every /components/* and /foundations/* page.
-// Standalone pages (Home, Getting Started, Changelog, Figma Status) skip it.
+// Standalone pages (Home, Getting Started, Changelog) skip it.
 const TOC_PREFIXES = ['/components/', '/foundations/'];
 
 export function MdxLayout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const showToc = TOC_PREFIXES.some((p) => pathname.startsWith(p));
-  const isSparc = pathname.startsWith('/components/sparc-');
+  // Every component page documents a SPARC atom, so they all get the SPARC theme.
+  const isSparc = pathname.startsWith('/components/');
   const contentClass = cn('mdx-content', isSparc && 'sparc-theme');
 
   if (!showToc) {

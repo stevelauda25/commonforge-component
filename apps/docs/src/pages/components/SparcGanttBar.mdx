@@ -1,0 +1,17 @@
+import { GanttBar } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Gantt Bar"
+  description="Small timeline bar for scheduling and resource planning views."
+/>
+
+## States
+
+<PreviewCard>
+  <div className="flex flex-col gap-2">
+    <GanttBar>2 workers</GanttBar>
+    <GanttBar state="hover">2 workers</GanttBar>
+    <GanttBar state="selected">2 workers</GanttBar>
+    <GanttBar state="disabled">2 workers</GanttBar>
+  </div>
+</PreviewCard>

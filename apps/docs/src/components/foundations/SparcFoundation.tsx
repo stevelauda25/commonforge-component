@@ -3,10 +3,10 @@ import { PreviewCard } from '../docs/PreviewCard.js';
 import { PropsTable } from '../docs/PropsTable.js';
 
 /**
- * Renderers for the externally collected SPARC foundation tokens
- * (src/data/sparc-foundation.json). These are STAGING tokens under review —
- * they are not part of pod-test-tokens, so every preview here uses inline
- * styles with the raw collected values rather than Tailwind token classes.
+ * Renderers for the SPARC foundation tokens (src/data/sparc-foundation.json),
+ * collected from the SPARC apps on 2026-07-21 and this repo's token source.
+ * Every preview here uses inline styles with the raw collected values rather
+ * than Tailwind token classes.
  */
 
 type RampName = 'neutral' | 'crimson' | 'green' | 'amber' | 'red' | 'gray';
@@ -35,7 +35,7 @@ export function SparcColorRamp({ ramp }: { ramp: RampName }) {
   );
 }
 
-/** Semantic color tokens, rendered like the SwatchGrid on the Color page. */
+/** Semantic color tokens, rendered as a labeled swatch list. */
 export function SparcSemanticColors() {
   return (
     <div className="my-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">

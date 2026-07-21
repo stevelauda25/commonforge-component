@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react"
-import { cn } from "../lib/cn"
+import { cn } from "../lib/cn.js"
 
 export const CHART_TOOLTIP_SHADOW =
   "0px 4px 8px 0px rgba(0,0,0,0.1),0px 2px 8px 0px rgba(0,0,0,0.15),0px 1px 2px 0px rgba(0,0,0,0.25),inset 0px 0px 0px 1px rgba(0,0,0,0.1),inset 0px -1px 1px 0px rgba(0,0,0,0.1),inset 0px 1px 2px 0px rgba(255,255,255,0.25)"
