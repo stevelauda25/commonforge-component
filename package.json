@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "pnpm -F docs dev",
     "build": "pnpm build:docs",
-    "build:packages": "pnpm -F cf-tokens build && pnpm -F cf-ui build",
+    "build:packages": "pnpm -F @commonforge/tokens build && pnpm -F @commonforge/ui build",
     "build:docs": "pnpm build:packages && pnpm figma:status && pnpm figma:manifest && pnpm -F docs build",
     "build:centernode": "pnpm build:packages && cd centernode && npm install --no-fund --no-audit && npm run build",
     "build:client": "cd client-test && npm install --no-fund --no-audit && npm run build",

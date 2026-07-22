@@ -1,7 +1,6 @@
 {
-  "name": "cf-tokens",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@commonforge/tokens",
+  "version": "0.1.1",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
