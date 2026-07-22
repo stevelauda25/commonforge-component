@@ -1,17 +1,8 @@
 {
-  "name": "cf-ui",
+  "name": "pod-design-system-test",
+  "private": true,
   "version": "0.1.12",
-  "description": "Common Forge Design System UI library",
-  "main": "./packages/ui/dist/index.cjs",
-  "module": "./packages/ui/dist/index.js",
-  "types": "./packages/ui/dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./packages/ui/dist/index.d.ts",
-      "import": "./packages/ui/dist/index.js",
-      "require": "./packages/ui/dist/index.cjs"
-    }
-  },
+  "description": "Small design system test environment for POD — sprint-style scope.",
   "packageManager": "pnpm@9.7.0",
   "scripts": {
     "dev": "pnpm -F docs dev",
