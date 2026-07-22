@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import { cn } from 'pod-test-ui';
+import { cn } from 'cf-ui';
 import { TableOfContents } from './TableOfContents.js';
 
 // TOC auto-shows on every /components/* and /foundations/* page.

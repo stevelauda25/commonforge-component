@@ -1,5 +1,5 @@
 import type { TableHTMLAttributes } from 'react';
-import { cn } from 'pod-test-ui';
+import { cn } from 'cf-ui';
 
 export function PropsTable({
   className,

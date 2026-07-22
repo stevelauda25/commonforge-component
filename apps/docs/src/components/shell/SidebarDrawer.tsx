@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Sidebar } from './Sidebar.js';
-import { cn } from 'pod-test-ui';
+import { cn } from 'cf-ui';
 
 interface Props {
   open: boolean;

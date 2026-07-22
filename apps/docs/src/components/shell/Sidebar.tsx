@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
-import { cn } from 'pod-test-ui';
+import { cn } from 'cf-ui';
 import {
   routes,
   componentRoutes,
