@@ -1,0 +1,5 @@
+import{u as o,j as e}from"./index-C2o_YddS.js";import"./text-area-DmxvntcW.js";import{T as i}from"./tag-BxEPuwd_.js";import"./x-DqsTPYad.js";function s(n){const r={h2:"h2",...o(),...n.components},{PageHeader:a,PreviewCard:t}=r;return a||d("PageHeader"),t||d("PreviewCard"),e.jsxs(e.Fragment,{children:[e.jsx(a,{title:"Tag",description:"Compact filter or selection chip."}),`
+`,e.jsx(r.h2,{id:"variants",children:"Variants"}),`
+`,e.jsx(t,{children:e.jsxs("div",{className:"flex flex-wrap gap-3",children:[e.jsx(i,{children:"Default"}),e.jsx(i,{variant:"selected",children:"Selected"}),e.jsx(i,{variant:"removable",children:"Removable"}),e.jsx(i,{variant:"add",children:"Add"}),e.jsx(i,{variant:"placeholder",children:"Placeholder"})]})}),`
+`,e.jsx(r.h2,{id:"disabled",children:"Disabled"}),`
+`,e.jsx(t,{children:e.jsx("div",{className:"flex flex-wrap gap-3",children:e.jsx(i,{disabled:!0,children:"Disabled"})})})]})}function m(n={}){const{wrapper:r}={...o(),...n.components};return r?e.jsx(r,{...n,children:e.jsx(s,{...n})}):s(n)}function d(n,r){throw new Error("Expected component `"+n+"` to be defined: you likely forgot to import, pass, or provide it.")}export{m as default};
