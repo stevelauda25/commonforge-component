@@ -122,8 +122,8 @@ jobs:
         continue-on-error: true
         id: rebuild
         run: |
-          pnpm -F pod-test-tokens build
-          pnpm -F pod-test-ui build
+          pnpm -F cf-tokens build
+          pnpm -F cf-ui build
 
       - name: Typecheck
         if: env.NO_OP != 'true'

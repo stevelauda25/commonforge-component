@@ -1,5 +1,0 @@
-import{u as d,j as e}from"./index-C2o_YddS.js";import"./text-area-DmxvntcW.js";import{C as n}from"./checkbox-B_huLA8f.js";function c(s){const t={h2:"h2",...d(),...s.components},{PageHeader:i,PreviewCard:r}=t;return i||o("PageHeader"),r||o("PreviewCard"),e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"Checkbox",description:"Multi-select boolean input in three sizes."}),`
-`,e.jsx(t.h2,{id:"sizes",children:"Sizes"}),`
-`,e.jsx(r,{children:e.jsxs("div",{className:"flex flex-wrap items-center gap-4",children:[e.jsx(n,{size:"small",checked:!0}),e.jsx(n,{size:"medium",checked:!0}),e.jsx(n,{size:"large",checked:!0})]})}),`
-`,e.jsx(t.h2,{id:"states",children:"States"}),`
-`,e.jsx(r,{children:e.jsxs("div",{className:"flex flex-wrap items-center gap-4",children:[e.jsx(n,{}),e.jsx(n,{checked:!0}),e.jsx(n,{checked:!0,disabled:!0}),e.jsx(n,{disabled:!0})]})})]})}function m(s={}){const{wrapper:t}={...d(),...s.components};return t?e.jsx(t,{...s,children:e.jsx(c,{...s})}):c(s)}function o(s,t){throw new Error("Expected component `"+s+"` to be defined: you likely forgot to import, pass, or provide it.")}export{m as default};

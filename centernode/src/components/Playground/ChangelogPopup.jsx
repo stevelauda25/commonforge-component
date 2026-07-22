@@ -4,7 +4,7 @@ import Modal from "./Modal";
 
 /**
  * What's New popup — centernode-specific changelog.
- * Distinct from the design-system docs site changelog (which tracks pod-test-ui).
+ * Distinct from the design-system docs site changelog (which tracks cf-ui).
  * This one tracks the centernode playground app itself.
  */
 
@@ -148,7 +148,7 @@ const ENTRIES = [
         items: [
           "Badge spawns with 11 color variants (Green / Lime / Orange / Yellow / Red / Purple / Indigo / Sky / Blue / Soft Gray / Dark Gray). Each card shows the real badge with its tag-dot indicator + IBM Plex Mono label.",
           "Tab spawns with 4 style variants (Menu / Underline / ScreenNav / Pill). Underline active state shows the canonical green success bar (was missing in earlier sync due to `bg-success-default` class typo).",
-          "Both pulled from `pod-test-ui@0.1.7` — published lockstep with `pod-test-tokens@0.1.7`.",
+          "Both pulled from `cf-ui@0.1.7` — published lockstep with `cf-tokens@0.1.7`.",
         ],
       },
       {
@@ -173,7 +173,7 @@ const ENTRIES = [
         title: "canvas-sync infra fix",
         items: [
           "`scripts/canvas/sync.mjs` now reads `name:` field from each `canvas.ts` instead of always deriving from `kebabToPascal(dir)`. Fixes plural-folder / singular-export mismatch (`badges/` → `Badge`, `tabs/` → `Tab`).",
-          "Regenerated `centernode/src/utils/podRuntime.js` — imports now correctly reference `Badge` and `Tab` (was `Badges` / `Tabs`, breaking build).",
+          "Regenerated `centernode/src/utils/cfRuntime.js` — imports now correctly reference `Badge` and `Tab` (was `Badges` / `Tabs`, breaking build).",
         ],
       },
     ],
@@ -185,10 +185,10 @@ const ENTRIES = [
       {
         title: "POD Components live in the canvas",
         items: [
-          "Left sidebar lists every POD primitive from `pod-test-ui` (Button, Checkbox, TextInput, SearchInput, Switch).",
+          "Left sidebar lists every POD primitive from `cf-ui` (Button, Checkbox, TextInput, SearchInput, Switch).",
           "Each variant has a live mini-preview rendered with the actual component — click to spawn at canvas center.",
           "Examples row per component (Loading / Disabled / With error / etc.) — preset variants ready to drop.",
-          "Sidebar auto-discovers new POD components via `pod-test-ui/canvas` manifest. No manual wiring.",
+          "Sidebar auto-discovers new POD components via `cf-ui/canvas` manifest. No manual wiring.",
         ],
       },
       {

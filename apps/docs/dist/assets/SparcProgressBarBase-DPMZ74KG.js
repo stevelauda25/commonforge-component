@@ -1,5 +1,0 @@
-import{u as a,j as e}from"./index-C2o_YddS.js";import"./text-area-DmxvntcW.js";import{P as o}from"./progress-bar-base-DHbc7JWn.js";function c(s){const r={h2:"h2",...a(),...s.components},{PageHeader:t,PreviewCard:n}=r;return t||i("PageHeader"),n||i("PreviewCard"),e.jsxs(e.Fragment,{children:[e.jsx(t,{title:"SPARC Progress Bar Base",description:"Low-level progress track and fill, used by ProgressBar and custom composite components."}),`
-`,e.jsx(r.h2,{id:"sizes",children:"Sizes"}),`
-`,e.jsx(n,{children:e.jsxs("div",{className:"w-full max-w-md space-y-4",children:[e.jsx(o,{percent:40,size:"sm"}),e.jsx(o,{percent:60,size:"md"}),e.jsx(o,{percent:80,size:"lg"})]})}),`
-`,e.jsx(r.h2,{id:"custom-color",children:"Custom color"}),`
-`,e.jsx(n,{children:e.jsxs("div",{className:"w-full max-w-md space-y-4",children:[e.jsx(o,{percent:50,color:"#E51D31"}),e.jsx(o,{percent:75,color:"#129457"})]})})]})}function x(s={}){const{wrapper:r}={...a(),...s.components};return r?e.jsx(r,{...s,children:e.jsx(c,{...s})}):c(s)}function i(s,r){throw new Error("Expected component `"+s+"` to be defined: you likely forgot to import, pass, or provide it.")}export{x as default};

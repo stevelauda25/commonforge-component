@@ -1,5 +1,0 @@
-import{u as d,j as e}from"./index-C2o_YddS.js";import"./text-area-DmxvntcW.js";import{L as s}from"./loading-spinner-CMyPzd9b.js";function o(n){const i={h2:"h2",...d(),...n.components},{PageHeader:t,PreviewCard:r}=i;return t||a("PageHeader"),r||a("PreviewCard"),e.jsxs(e.Fragment,{children:[e.jsx(t,{title:"Loading Spinner",description:"Loading indicator with size and stroke variants."}),`
-`,e.jsx(i.h2,{id:"sizes",children:"Sizes"}),`
-`,e.jsx(r,{children:e.jsxs("div",{className:"flex flex-wrap items-center gap-6",children:[e.jsx(s,{size:"xs"}),e.jsx(s,{size:"s"}),e.jsx(s,{size:"md"}),e.jsx(s,{size:"lg"}),e.jsx(s,{size:"xl"})]})}),`
-`,e.jsx(i.h2,{id:"variants",children:"Variants"}),`
-`,e.jsx(r,{children:e.jsxs("div",{className:"flex flex-wrap items-center gap-6",children:[e.jsx(s,{variant:"filled"}),e.jsx(s,{variant:"stroke"})]})})]})}function m(n={}){const{wrapper:i}={...d(),...n.components};return i?e.jsx(i,{...n,children:e.jsx(o,{...n})}):o(n)}function a(n,i){throw new Error("Expected component `"+n+"` to be defined: you likely forgot to import, pass, or provide it.")}export{m as default};

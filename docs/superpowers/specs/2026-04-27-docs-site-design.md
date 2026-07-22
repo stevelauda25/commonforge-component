@@ -1,15 +1,15 @@
-# POD Design System — Docs Site Design
+# CF Design System — Docs Site Design
 
 **Status:** Draft · Awaiting implementation
 **Date:** 2026-04-27
-**Scope:** New `apps/docs` Vite app — public-facing documentation site for POD Design System
+**Scope:** New `apps/docs` Vite app — public-facing documentation site for CF Design System
 **References:** [kumo-ui.com](https://kumo-ui.com/), [asto-design-system.vercel.app](https://asto-design-system.vercel.app/getting-started)
 
 ---
 
 ## Goal
 
-Ship a hybrid documentation site for POD Design System: kumo-style component grid on the home page + asto-style sidebar IA with Foundations as a first-class section. The site lives side-by-side with the existing `apps/playground` (which remains untouched as a dev scratchpad).
+Ship a hybrid documentation site for CF Design System: kumo-style component grid on the home page + asto-style sidebar IA with Foundations as a first-class section. The site lives side-by-side with the existing `apps/playground` (which remains untouched as a dev scratchpad).
 
 **Why now:** The current state — 4 components and a single-page playground — has outgrown its review surface. A docs site gives designers, developers, and PMs a shared source of truth, makes the planned roadmap visible (via empty-state component pages), and gives the design system room to grow without rewriting the surface every sprint.
 

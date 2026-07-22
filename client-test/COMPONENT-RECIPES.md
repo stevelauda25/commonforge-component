@@ -1,4 +1,4 @@
-# `pod-test-ui` — Recipes & Patterns
+# `cf-ui` — Recipes & Patterns
 
 Practical UI patterns built from the 4 available components: `Button`, `Checkbox`, `SearchInput`, `Tooltip`.
 
@@ -7,19 +7,19 @@ Practical UI patterns built from the 4 available components: `Button`, `Checkbox
 > - **Code** — the expected output. Drop into your project as-is, or use as a reference.
 > - **Notes** — accessibility rules, dark-mode behavior, common mistakes.
 
-Prerequisites assumed: project is set up per `CLIENT-PROMPT.md` (Tailwind v3 + `pod-test-tokens` preset wired up).
+Prerequisites assumed: project is set up per `CLIENT-PROMPT.md` (Tailwind v3 + `cf-tokens` preset wired up).
 
 ---
 
 ## 1. App Header (Logo + Search + Action Bar)
 
 **Prompt:**
-> Build an app header using `pod-test-ui`. It should contain: a logo on the left, a search input in the center (max-width 480px), and three icon-only buttons on the right (notifications, settings, sign-out) — each wrapped in a `Tooltip`. Sticky at the top. Use semantic tokens only.
+> Build an app header using `cf-ui`. It should contain: a logo on the left, a search input in the center (max-width 480px), and three icon-only buttons on the right (notifications, settings, sign-out) — each wrapped in a `Tooltip`. Sticky at the top. Use semantic tokens only.
 
 **Code:**
 
 ```tsx
-import { Button, SearchInput, Tooltip } from 'pod-test-ui';
+import { Button, SearchInput, Tooltip } from 'cf-ui';
 import { Bell, Settings, LogOut } from 'lucide-react';
 import { useState } from 'react';
 
@@ -74,7 +74,7 @@ export function AppHeader() {
 **Code:**
 
 ```tsx
-import { Button, SearchInput } from 'pod-test-ui';
+import { Button, SearchInput } from 'cf-ui';
 import { useState } from 'react';
 
 type Filter = 'all' | 'active' | 'archived';
@@ -132,7 +132,7 @@ export function ProjectsToolbar() {
 **Code:**
 
 ```tsx
-import { Button, Checkbox } from 'pod-test-ui';
+import { Button, Checkbox } from 'cf-ui';
 import { useState } from 'react';
 
 type Prefs = {
@@ -223,7 +223,7 @@ export function NotificationPreferences() {
 **Code:**
 
 ```tsx
-import { Button, Tooltip } from 'pod-test-ui';
+import { Button, Tooltip } from 'cf-ui';
 import { Trash2 } from 'lucide-react';
 
 type Props = { onCancel: () => void; onConfirm: () => void };
@@ -269,7 +269,7 @@ export function DeleteConfirmation({ onCancel, onConfirm }: Props) {
 **Code:**
 
 ```tsx
-import { Button } from 'pod-test-ui';
+import { Button } from 'cf-ui';
 import { SearchX } from 'lucide-react';
 
 type Props = { query: string; onClear: () => void };
@@ -308,7 +308,7 @@ export function NoResults({ query, onClear }: Props) {
 **Code:**
 
 ```tsx
-import { Button, Checkbox, SearchInput } from 'pod-test-ui';
+import { Button, Checkbox, SearchInput } from 'cf-ui';
 import { Mail } from 'lucide-react';
 import { useState } from 'react';
 
@@ -377,7 +377,7 @@ export function SubscribeForm() {
 **Code:**
 
 ```tsx
-import { Button } from 'pod-test-ui';
+import { Button } from 'cf-ui';
 
 type Props = {
   saving: boolean;
@@ -418,7 +418,7 @@ export function UnsavedChangesBar({ saving, onDiscard, onSave }: Props) {
 **Code:**
 
 ```tsx
-import { Button, Tooltip } from 'pod-test-ui';
+import { Button, Tooltip } from 'cf-ui';
 import { Undo2, Redo2, Bold, Italic, Link2, Trash2 } from 'lucide-react';
 
 const Sep = () => <span className="mx-1 h-5 w-px bg-border-default" aria-hidden="true" />;
@@ -467,7 +467,7 @@ export function EditorToolbar() {
 **Code:**
 
 ```tsx
-import { Button, Tooltip } from 'pod-test-ui';
+import { Button, Tooltip } from 'cf-ui';
 import { Sun, Moon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -543,7 +543,7 @@ When generating UI from these prompts, **never produce**:
 <input type="checkbox" className="..." />   // use <Checkbox> instead
 
 // ❌ Importing internal paths
-import { Button } from 'pod-test-ui/dist/button';   // use top-level only
+import { Button } from 'cf-ui/dist/button';   // use top-level only
 ```
 
 **Always prefer:**
@@ -562,7 +562,7 @@ import { Button } from 'pod-test-ui/dist/button';   // use top-level only
 <Checkbox checked={x} onCheckedChange={setX} label="…" />
 
 // ✓ Top-level imports
-import { Button, Tooltip } from 'pod-test-ui';
+import { Button, Tooltip } from 'cf-ui';
 ```
 
 ---

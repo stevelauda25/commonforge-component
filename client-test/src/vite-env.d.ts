@@ -1,4 +1,4 @@
 /// <reference types="vite/client" />
 
 declare module '*.css';
-declare module 'pod-test-tokens/theme.css';
+declare module 'cf-tokens/theme.css';

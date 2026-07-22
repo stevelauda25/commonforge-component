@@ -1,4 +1,4 @@
-import { hexToRgbTriple } from "./podTokens";
+import { hexToRgbTriple } from "./cfTokens";
 
 /**
  * Build inline CSS variables for a node's tokenOverrides object.

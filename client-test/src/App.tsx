@@ -1,4 +1,4 @@
-import { Badge, Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
+import { Badge, Button, Checkbox, SearchInput, Tooltip } from 'cf-ui';
 import {
   ArrowRight,
   Bell,
@@ -13,7 +13,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { Agentation } from 'agentation';
 import { IssueCard } from './components/IssueCard.js';
-import { enrichAgentationOutput } from './lib/pod-agentation.js';
+import { enrichAgentationOutput } from './lib/cf-agentation.js';
 
 function ThemeToggle() {
   // Initial value comes from the bootstrap script in index.html (default = dark).

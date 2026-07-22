@@ -4,7 +4,7 @@
  * rewritten under this prop name before the JSX is spawned, and the props
  * panel reads this map so the pill selector appears under the right key.
  *
- * Single source of truth — keep PodLibraryPanel.jsx and utils/parser.js
+ * Single source of truth — keep CfLibraryPanel.jsx and utils/parser.js
  * importing from here.
  */
 export const VARIANT_PROP_ALIAS = {

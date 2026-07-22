@@ -1,11 +1,11 @@
-# AGENTS.md — POD Design System
+# AGENTS.md — CF Design System
 
 Project context for AI agents working in this repo.
 
 ## Project identity
 
 Token-driven, dark-mode-aware React design system. Source of truth =
-**Figma file `TCd9exLXTUMciyw1VqnPSK`** (POD Design System 1.1). The codebase
+**Figma file `TCd9exLXTUMciyw1VqnPSK`** (CF Design System 1.1). The codebase
 is a projection of Figma; drift detection at [scripts/figma/](scripts/figma/)
 keeps them honest.
 
@@ -236,7 +236,7 @@ Use pre-registered MDX globals (`PageHeader`, `PreviewCard`, `PropsTable`,
    import type { CanvasComponent } from '../canvas-types.js';
    export const switchCanvas: CanvasComponent = {
      name: 'Switch',
-     importFrom: 'pod-test-ui/switch',
+     importFrom: 'cf-ui/switch',
      variants: ['default'],
      sizes: ['sm', 'md'],
      defaultProps: { checked: false },
@@ -244,10 +244,10 @@ Use pre-registered MDX globals (`PageHeader`, `PreviewCard`, `PropsTable`,
    ```
 Then `node scripts/canvas/sync.mjs` (or `npm run build` in packages/ui).
 The script auto-updates: `tsup.config.ts` entries, `package.json` exports,
-`src/canvas.ts` aggregator, `centernode/src/utils/podRuntime.js`. Centernode
+`src/canvas.ts` aggregator, `centernode/src/utils/cfRuntime.js`. Centernode
 sidebar picks it up automatically. No manual file edits needed.
 
-> **Important — centernode consumes pod-test-ui via npm, NOT file: link.**
+> **Important — centernode consumes cf-ui via npm, NOT file: link.**
 > Local edits to `packages/ui` show up in `apps/docs` instantly (pnpm
 > workspace) but **NOT in centernode**. To see component changes in
 > centernode (local OR Vercel), you must `/publish` a new npm version
@@ -262,12 +262,12 @@ Directory). One `git push origin main` → all auto-rebuild in parallel.
 | App | Vercel project | Root Directory | Local dev source |
 |---|---|---|---|
 | `apps/docs` | `pod-docs.vercel.app` | `apps/docs` | pnpm workspace (file resolution, instant) |
-| `centernode` | `pod-centernode` (TBD URL) | `centernode` | npm version `pod-test-ui@^x.y.z` (needs republish to update) |
+| `centernode` | `pod-centernode` (TBD URL) | `centernode` | npm version `cf-ui@^x.y.z` (needs republish to update) |
 | `client-test` | not deployed (local-only) | `client-test` | npm version (same caveat as centernode) |
 
 Each app has its own `vercel.json` with build commands. Don't override
 in dashboard — vercel.json wins. To update centernode/client-test with
-latest pod-test-ui changes: `/publish` (auto-bumps both consumers).
+latest cf-ui changes: `/publish` (auto-bumps both consumers).
 
 ## Motion — interactive removal / dismissal
 

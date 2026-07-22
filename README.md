@@ -1,4 +1,4 @@
-# POD Design System — Test Environment
+# CF Design System — Test Environment
 
 Sprint-style scope: **4 components** (Button, Checkbox, SearchInput, Tooltip) built with tokens, light/dark mode, and a docs site.
 

@@ -4,8 +4,8 @@ import "./globals.css";
 // POD design system — tokens (CSS variables) + compiled Tailwind utilities.
 // Order matters: theme.css first (declares --color-* etc.), then styles.css
 // (utility classes that consume those vars).
-import "pod-test-tokens/theme.css";
-import "pod-test-ui/styles.css";
+import "cf-tokens/theme.css";
+import "cf-ui/styles.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      // Initial `dark` class activates pod-test-tokens dark-mode variables
+      // Initial `dark` class activates cf-tokens dark-mode variables
       // across every POD primitive rendered inside centernode. The
       // bootstrap script below reads `centernode-theme` from localStorage
       // and removes the class if user previously toggled to light — runs

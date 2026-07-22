@@ -108,7 +108,7 @@ anything in the current variant.
 1. Build the component in `packages/ui/src/<slug>/`.
 2. Write `canvas.ts` (see existing components for shape).
 3. **If synthetic variant**: add `variantPresets` AND write
-   `build<Name>Composite()` in [PodLibraryPanel.jsx](src/components/Playground/PodLibraryPanel.jsx).
+   `build<Name>Composite()` in [CfLibraryPanel.jsx](src/components/Playground/CfLibraryPanel.jsx).
    AND special-case in `variantPropsToJsx()`.
    AND add rule to `isPropVisibleForVariant()` in `index.jsx`.
 4. **If real variant**: nothing extra — `variantPropsToJsx()` plain path handles it.

@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo, createElement, Fragment } from "react";
-import { POD_SCOPE_NAMES, POD_SCOPE_VALUES, transformIfJSX } from "@/utils/podRuntime";
+import { POD_SCOPE_NAMES, POD_SCOPE_VALUES, transformIfJSX } from "@/utils/cfRuntime";
 const h = createElement;
 
 export default function LiveComponent({ code, componentName, props, registry }) {

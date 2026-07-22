@@ -1,5 +1,0 @@
-import{u as l,j as e}from"./index-C2o_YddS.js";import{T as s}from"./text-area-DmxvntcW.js";function i(t){const r={h2:"h2",...l(),...t.components},{PageHeader:a,PreviewCard:n}=r;return a||o("PageHeader"),n||o("PreviewCard"),e.jsxs(e.Fragment,{children:[e.jsx(a,{title:"Text Area",description:"Multi-line text field with character counter."}),`
-`,e.jsx(r.h2,{id:"default",children:"Default"}),`
-`,e.jsx(n,{align:"start",children:e.jsx("div",{className:"w-full max-w-sm",children:e.jsx(s,{placeholder:"Type something..."})})}),`
-`,e.jsx(r.h2,{id:"states",children:"States"}),`
-`,e.jsx(n,{align:"start",children:e.jsxs("div",{className:"w-full max-w-sm space-y-3",children:[e.jsx(s,{disabled:!0,placeholder:"Disabled"}),e.jsx(s,{error:!0,placeholder:"Error state"})]})})]})}function x(t={}){const{wrapper:r}={...l(),...t.components};return r?e.jsx(r,{...t,children:e.jsx(i,{...t})}):i(t)}function o(t,r){throw new Error("Expected component `"+t+"` to be defined: you likely forgot to import, pass, or provide it.")}export{x as default};

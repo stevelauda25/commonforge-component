@@ -55,7 +55,7 @@ curl -X POST https://api.figma.com/v2/webhooks \
     "team_id": "<TEAM_ID containing the design system file>",
     "endpoint": "https://<your-vercel-url>/api/figma-webhook",
     "passcode": "<same value as FIGMA_WEBHOOK_SECRET>",
-    "description": "POD Design System sync"
+    "description": "CF Design System sync"
   }'
 ```
 

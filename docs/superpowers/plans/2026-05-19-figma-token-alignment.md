@@ -15,8 +15,8 @@
 ## Important conventions
 
 **No test framework.** Verify each task by running:
-- `pnpm --filter pod-test-tokens build` after changing `theme.css` / `tailwind-preset.ts`
-- `pnpm --filter pod-test-ui build` after changing any component
+- `pnpm --filter cf-tokens build` after changing `theme.css` / `tailwind-preset.ts`
+- `pnpm --filter cf-ui build` after changing any component
 - `pnpm typecheck` for full repo
 - `grep -rE '<pattern>' <path>` to confirm a rename swept everything
 
@@ -702,7 +702,7 @@ Expected output should list all top-level extend keys (colors, boxShadow, border
 
 - [ ] **Step 3: Build the tokens package**
 
-Run: `pnpm --filter pod-test-tokens build`
+Run: `pnpm --filter cf-tokens build`
 Expected: Build succeeds with no TS errors.
 
 - [ ] **Step 4: Commit**
@@ -1160,7 +1160,7 @@ Gray variants use bg-elevated / bg-surface + border-strong + text-subtle."
 
 ---
 
-## Task 14: Build `pod-test-ui` to verify all component changes typecheck
+## Task 14: Build `cf-ui` to verify all component changes typecheck
 
 **Files:** None (verification only)
 
@@ -1173,7 +1173,7 @@ If any errors appear, they will name specific files and lines — revisit the co
 
 - [ ] **Step 2: Build the UI package**
 
-Run: `pnpm --filter pod-test-ui build`
+Run: `pnpm --filter cf-ui build`
 Expected: PASS. Tailwind compilation runs as part of build:css and will fail loudly if any unknown class is referenced.
 
 If it fails with "unknown utility class", grep for that class and either:
@@ -1303,13 +1303,13 @@ in packages/tokens and packages/ui."
 ## Task 16: Verify centernode runtime (likely no-op)
 
 **Files:**
-- Read: `centernode/src/utils/podRuntime.js`
+- Read: `centernode/src/utils/cfRuntime.js`
 
 - [ ] **Step 1: Check for old token references**
 
 Run:
 ```bash
-grep -nE 'experiment-|accent-|danger-|text-text-|border-border-|bg-raised|bg-text-primary|border-text-primary|ring-border-focus' centernode/src/utils/podRuntime.js
+grep -nE 'experiment-|accent-|danger-|text-text-|border-border-|bg-raised|bg-text-primary|border-text-primary|ring-border-focus' centernode/src/utils/cfRuntime.js
 ```
 Expected: NO matches (verified during plan drafting — file is token-agnostic).
 

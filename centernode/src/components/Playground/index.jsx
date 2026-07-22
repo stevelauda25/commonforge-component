@@ -13,8 +13,8 @@ import {
 import { DEFAULT_TOKENS, FRAME_PRESETS, TEMPLATES, DEMO_CODE } from "@/constants/playground";
 import { parseSchemaFromCode, extractComponentName, updateCodeWithProp, isJsxSnippet, extractJsxTag, parseJsxSnippetSchema } from "@/utils/parser";
 import { tokensToCSS, tokensToTailwind, nodeToJSXFile, downloadFile, groupToCode } from "@/utils/exportHelpers";
-import { POD_SCOPE_NAMES, POD_SCOPE_VALUES, transformIfJSX, canvasManifest } from "@/utils/podRuntime";
-import { POD_DEFAULT_TOKENS, podTokensToCSS } from "@/utils/podTokens";
+import { POD_SCOPE_NAMES, POD_SCOPE_VALUES, transformIfJSX, canvasManifest } from "@/utils/cfRuntime";
+import { POD_DEFAULT_TOKENS, cfTokensToCSS } from "@/utils/cfTokens";
 import CodeEditor from "./CodeEditor";
 import LiveComponent from "./LiveComponent";
 import PropInput from "./PropInput";
@@ -29,7 +29,7 @@ import FillControl from "./FillControl";
 import StrokeControl from "./StrokeControl";
 import TokenEditor from "./TokenEditor";
 import SizeInput from "./SizeInput";
-import PodLibraryPanel from "./PodLibraryPanel";
+import CfLibraryPanel from "./CfLibraryPanel";
 import ChangelogPopup from "./ChangelogPopup";
 import Modal from "./Modal";
 import ActivityBar, { DEFAULT_ACTIVITY_ITEMS } from "./ActivityBar";
@@ -56,7 +56,7 @@ function isPropVisibleForVariant(componentName, propKey, currentProps) {
 
 // =============================================================
 // Inject `:root { --color-* }` overrides for POD design system tokens.
-// These override pod-test-tokens/theme.css at runtime, so every POD component
+// These override cf-tokens/theme.css at runtime, so every POD component
 // on the canvas (Button, Checkbox, TextInput…) reflects the change instantly.
 export function usePodTokensCSS(tokens) {
   useEffect(() => {
@@ -66,7 +66,7 @@ export function usePodTokensCSS(tokens) {
       styleEl.id = "playground-pod-tokens";
       document.head.appendChild(styleEl);
     }
-    styleEl.textContent = podTokensToCSS(tokens);
+    styleEl.textContent = cfTokensToCSS(tokens);
   }, [tokens]);
 }
 
@@ -2063,7 +2063,7 @@ export default function ComponentPlayground() {
             className="cn-anim-left"
             style={{ animationDuration: "var(--cn-dur-settled)" }}
           >
-            <PodLibraryPanel
+            <CfLibraryPanel
               manifest={canvasManifest}
               onAddPodNode={addPodNode}
               nodes={nodes}
@@ -2123,7 +2123,7 @@ export default function ComponentPlayground() {
               {tokensTab === "pod" ? (
                 <>
                   <div className="px-4 py-3 flex items-center justify-between">
-                    <span className="cn-caption">Live override of pod-test-tokens</span>
+                    <span className="cn-caption">Live override of cf-tokens</span>
                     <button
                       onClick={resetPodTokens}
                       className="cn-mono-meta hover:text-cn-accent transition-colors"

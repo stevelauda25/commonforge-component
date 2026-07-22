@@ -1,4 +1,4 @@
-# POD Design System — Progress
+# CF Design System — Progress
 
 Snapshot per **2026-05-12**. Updated manually; not auto-synced.
 
@@ -10,8 +10,8 @@ against current code/registry before acting on stale claims.
 
 ## Stack identity
 
-- **Source of truth:** Figma file `TCd9exLXTUMciyw1VqnPSK` (POD Design System 1.1)
-- **Code packages:** `pod-test-tokens` + `pod-test-ui` (published to npm, owner `hixelation`)
+- **Source of truth:** Figma file `TCd9exLXTUMciyw1VqnPSK` (CF Design System 1.1)
+- **Code packages:** `cf-tokens` + `cf-ui` (published to npm, owner `hixelation`)
 - **Consumer test:** `client-test/` (React + Vite + TS, consumes via npm)
 - **Drift-detection state:** `.figma/` (manifest, snapshots, state, variables)
 - **Docs site:** `apps/docs/` (MDX + Vite at `localhost:5174`)
@@ -24,11 +24,11 @@ against current code/registry before acting on stale claims.
 
 | Package | Version | Contents |
 |---|---|---|
-| `pod-test-tokens` | **0.1.2** | `theme.css` (CSS vars light + dark), `tailwind-preset.ts` (utility mapping) |
-| `pod-test-ui` | **0.1.3** | `Button`, `Checkbox`, `SearchInput`, `Tooltip`, `cn()` helper, `AGENTS.md` manifest |
+| `cf-tokens` | **0.1.2** | `theme.css` (CSS vars light + dark), `tailwind-preset.ts` (utility mapping) |
+| `cf-ui` | **0.1.3** | `Button`, `Checkbox`, `SearchInput`, `Tooltip`, `cn()` helper, `AGENTS.md` manifest |
 
 `AGENTS.md` is shipped in the npm tarball — auto-syncs to consumer's
-`node_modules/pod-test-ui/AGENTS.md` on `npm update`. Consumer CLAUDE.md
+`node_modules/cf-ui/AGENTS.md` on `npm update`. Consumer CLAUDE.md
 references this for current component / token list. No manual CLAUDE.md
 update needed per release.
 
@@ -75,8 +75,8 @@ update needed per release.
 | `CLIENT-PROMPT.md` | Setup guide (Tailwind v3, PostCSS, theme order, common pitfalls) |
 | `COMPONENT-RECIPES.md` | 10 ready-to-paste patterns (header, toolbar, settings, confirmation, etc.) |
 | `src/components/AddIncomeForm.tsx` | Proof-of-concept Indonesian finance form |
-| `src/components/form/{Field,TextInput,Select}.tsx` | Local primitives (Rule 10 — missing in pod-test-ui yet) |
-| `src/lib/pod-agentation.ts` | Enriches `agentation` annotation output with POD context |
+| `src/components/form/{Field,TextInput,Select}.tsx` | Local primitives (Rule 10 — missing in cf-ui yet) |
+| `src/lib/cf-agentation.ts` | Enriches `agentation` annotation output with POD context |
 
 ### `.figma/` — drift state
 
@@ -146,7 +146,7 @@ Located at `~/.claude/projects/-Users-helmiismail-Documents-Component-pod-native
    - Lesson: cycle through codes, don't retry rejected ones. Track via memory.
 
 4. **Vite cache invalidation gotcha**
-   - After `npm update pod-test-ui`, vite kept serving old optimized deps.
+   - After `npm update cf-ui`, vite kept serving old optimized deps.
    - Fix: `rm -rf node_modules/.vite && vite --force`.
    - Lesson: when consumer updates package version, always `--force` re-optimize.
 
@@ -204,7 +204,7 @@ Inspired by today's findings. Sorted by impact-to-effort ratio.
 - **Foundation typography sync** — Figma typography page not yet bootstrapped via `/new-item`. Existing Typography.mdx manual. Defer decision (Opsi A/B/C) until designer ready.
 - **Webhook handler** — deferred. See P10.
 - **Bless `--all` parallelization** — currently sequential like old check.mjs was. Could apply same bulk-fetch treatment.
-- **Subpath imports** (`pod-test-ui/button`) — exposed in exports map but discouraged in client guide. Decide: keep dual-mode or remove subpath exports.
+- **Subpath imports** (`cf-ui/button`) — exposed in exports map but discouraged in client guide. Decide: keep dual-mode or remove subpath exports.
 
 ---
 

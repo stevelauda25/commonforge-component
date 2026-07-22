@@ -391,7 +391,7 @@ The `tsx` block must be copy-pastable as-is. No pseudo-code, no `...` truncation
 **Template (write only if file doesn't exist):**
 
 ```mdx
-import { <PascalName> } from 'pod-test-ui';
+import { <PascalName> } from 'cf-ui';
 
 <PageHeader
   title="<Display Name>"

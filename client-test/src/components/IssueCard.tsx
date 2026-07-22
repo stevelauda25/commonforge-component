@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Badge, Button, Tooltip } from 'pod-test-ui';
-import type { BadgeColor } from 'pod-test-ui';
+import { Badge, Button, Tooltip } from 'cf-ui';
+import type { BadgeColor } from 'cf-ui';
 import { Trash2, Save } from 'lucide-react';
 
 type TagKey = 'bug' | 'feature' | 'improvement';

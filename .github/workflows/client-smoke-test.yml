@@ -1,6 +1,6 @@
 name: Client Smoke Test
 
-# Verify that pod-test-ui + pod-test-tokens published to npm actually work
+# Verify that cf-ui + cf-tokens published to npm actually work
 # in a real consumer setup (client-test/). Runs on every release tag, weekly,
 # and on demand.
 
@@ -31,12 +31,12 @@ jobs:
 
       - name: Pull latest pod-test-* from npm registry
         run: |
-          echo "→ Forcing fresh install of pod-test-ui + pod-test-tokens at latest"
-          npm install pod-test-ui@latest pod-test-tokens@latest --save
+          echo "→ Forcing fresh install of cf-ui + cf-tokens at latest"
+          npm install cf-ui@latest cf-tokens@latest --save
           echo ""
           echo "→ Versions now installed:"
-          node -p "require('pod-test-ui/package.json').version"
-          node -p "require('pod-test-tokens/package.json').version"
+          node -p "require('cf-ui/package.json').version"
+          node -p "require('cf-tokens/package.json').version"
 
       - name: Install client-test deps
         run: npm install
@@ -74,6 +74,6 @@ jobs:
               owner: context.repo.owner,
               repo:  context.repo.repo,
               title: `Client smoke test failed (${ref})`,
-              body:  `pod-test-* latest from npm broke client-test build.\n\nRun: ${run}\n\nLikely causes:\n- Token rename / removal\n- Component API breaking change\n- Peer dep mismatch\n\nReproduce locally: \`cd client-test && npm install pod-test-ui@latest pod-test-tokens@latest && npm run build\``,
+              body:  `pod-test-* latest from npm broke client-test build.\n\nRun: ${run}\n\nLikely causes:\n- Token rename / removal\n- Component API breaking change\n- Peer dep mismatch\n\nReproduce locally: \`cd client-test && npm install cf-ui@latest cf-tokens@latest && npm run build\``,
               labels: ['bug', 'smoke-test'],
             });

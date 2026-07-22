@@ -7,7 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 # Component spawn rules
 
 **ALWAYS read [CENTERNODE-RULES.md](./CENTERNODE-RULES.md) before adding
-or modifying any component spawn logic** (PodLibraryPanel, variantPresets,
+or modifying any component spawn logic** (CfLibraryPanel, variantPresets,
 composite builders, isPropVisibleForVariant, etc.).
 
 Three non-negotiable rules:

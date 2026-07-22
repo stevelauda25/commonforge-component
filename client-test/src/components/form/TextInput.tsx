@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { cn } from 'pod-test-ui';
+import { cn } from 'cf-ui';
 
-// LOCAL — pod-test-ui has no generic <Input>. Built here per CLAUDE.md Rule 10
+// LOCAL — cf-ui has no generic <Input>. Built here per CLAUDE.md Rule 10
 // using POD semantic tokens (bg-surface, border-border-default, text-text-primary).
 // Promote upstream once design system ships an Input primitive.
 

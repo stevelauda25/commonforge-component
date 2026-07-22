@@ -1,4 +1,4 @@
-# POD Design System — Sprint 1 Design
+# CF Design System — Sprint 1 Design
 
 **Status:** Implemented · Sprint 1 scope
 **Components:** Button · Checkbox · SearchInput · Tooltip

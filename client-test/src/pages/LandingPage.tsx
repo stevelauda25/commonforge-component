@@ -1,4 +1,4 @@
-import { Button, Checkbox, SearchInput, Tooltip } from 'pod-test-ui';
+import { Button, Checkbox, SearchInput, Tooltip } from 'cf-ui';
 import {
   ArrowRight,
   Bell,
