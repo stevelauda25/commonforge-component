@@ -45,6 +45,63 @@
       "slug": "dropdown",
       "nodeId": "2415:2051",
       "status": "ready"
+    },
+    {
+      "slug": "tabs",
+      "nodeId": "2412:1375",
+      "status": "ready",
+      "docsName": "Tab",
+      "docsRoute": "/components/tab"
+    },
+    {
+      "slug": "tabs-menu",
+      "nodeId": "2446:1666",
+      "status": "ready",
+      "docsName": "Tab",
+      "docsRoute": "/components/tab"
+    },
+    {
+      "slug": "badges",
+      "nodeId": "2419:6553",
+      "status": "ready",
+      "docsName": "Badge",
+      "docsRoute": "/components/badge"
+    },
+    {
+      "slug": "radio-base",
+      "nodeId": "2464:190",
+      "status": "ready",
+      "docsName": "Radio",
+      "docsRoute": "/components/radio"
+    },
+    {
+      "slug": "radio-button",
+      "nodeId": "2464:654",
+      "status": "ready",
+      "docsName": "Radio",
+      "docsRoute": "/components/radio"
+    },
+    {
+      "slug": "button-group-item",
+      "nodeId": "2439:2365",
+      "status": "ready",
+      "docsName": "Button Group",
+      "docsRoute": "/components/button-group"
+    },
+    {
+      "slug": "button-group",
+      "nodeId": "2439:3201",
+      "status": "ready"
+    },
+    {
+      "slug": "tag",
+      "nodeId": "2467:3796",
+      "status": "ready"
+    },
+    {
+      "slug": "tooltip",
+      "nodeId": "2451:3758",
+      "status": "ready"
     }
   ]
 }
