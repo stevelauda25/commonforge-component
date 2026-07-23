@@ -31,4 +31,8 @@ export * from './progress-ring/index.js';
 export * from './skill-level/index.js';
 export * from './empty-state/index.js';
 export * from './gantt-bar/index.js';
+export * from './text-field/index.js';
+export * from './timeline/index.js';
+export * from './dropdown/index.js';
+export * from './combobox/index.js';
 export { cn } from './lib/cn.js';

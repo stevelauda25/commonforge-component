@@ -1,0 +1,52 @@
+import { Timeline } from '@sparc-ui';
+
+<PageHeader
+  title="SPARC Timeline"
+  description="Step/track indicator with a connecting line and check marks, in vertical and horizontal orientations."
+/>
+
+## Vertical
+
+<PreviewCard>
+  <Timeline />
+</PreviewCard>
+
+## Horizontal
+
+<PreviewCard>
+  <Timeline orientation="horizontal" />
+</PreviewCard>
+
+## Step statuses
+
+<PreviewCard>
+  <div className="flex items-center gap-8">
+    <Timeline
+      steps={[
+        { status: 'completed', label: 'Account created' },
+        { status: 'completed', label: 'Profile completed' },
+        { status: 'current', label: 'Verify email' },
+        { status: 'upcoming', label: 'Invite team' },
+      ]}
+    />
+    <Timeline
+      orientation="horizontal"
+      steps={[
+        { status: 'completed', label: 'Account created' },
+        { status: 'completed', label: 'Profile completed' },
+        { status: 'current', label: 'Verify email' },
+        { status: 'upcoming', label: 'Invite team' },
+      ]}
+    />
+  </div>
+</PreviewCard>
+
+## Custom step count
+
+<PreviewCard>
+  <div className="flex items-center gap-8">
+    <Timeline steps={3} />
+    <Timeline steps={6} />
+    <Timeline orientation="horizontal" steps={6} />
+  </div>
+</PreviewCard>

@@ -9,11 +9,11 @@ declare const buttonVariants: (props?: ({
     size?: "default" | "xs" | "sm" | "md" | "lg" | null | undefined;
 } & class_variance_authority_types.ClassProp) | undefined) => string;
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
-    /** leading icon (auto-sized: xs=12, sm=16, md=20, lg=24) */
+    /** leading icon (auto-sized: xs=14, sm=16, md=20, lg=24) */
     leftIcon?: ReactNode;
     /** trailing icon (auto-sized: xs=12, sm=16, md=20, lg=24) */
     rightIcon?: ReactNode;
-    /** show a loading state and disable the button */
+    /** show a loading state (adopts disabled styling) and disable the button */
     loading?: boolean;
     className?: string;
 }
@@ -23,7 +23,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantPr
  * Built from the Figma "Button" component set. It supports
  * six visual types (primary, danger, secondary, outline, ghost, inverse) and
  * four sizes (lg, md, sm, xs). All states are driven by Tailwind pseudo
- * classes: hover, active (pressed) and disabled.
+ * classes: hover, active (pressed) and disabled. The loading state adopts
+ * the disabled styling (loading implies the disabled attribute).
  */
 declare const Button: react.ForwardRefExoticComponent<ButtonProps & react.RefAttributes<HTMLButtonElement>>;
 
@@ -120,6 +121,8 @@ declare function TextInput({ size, error, disabled, leading, trailing, prefix, s
 declare const Input: typeof TextInput;
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+    /** md = 12px padding / 14px text (regular), sm = 8px padding / 12px text (compact, mirrors TextInput sm) */
+    size?: "sm" | "md";
     error?: boolean;
     containerClassName?: string;
 }
@@ -465,18 +468,36 @@ interface ProgressValueBarProps {
 }
 declare function ProgressValueBar({ label, valueLabel, percent, color, className, fillTextClassName, trackTextClassName, valueClassName, }: ProgressValueBarProps): react.JSX.Element;
 
-type ToastVariant = "default" | "error" | "success" | "warning";
+/**
+ * toast — dismissible status notification.
+ *
+ * Figma recipe: white surface, radius 12, padding 12, horizontal flex with
+ * 16px gaps, three stacked drop shadows plus a white inset top highlight.
+ * The four tones are identical except for the title, description and status
+ * icon colors. The component sizes to its content; the 427px Figma frame is
+ * treated as the maximum width, not a fixed width.
+ */
+declare const toastTitle: (props?: ({
+    variant?: "default" | "success" | "error" | "warning" | "neutral" | null | undefined;
+} & class_variance_authority_types.ClassProp) | undefined) => string;
+type ToastVariant = NonNullable<VariantProps<typeof toastTitle>["variant"]>;
+/** The four canonical tones; `"default"` is accepted as an alias of `"neutral"`. */
+type ToastTone = "neutral" | "error" | "success" | "warning";
 interface ToastProps {
+    /** tone of the notification; `"default"` is kept as an alias of `"neutral"` */
     variant?: ToastVariant;
+    /** show the 16px loading-spinner slot (default true, matching the Figma frame) */
+    loading?: boolean;
     title?: string;
     description?: string;
     actionLabel?: string;
     onAction?: () => void;
     onDismiss?: () => void;
+    /** override the leading status-icon slot */
     icon?: ReactNode;
     className?: string;
 }
-declare function Toast({ variant, title, description, actionLabel, onAction, onDismiss, icon, className, }: ToastProps): react.JSX.Element;
+declare function Toast({ variant, loading, title, description, actionLabel, onAction, onDismiss, icon, className, }: ToastProps): react.JSX.Element;
 
 type DropZoneVisualState = "default" | "active" | "dragging";
 interface DropZoneProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
@@ -488,17 +509,17 @@ interface DropZoneProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "typ
 }
 declare function DropZone({ state, maxSizeLabel, description, disabled, multiple, accept, onFiles, className, ...inputProps }: DropZoneProps): react.JSX.Element;
 
-type FileListState = "default" | "uploading" | "success" | "failed";
+type FileListStatus = "ready" | "uploading" | "uploaded" | "error";
 interface FileListProps {
-    state?: FileListState;
-    fileName?: string;
-    fileSize?: string;
+    status?: FileListStatus;
+    name?: string;
+    size?: string;
     progress?: number;
     onRemove?: () => void;
     onRetry?: () => void;
     className?: string;
 }
-declare function FileList({ state, fileName, fileSize, progress, onRemove, onRetry, className, }: FileListProps): react.JSX.Element;
+declare function FileList({ status, name, size, progress, onRemove, onRetry, className, }: FileListProps): react.JSX.Element;
 
 type ProgressRingSize = "sm" | "md" | "lg";
 interface ProgressRingProps {
@@ -518,17 +539,29 @@ interface SkillLevelProps {
 }
 declare function SkillLevel({ level, max, className, label }: SkillLevelProps): react.JSX.Element;
 
-type EmptyStateVariant = "default" | "avatar" | "compact";
+type EmptyStateMedia = "icon" | "avatar" | "none";
+type EmptyStateActionVariant = "primary" | "secondary";
 interface EmptyStateProps {
-    variant?: EmptyStateVariant;
-    title?: string;
-    description?: string;
-    actionLabel?: string;
-    onAction?: () => void;
+    /** media block above the copy: a 16px icon chip, a 24px avatar, or nothing */
+    media?: EmptyStateMedia;
+    /** override the media="icon" glyph (defaults to Bell) */
     icon?: ReactNode;
+    /** image URL for media="avatar"; falls back to a neutral User chip when omitted */
+    avatarSrc?: string;
+    /** alt text for the avatar image */
+    avatarAlt?: string;
+    title: string;
+    description?: string;
+    /** renders the action button when provided */
+    actionLabel?: string;
+    /** optional 14px leading icon inside the action button */
+    actionIcon?: ReactNode;
+    /** action button style: white "secondary" chip or dark "primary" chip */
+    actionVariant?: EmptyStateActionVariant;
+    onAction?: () => void;
     className?: string;
 }
-declare function EmptyState({ variant, title, description, actionLabel, onAction, icon, className, }: EmptyStateProps): react.JSX.Element;
+declare function EmptyState({ media, icon, avatarSrc, avatarAlt, title, description, actionLabel, actionIcon, actionVariant, onAction, className, }: EmptyStateProps): react.JSX.Element;
 
 type GanttBarState = "default" | "hover" | "focus" | "disabled";
 interface GanttBarProps extends HTMLAttributes<HTMLDivElement> {
@@ -537,6 +570,203 @@ interface GanttBarProps extends HTMLAttributes<HTMLDivElement> {
 }
 declare function GanttBar({ state, children, className, ...props }: GanttBarProps): react.JSX.Element;
 
+interface TextFieldBaseProps {
+    /** label text shown above the field (14px / 500) */
+    label: ReactNode;
+    /** shows a red asterisk after the label; otherwise an "(Optional)" caption */
+    required?: boolean;
+    /** tooltip content — when present a trailing info icon (14px) appears in the label row */
+    info?: ReactNode;
+    /** hint text below the field (turns red when error) */
+    hint?: ReactNode;
+    /** error styling — red field border + red hint */
+    error?: boolean;
+    /** id for the inner input/textarea (auto-generated when omitted) */
+    id?: string;
+    /** className for the outer wrapper (the field column) */
+    className?: string;
+}
+type TextFieldProps = TextFieldBaseProps & (({
+    multiline?: false;
+} & Omit<TextInputProps, "error">) | ({
+    multiline: true;
+} & Omit<TextareaProps, "error">));
+/**
+ * text-field — the complete form field: label row + field + hint row.
+ *
+ * Composes the existing TextInput (single-line) and Textarea (multiline); all
+ * field sizes/variants/states pass straight through. From Figma: column flex
+ * with 8px gaps; label row is a 2px-gap row (14px/500 label, red asterisk when
+ * required, "(Optional)" #8F8F8F otherwise, trailing 14px info icon when the
+ * field has tooltip content); hint row is a 4px-gap row (12px info icon + 12px
+ * hint, #000000 default / red on error).
+ *
+ * NOTE: the asterisk uses the exact Figma red #C0180C; the error hint uses
+ * red-500 to match the existing TextInput/Textarea error border.
+ */
+declare function TextField(props: TextFieldProps): react.JSX.Element;
+
+/**
+ * timeline — a step/track indicator with a connecting line and step dots.
+ *
+ * Figma recipe: a 16px cross-axis frame (197px tall vertical / 199px wide
+ * horizontal) holding four ~10px green-500 filled circles distributed along
+ * the frame's length and joined by a green-500 connecting line (in Figma the
+ * line plus circles are a single 'Union' vector); each circle carries a small
+ * white check glyph centered on top. The line renders first (behind); the
+ * dots lay directly over it with no surrounding box or padding.
+ *
+ * Implementation: a full-length ~1.5px neutral-200 track plus a green-500
+ * progress overlay reaching the last completed/current step. Steps are spaced
+ * with justify-between, so step i's center sits at i/(n-1) of the track and
+ * the overlay is sized with that percentage (n=1 renders no overlay).
+ * Completed dots are green-500 (the same value as the success token, matching
+ * badge/file-list); current is a white dot with a green-500 ring and center
+ * dot; upcoming is a quiet neutral dot.
+ *
+ * Note: the neutral track/dot use arbitrary values (rgb(226 220 212) /
+ * rgb(207 199 188), i.e. neutral-200/300) because the tailwind preset's
+ * backgroundColor.neutral semantic key shadows the neutral ramp — the
+ * bg-neutral-<shade> utilities never generate.
+ */
+declare const timeline: (props?: ({
+    orientation?: "horizontal" | "vertical" | null | undefined;
+} & class_variance_authority_types.ClassProp) | undefined) => string;
+type TimelineOrientation = "vertical" | "horizontal";
+type TimelineStepStatus = "completed" | "current" | "upcoming";
+interface TimelineStep {
+    /** Step state. Defaults to "completed" (the Figma depicts all-completed tracks). */
+    status?: TimelineStepStatus;
+    /** Accessible name for the step; also shown as a tooltip. */
+    label?: string;
+}
+interface TimelineProps extends Omit<ComponentPropsWithoutRef<"div">, "children">, VariantProps<typeof timeline> {
+    /** Number of steps, or an array of per-step descriptors. Defaults to 4 (per the Figma). */
+    steps?: number | TimelineStep[];
+    /** Accessible label for the whole track. */
+    label?: string;
+    className?: string;
+}
+declare function Timeline({ orientation, steps, label, className, ...props }: TimelineProps): react.JSX.Element;
+
+type DropdownSize = "sm" | "md";
+interface DropdownOption {
+    /** the value handed to onChange */
+    value: string;
+    /** the label shown in the list and in the closed field */
+    label: string;
+    /** disabled options use the ListBase disabled state and cannot be chosen */
+    disabled?: boolean;
+}
+interface DropdownProps {
+    /**
+     * md = 12px padding / 14px text (regular), sm = fixed 32px height / px-2 /
+     * 12px text (small). The ListBase option rows follow the same size.
+     */
+    size?: DropdownSize;
+    /** the options shown in the open list */
+    options: DropdownOption[];
+    /** controlled selected value */
+    value?: string;
+    /** uncontrolled initial value */
+    defaultValue?: string;
+    /** called with the value of the chosen option */
+    onChange?: (value: string) => void;
+    /** shown in the field when nothing is selected (input placeholder grey) */
+    placeholder?: string;
+    /** leading icon inside the field */
+    leading?: ReactNode;
+    /** error styling (red border) */
+    error?: boolean;
+    disabled?: boolean;
+    /** force the list open (e.g. for docs); overrides the internal open state */
+    open?: boolean;
+    /**
+     * type-to-filter mode: the closed field becomes an editable input — clicking
+     * focuses it, typing opens the list and live-filters the options by a
+     * case-insensitive substring match on the option label, Enter selects the
+     * active option, and Escape clears the query (then closes the list). Defaults
+     * to false, keeping the classic button trigger.
+     */
+    filterable?: boolean;
+    className?: string;
+    "aria-label"?: string;
+}
+/**
+ * dropdown — select-style closed field + open list panel. Dependency-free.
+ *
+ * The closed field mirrors text-input: fill gray-50 (#F5F5F5), 0.5px black/10
+ * border, 6px radius. Focus (via focus-within) turns the border black and adds
+ * a 3px black/10 ring; error uses the red-500 border; disabled uses #EBEBEB
+ * fill with #8F8F8F text and a not-allowed cursor. The field shows the
+ * selected option label, or the placeholder in the input's #525252 placeholder
+ * colour. The trailing ChevronDown rotates 180° while open.
+ *
+ * The open panel reuses the repo's popover recipe (white fill, 0.5px black/10
+ * hairline, 6px radius, the shared popover shadow from breadcrumb /
+ * search-field) and its rows are composed from ListBase — the row size follows
+ * the dropdown's size prop, the selected row gets a trailing Check, and
+ * disabled options use the ListBase disabled state.
+ *
+ * Behaviour: opens on click, closes on Escape and outside pointer-down.
+ * Keyboard: ArrowUp/ArrowDown move the active option (wrapping, skipping
+ * disabled), Enter/Space selects the active option.
+ *
+ * With `filterable` the trigger swaps from a button to an editable text input
+ * on the same field recipe (same sizes, focus ring, error and disabled states,
+ * same chevron). Typing opens the list and filters options by a
+ * case-insensitive substring match on the label; an empty result renders a
+ * single "No results" row. Enter picks the active option (the field text
+ * becomes its label and onChange fires); Escape first clears the query, then
+ * closes the list; closing the list always drops the query so the field falls
+ * back to the selected label. Accessibility switches to the ARIA combobox
+ * pattern (role="combobox" + aria-autocomplete="list" on the input,
+ * aria-expanded, aria-controls and aria-activedescendant pointing at the
+ * listbox); the classic mode keeps its button + listbox roles untouched.
+ */
+declare function Dropdown({ size, options, value, defaultValue, onChange, placeholder, leading, error, disabled, open, filterable, className, "aria-label": ariaLabel, }: DropdownProps): react.JSX.Element;
+
+interface ComboboxChromeProps {
+    /** label text shown above the field (14px / 500) */
+    label: ReactNode;
+    /** shows a red asterisk after the label; otherwise an "(Optional)" caption */
+    required?: boolean;
+    /** tooltip content — when present a trailing info icon (14px) appears in the label row */
+    info?: ReactNode;
+    /** hint text below the field (turns red when error) */
+    hint?: ReactNode;
+    /** error styling — red field border + red hint */
+    error?: boolean;
+    /** base id for the label/hint ids (auto-generated when omitted) */
+    id?: string;
+    /** className for the outer wrapper (the field column) */
+    className?: string;
+}
+type ComboboxProps = ComboboxChromeProps & Omit<DropdownProps, "error" | "className">;
+/**
+ * combobox — the complete select-style form field: label row + dropdown + hint
+ * row.
+ *
+ * Composes the existing Dropdown; every Dropdown prop (size, options,
+ * value/defaultValue/onChange, placeholder, leading, disabled, open,
+ * aria-label) passes straight through, so size="sm" renders the sm field AND
+ * the sm list rows, and error renders Dropdown's red field border.
+ *
+ * The chrome mirrors text-field exactly: column flex with 8px gaps; label row
+ * is a 2px-gap row (14px/500 label, red asterisk when required, "(Optional)"
+ * #8F8F8F otherwise, trailing 14px info icon when the field has tooltip
+ * content); hint row is a 4px-gap row (12px info icon + 12px hint, #000000
+ * default / red on error).
+ *
+ * Accessibility: Dropdown's trigger is a button and (unlike TextInput) accepts
+ * no id, so the text-field htmlFor pattern cannot target it. Instead the
+ * wrapper is a role="group" labelled by the visible label and described by the
+ * hint, and — when the label is a plain string — it is also passed to Dropdown
+ * as aria-label so the trigger button itself gets the label as its accessible
+ * name (an explicit aria-label prop always wins).
+ */
+declare function Combobox({ label, required, info, hint, error, id, className, ...dropdownProps }: ComboboxProps): react.JSX.Element;
+
 declare function cn(...inputs: ClassValue[]): string;
 
-export { AccountSwitcher, type AccountSwitcherProps, Avatar, type AvatarProps, Badge, type BadgeProps, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, CHART_TOOLTIP_SHADOW, ChartTooltip, type ChartTooltipItem, type ChartTooltipProps, Checkbox, type CheckboxProps, DropZone, type DropZoneProps, type DropZoneVisualState, EmptyState, type EmptyStateProps, type EmptyStateVariant, FileList, type FileListProps, type FileListState, GanttBar, type GanttBarProps, type GanttBarState, type IconComponent, Input, type InputProps, KpiCard, type KpiCardProps, type KpiTrend, Legend, type LegendLineStyle, type LegendProps, type LegendVariant, ListBase, type ListBaseProps, type ListBaseSize, LoadingSpinner, type LoadingSpinnerProps, type LoadingSpinnerSize, type LoadingSpinnerVariant, NavItem, type NavItemProps, NavSection, type NavSectionProps, ProgressBar, ProgressBarBase, type ProgressBarBaseProps, type ProgressBarBaseSize, type ProgressBarProps, type ProgressBarSize, type ProgressBarVariant, ProgressRing, type ProgressRingProps, type ProgressRingSize, ProgressValueBar, type ProgressValueBarProps, Radio, type RadioProps, type RadioSize, SearchField, type SearchFieldProps, type SearchResult, SegmentedButton, type SegmentedButtonOption, type SegmentedButtonProps, Separator, type SeparatorProps, SkillLevel, type SkillLevelProps, Slider, type SliderProps, type SliderVariant, Switch, type SwitchProps, Tag, type TagProps, type TagVariant, TextArea, type TextAreaProps, TextInput, type TextInputProps, Textarea, type TextareaProps, Toast, type ToastProps, type ToastVariant, Tooltip, type TooltipProps, type TooltipSide, buttonVariants, cn };
+export { AccountSwitcher, type AccountSwitcherProps, Avatar, type AvatarProps, Badge, type BadgeProps, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, CHART_TOOLTIP_SHADOW, ChartTooltip, type ChartTooltipItem, type ChartTooltipProps, Checkbox, type CheckboxProps, Combobox, type ComboboxProps, DropZone, type DropZoneProps, type DropZoneVisualState, Dropdown, type DropdownOption, type DropdownProps, type DropdownSize, EmptyState, type EmptyStateActionVariant, type EmptyStateMedia, type EmptyStateProps, FileList, type FileListProps, type FileListStatus, GanttBar, type GanttBarProps, type GanttBarState, type IconComponent, Input, type InputProps, KpiCard, type KpiCardProps, type KpiTrend, Legend, type LegendLineStyle, type LegendProps, type LegendVariant, ListBase, type ListBaseProps, type ListBaseSize, LoadingSpinner, type LoadingSpinnerProps, type LoadingSpinnerSize, type LoadingSpinnerVariant, NavItem, type NavItemProps, NavSection, type NavSectionProps, ProgressBar, ProgressBarBase, type ProgressBarBaseProps, type ProgressBarBaseSize, type ProgressBarProps, type ProgressBarSize, type ProgressBarVariant, ProgressRing, type ProgressRingProps, type ProgressRingSize, ProgressValueBar, type ProgressValueBarProps, Radio, type RadioProps, type RadioSize, SearchField, type SearchFieldProps, type SearchResult, SegmentedButton, type SegmentedButtonOption, type SegmentedButtonProps, Separator, type SeparatorProps, SkillLevel, type SkillLevelProps, Slider, type SliderProps, type SliderVariant, Switch, type SwitchProps, Tag, type TagProps, type TagVariant, TextArea, type TextAreaProps, TextField, type TextFieldProps, TextInput, type TextInputProps, Textarea, type TextareaProps, Timeline, type TimelineOrientation, type TimelineProps, type TimelineStep, type TimelineStepStatus, Toast, type ToastProps, type ToastTone, type ToastVariant, Tooltip, type TooltipProps, type TooltipSide, buttonVariants, cn };

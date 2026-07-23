@@ -1,0 +1,117 @@
+import { Combobox } from '@sparc-ui';
+import { useState } from 'react';
+
+export const projects = [
+  { value: 'holly-hills', label: 'Holly Hills Repl ES' },
+  { value: 'fairview', label: 'BVSD Fairview HS' },
+  { value: 'creekside', label: 'Creekside Elem Addition' },
+  { value: 'mapleton', label: 'Mapleton Admin Reno' },
+  { value: 'svrain-ic', label: 'St Vrain Innovation Ctr' },
+  { value: 'boulder-tec', label: 'Boulder TEC Wing C', disabled: true },
+];
+
+export function ComboboxDemo() {
+  const [project, setProject] = useState('fairview');
+  return (
+    <div className="w-[460px]">
+      <Combobox
+        label="Project"
+        required
+        options={projects}
+        value={project}
+        onChange={setProject}
+        placeholder="Select project"
+        hint="Choose the active project for this estimate."
+      />
+    </div>
+  );
+}
+
+<PageHeader
+  title="Combobox"
+  description="Complete select-style form field — label row, dropdown, and hint row. Composes Dropdown."
+/>
+
+## Default
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <Combobox
+      label="Project"
+      required
+      options={projects}
+      placeholder="Select project"
+      hint="Choose the active project for this estimate."
+    />
+  </div>
+</PreviewCard>
+
+## Small size
+
+`size="sm"` renders the compact dropdown field (32px height, 8px horizontal padding, 12px/16px text) and matching small list rows.
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <Combobox
+      size="sm"
+      label="Project"
+      required
+      options={projects}
+      placeholder="Select project"
+      hint="Choose the active project for this estimate."
+    />
+  </div>
+</PreviewCard>
+
+## Error
+
+The error state passes straight through to the dropdown — red field border plus a red hint.
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <Combobox
+      label="Project"
+      required
+      error
+      options={projects}
+      placeholder="Select project"
+      hint="Select a project to continue."
+    />
+  </div>
+</PreviewCard>
+
+## Disabled
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <Combobox
+      label="Project"
+      required
+      disabled
+      defaultValue="fairview"
+      options={projects}
+      placeholder="Select project"
+      hint="Choose the active project for this estimate."
+    />
+  </div>
+</PreviewCard>
+
+## Optional with info tooltip
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <Combobox
+      label="Project"
+      info="Only projects you manage are listed."
+      options={projects}
+      placeholder="Select project"
+      hint="Choose the active project for this estimate."
+    />
+  </div>
+</PreviewCard>
+
+## Controlled
+
+<PreviewCard align="start">
+  <ComboboxDemo />
+</PreviewCard>

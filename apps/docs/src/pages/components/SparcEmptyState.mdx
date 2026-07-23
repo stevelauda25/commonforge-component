@@ -1,17 +1,45 @@
 import { EmptyState } from '@sparc-ui';
+import { Bell, Plus, RefreshCw, X } from 'lucide-react';
 
 <PageHeader
   title="SPARC Empty State"
-  description="Placeholder illustration for empty lists, notifications, or search results."
+  description="Centered placeholder for empty lists, notifications, or search results — optional media, title and description, and a single action."
 />
 
 ## Variants
 
 <PreviewCard>
   <div className="grid gap-6 sm:grid-cols-3">
-    <EmptyState variant="notifications" />
-    <EmptyState variant="team" />
-    <EmptyState variant="compact" />
+    <EmptyState
+      media="icon"
+      icon={<Bell />}
+      title="No notifications"
+      description="You're all caught up. New notifications will appear here."
+      actionLabel="Refresh"
+      actionIcon={<RefreshCw />}
+      actionVariant="secondary"
+      onAction={() => {}}
+    />
+    <EmptyState
+      media="avatar"
+      avatarSrc="https://i.pravatar.cc/48"
+      avatarAlt="Team member avatar"
+      title="No Team Members"
+      description="Invite your team to collaborate on this project."
+      actionLabel="Invite"
+      actionIcon={<Plus />}
+      actionVariant="primary"
+      onAction={() => {}}
+    />
+    <EmptyState
+      media="none"
+      title="No notifications"
+      description="You're all caught up. New notifications will appear here."
+      actionLabel="Refresh"
+      actionIcon={<RefreshCw />}
+      actionVariant="secondary"
+      onAction={() => {}}
+    />
   </div>
 </PreviewCard>
 
@@ -19,9 +47,12 @@ import { EmptyState } from '@sparc-ui';
 
 <PreviewCard>
   <EmptyState
+    media="none"
     title="No results found"
     description="Try adjusting your filters or search query."
     actionLabel="Clear filters"
+    actionIcon={<X />}
+    actionVariant="secondary"
     onAction={() => {}}
   />
 </PreviewCard>

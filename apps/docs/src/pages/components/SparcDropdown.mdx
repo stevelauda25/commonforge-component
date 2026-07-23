@@ -1,0 +1,108 @@
+import { Dropdown } from '@sparc-ui';
+import { useState } from 'react';
+import { Globe } from 'lucide-react';
+
+export const teams = [
+  { value: 'engineering', label: 'Engineering' },
+  { value: 'design', label: 'Design' },
+  { value: 'marketing', label: 'Marketing' },
+  { value: 'sales', label: 'Sales' },
+  { value: 'legal', label: 'Legal', disabled: true },
+];
+
+export const projects = [
+  { value: 'holly-hills', label: 'Holly Hills Repl ES' },
+  { value: 'fairview', label: 'BVSD Fairview HS' },
+  { value: 'creekside', label: 'Creekside Elem Addition' },
+  { value: 'mapleton', label: 'Mapleton Admin Reno' },
+  { value: 'svrain-ic', label: 'St Vrain Innovation Ctr' },
+  { value: 'boulder-tec', label: 'Boulder TEC Wing C', disabled: true },
+];
+
+export function DropdownDemo() {
+  const [team, setTeam] = useState('design');
+  return (
+    <div className="w-80">
+      <Dropdown options={teams} value={team} onChange={setTeam} placeholder="Select team" />
+    </div>
+  );
+}
+
+<PageHeader
+  title="Dropdown"
+  description="Select-style field that opens a listbox panel of ListBase options."
+/>
+
+## Sizes
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-3">
+    <Dropdown options={teams} placeholder="Medium dropdown" />
+    <Dropdown size="sm" options={teams} placeholder="Small dropdown" />
+  </div>
+</PreviewCard>
+
+## Open list — medium
+
+Pinned open with the `open` prop. The selected row gets a trailing check, disabled rows use the ListBase disabled state.
+
+<PreviewCard align="start" noClip>
+  <div className="w-full max-w-sm pb-56">
+    <Dropdown open defaultValue="design" options={teams} placeholder="Select team" />
+  </div>
+</PreviewCard>
+
+## Open list — small
+
+The option rows follow the dropdown's `size` — a `sm` dropdown renders `sm` ListBase rows.
+
+<PreviewCard align="start" noClip>
+  <div className="w-full max-w-sm pb-44">
+    <Dropdown open size="sm" defaultValue="marketing" options={teams} placeholder="Select team" />
+  </div>
+</PreviewCard>
+
+## States
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-3">
+    <Dropdown error options={teams} placeholder="Error state" />
+    <Dropdown disabled defaultValue="design" options={teams} placeholder="Select team" />
+  </div>
+</PreviewCard>
+
+## With leading icon
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-3">
+    <Dropdown leading={<Globe size={18} />} options={teams} placeholder="Select region" />
+    <Dropdown size="sm" leading={<Globe size={14} />} options={teams} placeholder="Select region" />
+  </div>
+</PreviewCard>
+
+## Filterable
+
+With `filterable`, the field becomes an editable input on the same field recipe: clicking focuses it, typing opens the list and live-filters the options by a case-insensitive substring match on the label. Arrow keys move the active option, Enter selects it (the field text becomes the option's label), and Escape first clears the query, then closes the list. When nothing matches, the list renders a single "No results" row.
+
+<PreviewCard align="start">
+  <div className="w-full max-w-sm space-y-3">
+    <Dropdown filterable options={projects} placeholder="Type to filter projects" />
+    <Dropdown filterable size="sm" options={projects} placeholder="Type to filter projects" />
+  </div>
+</PreviewCard>
+
+## Filterable — pinned open
+
+Pinned open with the `open` prop. The filterable field keeps the same focus ring, chevron rotation, size-matched ListBase rows, and the trailing check on the selected option; accessibility switches to the ARIA combobox pattern (`role="combobox"`, `aria-expanded`, `aria-controls`, `aria-activedescendant`).
+
+<PreviewCard align="start" noClip>
+  <div className="w-full max-w-sm pb-64">
+    <Dropdown filterable open defaultValue="fairview" options={projects} placeholder="Type to filter projects" />
+  </div>
+</PreviewCard>
+
+## Controlled
+
+<PreviewCard>
+  <DropdownDemo />
+</PreviewCard>

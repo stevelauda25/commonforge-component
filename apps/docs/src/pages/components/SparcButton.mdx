@@ -15,29 +15,73 @@ import { Plus, ArrowRight } from 'lucide-react';
     <Button variant="secondary">Secondary</Button>
     <Button variant="outline">Outline</Button>
     <Button variant="ghost">Ghost</Button>
-    <div className="rounded-md bg-black p-2">
-      <Button variant="inverse">Inverse</Button>
-    </div>
+    <Button variant="inverse">Inverse</Button>
   </div>
 </PreviewCard>
 
 ## Sizes
 
+All variants share the same four sizes. The second row shows inverse at every
+size on the default light surface — inverse has the full state matrix (hover
+dims the label to white/80, active to white/60) and its border is 1px at
+lg/md, 0.5px at sm/xs.
+
 <PreviewCard>
-  <div className="flex flex-wrap items-center gap-3">
-    <Button size="lg">Large</Button>
-    <Button size="md">Medium</Button>
-    <Button size="sm">Small</Button>
-    <Button size="xs">Extra small</Button>
+  <div className="flex flex-col gap-4">
+    <div className="flex flex-wrap items-center gap-3">
+      <Button size="lg">Large</Button>
+      <Button size="md">Medium</Button>
+      <Button size="sm">Small</Button>
+      <Button size="xs">Extra small</Button>
+    </div>
+    <div className="flex flex-wrap items-center gap-3">
+      <Button size="lg" variant="inverse">Large</Button>
+      <Button size="md" variant="inverse">Medium</Button>
+      <Button size="sm" variant="inverse">Small</Button>
+      <Button size="xs" variant="inverse">Extra small</Button>
+    </div>
   </div>
 </PreviewCard>
 
-## States
+## Disabled
+
+Every variant in its disabled state at lg size: flat fills, reduced (or no)
+container shadow, and dimmed labels per the Figma spec.
 
 <PreviewCard>
-  <div className="flex flex-wrap gap-3">
-    <Button disabled>Disabled</Button>
-    <Button loading>Loading</Button>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button size="lg" disabled>Primary</Button>
+    <Button size="lg" variant="danger" disabled>Danger</Button>
+    <Button size="lg" variant="secondary" disabled>Secondary</Button>
+    <Button size="lg" variant="outline" disabled>Outline</Button>
+    <Button size="lg" variant="ghost" disabled>Ghost</Button>
+    <Button size="lg" variant="inverse" disabled>Inverse</Button>
+  </div>
+</PreviewCard>
+
+## Loading
+
+Loading adopts the disabled styling of each variant — flat fill, reduced (or
+no) container shadow, dimmed label — and swaps the leading icon for a spinner
+tinted to match the label. The button is non-interactive while loading. First
+row: all six variants at lg. Second row: primary across all four sizes.
+
+<PreviewCard>
+  <div className="flex flex-col gap-4">
+    <div className="flex flex-wrap items-center gap-3">
+      <Button size="lg" loading>Primary</Button>
+      <Button size="lg" variant="danger" loading>Danger</Button>
+      <Button size="lg" variant="secondary" loading>Secondary</Button>
+      <Button size="lg" variant="outline" loading>Outline</Button>
+      <Button size="lg" variant="ghost" loading>Ghost</Button>
+      <Button size="lg" variant="inverse" loading>Inverse</Button>
+    </div>
+    <div className="flex flex-wrap items-center gap-3">
+      <Button size="lg" loading>Large</Button>
+      <Button size="md" loading>Medium</Button>
+      <Button size="sm" loading>Small</Button>
+      <Button size="xs" loading>Extra small</Button>
+    </div>
   </div>
 </PreviewCard>
 
