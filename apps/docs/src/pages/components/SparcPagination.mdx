@@ -1,0 +1,191 @@
+import {
+  Pagination,
+  PaginationFull,
+  PaginationPageButton,
+  PaginationRowsPerPage,
+  PaginationSummary,
+} from '@sparc-ui';
+import { useState } from 'react';
+
+export function BasicDemo() {
+  const [page, setPage] = useState(1);
+  return <Pagination page={page} pageCount={10} onPageChange={setPage} />;
+}
+
+export function EllipsisStartDemo() {
+  const [page, setPage] = useState(1);
+  return <Pagination page={page} pageCount={23} onPageChange={setPage} />;
+}
+
+export function EllipsisMiddleDemo() {
+  const [page, setPage] = useState(12);
+  return <Pagination page={page} pageCount={23} onPageChange={setPage} />;
+}
+
+export function RowsPerPageDemo() {
+  const [value, setValue] = useState(25);
+  return <PaginationRowsPerPage value={value} onChange={setValue} />;
+}
+
+export function FullStartDemo() {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  return (
+    <PaginationFull
+      layout="summary-start"
+      page={page}
+      pageCount={1}
+      onPageChange={setPage}
+      pageSize={pageSize}
+      onPageSizeChange={setPageSize}
+      total={25}
+    />
+  );
+}
+
+export function FullEndDemo() {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  return (
+    <PaginationFull
+      layout="summary-end"
+      page={page}
+      pageCount={12}
+      onPageChange={setPage}
+      pageSize={pageSize}
+      onPageSizeChange={setPageSize}
+      total={300}
+    />
+  );
+}
+
+<PageHeader
+  title="Pagination"
+  description="Page number navigation, rows-per-page selector, summary text, and their full-width composition."
+/>
+
+## Basic
+
+<PreviewCard>
+  <BasicDemo />
+</PreviewCard>
+
+## With ellipsis
+
+With `pageCount` larger than the edge blocks, pages collapse to `1 2 3 … 21 22 23` near the start (the exact Figma pattern, `siblingCount=1`) and `1 … 11 12 13 … 23` mid-range. The ellipsis button jumps `2*siblingCount+1` pages.
+
+<PreviewCard align="start">
+  <div className="flex flex-col items-start gap-6">
+    <EllipsisStartDemo />
+    <EllipsisMiddleDemo />
+  </div>
+</PreviewCard>
+
+## Number page states
+
+The isolated Figma cells were ambiguous, so the mapping is a documented decision: default = white, hover = `#F5F5F5`, current = white with a black/10 border (`aria-current="page"`).
+
+<PreviewCard>
+  <div className="flex items-center gap-2">
+    <PaginationPageButton page={1} state="default" />
+    <PaginationPageButton page={2} state="hover" />
+    <PaginationPageButton page={3} state="current" />
+  </div>
+</PreviewCard>
+
+## Rows per page
+
+Label + 64x28 trigger. The panel opens upward; the selected row gets primary text and a trailing 12px check. (Figma's leading users-01 icon on the selected row is a placeholder artefact and is intentionally not followed.)
+
+<PreviewCard align="start">
+  <div className="flex flex-col items-start gap-6">
+    <RowsPerPageDemo />
+    <PaginationRowsPerPage value={50} onChange={() => {}} />
+  </div>
+</PreviewCard>
+
+## Rows per page — pinned open
+
+Pinned open with the `open` prop. Options default to `[10, 25, 50, 100]`; rows use 8px padding with hairline separators (last row without one).
+
+<PreviewCard align="start" noClip>
+  <div className="pt-40">
+    <PaginationRowsPerPage open value={25} onChange={() => {}} />
+  </div>
+</PreviewCard>
+
+## Summary
+
+`PaginationSummary` renders "Showing X-Y of Z" from `page`, `pageSize`, and `total`; the empty state collapses to "Showing 0 of 0".
+
+<PreviewCard>
+  <div className="flex items-center gap-6">
+    <PaginationSummary page={1} pageSize={25} total={25} />
+    <PaginationSummary page={1} pageSize={25} total={0} />
+  </div>
+</PreviewCard>
+
+## Full — summary-start
+
+Figma arrangement A: left = summary + "•" + rows per page, right = pagination.
+
+<PreviewCard align="start" noClip>
+  <div className="w-full max-w-[823px]">
+    <FullStartDemo />
+  </div>
+</PreviewCard>
+
+## Full — summary-end
+
+Figma arrangement B: left = rows per page, right = pagination + summary (right-aligned).
+
+<PreviewCard align="start" noClip>
+  <div className="w-full max-w-[823px]">
+    <FullEndDemo />
+  </div>
+</PreviewCard>
+
+## Props
+
+### Pagination
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `page` | `number` | — | Controlled 1-based current page |
+| `pageCount` | `number` | — | Total number of pages |
+| `onPageChange` | `(page: number) => void` | — | Called with the requested page |
+| `siblingCount` | `number` | `1` | Pages each side of current; sets edge block size and ellipsis jump |
+| `previousLabel` / `nextLabel` | `string` | `"Previous"` / `"Next"` | Nav button labels |
+| `className` | `string` | — | Extra classes on the `<nav>` |
+
+### PaginationRowsPerPage
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number` | — | Controlled selected value |
+| `options` | `number[]` | `[10, 25, 50, 100]` | Selectable values |
+| `onChange` | `(value: number) => void` | — | Called with the chosen value |
+| `label` | `string` | `"Rows per page"` | Leading label text |
+| `open` | `boolean` | — | Force the panel open (docs) |
+| `disabled` | `boolean` | `false` | Disabled state |
+
+### PaginationSummary
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `page` | `number` | — | Current page |
+| `pageSize` | `number` | — | Rows per page |
+| `total` | `number` | — | Total rows |
+
+### PaginationFull
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `layout` | `"summary-start" \| "summary-end"` | `"summary-start"` | Figma arrangement A / B |
+| `pageSize` | `number` | — | Rows-per-page value |
+| `onPageSizeChange` | `(value: number) => void` | — | Rows-per-page change handler |
+| `pageSizeOptions` | `number[]` | `[10, 25, 50, 100]` | Rows-per-page options |
+| `total` | `number` | — | Total rows (summary) |
+| `rowsPerPageLabel` | `string` | `"Rows per page"` | Rows-per-page label |
+
+All `Pagination` props are forwarded to the inner pagination.
