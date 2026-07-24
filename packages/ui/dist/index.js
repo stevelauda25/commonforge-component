@@ -15,6 +15,7 @@ function cn(...inputs) {
 // src/button/button.tsx
 import { jsx, jsxs } from "react/jsx-runtime";
 var BUTTON_SHADOW = "shadow-[0_4px_8px_-4px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.15),0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1),inset_0_0.5px_1px_0_rgba(255,255,255,0.25)]";
+var DISABLED_SHADOW = "disabled:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]";
 var buttonVariants = cva(
   [
     "group inline-flex items-center justify-center rounded-[6px] font-medium transition-colors",
@@ -30,8 +31,10 @@ var buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#C0180C_0%,#C0180C_100%)] hover:text-white/80",
           "active:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#C0180C_0%,#C0180C_100%)]",
-          "[&:disabled:not([data-loading=true])]:bg-[#F9766C] [&:disabled:not([data-loading=true])]:text-white/50 [&:disabled:not([data-loading=true])]:shadow-none",
-          "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
+          // Disabled/loading: flat fill (bg-none kills the gradient layers,
+          // which would otherwise paint over the flat color), white/50 label.
+          "disabled:bg-none disabled:bg-[#F9766C] disabled:text-white/50",
+          DISABLED_SHADOW
         ),
         // Backwards-compatible alias for the previous "default" variant.
         default: cn(
@@ -40,8 +43,8 @@ var buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#C0180C_0%,#C0180C_100%)] hover:text-white/80",
           "active:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#C0180C_0%,#C0180C_100%)]",
-          "[&:disabled:not([data-loading=true])]:bg-[#F9766C] [&:disabled:not([data-loading=true])]:text-white/50 [&:disabled:not([data-loading=true])]:shadow-none",
-          "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
+          "disabled:bg-none disabled:bg-[#F9766C] disabled:text-white/50",
+          DISABLED_SHADOW
         ),
         danger: cn(
           "text-[#FFFFFF]",
@@ -49,8 +52,8 @@ var buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#E51D31_0%,#E51D31_100%)] hover:text-white/80",
           "active:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#E51D31_0%,#E51D31_100%)]",
-          "[&:disabled:not([data-loading=true])]:bg-[#F65B68] [&:disabled:not([data-loading=true])]:text-white/50 [&:disabled:not([data-loading=true])]:shadow-none",
-          "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
+          "disabled:bg-none disabled:bg-[#F65B68] disabled:text-white/50",
+          DISABLED_SHADOW
         ),
         // Backwards-compatible alias for the previous "destructive" variant.
         destructive: cn(
@@ -59,28 +62,30 @@ var buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#E51D31_0%,#E51D31_100%)] hover:text-white/80",
           "active:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#E51D31_0%,#E51D31_100%)]",
-          "[&:disabled:not([data-loading=true])]:bg-[#F65B68] [&:disabled:not([data-loading=true])]:text-white/50 [&:disabled:not([data-loading=true])]:shadow-none",
-          "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
+          "disabled:bg-none disabled:bg-[#F65B68] disabled:text-white/50",
+          DISABLED_SHADOW
         ),
         secondary: cn(
           "border-[0.5px] border-white/10 bg-white text-primary",
           BUTTON_SHADOW,
           "hover:bg-[#F5F5F5] hover:text-primary/80",
           "active:bg-[#F0F0F0] active:text-primary/60",
-          "[&:disabled:not([data-loading=true])]:bg-[#E0E0E0] [&:disabled:not([data-loading=true])]:text-primary/30",
-          "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
+          // The Figma gray disabled button represents both light variants:
+          // like outline, secondary disabled shows a 1px #C2C2C2 border and
+          // no container shadow.
+          "disabled:border disabled:border-[#C2C2C2] disabled:bg-[#E0E0E0] disabled:text-primary/30 disabled:shadow-none"
         ),
         outline: cn(
           "border border-[#8F8F8F] bg-white text-primary",
           "hover:border-[#666666] hover:bg-[#F5F5F5] hover:text-primary/80",
           "active:border-[#666666] active:bg-[#F0F0F0] active:text-primary/60",
-          "[&:disabled:not([data-loading=true])]:border-[#C2C2C2] [&:disabled:not([data-loading=true])]:bg-[#E0E0E0] [&:disabled:not([data-loading=true])]:text-primary/30"
+          "disabled:border-[#C2C2C2] disabled:bg-[#E0E0E0] disabled:text-primary/30"
         ),
         ghost: cn(
           "bg-transparent text-[#525252]",
           "hover:bg-[#F5F5F5] hover:text-primary/80",
           "active:bg-[#F0F0F0] active:text-primary/60",
-          "[&:disabled:not([data-loading=true])]:text-primary/30"
+          "disabled:text-primary/30"
         ),
         inverse: cn(
           "border border-white/10 text-white",
@@ -88,30 +93,51 @@ var buttonVariants = cva(
           BUTTON_SHADOW,
           "hover:text-white/80",
           "active:text-white/60",
-          "[&:disabled:not([data-loading=true])]:bg-[#26201C] [&:disabled:not([data-loading=true])]:text-white/30 [&:disabled:not([data-loading=true])]:shadow-none",
-          "[&:disabled:not([data-loading=true])]:shadow-[0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1)]"
+          // Disabled/loading: flat #26201C (no gradient), white/30 label, the
+          // white/10 border stays (width is size-dependent, see below).
+          "disabled:bg-none disabled:bg-[#26201C] disabled:text-white/30",
+          DISABLED_SHADOW
         )
       },
       size: {
-        xs: "h-[27px] gap-2 px-2 py-1.5 text-caption leading-caption",
+        xs: "h-[26px] gap-1 px-2 py-1.5 text-2xs",
         sm: "h-9 gap-2 px-3 py-2.5 text-xs leading-4",
         md: "h-11 gap-2 px-4 py-3 text-sm leading-5",
         default: "h-11 gap-2 px-4 py-3 text-sm leading-5",
         lg: "h-14 gap-2 px-6 py-4 text-base leading-6"
       }
     },
+    compoundVariants: [
+      // Inverse border width is size-dependent per the Figma matrix:
+      // 1px at lg/md, 0.5px at sm/xs.
+      { variant: "inverse", size: ["xs", "sm"], class: "border-[0.5px]" }
+    ],
     defaultVariants: {
       variant: "primary",
       size: "md"
     }
   }
 );
-var iconSizes = {
+var leftIconSizes = {
+  xs: "w-3.5 h-3.5",
+  sm: "w-4 h-4",
+  md: "w-5 h-5",
+  default: "w-5 h-5",
+  lg: "w-6 h-6"
+};
+var rightIconSizes = {
   xs: "w-3 h-3",
   sm: "w-4 h-4",
   md: "w-5 h-5",
   default: "w-5 h-5",
   lg: "w-6 h-6"
+};
+var contentGaps = {
+  xs: "gap-1",
+  sm: "gap-2",
+  md: "gap-2",
+  default: "gap-2",
+  lg: "gap-2"
 };
 var Button = forwardRef(
   ({
@@ -128,9 +154,10 @@ var Button = forwardRef(
     const isDisabled = disabled || loading;
     const resolvedVariant = variant ?? "primary";
     const isLightText = resolvedVariant === "primary" || resolvedVariant === "default" || resolvedVariant === "danger" || resolvedVariant === "destructive" || resolvedVariant === "inverse";
-    const dimOnHover = resolvedVariant === "primary" || resolvedVariant === "default" ? "group-hover:opacity-80" : void 0;
-    const dimWrapper = isDisabled && !["secondary", "ghost", "primary", "default", "danger", "destructive", "inverse", "outline"].includes(variant ?? "") ? "opacity-50" : dimOnHover;
-    const iconSize = iconSizes[size ?? "md"];
+    const resolvedSize = size ?? "md";
+    const leftIconSize = leftIconSizes[resolvedSize];
+    const rightIconSize = rightIconSizes[resolvedSize];
+    const contentGap = contentGaps[resolvedSize];
     return /* @__PURE__ */ jsx(
       "button",
       {
@@ -145,24 +172,28 @@ var Button = forwardRef(
           "span",
           {
             className: cn(
-              "inline-flex items-center justify-center gap-2",
-              dimWrapper
+              "inline-flex items-center justify-center",
+              contentGap
             ),
             children: [
-              loading ? /* @__PURE__ */ jsx("span", { className: cn("flex shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full", iconSize), children: /* @__PURE__ */ jsx(LoaderCircle, { "aria-hidden": "true", className: "animate-spin motion-reduce:animate-none" }) }) : leftIcon ? /* @__PURE__ */ jsx("span", { className: cn("flex shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full", iconSize), children: leftIcon }) : null,
+              loading ? /* @__PURE__ */ jsx("span", { className: cn("flex shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full", leftIconSize), children: /* @__PURE__ */ jsx(LoaderCircle, { "aria-hidden": "true", className: "animate-spin motion-reduce:animate-none" }) }) : leftIcon ? /* @__PURE__ */ jsx("span", { className: cn("flex shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full", leftIconSize), children: leftIcon }) : null,
               /* @__PURE__ */ jsx(
                 "span",
                 {
                   className: cn(
-                    isLightText && "text-[#FFFFFF] drop-shadow-[0_4px_2px_rgba(0,0,0,0.08)]",
-                    disabled && !loading && (resolvedVariant === "primary" || resolvedVariant === "default") && "text-white/50 drop-shadow-none",
-                    disabled && !loading && (resolvedVariant === "danger" || resolvedVariant === "destructive") && "text-white/50 drop-shadow-none",
-                    disabled && !loading && resolvedVariant === "inverse" && "text-white/30 drop-shadow-none"
+                    // The label (and the icons) inherit the button's text color, so
+                    // hover/active dimming and the disabled/loading dimming reach
+                    // them uniformly. The text drop-shadow is pinned to the label
+                    // because filters don't inherit: light-text variants keep it in
+                    // every state per Figma — including disabled/loading on the red
+                    // variants — except inverse, which drops it when dimmed.
+                    isLightText && "drop-shadow-[0_4px_2px_rgba(0,0,0,0.08)]",
+                    isLightText && isDisabled && resolvedVariant === "inverse" && "drop-shadow-none"
                   ),
                   children
                 }
               ),
-              rightIcon && /* @__PURE__ */ jsx("span", { className: cn("flex shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full", iconSize), children: rightIcon })
+              rightIcon && /* @__PURE__ */ jsx("span", { className: cn("flex shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full", rightIconSize), children: rightIcon })
             ]
           }
         )
@@ -398,6 +429,7 @@ import { forwardRef as forwardRef2, useId, useState as useState2 } from "react";
 import { jsx as jsx7, jsxs as jsxs5 } from "react/jsx-runtime";
 var Textarea = forwardRef2(
   ({
+    size = "md",
     error = false,
     disabled,
     maxLength = 250,
@@ -411,11 +443,14 @@ var Textarea = forwardRef2(
     const [internalValue, setInternalValue] = useState2(String(defaultValue ?? ""));
     const currentValue = value === void 0 ? internalValue : String(value);
     const counterId = useId();
+    const containerPad = size === "sm" ? "px-2 py-2" : "p-3";
+    const inputText = size === "sm" ? "text-[12px] leading-[16px]" : "text-sm leading-5";
     return /* @__PURE__ */ jsxs5(
       "div",
       {
         className: cn(
-          "flex min-h-[136px] w-full flex-col rounded-[6px] border-[0.5px] bg-[#F5F5F5] p-3 transition-shadow focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
+          "flex min-h-[136px] w-full flex-col rounded-[6px] border-[0.5px] bg-[#F5F5F5] transition-shadow focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
+          containerPad,
           error ? "border-red-500" : "border-black/10",
           disabled && "border-black/10 bg-[#EBEBEB] focus-within:shadow-none",
           containerClassName
@@ -437,7 +472,8 @@ var Textarea = forwardRef2(
                 onChange?.(event);
               },
               className: cn(
-                "min-h-24 flex-1 resize-none bg-transparent text-sm leading-5 text-[#525252] outline-none placeholder:text-[#8F8F8F]",
+                "min-h-24 flex-1 resize-none bg-transparent text-[#525252] outline-none placeholder:text-[#8F8F8F]",
+                inputText,
                 disabled && "text-[#8F8F8F] placeholder:text-[#8F8F8F]",
                 className
               )
@@ -733,19 +769,19 @@ function Tooltip({
           {
             role: "tooltip",
             className: cn(
-              "absolute z-50 w-max max-w-72 rounded-[12px] bg-white px-6 py-4 text-left shadow-[0_4px_8px_-4px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.15),0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0.5px_1px_0_rgba(255,255,255,0.25)]",
+              "absolute z-50 w-max max-w-72 rounded-[12px] bg-white px-4 py-2.5 text-left shadow-[0_4px_8px_-4px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.15),0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0.5px_1px_0_rgba(255,255,255,0.25)]",
               positionClasses[resolvedPlacement],
               className
             ),
             children: [
               /* @__PURE__ */ jsxs8("span", { className: cn("flex flex-col", title != null && "gap-1"), children: [
-                title != null && /* @__PURE__ */ jsx12("span", { className: "text-xl font-medium leading-7 text-black", children: title }),
+                title != null && /* @__PURE__ */ jsx12("span", { className: "text-[13px] font-medium leading-[18px] text-black", children: title }),
                 /* @__PURE__ */ jsx12(
                   "span",
                   {
                     className: cn(
                       "block text-[#525252]",
-                      title != null ? "text-lg leading-7" : "text-xl leading-7"
+                      title != null ? "text-xs leading-4" : "text-[13px] leading-[18px]"
                     ),
                     children: body
                   }
@@ -1578,16 +1614,59 @@ function ProgressValueBar({
 }
 
 // src/toast/toast.tsx
-import { X as X2 } from "lucide-react";
-import { Fragment as Fragment3, jsx as jsx27, jsxs as jsxs19 } from "react/jsx-runtime";
-var colors = {
-  default: { title: "text-black", body: "text-[#525252]", ring: "border-black" },
-  error: { title: "text-red-500", body: "text-red-400", ring: "border-red-500" },
-  success: { title: "text-green-500", body: "text-green-400", ring: "border-green-500" },
-  warning: { title: "text-amber-500", body: "text-amber-400", ring: "border-amber-500" }
+import { AlertCircle, CheckCircle, Info, X as X2 } from "lucide-react";
+import { cva as cva4 } from "class-variance-authority";
+import { jsx as jsx27, jsxs as jsxs19 } from "react/jsx-runtime";
+var toastTitle = cva4("text-[13px] font-medium leading-[18px]", {
+  variants: {
+    variant: {
+      neutral: "text-black",
+      // Backwards-compatible alias for the previous "default" variant.
+      default: "text-black",
+      error: "text-[#E51D31]",
+      success: "text-[#129457]",
+      warning: "text-[#D18B0C]"
+    }
+  },
+  defaultVariants: { variant: "neutral" }
+});
+var toastDescription = cva4("text-xs font-normal leading-4", {
+  variants: {
+    variant: {
+      neutral: "text-[#525252]",
+      // Backwards-compatible alias for the previous "default" variant.
+      default: "text-[#525252]",
+      error: "text-[#F13546]",
+      success: "text-[#1FB06B]",
+      warning: "text-[#E59C0E]"
+    }
+  },
+  defaultVariants: { variant: "neutral" }
+});
+var toastIcon = cva4("flex size-4 shrink-0 items-center justify-center [&>svg]:h-4 [&>svg]:w-4", {
+  variants: {
+    variant: {
+      neutral: "text-black",
+      // Backwards-compatible alias for the previous "default" variant.
+      default: "text-black",
+      error: "text-[#E51D31]",
+      success: "text-[#129457]",
+      warning: "text-[#D18B0C]"
+    }
+  },
+  defaultVariants: { variant: "neutral" }
+});
+var TOAST_SHADOW = "shadow-[0_4px_8px_0_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.15),0_0.5px_2px_0_rgba(0,0,0,0.1),inset_0_0.5px_1px_0_rgba(255,255,255,0.25)]";
+var ACTION_BUTTON = "shrink-0 rounded-md border-[0.5px] border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#26201C_0%,#26201C_100%)] px-2 py-1.5 text-[10px] font-medium leading-[14px] text-white shadow-[0_4px_8px_-4px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.15),0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1),inset_0_0.5px_1px_0_rgba(255,255,255,0.25)] transition-colors hover:text-white/80 active:text-white/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/25";
+var toneIcons = {
+  neutral: /* @__PURE__ */ jsx27(Info, { "aria-hidden": "true" }),
+  error: /* @__PURE__ */ jsx27(AlertCircle, { "aria-hidden": "true" }),
+  success: /* @__PURE__ */ jsx27(CheckCircle, { "aria-hidden": "true" }),
+  warning: /* @__PURE__ */ jsx27(AlertCircle, { "aria-hidden": "true" })
 };
 function Toast({
-  variant = "default",
+  variant = "neutral",
+  loading = true,
   title = "Plan saved",
   description = "Your staffing plan was saved to Holly Hills.",
   actionLabel = "View plan",
@@ -1596,47 +1675,39 @@ function Toast({
   icon,
   className
 }) {
-  const palette = colors[variant];
-  const role = variant === "error" ? "alert" : "status";
+  const tone = variant === "default" ? "neutral" : variant;
+  const role = tone === "error" ? "alert" : "status";
   return /* @__PURE__ */ jsxs19(
     "div",
     {
       role,
       className: cn(
-        "flex h-20 w-[540px] max-w-full items-center gap-6 rounded-xl border-[0.5px] border-black/10 bg-white p-4 shadow-[0_4px_8px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.15),0_0.5px_2px_rgba(0,0,0,0.10),inset_0_0.5px_1px_rgba(255,255,255,0.25)]",
+        "flex w-fit max-w-[427px] items-center gap-4 rounded-xl bg-white p-3",
+        TOAST_SHADOW,
         className
       ),
       children: [
-        /* @__PURE__ */ jsxs19("div", { className: "flex min-w-0 flex-1 items-center gap-4", children: [
-          icon ?? /* @__PURE__ */ jsxs19(Fragment3, { children: [
-            /* @__PURE__ */ jsx27("span", { className: cn("size-6 shrink-0 rounded-full border-2 bg-white", palette.ring), "aria-hidden": "true" }),
-            /* @__PURE__ */ jsx27("span", { "aria-hidden": "true", className: "shrink-0", children: /* @__PURE__ */ jsx27(LoadingSpinner, { size: "lg", variant: "stroke" }) })
-          ] }),
-          /* @__PURE__ */ jsxs19("div", { className: "min-w-0", children: [
-            /* @__PURE__ */ jsx27("p", { className: cn("text-base font-medium leading-6", palette.title), children: title }),
-            /* @__PURE__ */ jsx27("p", { className: cn("mt-1 whitespace-nowrap text-sm leading-5", palette.body), children: description })
+        /* @__PURE__ */ jsxs19("div", { className: "flex min-w-0 flex-1 items-center gap-3", children: [
+          /* @__PURE__ */ jsx27("span", { className: toastIcon({ variant }), children: icon ?? toneIcons[tone] }),
+          loading && /* @__PURE__ */ jsx27(LoadingSpinner, { size: "s", variant: "stroke", label: "Loading", className: "shrink-0" }),
+          /* @__PURE__ */ jsxs19("div", { className: "flex min-w-0 flex-col gap-1", children: [
+            /* @__PURE__ */ jsx27("p", { className: toastTitle({ variant }), children: title }),
+            /* @__PURE__ */ jsx27("p", { className: cn(toastDescription({ variant }), "truncate"), children: description })
           ] })
         ] }),
-        onAction && /* @__PURE__ */ jsx27(
-          Button,
-          {
-            size: "xs",
-            variant: "inverse",
-            onClick: onAction,
-            className: "h-8 shrink-0 px-3 py-2 text-xs leading-4",
-            children: actionLabel
-          }
-        ),
-        onDismiss && /* @__PURE__ */ jsx27(
-          "button",
-          {
-            type: "button",
-            onClick: onDismiss,
-            className: "flex h-8 w-8 shrink-0 items-center justify-center rounded-sm text-[#525252] outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black/20",
-            "aria-label": "Dismiss notification",
-            children: /* @__PURE__ */ jsx27(X2, { className: "h-5 w-5", "aria-hidden": "true" })
-          }
-        )
+        (onAction != null || onDismiss != null) && /* @__PURE__ */ jsxs19("div", { className: "flex shrink-0 items-center gap-3", children: [
+          onAction != null && /* @__PURE__ */ jsx27("button", { type: "button", onClick: onAction, className: ACTION_BUTTON, children: actionLabel }),
+          onDismiss != null && /* @__PURE__ */ jsx27(
+            "button",
+            {
+              type: "button",
+              onClick: onDismiss,
+              "aria-label": "Dismiss notification",
+              className: "flex shrink-0 items-center justify-center rounded-md p-1.5 text-[#525252] transition-colors hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20",
+              children: /* @__PURE__ */ jsx27(X2, { className: "size-3.5", "aria-hidden": "true" })
+            }
+          )
+        ] })
       ]
     }
   );
@@ -1729,29 +1800,38 @@ function DropZone({
 }
 
 // src/file-list/file-list.tsx
-import { AlertCircle, CheckCircle2, FileText, RefreshCw, X as X3 } from "lucide-react";
+import { Fragment as Fragment3 } from "react";
+import { FileText, X as X3 } from "lucide-react";
 import { jsx as jsx29, jsxs as jsxs21 } from "react/jsx-runtime";
+var statusBorder = {
+  ready: "border-dashed border-black/20",
+  uploading: "border-black/20",
+  uploaded: "border-black/20",
+  error: "border-error"
+};
+var statusMetaColor = {
+  ready: "text-gray-500",
+  uploading: "text-subtle",
+  uploaded: "text-subtle",
+  error: "text-error"
+};
 function FileList({
-  state = "default",
-  fileName = "selected-file.pdf",
-  fileSize = "1.68 MB",
+  status = "ready",
+  name = "selected-file.pdf",
+  size = "1.68 MB",
   progress = 68,
   onRemove,
   onRetry,
   className
 }) {
-  const status = {
-    default: "Ready to upload",
-    uploading: `${Math.round(progress)}%`,
-    success: "File uploaded",
-    failed: "Upload failed. Try again"
-  }[state];
+  const percent = Math.min(100, Math.max(0, Math.round(progress)));
+  const metaSegments = status === "ready" ? [size, "Ready to upload"] : status === "uploading" ? ["Uploading", `${percent}%`] : status === "uploaded" ? ["File uploaded", size] : ["Upload failed. Try again"];
   return /* @__PURE__ */ jsxs21(
     "div",
     {
       className: cn(
-        "flex h-16 w-full max-w-[520px] items-center justify-between rounded-lg border bg-white p-2",
-        state === "failed" ? "border-red-500" : "border-black/20",
+        "flex h-16 w-full max-w-[520px] items-center justify-between rounded-md border bg-white p-2",
+        statusBorder[status],
         className
       ),
       children: [
@@ -1760,44 +1840,37 @@ function FileList({
             "span",
             {
               className: cn(
-                "flex size-12 shrink-0 items-center justify-center rounded-[2px]",
-                state === "failed" ? "bg-red-25 text-red-500" : "bg-[#F0F0F0] text-black"
+                "flex size-12 shrink-0 items-center justify-center rounded-xxs",
+                status === "error" ? "bg-error-subtle" : "bg-gray-75"
               ),
               children: /* @__PURE__ */ jsx29(FileText, { size: 24, "aria-hidden": "true" })
             }
           ),
-          /* @__PURE__ */ jsxs21("div", { className: "min-w-0", children: [
-            /* @__PURE__ */ jsx29("p", { className: "truncate text-sm leading-5 text-black", children: fileName }),
-            /* @__PURE__ */ jsxs21(
+          /* @__PURE__ */ jsxs21("div", { className: "flex min-w-0 flex-col gap-1", children: [
+            /* @__PURE__ */ jsx29("p", { className: "truncate text-sm font-normal leading-5 text-strong", children: name }),
+            /* @__PURE__ */ jsx29(
               "div",
               {
                 className: cn(
-                  "mt-1 flex items-center gap-1 text-xs leading-4",
-                  state === "uploading" || state === "success" ? "text-[#525252]" : "text-[#8F8F8F]"
+                  "flex items-center gap-1 text-xs font-normal leading-4",
+                  statusMetaColor[status]
                 ),
-                children: [
-                  /* @__PURE__ */ jsx29("span", { children: fileSize }),
-                  /* @__PURE__ */ jsx29("span", { "aria-hidden": "true", children: "\xB7" }),
-                  /* @__PURE__ */ jsx29("span", { className: cn(state === "failed" && "text-red-500"), children: status })
-                ]
+                children: metaSegments.map((segment, index) => /* @__PURE__ */ jsxs21(Fragment3, { children: [
+                  index > 0 && /* @__PURE__ */ jsx29("span", { "aria-hidden": "true", children: "\xB7" }),
+                  /* @__PURE__ */ jsx29("span", { children: segment })
+                ] }, segment))
               }
-            ),
-            state === "uploading" && /* @__PURE__ */ jsx29("div", { className: "mt-1 h-1 w-36 overflow-hidden rounded-full bg-black/8", "aria-hidden": "true", children: /* @__PURE__ */ jsx29("div", { className: "h-full rounded-full bg-crimson-500", style: { width: `${Math.min(100, Math.max(0, progress))}%` } }) })
+            )
           ] })
         ] }),
         /* @__PURE__ */ jsxs21("div", { className: "flex shrink-0 items-center gap-1", children: [
-          state === "success" && /* @__PURE__ */ jsx29(CheckCircle2, { size: 20, className: "text-green-500", "aria-label": "Upload complete" }),
-          state === "failed" && /* @__PURE__ */ jsx29(AlertCircle, { size: 20, className: "text-red-500", "aria-label": "Upload failed" }),
-          state === "failed" && onRetry && /* @__PURE__ */ jsxs21(
+          status === "error" && onRetry && /* @__PURE__ */ jsx29(
             "button",
             {
               type: "button",
               onClick: onRetry,
-              className: "inline-flex h-9 items-center gap-1.5 rounded-[6px] px-2 text-xs font-medium text-red-500 outline-none hover:bg-red-25 focus-visible:ring-2 focus-visible:ring-red-500/20",
-              children: [
-                /* @__PURE__ */ jsx29(RefreshCw, { size: 16, "aria-hidden": "true" }),
-                "Retry"
-              ]
+              className: "inline-flex items-center rounded-full px-3 py-2.5 text-xs font-medium leading-4 text-error outline-none hover:bg-error-subtle focus-visible:ring-2 focus-visible:ring-red-500/20",
+              children: "Retry"
             }
           ),
           onRemove && /* @__PURE__ */ jsx29(
@@ -1805,8 +1878,8 @@ function FileList({
             {
               type: "button",
               onClick: onRemove,
-              className: "flex size-9 items-center justify-center rounded-full p-0 text-[#525252] outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black/20",
-              "aria-label": `Remove ${fileName}`,
+              className: "flex size-9 items-center justify-center rounded-full text-subtle outline-none hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black/20",
+              "aria-label": `Remove ${name}`,
               children: /* @__PURE__ */ jsx29(X3, { size: 16, "aria-hidden": "true" })
             }
           )
@@ -1913,65 +1986,76 @@ function SkillLevel({ level = 3, max = 5, className, label = `Skill level ${leve
 }
 
 // src/empty-state/empty-state.tsx
-import { Bell, UserPlus } from "lucide-react";
+import { Bell, User } from "lucide-react";
+import { cva as cva5 } from "class-variance-authority";
 import { jsx as jsx32, jsxs as jsxs23 } from "react/jsx-runtime";
-var defaults = {
-  default: {
-    title: "No notifications yet",
-    description: "Updates about staffing plans and assignments will appear here.",
-    action: "Refresh"
-  },
-  avatar: {
-    title: "No team members",
-    description: "Invite people to start building your workforce.",
-    action: "Invite team"
-  },
-  compact: {
-    title: "Nothing to show",
-    description: "Try adjusting your filters or search.",
-    action: "Clear filters"
+var ACTION_SHADOW = "shadow-[0_4px_8px_-4px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.15),0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0_0_0.5px_rgba(0,0,0,0.1),inset_0_-0.5px_0.5px_0_rgba(0,0,0,0.1),inset_0_0.5px_1px_0_rgba(255,255,255,0.25)]";
+var emptyStateAction = cva5(
+  [
+    "inline-flex items-center gap-1 rounded-[6px] px-2 py-1.5",
+    "text-2xs font-medium transition-colors",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/25",
+    "[&>svg]:h-3.5 [&>svg]:w-3.5"
+  ],
+  {
+    variants: {
+      variant: {
+        secondary: cn(
+          "border border-white/10 bg-white text-black",
+          ACTION_SHADOW,
+          "hover:bg-[#F5F5F5] active:bg-[#F0F0F0]"
+        ),
+        primary: cn(
+          "border-[0.5px] border-white/10 text-white",
+          "bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#26201C_0%,#26201C_100%)]",
+          ACTION_SHADOW,
+          "hover:text-white/80 active:text-white/60"
+        )
+      }
+    },
+    defaultVariants: { variant: "secondary" }
   }
-};
+);
 function EmptyState({
-  variant = "default",
+  media = "icon",
+  icon,
+  avatarSrc,
+  avatarAlt = "",
   title,
   description,
   actionLabel,
+  actionIcon,
+  actionVariant = "secondary",
   onAction,
-  icon,
   className
 }) {
-  const content = defaults[variant];
-  const isAvatar = variant === "avatar";
-  const isCompact = variant === "compact";
-  const Icon = isAvatar ? UserPlus : Bell;
-  return /* @__PURE__ */ jsxs23(
-    "div",
-    {
-      className: cn(
-        "flex flex-col items-center rounded-md border-[0.5px] border-dashed border-black/10 bg-white text-center",
-        isCompact ? "min-h-32 p-4" : "min-h-48 p-6",
-        className
-      ),
-      children: [
-        !isCompact && /* @__PURE__ */ jsx32(
-          "span",
-          {
-            className: cn(
-              "mb-3 flex h-10 w-10 items-center justify-center rounded-full",
-              isAvatar ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-700"
-            ),
-            children: icon ?? /* @__PURE__ */ jsx32(Icon, { size: 20, "aria-hidden": "true" })
-          }
-        ),
-        /* @__PURE__ */ jsxs23("div", { children: [
-          /* @__PURE__ */ jsx32("h3", { className: "text-sm font-medium leading-5 text-black", children: title ?? content.title }),
-          /* @__PURE__ */ jsx32("p", { className: "mt-1 max-w-72 text-xs leading-4 text-secondary", children: description ?? content.description })
-        ] }),
-        /* @__PURE__ */ jsx32(Button, { size: "sm", variant: "inverse", className: "mt-4", onClick: onAction, children: actionLabel ?? content.action })
-      ]
-    }
-  );
+  return /* @__PURE__ */ jsxs23("div", { className: cn("flex flex-col items-center gap-4 text-center", className), children: [
+    media === "icon" && /* @__PURE__ */ jsx32("span", { className: "flex items-center justify-center rounded-xs bg-black/5 p-1 text-black [&>svg]:h-4 [&>svg]:w-4", children: icon ?? /* @__PURE__ */ jsx32(Bell, { "aria-hidden": "true" }) }),
+    media === "avatar" && (avatarSrc ? /* @__PURE__ */ jsx32(
+      "img",
+      {
+        src: avatarSrc,
+        alt: avatarAlt,
+        className: "h-6 w-6 rounded-full border border-black/10 object-cover"
+      }
+    ) : /* @__PURE__ */ jsx32("span", { className: "flex h-6 w-6 items-center justify-center rounded-full border border-black/10 bg-black/5 text-black [&>svg]:h-3.5 [&>svg]:w-3.5", children: /* @__PURE__ */ jsx32(User, { "aria-hidden": "true" }) })),
+    /* @__PURE__ */ jsxs23("div", { className: "flex flex-col items-center gap-0.5", children: [
+      /* @__PURE__ */ jsx32("p", { className: "text-body font-medium text-strong", children: title }),
+      description && /* @__PURE__ */ jsx32("p", { className: "text-body-sm text-subtle", children: description })
+    ] }),
+    actionLabel && /* @__PURE__ */ jsxs23(
+      "button",
+      {
+        type: "button",
+        onClick: onAction,
+        className: emptyStateAction({ variant: actionVariant }),
+        children: [
+          actionIcon,
+          /* @__PURE__ */ jsx32("span", { children: actionLabel })
+        ]
+      }
+    )
+  ] });
 }
 
 // src/gantt-bar/gantt-bar.tsx
@@ -1994,6 +2078,540 @@ function GanttBar({ state = "default", children = "2 workers", className, ...pro
     }
   );
 }
+
+// src/text-field/text-field.tsx
+import { useId as useId2 } from "react";
+import { Info as Info2 } from "lucide-react";
+import { jsx as jsx34, jsxs as jsxs24 } from "react/jsx-runtime";
+function TextField(props) {
+  const {
+    label,
+    required = false,
+    info,
+    hint,
+    error = false,
+    id,
+    className,
+    ...rest
+  } = props;
+  const generatedId = useId2();
+  const fieldId = id ?? generatedId;
+  const hintId = `${fieldId}-hint`;
+  const { multiline = false, ...fieldProps } = rest;
+  const describedBy = hint != null ? hintId : void 0;
+  const field = multiline ? /* @__PURE__ */ jsx34(
+    Textarea,
+    {
+      ...fieldProps,
+      id: fieldId,
+      error,
+      "aria-describedby": describedBy
+    }
+  ) : /* @__PURE__ */ jsx34(
+    TextInput,
+    {
+      ...fieldProps,
+      id: fieldId,
+      error,
+      "aria-invalid": error || void 0,
+      "aria-describedby": describedBy
+    }
+  );
+  return /* @__PURE__ */ jsxs24("div", { className: cn("flex w-full flex-col gap-2", className), children: [
+    /* @__PURE__ */ jsxs24("div", { className: "flex items-center gap-0.5", children: [
+      /* @__PURE__ */ jsx34("label", { htmlFor: fieldId, className: "text-sm font-medium leading-5 text-black", children: label }),
+      required ? /* @__PURE__ */ jsx34("span", { "aria-hidden": "true", className: "text-sm font-medium leading-5 text-[#C0180C]", children: "*" }) : /* @__PURE__ */ jsx34("span", { className: "text-sm leading-5 text-[#8F8F8F]", children: "(Optional)" }),
+      info != null && /* @__PURE__ */ jsx34(Tooltip, { body: info, children: /* @__PURE__ */ jsx34(Info2, { size: 14, className: "text-[#8F8F8F]", "aria-hidden": "true" }) })
+    ] }),
+    field,
+    hint != null && /* @__PURE__ */ jsxs24("div", { className: cn("flex items-center gap-1", error ? "text-red-500" : "text-black"), children: [
+      /* @__PURE__ */ jsx34(Info2, { size: 12, className: "shrink-0", "aria-hidden": "true" }),
+      /* @__PURE__ */ jsx34("span", { id: hintId, className: "text-xs leading-4", children: hint })
+    ] })
+  ] });
+}
+
+// src/timeline/timeline.tsx
+import { cva as cva6 } from "class-variance-authority";
+import { Check } from "lucide-react";
+import { jsx as jsx35, jsxs as jsxs25 } from "react/jsx-runtime";
+var timeline = cva6("relative inline-flex items-center justify-between", {
+  variants: {
+    orientation: {
+      vertical: "h-[197px] w-4 flex-col",
+      horizontal: "h-4 w-[199px] flex-row"
+    }
+  },
+  defaultVariants: { orientation: "vertical" }
+});
+var lineClasses = {
+  vertical: "absolute top-0 bottom-0 left-1/2 w-[1.5px] -translate-x-1/2",
+  horizontal: "absolute left-0 right-0 top-1/2 h-[1.5px] -translate-y-1/2"
+};
+var progressLineClasses = {
+  vertical: "absolute top-0 left-1/2 w-[1.5px] -translate-x-1/2",
+  horizontal: "absolute left-0 top-1/2 h-[1.5px] -translate-y-1/2"
+};
+function StepMarker({ status }) {
+  if (status === "completed") {
+    return /* @__PURE__ */ jsx35(
+      "span",
+      {
+        "aria-hidden": "true",
+        className: "flex size-2.5 items-center justify-center rounded-full bg-green-500",
+        children: /* @__PURE__ */ jsx35(Check, { size: 7, strokeWidth: 3.5, className: "text-white", "aria-hidden": "true" })
+      }
+    );
+  }
+  if (status === "current") {
+    return /* @__PURE__ */ jsx35(
+      "span",
+      {
+        "aria-hidden": "true",
+        className: "flex size-2.5 items-center justify-center rounded-full border-2 border-green-500 bg-white",
+        children: /* @__PURE__ */ jsx35("span", { className: "size-1 rounded-full bg-green-500" })
+      }
+    );
+  }
+  return /* @__PURE__ */ jsx35(
+    "span",
+    {
+      "aria-hidden": "true",
+      className: "size-2 rounded-full bg-[rgb(207_199_188)]"
+    }
+  );
+}
+function Timeline({
+  orientation = "vertical",
+  steps = 4,
+  label = "Progress",
+  className,
+  ...props
+}) {
+  const resolvedSteps = typeof steps === "number" ? Array.from({ length: Math.max(0, Math.round(steps)) }, () => ({})) : steps;
+  const lastActiveIndex = resolvedSteps.reduce(
+    (acc, step, index) => (step.status ?? "completed") !== "upcoming" ? index : acc,
+    -1
+  );
+  const progressPercent = resolvedSteps.length > 1 && lastActiveIndex > 0 ? lastActiveIndex / (resolvedSteps.length - 1) * 100 : 0;
+  return /* @__PURE__ */ jsxs25(
+    "div",
+    {
+      role: "list",
+      "aria-label": label,
+      className: cn(timeline({ orientation }), className),
+      ...props,
+      children: [
+        /* @__PURE__ */ jsx35(
+          "span",
+          {
+            "aria-hidden": "true",
+            className: cn("bg-[rgb(226_220_212)]", lineClasses[orientation ?? "vertical"])
+          }
+        ),
+        progressPercent > 0 && /* @__PURE__ */ jsx35(
+          "span",
+          {
+            "aria-hidden": "true",
+            className: cn(
+              "bg-green-500",
+              progressLineClasses[orientation ?? "vertical"]
+            ),
+            style: (orientation ?? "vertical") === "horizontal" ? { width: `${progressPercent}%` } : { height: `${progressPercent}%` }
+          }
+        ),
+        resolvedSteps.map((step, index) => {
+          const status = step.status ?? "completed";
+          return /* @__PURE__ */ jsx35(
+            "span",
+            {
+              role: "listitem",
+              "aria-label": step.label ?? `Step ${index + 1}: ${status}`,
+              "aria-current": status === "current" ? "step" : void 0,
+              title: step.label,
+              className: "relative flex size-2.5 shrink-0 items-center justify-center",
+              children: /* @__PURE__ */ jsx35(StepMarker, { status })
+            },
+            index
+          );
+        })
+      ]
+    }
+  );
+}
+
+// src/dropdown/dropdown.tsx
+import {
+  useEffect as useEffect2,
+  useId as useId3,
+  useRef as useRef4,
+  useState as useState9
+} from "react";
+import { Check as Check2, ChevronDown as ChevronDown3 } from "lucide-react";
+import { jsx as jsx36, jsxs as jsxs26 } from "react/jsx-runtime";
+function Dropdown({
+  size = "md",
+  options,
+  value,
+  defaultValue,
+  onChange,
+  placeholder = "Select\u2026",
+  leading,
+  error = false,
+  disabled = false,
+  open,
+  filterable = false,
+  className,
+  "aria-label": ariaLabel
+}) {
+  const [internalValue, setInternalValue] = useState9(defaultValue);
+  const selectedValue = value !== void 0 ? value : internalValue;
+  const selected = options.find((o) => o.value === selectedValue);
+  const [internalOpen, setInternalOpen] = useState9(false);
+  const isOpen = !disabled && (open ?? internalOpen);
+  const [query, setQuery] = useState9(null);
+  const [activeIndex, setActiveIndex] = useState9(-1);
+  const rootRef = useRef4(null);
+  const inputRef = useRef4(null);
+  const listboxId = useId3();
+  const filterOptions = (q) => q === "" ? options : options.filter((o) => o.label.toLowerCase().includes(q.toLowerCase()));
+  const visibleOptions = filterable && query != null ? filterOptions(query) : options;
+  useEffect2(() => {
+    if (!internalOpen) return;
+    const onDown = (e) => {
+      if (rootRef.current && !rootRef.current.contains(e.target)) setInternalOpen(false);
+    };
+    const onKey = (e) => {
+      if (e.key === "Escape") setInternalOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [internalOpen]);
+  useEffect2(() => {
+    if (!isOpen) setQuery(null);
+  }, [isOpen]);
+  useEffect2(() => {
+    if (!isOpen || activeIndex < 0) return;
+    document.getElementById(`${listboxId}-option-${activeIndex}`)?.scrollIntoView({ block: "nearest" });
+  }, [activeIndex, isOpen, listboxId]);
+  const enabledIndexes = visibleOptions.map((o, i) => o.disabled ? -1 : i).filter((i) => i >= 0);
+  const initialActive = (dir) => {
+    const selectedIndex = visibleOptions.findIndex((o) => o.value === selectedValue && !o.disabled);
+    if (selectedIndex >= 0) return selectedIndex;
+    if (enabledIndexes.length === 0) return -1;
+    return dir === 1 ? enabledIndexes[0] : enabledIndexes[enabledIndexes.length - 1];
+  };
+  const moveActive = (dir) => {
+    setActiveIndex((prev) => {
+      if (enabledIndexes.length === 0) return -1;
+      const pos = enabledIndexes.indexOf(prev);
+      if (pos < 0) return dir === 1 ? enabledIndexes[0] : enabledIndexes[enabledIndexes.length - 1];
+      return enabledIndexes[(pos + dir + enabledIndexes.length) % enabledIndexes.length];
+    });
+  };
+  const openList = () => {
+    if (disabled) return;
+    setInternalOpen(true);
+    setActiveIndex(initialActive(1));
+  };
+  const toggleList = () => {
+    if (disabled) return;
+    if (isOpen) setInternalOpen(false);
+    else openList();
+  };
+  const selectOption = (option) => {
+    if (option.disabled) return;
+    if (value === void 0) setInternalValue(option.value);
+    onChange?.(option.value);
+    setQuery(null);
+    setInternalOpen(false);
+  };
+  const onTriggerKeyDown = (e) => {
+    if (disabled) return;
+    switch (e.key) {
+      case "ArrowDown":
+      case "ArrowUp": {
+        e.preventDefault();
+        const dir = e.key === "ArrowDown" ? 1 : -1;
+        if (isOpen) {
+          moveActive(dir);
+        } else {
+          setInternalOpen(true);
+          setActiveIndex(initialActive(dir));
+        }
+        break;
+      }
+      case "Enter":
+      case " ": {
+        if (isOpen) {
+          e.preventDefault();
+          const option = activeIndex >= 0 ? visibleOptions[activeIndex] : void 0;
+          if (option) selectOption(option);
+          else setInternalOpen(false);
+        }
+        break;
+      }
+      case "Escape": {
+        if (isOpen) {
+          e.stopPropagation();
+          setInternalOpen(false);
+        }
+        break;
+      }
+    }
+  };
+  const onInputChange = (e) => {
+    const q = e.target.value;
+    setQuery(q);
+    setInternalOpen(true);
+    setActiveIndex(filterOptions(q).findIndex((o) => !o.disabled));
+  };
+  const onInputKeyDown = (e) => {
+    if (disabled) return;
+    switch (e.key) {
+      case "ArrowDown":
+      case "ArrowUp": {
+        e.preventDefault();
+        const dir = e.key === "ArrowDown" ? 1 : -1;
+        if (isOpen) {
+          moveActive(dir);
+        } else {
+          setInternalOpen(true);
+          setActiveIndex(initialActive(dir));
+        }
+        break;
+      }
+      case "Enter": {
+        if (isOpen) {
+          e.preventDefault();
+          const option = activeIndex >= 0 ? visibleOptions[activeIndex] : void 0;
+          if (option) selectOption(option);
+          else setInternalOpen(false);
+        }
+        break;
+      }
+      case "Escape": {
+        if (query) {
+          e.stopPropagation();
+          setQuery(null);
+          setActiveIndex(-1);
+        } else if (isOpen) {
+          e.stopPropagation();
+          setInternalOpen(false);
+        }
+        break;
+      }
+    }
+  };
+  const iconSize = size === "sm" ? 12 : 18;
+  return /* @__PURE__ */ jsxs26("div", { ref: rootRef, className: cn("relative", className), children: [
+    /* @__PURE__ */ jsx36(
+      "div",
+      {
+        className: cn(
+          "flex w-full items-center rounded-[6px] border-[0.5px]",
+          size === "sm" && "h-8",
+          disabled ? "border-black/10 bg-[#EBEBEB]" : error ? "border-red-500 bg-[#F5F5F5] focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]" : "border-black/10 bg-[#F5F5F5] focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]"
+        ),
+        children: filterable ? /* @__PURE__ */ jsxs26(
+          "div",
+          {
+            onClick: () => {
+              if (disabled) return;
+              inputRef.current?.focus();
+              if (!isOpen) openList();
+            },
+            className: cn(
+              "flex min-w-0 flex-1 items-center gap-2 bg-transparent",
+              size === "sm" ? "px-2 text-[12px] leading-[16px]" : "p-3 text-sm leading-5",
+              disabled && "cursor-not-allowed"
+            ),
+            children: [
+              leading != null && /* @__PURE__ */ jsx36(
+                "span",
+                {
+                  className: cn(
+                    "flex shrink-0 items-center",
+                    disabled ? "text-[#8F8F8F]" : "text-[#525252]"
+                  ),
+                  children: leading
+                }
+              ),
+              /* @__PURE__ */ jsx36(
+                "input",
+                {
+                  ref: inputRef,
+                  type: "text",
+                  role: "combobox",
+                  "aria-expanded": isOpen,
+                  "aria-controls": isOpen ? listboxId : void 0,
+                  "aria-autocomplete": "list",
+                  "aria-activedescendant": isOpen && activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : void 0,
+                  "aria-label": ariaLabel,
+                  disabled,
+                  value: query ?? selected?.label ?? "",
+                  placeholder,
+                  onChange: onInputChange,
+                  onKeyDown: onInputKeyDown,
+                  className: cn(
+                    "min-w-0 flex-1 bg-transparent text-black outline-none placeholder:text-[#525252]",
+                    disabled && "cursor-not-allowed text-[#8F8F8F] placeholder:text-[#8F8F8F]"
+                  )
+                }
+              ),
+              /* @__PURE__ */ jsx36(
+                ChevronDown3,
+                {
+                  size: iconSize,
+                  "aria-hidden": true,
+                  className: cn(
+                    "shrink-0 transition-transform duration-150",
+                    isOpen && "rotate-180",
+                    disabled ? "text-[#8F8F8F]" : "text-[#525252]"
+                  )
+                }
+              )
+            ]
+          }
+        ) : /* @__PURE__ */ jsxs26(
+          "button",
+          {
+            type: "button",
+            disabled,
+            "aria-haspopup": "listbox",
+            "aria-expanded": isOpen,
+            "aria-controls": isOpen ? listboxId : void 0,
+            "aria-activedescendant": isOpen && activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : void 0,
+            "aria-label": ariaLabel,
+            onClick: toggleList,
+            onKeyDown: onTriggerKeyDown,
+            className: cn(
+              "flex min-w-0 flex-1 items-center gap-2 bg-transparent text-left outline-none",
+              size === "sm" ? "px-2 text-[12px] leading-[16px]" : "p-3 text-sm leading-5",
+              disabled && "cursor-not-allowed"
+            ),
+            children: [
+              leading != null && /* @__PURE__ */ jsx36(
+                "span",
+                {
+                  className: cn(
+                    "flex shrink-0 items-center",
+                    disabled ? "text-[#8F8F8F]" : "text-[#525252]"
+                  ),
+                  children: leading
+                }
+              ),
+              /* @__PURE__ */ jsx36(
+                "span",
+                {
+                  className: cn(
+                    "min-w-0 flex-1 truncate",
+                    disabled ? "text-[#8F8F8F]" : selected ? "text-black" : "text-[#525252]"
+                  ),
+                  children: selected ? selected.label : placeholder
+                }
+              ),
+              /* @__PURE__ */ jsx36(
+                ChevronDown3,
+                {
+                  size: iconSize,
+                  "aria-hidden": true,
+                  className: cn(
+                    "shrink-0 transition-transform duration-150",
+                    isOpen && "rotate-180",
+                    disabled ? "text-[#8F8F8F]" : "text-[#525252]"
+                  )
+                }
+              )
+            ]
+          }
+        )
+      }
+    ),
+    isOpen && /* @__PURE__ */ jsx36(
+      "div",
+      {
+        role: "listbox",
+        id: listboxId,
+        "aria-label": ariaLabel,
+        className: cn(
+          "absolute left-0 top-full z-50 mt-1 flex max-h-60 w-full flex-col gap-1 overflow-y-auto",
+          "rounded-[6px] border-[0.5px] border-black/10 bg-white p-1",
+          "shadow-[0_1px_1px_0_rgba(0,0,0,0.05),0_4px_8px_0_rgba(0,0,0,0.05),0_2px_4px_0_rgba(0,0,0,0.05)]"
+        ),
+        children: visibleOptions.length === 0 ? /* @__PURE__ */ jsx36(ListBase, { size, state: "disabled", className: "cursor-default", "aria-hidden": "true", children: "No results" }) : visibleOptions.map((option, i) => {
+          const isSelected = option.value === selectedValue;
+          return /* @__PURE__ */ jsx36(
+            ListBase,
+            {
+              id: `${listboxId}-option-${i}`,
+              role: "option",
+              "aria-selected": isSelected,
+              "aria-disabled": option.disabled || void 0,
+              size,
+              state: option.disabled ? "disabled" : i === activeIndex ? "hover" : isSelected ? "selected" : "default",
+              trailing: isSelected ? /* @__PURE__ */ jsx36(Check2, { "aria-hidden": true }) : void 0,
+              className: option.disabled ? void 0 : "cursor-pointer",
+              onClick: () => selectOption(option),
+              onMouseEnter: () => {
+                if (!option.disabled) setActiveIndex(i);
+              },
+              children: option.label
+            },
+            option.value
+          );
+        })
+      }
+    )
+  ] });
+}
+
+// src/combobox/combobox.tsx
+import { useId as useId4 } from "react";
+import { Info as Info3 } from "lucide-react";
+import { jsx as jsx37, jsxs as jsxs27 } from "react/jsx-runtime";
+function Combobox({
+  label,
+  required = false,
+  info,
+  hint,
+  error = false,
+  id,
+  className,
+  ...dropdownProps
+}) {
+  const generatedId = useId4();
+  const fieldId = id ?? generatedId;
+  const labelId = `${fieldId}-label`;
+  const hintId = `${fieldId}-hint`;
+  const describedBy = hint != null ? hintId : void 0;
+  const triggerLabel = dropdownProps["aria-label"] ?? (typeof label === "string" ? label : void 0);
+  return /* @__PURE__ */ jsxs27(
+    "div",
+    {
+      role: "group",
+      "aria-labelledby": labelId,
+      "aria-describedby": describedBy,
+      className: cn("flex w-full flex-col gap-2", className),
+      children: [
+        /* @__PURE__ */ jsxs27("div", { className: "flex items-center gap-0.5", children: [
+          /* @__PURE__ */ jsx37("span", { id: labelId, className: "text-sm font-medium leading-5 text-black", children: label }),
+          required ? /* @__PURE__ */ jsx37("span", { "aria-hidden": "true", className: "text-sm font-medium leading-5 text-[#C0180C]", children: "*" }) : /* @__PURE__ */ jsx37("span", { className: "text-sm leading-5 text-[#8F8F8F]", children: "(Optional)" }),
+          info != null && /* @__PURE__ */ jsx37(Tooltip, { body: info, children: /* @__PURE__ */ jsx37(Info3, { size: 14, className: "text-[#8F8F8F]", "aria-hidden": "true" }) })
+        ] }),
+        /* @__PURE__ */ jsx37(Dropdown, { ...dropdownProps, "aria-label": triggerLabel, error }),
+        hint != null && /* @__PURE__ */ jsxs27("div", { className: cn("flex items-center gap-1", error ? "text-red-500" : "text-black"), children: [
+          /* @__PURE__ */ jsx37(Info3, { size: 12, className: "shrink-0", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx37("span", { id: hintId, className: "text-xs leading-4", children: hint })
+        ] })
+      ]
+    }
+  );
+}
 export {
   AccountSwitcher,
   Avatar,
@@ -2003,7 +2621,9 @@ export {
   CHART_TOOLTIP_SHADOW,
   ChartTooltip,
   Checkbox,
+  Combobox,
   DropZone,
+  Dropdown,
   EmptyState,
   FileList,
   GanttBar,
@@ -2027,8 +2647,10 @@ export {
   Switch,
   Tag,
   TextArea,
+  TextField,
   TextInput,
   Textarea,
+  Timeline,
   Toast,
   Tooltip,
   buttonVariants,

@@ -2,7 +2,7 @@ import { Slider } from '@sparc-ui';
 
 <PageHeader
   title="Slider"
-  description="Range input with default, range, and empty modes."
+  description="Range input with default, range, and no-value variants."
 />
 
 ## Default
@@ -14,11 +14,11 @@ import { Slider } from '@sparc-ui';
 ## Range
 
 <PreviewCard>
-  <Slider mode="range" defaultStartValue={20} defaultValue={70} />
+  <Slider variant="range" defaultValue={20} defaultValueEnd={70} showValue />
 </PreviewCard>
 
-## Empty
+## No Value
 
 <PreviewCard>
-  <Slider mode="empty" />
+  <Slider variant="no-value" />
 </PreviewCard>
