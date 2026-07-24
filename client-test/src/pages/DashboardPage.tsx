@@ -1,4 +1,4 @@
-import { Button } from 'cf-ui';
+import { Button } from '@commonforge/ui';
 import { Download } from 'lucide-react';
 import {
   Bar,

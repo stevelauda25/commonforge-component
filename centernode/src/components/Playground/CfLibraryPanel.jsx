@@ -2,17 +2,17 @@
 import { useState } from "react";
 import { ChevronRight, Sun, Moon, Eye } from "lucide-react";
 import LayerPanel from "./LayerPanel";
-import { Button as PodButton } from "cf-ui/button";
-import { Checkbox as PodCheckbox } from "cf-ui/checkbox";
-import { TextInput as PodTextInput } from "cf-ui/text-input";
-import { SearchInput as PodSearchInput } from "cf-ui/search-input";
-import { Switch as PodSwitch } from "cf-ui/switch";
-import { Dropdown as PodDropdown } from "cf-ui/dropdown";
-import { Badge as PodBadge } from "cf-ui/badges";
-import { Tab as PodTab } from "cf-ui/tabs";
-import { Radio as PodRadio } from "cf-ui/radio";
-import { Tag as PodTag } from "cf-ui/tag";
-import { ButtonGroup as PodButtonGroup } from "cf-ui/button-group";
+import { Button as PodButton } from "@commonforge/ui/button";
+import { Checkbox as PodCheckbox } from "@commonforge/ui/checkbox";
+import { TextInput as PodTextInput } from "@commonforge/ui/text-input";
+import { SearchInput as PodSearchInput } from "@commonforge/ui/search-input";
+import { Switch as PodSwitch } from "@commonforge/ui/switch";
+import { Dropdown as PodDropdown } from "@commonforge/ui/dropdown";
+import { Badge as PodBadge } from "@commonforge/ui/badges";
+import { Tab as PodTab } from "@commonforge/ui/tabs";
+import { Radio as PodRadio } from "@commonforge/ui/radio";
+import { Tag as PodTag } from "@commonforge/ui/tag";
+import { ButtonGroup as PodButtonGroup } from "@commonforge/ui/button-group";
 import { VARIANT_PROP_ALIAS } from "../../utils/variantAliases.js";
 
 // ButtonGroup composite — manifest examples use `quantity` to spawn N
@@ -460,7 +460,7 @@ export default function CfLibraryPanel({
       <div className="px-3 h-8 border-t border-cn-border-subtle shrink-0 flex items-center cn-mono-meta">
         {showLayers
           ? "double-click group → enter"
-          : <>from <span className="text-cn-text-secondary">cf-ui</span> · click to add</>}
+          : <>from <span className="text-cn-text-secondary">@commonforge/ui</span> · click to add</>}
       </div>
     </div>
   );

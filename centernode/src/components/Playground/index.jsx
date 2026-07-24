@@ -56,7 +56,7 @@ function isPropVisibleForVariant(componentName, propKey, currentProps) {
 
 // =============================================================
 // Inject `:root { --color-* }` overrides for POD design system tokens.
-// These override cf-tokens/theme.css at runtime, so every POD component
+// These override @commonforge/tokens/theme.css at runtime, so every POD component
 // on the canvas (Button, Checkbox, TextInput…) reflects the change instantly.
 export function usePodTokensCSS(tokens) {
   useEffect(() => {
@@ -2123,7 +2123,7 @@ export default function ComponentPlayground() {
               {tokensTab === "pod" ? (
                 <>
                   <div className="px-4 py-3 flex items-center justify-between">
-                    <span className="cn-caption">Live override of cf-tokens</span>
+                    <span className="cn-caption">Live override of @commonforge/tokens</span>
                     <button
                       onClick={resetPodTokens}
                       className="cn-mono-meta hover:text-cn-accent transition-colors"

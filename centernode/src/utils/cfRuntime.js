@@ -5,19 +5,19 @@
  *
  * Manually-maintained: transformIfJSX (sucrase config) and exports below.
  */
-import { Badge } from "cf-ui/badges";
-import { Button } from "cf-ui/button";
-import { ButtonGroup } from "cf-ui/button-group";
-import { Checkbox } from "cf-ui/checkbox";
-import { Dropdown, DropdownMenu, DropdownItem, DropdownBadge } from "cf-ui/dropdown";
-import { Radio } from "cf-ui/radio";
-import { SearchInput } from "cf-ui/search-input";
-import { Switch } from "cf-ui/switch";
-import { Tab } from "cf-ui/tabs";
-import { Tag } from "cf-ui/tag";
-import { TextInput } from "cf-ui/text-input";
-import { Tooltip } from "cf-ui/tooltip";
-import { canvasManifest } from "cf-ui/canvas";
+import { Badge } from "@commonforge/ui/badges";
+import { Button } from "@commonforge/ui/button";
+import { ButtonGroup } from "@commonforge/ui/button-group";
+import { Checkbox } from "@commonforge/ui/checkbox";
+import { Dropdown, DropdownMenu, DropdownItem, DropdownBadge } from "@commonforge/ui/dropdown";
+import { Radio } from "@commonforge/ui/radio";
+import { SearchInput } from "@commonforge/ui/search-input";
+import { Switch } from "@commonforge/ui/switch";
+import { Tab } from "@commonforge/ui/tabs";
+import { Tag } from "@commonforge/ui/tag";
+import { TextInput } from "@commonforge/ui/text-input";
+import { Tooltip } from "@commonforge/ui/tooltip";
+import { canvasManifest } from "@commonforge/ui/canvas";
 import { transform } from "sucrase";
 
 export const POD_COMPONENTS = {

@@ -1,5 +1,0 @@
-import{u as a,j as e}from"./index-k1lh-pZG.js";import"./text-area-Q9fGAx3A.js";import{S as n}from"./switch-C1tQGHqu.js";function d(t){const s={h2:"h2",...a(),...t.components},{PageHeader:i,PreviewCard:r}=s;return i||o("PageHeader"),r||o("PreviewCard"),e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"Switch",description:"Binary on/off control in small and medium sizes."}),`
-`,e.jsx(s.h2,{id:"sizes",children:"Sizes"}),`
-`,e.jsx(r,{children:e.jsxs("div",{className:"flex flex-wrap items-center gap-6",children:[e.jsx(n,{size:"sm",defaultChecked:!0}),e.jsx(n,{size:"md",defaultChecked:!0})]})}),`
-`,e.jsx(s.h2,{id:"states",children:"States"}),`
-`,e.jsx(r,{children:e.jsxs("div",{className:"flex flex-wrap items-center gap-6",children:[e.jsx(n,{}),e.jsx(n,{defaultChecked:!0}),e.jsx(n,{disabled:!0}),e.jsx(n,{defaultChecked:!0,disabled:!0})]})})]})}function m(t={}){const{wrapper:s}={...a(),...t.components};return s?e.jsx(s,{...t,children:e.jsx(d,{...t})}):d(t)}function o(t,s){throw new Error("Expected component `"+t+"` to be defined: you likely forgot to import, pass, or provide it.")}export{m as default};

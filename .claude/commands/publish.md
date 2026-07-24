@@ -1,5 +1,5 @@
 ---
-description: Publish cf-tokens + cf-ui to npm. Verify in-sync, build, bump, publish, tag. Sat-set with one safety pause.
+description: Publish @commonforge/tokens + @commonforge/ui to npm. Verify in-sync, build, bump, publish, tag. Sat-set with one safety pause.
 ---
 
 # /publish
@@ -17,8 +17,6 @@ Everything else: execute autonomously.
 Run these checks. Any failure → stop, report which one, do NOT attempt to fix.
 
 1. **Git tree clean**: `git status --porcelain` returns empty.
-2. **All Figma drift in sync**: `node scripts/figma/check.mjs` exits 0.
-   If drift exists, user must `/sync-figma <slug>` first or revert their edits.
 3. **Branch acknowledged**: print current branch (`git rev-parse --abbrev-ref HEAD`).
    This project publishes from `testing` (or `main`) — don't enforce, just surface.
    If branch is something else (feature branch, etc.), warn but continue.
@@ -26,8 +24,8 @@ Run these checks. Any failure → stop, report which one, do NOT attempt to fix.
    `npm login` and stop.
 5. **No version conflict**: target version > current version in both
    `packages/tokens/package.json` and `packages/ui/package.json`.
-6. **Latest npm version check**: `npm view cf-ui version` and
-   `npm view cf-tokens version`. Target must be > both. If somebody else
+6. **Latest npm version check**: `npm view @commonforge/ui version` and
+   `npm view @commonforge/tokens version`. Target must be > both. If somebody else
    already published a higher version, stop and tell user.
 
 ## Steps
@@ -69,7 +67,7 @@ cd packages/ui && ../../node_modules/.bin/tsup
 ```
 
 **3c. Build ui CSS bundle** (the one that keeps getting forgotten). The
-workspace symlink for `cf-tokens` may point at a stale pnpm-cached
+workspace symlink for `@commonforge/tokens` may point at a stale pnpm-cached
 version, so we write a one-off `tailwind.build.config.ts` that imports
 the preset DIRECTLY from `../tokens/dist/tailwind-preset.mjs`, run
 tailwindcss against it, then delete the temp config:
@@ -102,7 +100,7 @@ npm pack --dry-run 2>&1 | grep "dist/styles.css"
 
 Edit:
 - `packages/tokens/package.json` → `version`
-- `packages/ui/package.json` → `version` AND `dependencies["cf-tokens"]` (lockstep)
+- `packages/ui/package.json` → `version` AND `dependencies["@commonforge/tokens"]` (lockstep)
 - Root `package.json` `version` if it tracks releases (currently `0.0.1`, ok to bump).
 
 ### 5. PAUSE — show diff and ask for confirmation
@@ -113,16 +111,16 @@ Print exactly this format:
 ═══════════════════════════════════════════════════
   About to publish to npm:
 
-    cf-tokens   <old>  →  <new>
-    cf-ui       <old>  →  <new>
+    @commonforge/tokens   <old>  →  <new>
+    @commonforge/ui       <old>  →  <new>
 
   Files included (from package.json "files"):
-    cf-tokens: dist/, src/theme.css
-    cf-ui:     dist/
+    @commonforge/tokens: dist/, src/theme.css
+    @commonforge/ui:     dist/
 
   Total package size: <X kB> (estimated via npm pack --dry-run)
 
-  cf-ui tarball should report 113 files (NOT 112). If 112, dist/styles.css
+  @commonforge/ui tarball should report 113 files (NOT 112). If 112, dist/styles.css
   is missing — go back to step 3c. Don't ask for confirm yet.
 
   Reply "confirm" to publish.
@@ -168,8 +166,8 @@ version.
 
 ```bash
 # Update centernode/package.json
-#   "cf-tokens": "^<new>"
-#   "cf-ui":     "^<new>"
+#   "@commonforge/tokens": "^<new>"
+#   "@commonforge/ui":     "^<new>"
 cd centernode && npm install --legacy-peer-deps --no-fund --no-audit && cd ..
 
 # Update client-test/package.json (same pattern)
@@ -187,8 +185,8 @@ until somebody manually bumps later.
 
 ```
 ✓ Published
-  cf-tokens@<new>  (was <old>)
-  cf-ui@<new>      (was <old>)
+  @commonforge/tokens@<new>  (was <old>)
+  @commonforge/ui@<new>      (was <old>)
   centernode + client-test bumped to ^<new>
 
 Git: commit + tag v<new> created locally. NOT pushed.

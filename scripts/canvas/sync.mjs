@@ -177,9 +177,9 @@ function writeCenternodeRuntime(components) {
   let imports = '';
   for (const c of withMeta) {
     const named = [c.componentName, ...c.extraScope].join(', ');
-    imports += `import { ${named} } from "cf-ui/${c.dir}";\n`;
+    imports += `import { ${named} } from "@commonforge/ui/${c.dir}";\n`;
   }
-  imports += `import { canvasManifest } from "cf-ui/canvas";\n`;
+  imports += `import { canvasManifest } from "@commonforge/ui/canvas";\n`;
   imports += `import { transform } from "sucrase";\n\n`;
 
   // POD_COMPONENTS includes primary + all extraScope sub-primitives so composite

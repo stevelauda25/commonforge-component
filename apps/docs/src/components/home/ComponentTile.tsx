@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { cn } from 'cf-ui';
+import { cn } from '@commonforge/ui';
 import type { RouteEntry } from '../../lib/routes.js';
 import { canonicalExamples } from './canonical-examples.js';
 

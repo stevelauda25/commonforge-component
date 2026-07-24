@@ -13,8 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cf-tokens": "^0.1.13",
-    "cf-ui": "^0.1.14",
+    "@commonforge/tokens": "^0.1.13",
+    "@commonforge/ui": "^0.1.14",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

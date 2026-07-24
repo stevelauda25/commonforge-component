@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
-import { cn } from 'cf-ui';
+import { cn } from '@commonforge/ui';
 
 type Props = React.HTMLAttributes<HTMLPreElement> & {
   'data-language'?: string;

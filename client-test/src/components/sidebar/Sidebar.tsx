@@ -1,4 +1,4 @@
-import { Tooltip, Button } from 'cf-ui';
+import { Tooltip, Button } from '@commonforge/ui';
 import {
   BarChart3,
   Home,

@@ -1,1 +1,0 @@
-import{j as e,L as t}from"./index-k1lh-pZG.js";function n(){return e.jsxs("div",{className:"p-10",children:[e.jsx("h1",{className:"text-3xl font-semibold",children:"404"}),e.jsx("p",{className:"mt-2 text-muted",children:"Page not found."}),e.jsx(t,{to:"/",className:"mt-4 inline-block text-brand underline",children:"Back to Home"})]})}export{n as default};

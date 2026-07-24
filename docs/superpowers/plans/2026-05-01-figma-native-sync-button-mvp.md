@@ -254,7 +254,7 @@ Most of Phase 0 from the spec is already done (`.figma/` artifacts exist, `pnpm 
 
 Settings:
 - **Root directory:** `apps/docs`
-- **Build command:** `cd ../.. && pnpm install --frozen-lockfile && pnpm -F cf-tokens build && pnpm -F cf-ui build && pnpm -F docs build`
+- **Build command:** `cd ../.. && pnpm install --frozen-lockfile && pnpm -F @commonforge/tokens build && pnpm -F @commonforge/ui build && pnpm -F docs build`
 - **Output directory:** `dist`
 - **Install command:** (leave default; root install handled in build command)
 - **Framework preset:** Vite
@@ -292,8 +292,8 @@ If no file changes were needed, skip this step.
 
 ```bash
 pnpm install
-pnpm -F cf-tokens build
-pnpm -F cf-ui build
+pnpm -F @commonforge/tokens build
+pnpm -F @commonforge/ui build
 pnpm -F docs build
 ```
 
@@ -498,8 +498,8 @@ Append after the `Run /sync-figma` step:
         continue-on-error: true
         id: rebuild
         run: |
-          pnpm -F cf-tokens build
-          pnpm -F cf-ui build
+          pnpm -F @commonforge/tokens build
+          pnpm -F @commonforge/ui build
 
       - name: Typecheck
         if: env.NO_OP != 'true'

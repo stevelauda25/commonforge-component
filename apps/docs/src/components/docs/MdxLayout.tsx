@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import { cn } from 'cf-ui';
+import { cn } from '@commonforge/ui';
 import { TableOfContents } from './TableOfContents.js';
 
 // TOC auto-shows on every /components/* and /foundations/* page.

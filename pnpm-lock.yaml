@@ -17,18 +17,18 @@ importers:
 
   apps/docs:
     dependencies:
+      '@commonforge/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
+      '@commonforge/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@mdx-js/react':
         specifier: ^3.0.1
         version: 3.1.1(@types/react@18.3.31)(react@18.3.1)
       '@mdx-js/rollup':
         specifier: ^3.0.1
         version: 3.1.1(rollup@4.62.2)
-      cf-tokens:
-        specifier: workspace:*
-        version: link:../../packages/tokens
-      cf-ui:
-        specifier: workspace:*
-        version: link:../../packages/ui
       lucide-react:
         specifier: ^0.428.0
         version: 0.428.0(react@18.3.1)

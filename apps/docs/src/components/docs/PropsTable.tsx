@@ -1,5 +1,5 @@
 import type { TableHTMLAttributes } from 'react';
-import { cn } from 'cf-ui';
+import { cn } from '@commonforge/ui';
 
 export function PropsTable({
   className,

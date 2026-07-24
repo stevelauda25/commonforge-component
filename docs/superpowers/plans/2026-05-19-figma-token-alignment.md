@@ -15,8 +15,8 @@
 ## Important conventions
 
 **No test framework.** Verify each task by running:
-- `pnpm --filter cf-tokens build` after changing `theme.css` / `tailwind-preset.ts`
-- `pnpm --filter cf-ui build` after changing any component
+- `pnpm --filter @commonforge/tokens build` after changing `theme.css` / `tailwind-preset.ts`
+- `pnpm --filter @commonforge/ui build` after changing any component
 - `pnpm typecheck` for full repo
 - `grep -rE '<pattern>' <path>` to confirm a rename swept everything
 
@@ -702,7 +702,7 @@ Expected output should list all top-level extend keys (colors, boxShadow, border
 
 - [ ] **Step 3: Build the tokens package**
 
-Run: `pnpm --filter cf-tokens build`
+Run: `pnpm --filter @commonforge/tokens build`
 Expected: Build succeeds with no TS errors.
 
 - [ ] **Step 4: Commit**
@@ -1160,7 +1160,7 @@ Gray variants use bg-elevated / bg-surface + border-strong + text-subtle."
 
 ---
 
-## Task 14: Build `cf-ui` to verify all component changes typecheck
+## Task 14: Build `@commonforge/ui` to verify all component changes typecheck
 
 **Files:** None (verification only)
 
@@ -1173,7 +1173,7 @@ If any errors appear, they will name specific files and lines — revisit the co
 
 - [ ] **Step 2: Build the UI package**
 
-Run: `pnpm --filter cf-ui build`
+Run: `pnpm --filter @commonforge/ui build`
 Expected: PASS. Tailwind compilation runs as part of build:css and will fail loudly if any unknown class is referenced.
 
 If it fails with "unknown utility class", grep for that class and either:

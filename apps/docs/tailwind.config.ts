@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
-import preset from 'cf-tokens/tailwind-preset';
+import preset from '@commonforge/tokens/tailwind-preset';
 
 // Auto-derive safelist from preset so dynamic class composition (e.g.
 // TokenAutoGrid's `rounded-${name}`) doesn't get purged. When a new token

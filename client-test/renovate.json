@@ -8,8 +8,8 @@
     {
       "description": "CF Design System packages — group + frequent",
       "matchPackageNames": [
-        "cf-ui",
-        "cf-tokens"
+        "@commonforge/ui",
+        "@commonforge/tokens"
       ],
       "groupName": "CF Design System",
       "schedule": ["before 9am on monday"],
@@ -21,8 +21,8 @@
     {
       "description": "Auto-merge patch updates from pod-* if CI passes",
       "matchPackageNames": [
-        "cf-ui",
-        "cf-tokens"
+        "@commonforge/ui",
+        "@commonforge/tokens"
       ],
       "matchUpdateTypes": ["patch"],
       "automerge": true,

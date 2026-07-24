@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import 'cf-tokens/theme.css'
+import '@commonforge/tokens/theme.css'
 import './index.css'
 import App from './App'
 

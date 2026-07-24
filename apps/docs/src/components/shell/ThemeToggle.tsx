@@ -1,5 +1,5 @@
 import { Moon, Sun } from 'lucide-react';
-import { Button } from 'cf-ui';
+import { Button } from '@commonforge/ui';
 import { useTheme } from '../../lib/theme.js';
 
 export function ThemeToggle() {

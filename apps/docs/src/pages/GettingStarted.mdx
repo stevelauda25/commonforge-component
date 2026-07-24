@@ -13,8 +13,8 @@ pnpm dev   # docs at http://localhost:5174
 ## Use
 
 ```tsx
-import { Button } from 'cf-ui';
-import 'cf-tokens/theme.css';
+import { Button } from '@commonforge/ui';
+import '@commonforge/tokens/theme.css';
 
 <Button>Click me</Button>
 ```
@@ -22,7 +22,7 @@ import 'cf-tokens/theme.css';
 Wire the Tailwind preset in your app's `tailwind.config.ts`:
 
 ```ts
-import preset from 'cf-tokens/tailwind-preset';
+import preset from '@commonforge/tokens/tailwind-preset';
 
 export default {
   presets: [preset],
@@ -31,7 +31,7 @@ export default {
 ```
 
 Both packages are local workspace packages in this repo: `packages/tokens`
-(published name `cf-tokens`) and `packages/ui` (`cf-ui`).
+(published name `@commonforge/tokens`) and `packages/ui` (`@commonforge/ui`).
 
 ## How tokens work
 

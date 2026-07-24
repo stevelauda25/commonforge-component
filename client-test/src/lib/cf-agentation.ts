@@ -8,7 +8,7 @@ import type { Annotation } from 'agentation';
 //   - bahwa accent-* itu sacred token (jangan diubah)
 //   - bahwa local component harus pakai POD tokens (no hex)
 //
-// Source of truth untuk daftar component + token = cf-ui/AGENTS.md
+// Source of truth untuk daftar component + token = @commonforge/ui/AGENTS.md
 // yang di-ship dalam npm package. Update otomatis pas `npm update`.
 
 const POD_PRIMITIVES = new Set(['Button', 'Checkbox', 'SearchInput', 'Tooltip']);
@@ -36,13 +36,13 @@ function enrichSingle(annotation: Annotation): string {
   lines.push('');
 
   if (podMatch) {
-    lines.push(`**POD context:** Target is \`<${podMatch}>\` from \`cf-ui\` (a tracked primitive).`);
+    lines.push(`**POD context:** Target is \`<${podMatch}>\` from \`@commonforge/ui\` (a tracked primitive).`);
     lines.push(`→ Edit MUST keep this as \`<${podMatch}>\`. Don't replace with native \`<button>\`/\`<input>\`.`);
-    lines.push(`→ Available props/variants: see \`node_modules/cf-ui/AGENTS.md\` (ground truth, auto-syncs on npm update).`);
+    lines.push(`→ Available props/variants: see \`node_modules/@commonforge/ui/AGENTS.md\` (ground truth, auto-syncs on npm update).`);
   } else {
     lines.push(`**POD context:** Target is a **local component**, not a POD primitive.`);
     lines.push(`→ Any styling change MUST use POD semantic tokens (\`bg-canvas\`, \`text-text-primary\`, etc.). No hex codes.`);
-    lines.push(`→ Check if intent maps to a POD primitive — if "ganti ke checkbox" or similar, use \`<Checkbox>\` from \`cf-ui\`.`);
+    lines.push(`→ Check if intent maps to a POD primitive — if "ganti ke checkbox" or similar, use \`<Checkbox>\` from \`@commonforge/ui\`.`);
   }
 
   lines.push('');
@@ -60,14 +60,14 @@ export function enrichAgentationOutput(annotations: Annotation[]): string {
   const header = [
     '# Agentation Feedback — POD-enriched',
     '',
-    'You are editing a project that uses **CF Design System** (`cf-ui` + `cf-tokens`).',
+    'You are editing a project that uses **CF Design System** (`@commonforge/ui` + `@commonforge/tokens`).',
     '',
     '**Hard rules** (zero exceptions — see `client-test/CLAUDE.md`):',
     '- Every UI change must use POD primitives + semantic tokens.',
     '- Sacred tokens (`accent-*`, `danger-*`, `warning-*`, etc.) are never modified.',
     '- New colors → `experiment-<name>` token + targeted variant override.',
     '- No hex codes, no `rgb()`, no `dark:` modifiers, no native `<button>`/`<input>`.',
-    '- Available primitives + tokens: read `node_modules/cf-ui/AGENTS.md` (auto-syncs on `npm update`).',
+    '- Available primitives + tokens: read `node_modules/@commonforge/ui/AGENTS.md` (auto-syncs on `npm update`).',
     '',
     '---',
     '',

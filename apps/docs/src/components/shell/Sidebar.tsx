@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
-import { cn } from 'cf-ui';
+import { cn } from '@commonforge/ui';
 import {
   routes,
   componentRoutes,

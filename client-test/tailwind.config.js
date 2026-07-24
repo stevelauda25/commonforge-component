@@ -1,4 +1,4 @@
-import preset from 'cf-tokens/tailwind-preset';
+import preset from '@commonforge/tokens/tailwind-preset';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -6,7 +6,7 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/cf-ui/**/*.{js,mjs}",
+    "./node_modules/@commonforge/ui/**/*.{js,mjs}",
   ],
   theme: {
     extend: {},

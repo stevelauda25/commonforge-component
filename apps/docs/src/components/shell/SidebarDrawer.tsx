@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Sidebar } from './Sidebar.js';
-import { cn } from 'cf-ui';
+import { cn } from '@commonforge/ui';
 
 interface Props {
   open: boolean;

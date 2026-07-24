@@ -95,7 +95,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 ## 8. Usage Examples
 
 ```tsx
-import { Button } from 'cf-ui';
+import { Button } from '@commonforge/ui';
 import { Plus, ArrowRight } from 'lucide-react';
 
 <Button>Primary</Button>

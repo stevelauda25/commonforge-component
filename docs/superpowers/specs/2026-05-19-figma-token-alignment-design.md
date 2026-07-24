@@ -405,8 +405,8 @@ Untouched:
 ### Pass criteria
 
 - `pnpm typecheck` clean.
-- `pnpm --filter cf-tokens build` clean.
-- `pnpm --filter cf-ui build` clean.
+- `pnpm --filter @commonforge/tokens build` clean.
+- `pnpm --filter @commonforge/ui build` clean.
 - No grep hits for old token names anywhere in `packages/`, `apps/docs/`, `centernode/src/`.
 - `node scripts/figma/check.mjs` reports IN SYNC for all 11 tracked components (we haven't touched component Figma nodes, only renamed local tokens — so per-component caches stay valid).
 - Visual smoke pass against `apps/docs/` for all 11 components.
@@ -428,7 +428,7 @@ Untouched:
 ### Risks
 
 - **String-template class usage won't fail typecheck.** Mitigation: explicit grep sweep before merging. Listed in pass criteria.
-- **Centernode and client-test consume `cf-ui` via npm.** Per CLAUDE.md, local changes here won't show in deployed centernode until `/publish` runs and bumps centernode's dependency. Out of scope for this PR; `/publish` is a separate user-triggered command.
+- **Centernode and client-test consume `@commonforge/ui` via npm.** Per CLAUDE.md, local changes here won't show in deployed centernode until `/publish` runs and bumps centernode's dependency. Out of scope for this PR; `/publish` is a separate user-triggered command.
 - **Designer surprise on light-mode badge restyle.** Visual is genuinely different from current. Flag explicitly in the PR description.
 - **Tab Menu/Active still hardcoded to indigo.** Acceptable for this PR (preserves current visual), but the follow-up Tab refactor PR needs to happen before any production use of randomized Tab icons.
 
@@ -437,7 +437,7 @@ Untouched:
 - Radius, shadow, glow, motion tokens — not in the three JSON exports.
 - `.figma/variables/*.json` per-component caches — separate sync mechanism (`/refresh-vars`, `/sync-figma`) untouched.
 - Tab component refactor for dynamic icon color — follow-up PR.
-- Publishing new `cf-ui` to npm — separate `/publish` flow.
+- Publishing new `@commonforge/ui` to npm — separate `/publish` flow.
 - Code Connect mappings, Storybook, snapshot tests (none exist in this repo).
 - Writing Figma changes back to the file.
 

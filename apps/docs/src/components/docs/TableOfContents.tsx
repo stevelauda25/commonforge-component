@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { cn } from 'cf-ui';
+import { cn } from '@commonforge/ui';
 
 interface Heading {
   id: string;

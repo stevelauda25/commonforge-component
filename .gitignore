@@ -21,3 +21,5 @@ node_modules
 .mcp.json
 opencode.json
 config/
+*.log
+apps/docs/dist/

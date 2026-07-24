@@ -1,4 +1,4 @@
-@import 'cf-tokens/theme.css';
+@import '@commonforge/tokens/theme.css';
 
 @tailwind base;
 @tailwind components;

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { ChevronDown } from 'lucide-react';
-import { cn } from 'cf-ui';
+import { cn } from '@commonforge/ui';
 
-// LOCAL — cf-ui has no <Select>. Built here per CLAUDE.md Rule 10
+// LOCAL — @commonforge/ui has no <Select>. Built here per CLAUDE.md Rule 10
 // using POD semantic tokens. Native <select> for now (no listbox / search).
 // Promote upstream once design system ships a Select primitive with floating menu.
 

@@ -1,4 +1,4 @@
-import { Badge, Button, Checkbox, SearchInput, Tooltip } from 'cf-ui';
+import { Badge, Button, Checkbox, SearchInput, Tooltip } from '@commonforge/ui';
 import {
   ArrowRight,
   Bell,
