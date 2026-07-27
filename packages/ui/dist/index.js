@@ -66,14 +66,12 @@ var buttonVariants = cva(
           DISABLED_SHADOW
         ),
         secondary: cn(
-          "border-[0.5px] border-white/10 bg-white text-primary",
+          "border-0 bg-white text-primary",
           BUTTON_SHADOW,
           "hover:bg-[#F5F5F5] hover:text-primary/80",
           "active:bg-[#F0F0F0] active:text-primary/60",
-          // The Figma gray disabled button represents both light variants:
-          // like outline, secondary disabled shows a 1px #C2C2C2 border and
-          // no container shadow.
-          "disabled:border disabled:border-[#C2C2C2] disabled:bg-[#E0E0E0] disabled:text-primary/30 disabled:shadow-none"
+          "disabled:bg-[#E0E0E0] disabled:text-primary/30",
+          DISABLED_SHADOW
         ),
         outline: cn(
           "border border-[#8F8F8F] bg-white text-primary",
