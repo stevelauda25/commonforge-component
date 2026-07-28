@@ -61,17 +61,17 @@ export function Tooltip({
         <span
           role="tooltip"
           className={cn(
-            "absolute z-50 w-max max-w-72 rounded-[12px] bg-white px-6 py-4 text-left shadow-[0_4px_8px_-4px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.15),0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0.5px_1px_0_rgba(255,255,255,0.25)]",
+            "absolute z-50 w-max max-w-72 rounded-[12px] bg-white px-4 py-2.5 text-left shadow-[0_4px_8px_-4px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.15),0_1px_2px_-1px_rgba(0,0,0,0.2),inset_0_0.5px_1px_0_rgba(255,255,255,0.25)]",
             positionClasses[resolvedPlacement],
             className,
           )}
         >
           <span className={cn("flex flex-col", title != null && "gap-1")}>
-            {title != null && <span className="text-xl font-medium leading-7 text-black">{title}</span>}
+            {title != null && <span className="text-[13px] font-medium leading-[18px] text-black">{title}</span>}
             <span
               className={cn(
                 "block text-[#525252]",
-                title != null ? "text-lg leading-7" : "text-xl leading-7",
+                title != null ? "text-xs leading-4" : "text-[13px] leading-[18px]",
               )}
             >
               {body}

@@ -1,0 +1,91 @@
+import { TextField } from '@sparc-ui';
+
+<PageHeader
+  title="Text Field"
+  description="Complete form field — label row, text field, and hint row. Composes Input (single-line) or Text Area (multiline)."
+/>
+
+## Default
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <TextField
+      label="Label"
+      required
+      placeholder="Enter your full name"
+      hint="This is a hint text to help user."
+    />
+  </div>
+</PreviewCard>
+
+## Small size
+
+`size="sm"` renders a compact single-line field (32px height, 8px horizontal padding, 12px/16px text). The size applies to single-line fields only — the multiline TextArea has no size variant.
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <TextField
+      size="sm"
+      label="Label"
+      required
+      placeholder="Enter your full name"
+      hint="This is a hint text to help user."
+    />
+  </div>
+</PreviewCard>
+
+## Multiline
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <TextField
+      multiline
+      label="Label"
+      required
+      placeholder="Enter your full name"
+      hint="This is a hint text to help user."
+    />
+  </div>
+</PreviewCard>
+
+## Error
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <TextField
+      label="Label"
+      required
+      error
+      placeholder="Enter your full name"
+      hint="This is a hint text to help user."
+    />
+  </div>
+</PreviewCard>
+
+## Error multiline
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <TextField
+      multiline
+      label="Label"
+      required
+      error
+      placeholder="Enter your full name"
+      hint="This is a hint text to help user."
+    />
+  </div>
+</PreviewCard>
+
+## Optional with info tooltip
+
+<PreviewCard align="start">
+  <div className="w-[460px]">
+    <TextField
+      label="Label"
+      info="Extra context about this field."
+      placeholder="Enter your full name"
+      hint="This is a hint text to help user."
+    />
+  </div>
+</PreviewCard>
