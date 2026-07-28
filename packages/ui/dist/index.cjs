@@ -41,6 +41,11 @@ __export(index_exports, {
   LoadingSpinner: () => LoadingSpinner,
   NavItem: () => NavItem,
   NavSection: () => NavSection,
+  Pagination: () => Pagination,
+  PaginationFull: () => PaginationFull,
+  PaginationPageButton: () => PaginationPageButton,
+  PaginationRowsPerPage: () => PaginationRowsPerPage,
+  PaginationSummary: () => PaginationSummary,
   ProgressBar: () => ProgressBar,
   ProgressBarBase: () => ProgressBarBase,
   ProgressRing: () => ProgressRing,
@@ -61,7 +66,8 @@ __export(index_exports, {
   Toast: () => Toast,
   Tooltip: () => Tooltip,
   buttonVariants: () => buttonVariants,
-  cn: () => cn
+  cn: () => cn,
+  getPaginationItems: () => getPaginationItems
 });
 module.exports = __toCommonJS(index_exports);
 
@@ -2670,6 +2676,371 @@ function Combobox({
     }
   );
 }
+
+// src/pagination/pagination.tsx
+var import_react14 = require("react");
+var import_class_variance_authority7 = require("class-variance-authority");
+var import_lucide_react15 = require("lucide-react");
+var import_jsx_runtime38 = require("react/jsx-runtime");
+var pageButton = (0, import_class_variance_authority7.cva)(
+  "flex h-7 w-7 items-center justify-center rounded-[6px] text-[12px] leading-[16px] outline-none transition-colors focus-visible:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
+  {
+    variants: {
+      state: {
+        default: "bg-white text-[#525252] hover:bg-[#F5F5F5]",
+        // forced hover visual — used by the docs to show the hover state
+        hover: "bg-[#F5F5F5] text-[#525252]",
+        current: "border border-black/10 bg-white text-black"
+      }
+    },
+    defaultVariants: { state: "default" }
+  }
+);
+function PaginationPageButton({ page, state = "default", onClick, className }) {
+  const isCurrent = state === "current";
+  return /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+    "button",
+    {
+      type: "button",
+      "aria-label": `Page ${page}`,
+      "aria-current": isCurrent ? "page" : void 0,
+      onClick: () => onClick?.(page),
+      className: cn(pageButton({ state }), className),
+      children: page
+    }
+  );
+}
+var ELLIPSIS = "\u2026";
+function getPaginationItems(page, pageCount, siblingCount = 1) {
+  const edgeSize = 2 * siblingCount + 1;
+  if (pageCount <= edgeSize * 2 + 1) {
+    return Array.from({ length: pageCount }, (_, i) => i + 1);
+  }
+  const leftSibling = Math.max(page - siblingCount, 1);
+  const rightSibling = Math.min(page + siblingCount, pageCount);
+  const showLeftEllipsis = leftSibling > edgeSize;
+  const showRightEllipsis = rightSibling < pageCount - edgeSize + 1;
+  const range = (from, to) => Array.from({ length: to - from + 1 }, (_, i) => from + i);
+  if (!showLeftEllipsis && showRightEllipsis) {
+    return [...range(1, Math.max(edgeSize, rightSibling)), ELLIPSIS, ...range(pageCount - edgeSize + 1, pageCount)];
+  }
+  if (showLeftEllipsis && !showRightEllipsis) {
+    return [...range(1, edgeSize), ELLIPSIS, ...range(Math.min(pageCount - edgeSize + 1, leftSibling), pageCount)];
+  }
+  if (showLeftEllipsis && showRightEllipsis) {
+    return [1, ELLIPSIS, ...range(leftSibling, rightSibling), ELLIPSIS, pageCount];
+  }
+  return range(1, pageCount);
+}
+var navButton = "flex h-7 items-center gap-1 rounded-[6px] py-1.5 text-[12px] leading-[16px] outline-none transition-colors focus-visible:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]";
+function Pagination({
+  page,
+  pageCount,
+  onPageChange,
+  siblingCount = 1,
+  previousLabel = "Previous",
+  nextLabel = "Next",
+  className,
+  "aria-label": ariaLabel = "Pagination"
+}) {
+  const safePageCount = Math.max(1, Math.floor(pageCount));
+  const current = Math.min(Math.max(1, Math.floor(page)), safePageCount);
+  const items = getPaginationItems(current, safePageCount, siblingCount);
+  const jump = 2 * siblingCount + 1;
+  const go = (target) => {
+    const clamped = Math.min(Math.max(1, target), safePageCount);
+    if (clamped !== current) onPageChange?.(clamped);
+  };
+  const isFirst = current <= 1;
+  const isLast = current >= safePageCount;
+  return /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("nav", { "aria-label": ariaLabel, className: cn("flex h-7 items-center gap-4", className), children: [
+    /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)(
+      "button",
+      {
+        type: "button",
+        disabled: isFirst,
+        onClick: () => go(current - 1),
+        className: cn(
+          navButton,
+          "pl-1.5 pr-2",
+          isFirst ? "cursor-not-allowed text-[#A3A3A3]" : "text-black hover:bg-[#F5F5F5]"
+        ),
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(import_lucide_react15.ChevronLeft, { size: 16, "aria-hidden": true }),
+          previousLabel
+        ]
+      }
+    ),
+    /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { className: "flex items-center gap-2", children: items.map(
+      (item, i) => item === ELLIPSIS ? /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+        "button",
+        {
+          type: "button",
+          "aria-label": i < items.length / 2 ? "Show earlier pages" : "Show later pages",
+          onClick: () => go(i < items.length / 2 ? current - jump : current + jump),
+          className: "flex h-5 w-5 items-center justify-center rounded-[6px] text-[#525252] outline-none transition-colors hover:bg-[#F5F5F5] focus-visible:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
+          children: /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(import_lucide_react15.MoreHorizontal, { size: 16, "aria-hidden": true })
+        },
+        `ellipsis-${i}`
+      ) : /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+        PaginationPageButton,
+        {
+          page: item,
+          state: item === current ? "current" : "default",
+          onClick: go
+        },
+        item
+      )
+    ) }),
+    /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)(
+      "button",
+      {
+        type: "button",
+        disabled: isLast,
+        onClick: () => go(current + 1),
+        className: cn(
+          navButton,
+          "pl-2 pr-1.5",
+          isLast ? "cursor-not-allowed text-[#A3A3A3]" : "text-black hover:bg-[#F5F5F5]"
+        ),
+        children: [
+          nextLabel,
+          /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(import_lucide_react15.ChevronRight, { size: 16, "aria-hidden": true })
+        ]
+      }
+    )
+  ] });
+}
+function PaginationRowsPerPage({
+  value,
+  options = [10, 25, 50, 100],
+  onChange,
+  label = "Rows per page",
+  disabled = false,
+  open,
+  className,
+  "aria-label": ariaLabel = "Rows per page"
+}) {
+  const [internalOpen, setInternalOpen] = (0, import_react14.useState)(false);
+  const isOpen = !disabled && (open ?? internalOpen);
+  const [activeIndex, setActiveIndex] = (0, import_react14.useState)(-1);
+  const rootRef = (0, import_react14.useRef)(null);
+  const listboxId = (0, import_react14.useId)();
+  (0, import_react14.useEffect)(() => {
+    if (!internalOpen) return;
+    const onDown = (e) => {
+      if (rootRef.current && !rootRef.current.contains(e.target)) setInternalOpen(false);
+    };
+    const onKey = (e) => {
+      if (e.key === "Escape") setInternalOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [internalOpen]);
+  (0, import_react14.useEffect)(() => {
+    if (!isOpen || activeIndex < 0) return;
+    document.getElementById(`${listboxId}-option-${activeIndex}`)?.scrollIntoView({ block: "nearest" });
+  }, [activeIndex, isOpen, listboxId]);
+  const selectedIndex = options.indexOf(value);
+  const initialActive = (dir) => {
+    if (selectedIndex >= 0) return selectedIndex;
+    if (options.length === 0) return -1;
+    return dir === 1 ? 0 : options.length - 1;
+  };
+  const moveActive = (dir) => {
+    setActiveIndex((prev) => {
+      if (options.length === 0) return -1;
+      if (prev < 0) return dir === 1 ? 0 : options.length - 1;
+      return (prev + dir + options.length) % options.length;
+    });
+  };
+  const openList = () => {
+    if (disabled) return;
+    setInternalOpen(true);
+    setActiveIndex(initialActive(1));
+  };
+  const toggleList = () => {
+    if (disabled) return;
+    if (isOpen) setInternalOpen(false);
+    else openList();
+  };
+  const selectOption = (option) => {
+    onChange?.(option);
+    setInternalOpen(false);
+  };
+  const onTriggerKeyDown = (e) => {
+    if (disabled) return;
+    switch (e.key) {
+      case "ArrowDown":
+      case "ArrowUp": {
+        e.preventDefault();
+        const dir = e.key === "ArrowDown" ? 1 : -1;
+        if (isOpen) {
+          moveActive(dir);
+        } else {
+          setInternalOpen(true);
+          setActiveIndex(initialActive(dir));
+        }
+        break;
+      }
+      case "Enter":
+      case " ": {
+        if (isOpen) {
+          e.preventDefault();
+          const option = activeIndex >= 0 ? options[activeIndex] : void 0;
+          if (option !== void 0) selectOption(option);
+          else setInternalOpen(false);
+        }
+        break;
+      }
+      case "Escape": {
+        if (isOpen) {
+          e.stopPropagation();
+          setInternalOpen(false);
+        }
+        break;
+      }
+    }
+  };
+  return /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { ref: rootRef, className: cn("flex h-7 items-center gap-3", className), children: [
+    label != null && label !== "" && /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("span", { className: "text-[12px] leading-[16px] text-black", children: label }),
+    /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { className: "relative", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)(
+        "button",
+        {
+          type: "button",
+          disabled,
+          "aria-haspopup": "listbox",
+          "aria-expanded": isOpen,
+          "aria-controls": isOpen ? listboxId : void 0,
+          "aria-activedescendant": isOpen && activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : void 0,
+          "aria-label": ariaLabel,
+          onClick: toggleList,
+          onKeyDown: onTriggerKeyDown,
+          className: cn(
+            "flex h-7 w-16 items-center justify-between rounded-[6px] border border-black/10 bg-white py-1.5 pl-2 pr-1.5 text-[12px] leading-[16px] text-black outline-none transition-colors",
+            disabled ? "cursor-not-allowed text-[#A3A3A3]" : "hover:bg-[#F5F5F5] focus-visible:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]"
+          ),
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("span", { children: value }),
+            /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+              import_lucide_react15.ChevronDown,
+              {
+                size: 12,
+                "aria-hidden": true,
+                className: cn(
+                  "shrink-0 transition-transform duration-150",
+                  isOpen && "rotate-180",
+                  disabled ? "text-[#A3A3A3]" : "text-[#525252]"
+                )
+              }
+            )
+          ]
+        }
+      ),
+      isOpen && /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+        "div",
+        {
+          role: "listbox",
+          id: listboxId,
+          "aria-label": ariaLabel,
+          className: cn(
+            "absolute bottom-full left-0 z-50 mb-1 flex w-[143px] flex-col overflow-y-auto",
+            "rounded-[6px] border-[0.5px] border-black/10 bg-white",
+            "shadow-[0_1px_1px_0_rgba(0,0,0,0.05),0_4px_8px_0_rgba(0,0,0,0.05),0_2px_4px_0_rgba(0,0,0,0.05)]"
+          ),
+          children: options.map((option, i) => {
+            const isSelected = option === value;
+            return /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)(
+              "div",
+              {
+                id: `${listboxId}-option-${i}`,
+                role: "option",
+                "aria-selected": isSelected,
+                onClick: () => selectOption(option),
+                onMouseEnter: () => setActiveIndex(i),
+                className: cn(
+                  "flex cursor-pointer select-none items-center justify-between p-2 text-[12px] leading-[16px]",
+                  i < options.length - 1 && "border-b-[0.5px] border-black/10",
+                  i === activeIndex && "bg-[#F5F5F5]",
+                  isSelected ? "text-black" : "text-[#525252]"
+                ),
+                children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("span", { children: option }),
+                  isSelected && /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(import_lucide_react15.Check, { size: 12, "aria-hidden": true, className: "shrink-0" })
+                ]
+              },
+              option
+            );
+          })
+        }
+      )
+    ] })
+  ] });
+}
+function PaginationSummary({ page, pageSize, total, className }) {
+  const safeTotal = Math.max(0, total);
+  const start = safeTotal === 0 ? 0 : (Math.max(1, page) - 1) * pageSize + 1;
+  const end = Math.min(Math.max(1, page) * pageSize, safeTotal);
+  return /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("span", { className: cn("text-[12px] leading-[16px] text-[#525252]", className), children: safeTotal === 0 ? `Showing 0 of ${safeTotal}` : `Showing ${start}-${end} of ${safeTotal}` });
+}
+function PaginationFull({
+  layout = "summary-start",
+  page,
+  pageCount,
+  onPageChange,
+  siblingCount,
+  previousLabel,
+  nextLabel,
+  "aria-label": ariaLabel,
+  pageSize,
+  onPageSizeChange,
+  pageSizeOptions,
+  total,
+  rowsPerPageLabel,
+  className
+}) {
+  const pagination = /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+    Pagination,
+    {
+      page,
+      pageCount,
+      onPageChange,
+      siblingCount,
+      previousLabel,
+      nextLabel,
+      "aria-label": ariaLabel
+    }
+  );
+  const rowsPerPage = /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+    PaginationRowsPerPage,
+    {
+      value: pageSize,
+      options: pageSizeOptions,
+      onChange: onPageSizeChange,
+      label: rowsPerPageLabel
+    }
+  );
+  const summary = /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(PaginationSummary, { page, pageSize, total });
+  return /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { className: cn("flex h-7 w-full items-center justify-between gap-4", className), children: layout === "summary-start" ? /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)(import_jsx_runtime38.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { className: "flex items-center gap-3", children: [
+      summary,
+      /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("span", { "aria-hidden": true, className: "text-[12px] leading-[16px] text-[#525252]", children: "\u2022" }),
+      rowsPerPage
+    ] }),
+    pagination
+  ] }) : /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)(import_jsx_runtime38.Fragment, { children: [
+    rowsPerPage,
+    /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { className: "flex items-center gap-4", children: [
+      pagination,
+      /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("span", { className: "text-right", children: summary })
+    ] })
+  ] }) });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   AccountSwitcher,
@@ -2693,6 +3064,11 @@ function Combobox({
   LoadingSpinner,
   NavItem,
   NavSection,
+  Pagination,
+  PaginationFull,
+  PaginationPageButton,
+  PaginationRowsPerPage,
+  PaginationSummary,
   ProgressBar,
   ProgressBarBase,
   ProgressRing,
@@ -2713,5 +3089,6 @@ function Combobox({
   Toast,
   Tooltip,
   buttonVariants,
-  cn
+  cn,
+  getPaginationItems
 });

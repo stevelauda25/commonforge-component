@@ -767,6 +767,117 @@ type ComboboxProps = ComboboxChromeProps & Omit<DropdownProps, "error" | "classN
  */
 declare function Combobox({ label, required, info, hint, error, id, className, ...dropdownProps }: ComboboxProps): react.JSX.Element;
 
+/**
+ * pagination — page navigation, rows-per-page selector, summary text, and
+ * their full-width composition. From Figma node 96:2316.
+ *
+ * All text is 12px/16px regular. Colours: #000000 primary, #525252 secondary,
+ * #F5F5F5 hover fill, rgba(0,0,0,0.1) hairlines, 6px radius — the same
+ * hardcoded neutral recipe the newest components (dropdown / list-base) use,
+ * pending reconciliation into gray-* tokens.
+ *
+ * Decisions documented in SPEC.md:
+ * - the boxed (bordered) number page is the CURRENT page state; hover is the
+ *   #F5F5F5 fill (the isolated Figma cells were ambiguous).
+ * - number pages use secondary #525252 text, switching to primary #000000 on
+ *   the current page (mirrors the rows-per-page option rows).
+ * - the selected rows-per-page option does NOT get the Figma's leading
+ *   users-01 icon — that is a placeholder artefact; selected = #000000 text +
+ *   trailing 12px check.
+ */
+declare const pageButton: (props?: ({
+    state?: "default" | "current" | "hover" | null | undefined;
+} & class_variance_authority_types.ClassProp) | undefined) => string;
+interface PaginationPageButtonProps extends VariantProps<typeof pageButton> {
+    /** the 1-based page number shown in the button */
+    page: number;
+    onClick?: (page: number) => void;
+    className?: string;
+}
+declare function PaginationPageButton({ page, state, onClick, className }: PaginationPageButtonProps): react.JSX.Element;
+declare const ELLIPSIS: "\u2026";
+type PageItem = number | typeof ELLIPSIS;
+/**
+ * Ellipsis rule (siblingCount = s, edgeSize = 2s+1):
+ * - pageCount <= edgeSize*2 + 1 → every page, no ellipsis.
+ * - near an edge (current within the edge block) →
+ *   `1 … edgeSize … N-edgeSize+1 … N`, e.g. the Figma `1 2 3 … 21 22 23`
+ *   with s=1, page=1, pageCount=23. The edge block grows to keep the current
+ *   page and its siblings visible.
+ * - mid-range → `1 … page-s … page+s … N`.
+ */
+declare function getPaginationItems(page: number, pageCount: number, siblingCount?: number): PageItem[];
+interface PaginationProps {
+    /** controlled 1-based current page */
+    page: number;
+    /** total number of pages (>= 1) */
+    pageCount: number;
+    /** called with the requested 1-based page */
+    onPageChange?: (page: number) => void;
+    /** pages shown on each side of the current page; also sets the edge block
+     *  size (2*siblingCount+1) and the ellipsis jump distance (default 1) */
+    siblingCount?: number;
+    previousLabel?: string;
+    nextLabel?: string;
+    className?: string;
+    "aria-label"?: string;
+}
+declare function Pagination({ page, pageCount, onPageChange, siblingCount, previousLabel, nextLabel, className, "aria-label": ariaLabel, }: PaginationProps): react.JSX.Element;
+interface PaginationRowsPerPageProps {
+    /** controlled selected rows-per-page value */
+    value: number;
+    /** selectable values (default [10, 25, 50, 100]) */
+    options?: number[];
+    /** called with the chosen value */
+    onChange?: (value: number) => void;
+    /** leading label text (default "Rows per page") */
+    label?: string;
+    disabled?: boolean;
+    /** force the panel open (e.g. for docs); overrides the internal open state */
+    open?: boolean;
+    className?: string;
+    "aria-label"?: string;
+}
+/**
+ * rows-per-page — label + 64x28 select-style trigger whose panel opens
+ * UPWARD. Panel + rows follow the Figma spec (143px panel, 8px-padding rows,
+ * hairline separators, trailing 12px check on the selected row) on the repo's
+ * popover recipe (white, 0.5px black/10 hairline, 6px radius, the shared
+ * popover shadow). Interaction mirrors Dropdown: click toggles, outside
+ * pointer-down and Escape close, ArrowUp/ArrowDown move the active option,
+ * Enter/Space selects.
+ */
+declare function PaginationRowsPerPage({ value, options, onChange, label, disabled, open, className, "aria-label": ariaLabel, }: PaginationRowsPerPageProps): react.JSX.Element;
+interface PaginationSummaryProps {
+    /** controlled 1-based current page */
+    page: number;
+    /** rows per page */
+    pageSize: number;
+    /** total number of rows */
+    total: number;
+    className?: string;
+}
+declare function PaginationSummary({ page, pageSize, total, className }: PaginationSummaryProps): react.JSX.Element;
+interface PaginationFullProps extends Omit<PaginationProps, "className"> {
+    /** rows-per-page value (rows per page selector) */
+    pageSize: number;
+    /** called with the chosen rows-per-page value */
+    onPageSizeChange?: (value: number) => void;
+    /** rows-per-page options (default [10, 25, 50, 100]) */
+    pageSizeOptions?: number[];
+    /** total number of rows (summary text) */
+    total: number;
+    /**
+     * summary-start = Figma arrangement A (left: summary + "•" + rows-per-page,
+     * right: pagination). summary-end = arrangement B (left: rows-per-page,
+     * right: pagination + summary). Default "summary-start".
+     */
+    layout?: "summary-start" | "summary-end";
+    rowsPerPageLabel?: string;
+    className?: string;
+}
+declare function PaginationFull({ layout, page, pageCount, onPageChange, siblingCount, previousLabel, nextLabel, "aria-label": ariaLabel, pageSize, onPageSizeChange, pageSizeOptions, total, rowsPerPageLabel, className, }: PaginationFullProps): react.JSX.Element;
+
 declare function cn(...inputs: ClassValue[]): string;
 
-export { AccountSwitcher, type AccountSwitcherProps, Avatar, type AvatarProps, Badge, type BadgeProps, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, CHART_TOOLTIP_SHADOW, ChartTooltip, type ChartTooltipItem, type ChartTooltipProps, Checkbox, type CheckboxProps, Combobox, type ComboboxProps, DropZone, type DropZoneProps, type DropZoneVisualState, Dropdown, type DropdownOption, type DropdownProps, type DropdownSize, EmptyState, type EmptyStateActionVariant, type EmptyStateMedia, type EmptyStateProps, FileList, type FileListProps, type FileListStatus, GanttBar, type GanttBarProps, type GanttBarState, type IconComponent, Input, type InputProps, KpiCard, type KpiCardProps, type KpiTrend, Legend, type LegendLineStyle, type LegendProps, type LegendVariant, ListBase, type ListBaseProps, type ListBaseSize, LoadingSpinner, type LoadingSpinnerProps, type LoadingSpinnerSize, type LoadingSpinnerVariant, NavItem, type NavItemProps, NavSection, type NavSectionProps, ProgressBar, ProgressBarBase, type ProgressBarBaseProps, type ProgressBarBaseSize, type ProgressBarProps, type ProgressBarSize, type ProgressBarVariant, ProgressRing, type ProgressRingProps, type ProgressRingSize, ProgressValueBar, type ProgressValueBarProps, Radio, type RadioProps, type RadioSize, SearchField, type SearchFieldProps, type SearchResult, SegmentedButton, type SegmentedButtonOption, type SegmentedButtonProps, Separator, type SeparatorProps, SkillLevel, type SkillLevelProps, Slider, type SliderProps, type SliderVariant, Switch, type SwitchProps, Tag, type TagProps, type TagVariant, TextArea, type TextAreaProps, TextField, type TextFieldProps, TextInput, type TextInputProps, Textarea, type TextareaProps, Timeline, type TimelineOrientation, type TimelineProps, type TimelineStep, type TimelineStepStatus, Toast, type ToastProps, type ToastTone, type ToastVariant, Tooltip, type TooltipProps, type TooltipSide, buttonVariants, cn };
+export { AccountSwitcher, type AccountSwitcherProps, Avatar, type AvatarProps, Badge, type BadgeProps, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, CHART_TOOLTIP_SHADOW, ChartTooltip, type ChartTooltipItem, type ChartTooltipProps, Checkbox, type CheckboxProps, Combobox, type ComboboxProps, DropZone, type DropZoneProps, type DropZoneVisualState, Dropdown, type DropdownOption, type DropdownProps, type DropdownSize, EmptyState, type EmptyStateActionVariant, type EmptyStateMedia, type EmptyStateProps, FileList, type FileListProps, type FileListStatus, GanttBar, type GanttBarProps, type GanttBarState, type IconComponent, Input, type InputProps, KpiCard, type KpiCardProps, type KpiTrend, Legend, type LegendLineStyle, type LegendProps, type LegendVariant, ListBase, type ListBaseProps, type ListBaseSize, LoadingSpinner, type LoadingSpinnerProps, type LoadingSpinnerSize, type LoadingSpinnerVariant, NavItem, type NavItemProps, NavSection, type NavSectionProps, Pagination, PaginationFull, type PaginationFullProps, PaginationPageButton, type PaginationPageButtonProps, type PaginationProps, PaginationRowsPerPage, type PaginationRowsPerPageProps, PaginationSummary, type PaginationSummaryProps, ProgressBar, ProgressBarBase, type ProgressBarBaseProps, type ProgressBarBaseSize, type ProgressBarProps, type ProgressBarSize, type ProgressBarVariant, ProgressRing, type ProgressRingProps, type ProgressRingSize, ProgressValueBar, type ProgressValueBarProps, Radio, type RadioProps, type RadioSize, SearchField, type SearchFieldProps, type SearchResult, SegmentedButton, type SegmentedButtonOption, type SegmentedButtonProps, Separator, type SeparatorProps, SkillLevel, type SkillLevelProps, Slider, type SliderProps, type SliderVariant, Switch, type SwitchProps, Tag, type TagProps, type TagVariant, TextArea, type TextAreaProps, TextField, type TextFieldProps, TextInput, type TextInputProps, Textarea, type TextareaProps, Timeline, type TimelineOrientation, type TimelineProps, type TimelineStep, type TimelineStepStatus, Toast, type ToastProps, type ToastTone, type ToastVariant, Tooltip, type TooltipProps, type TooltipSide, buttonVariants, cn, getPaginationItems };

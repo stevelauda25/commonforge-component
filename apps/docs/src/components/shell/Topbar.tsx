@@ -23,7 +23,7 @@ export function Topbar({ onMenuClick }: Props) {
           <span className="text-sm font-semibold text-default">CommonForge</span>
           <span className="text-sm text-muted">Design System</span>
           <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs font-mono text-muted">
-            v0.1.0
+            v0.1.3
           </span>
         </Link>
       </div>
