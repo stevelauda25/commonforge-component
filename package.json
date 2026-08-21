@@ -9,9 +9,6 @@
     "build": "pnpm build:docs",
     "build:packages": "pnpm -F @commonforge/tokens build && pnpm -F @commonforge/ui build",
     "build:docs": "pnpm build:packages && mkdir -p apps/docs/public && echo '{\"drifted\":[],\"inSync\":[],\"errors\":[]}' > apps/docs/public/figma-status.json && echo '{\"components\":[]}' > apps/docs/public/figma-manifest.json && pnpm -F docs build",
-    "build:centernode": "pnpm build:packages && cd centernode && npm install --no-fund --no-audit && npm run build",
-    "build:client": "cd client-test && npm install --no-fund --no-audit && npm run build",
-    "build:all": "pnpm build:docs && pnpm build:centernode && pnpm build:client",
     "typecheck": "pnpm -r --parallel typecheck",
     "clean": "rm -rf node_modules **/node_modules **/dist"
   },
