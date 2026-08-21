@@ -1,53 +1,43 @@
 import { Link } from 'react-router-dom';
 import { cn } from '@commonforge/ui';
 import type { RouteEntry } from '../../lib/routes.js';
-import { canonicalExamples } from './canonical-examples.js';
+import { getComponentIcon } from './component-icons.js';
 
 interface Props {
   entry: RouteEntry;
 }
 
 export function ComponentTile({ entry }: Props) {
-  const isReady = entry.status === 'ready';
-  const Example = canonicalExamples[entry.path];
+  const isReady = entry.status === 'ready' || entry.category === 'foundation';
+  const Icon = getComponentIcon(entry.path);
 
   return (
-    <div
+    <Link
+      to={entry.path}
       className={cn(
-        'group flex min-h-[200px] flex-col overflow-hidden rounded-lg border border-default bg-canvas',
-        'transition-colors hover:border-strong',
+        'group flex min-h-[160px] flex-col justify-between rounded-xl border border-default bg-canvas transition-all duration-fast',
+        'hover:border-strong hover:bg-muted/20 hover:shadow-sm',
       )}
     >
-      <Link
-        to={entry.path}
-        className="flex items-center justify-between border-b border-subtle px-3 py-2 hover:bg-muted/40 transition-colors"
-      >
-        <span
-          className={cn(
-            'text-xs font-medium',
-            isReady ? 'text-subtle' : 'text-muted',
-          )}
-        >
-          {entry.label}
-        </span>
+      <div className="flex items-start justify-between p-4">
+        <div className="text-subtle transition-colors group-hover:text-default">
+          <Icon className="h-5 w-5 stroke-[1.5]" />
+        </div>
         {!isReady && (
-          <span className="text-[10px] uppercase tracking-wider text-muted">
-            Coming soon
+          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted">
+            Planned
           </span>
         )}
-      </Link>
-      <div
-        className={cn(
-          'flex flex-1 items-center justify-center p-6',
-          !isReady && 'opacity-40',
-        )}
-      >
-        {isReady && Example ? (
-          <Example />
-        ) : (
-          <span className="text-xs text-muted">—</span>
-        )}
       </div>
-    </div>
+
+      <div className="border-t border-dashed border-subtle/80 p-4">
+        <h3 className="text-sm font-semibold text-default transition-colors group-hover:text-brand">
+          {entry.label}
+        </h3>
+        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-subtle">
+          {entry.description || `Explore ${entry.label.toLowerCase()} styles and usage guidance.`}
+        </p>
+      </div>
+    </Link>
   );
 }
