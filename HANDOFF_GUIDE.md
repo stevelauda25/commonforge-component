@@ -3,7 +3,7 @@
 > **Version:** `v0.1.4`  
 > **Source of Truth:** Figma File `TCd9exLXTUMciyw1VqnPSK` (CF Design System 1.1)  
 > **Published Packages:** `@commonforge/tokens` · `@commonforge/ui`  
-> **Docs & Review App:** `apps/docs` (Local: `http://localhost:7100`)  
+> **Docs & Review App:** [`https://commonforge-component-docs.vercel.app/`](https://commonforge-component-docs.vercel.app/) (Local: `http://localhost:7100`)  
 > **Repository:** [`stevelauda25/commonforge-component`](https://github.com/stevelauda25/commonforge-component)
 
 ---
