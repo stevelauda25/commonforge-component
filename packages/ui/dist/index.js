@@ -356,7 +356,7 @@ function Tag({ variant = "default", children, className, ...props }) {
       type: props.type ?? "button",
       className: cn(
         "inline-flex h-[21px] items-center gap-1 whitespace-nowrap rounded-[4px] border px-2 py-1 text-[10px] leading-[13px] outline-none focus-visible:ring-2 focus-visible:ring-[#CFC7BC]",
-        isPlaceholder ? "border-dashed border-black/15 bg-transparent text-[#8F8F8F]" : isSelected ? "border-neutral-900 bg-neutral-900 text-white" : "border-[#A3A3A3] bg-white text-[#525252]",
+        isPlaceholder ? "border-dashed border-black/15 bg-transparent text-[#8F8F8F]" : isSelected ? "border-[#26201C] bg-[#26201C] text-white" : "border-[#A3A3A3] bg-white text-[#525252]",
         className
       ),
       children: [
@@ -393,7 +393,7 @@ function TextInput({
       className: cn(
         "flex items-stretch overflow-hidden rounded-[6px] border-[0.5px]",
         sizeClass,
-        disabled ? "border-black/10 bg-[#EBEBEB]" : error ? "border-red-500 bg-[#F5F5F5] focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]" : "border-black/10 bg-[#F5F5F5] focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
+        disabled ? "border-black/10 bg-[#EBEBEB]" : error ? "border-red-500 bg-white focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]" : "border-black/10 bg-white focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
         containerClassName
       ),
       children: [
@@ -447,7 +447,7 @@ var Textarea = forwardRef2(
       "div",
       {
         className: cn(
-          "flex min-h-[136px] w-full flex-col rounded-[6px] border-[0.5px] bg-[#F5F5F5] transition-shadow focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
+          "flex min-h-[136px] w-full flex-col rounded-[6px] border-[0.5px] bg-white transition-shadow focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
           containerPad,
           error ? "border-red-500" : "border-black/10",
           disabled && "border-black/10 bg-[#EBEBEB] focus-within:shadow-none",
@@ -2413,7 +2413,7 @@ function Dropdown({
         className: cn(
           "flex w-full items-center rounded-[6px] border-[0.5px]",
           size === "sm" && "h-8",
-          disabled ? "border-black/10 bg-[#EBEBEB]" : error ? "border-red-500 bg-[#F5F5F5] focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]" : "border-black/10 bg-[#F5F5F5] focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]"
+          disabled ? "border-black/10 bg-[#EBEBEB]" : error ? "border-red-500 bg-white focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]" : "border-black/10 bg-white focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]"
         ),
         children: filterable ? /* @__PURE__ */ jsxs26(
           "div",

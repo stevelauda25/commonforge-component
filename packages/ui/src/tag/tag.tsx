@@ -23,7 +23,7 @@ export function Tag({ variant = "default", children, className, ...props }: TagP
         isPlaceholder
           ? "border-dashed border-black/15 bg-transparent text-[#8F8F8F]"
           : isSelected
-            ? "border-neutral-900 bg-neutral-900 text-white"
+            ? "border-[#26201C] bg-[#26201C] text-white"
             : "border-[#A3A3A3] bg-white text-[#525252]",
         className,
       )}

@@ -112,7 +112,10 @@ var backgroundColor = {
   subtle: rgbVar("bg-subtle"),
   disabled: rgbVar("bg-disabled"),
   inverse: rgbVar("bg-inverse"),
-  neutral: rgbVar("bg-neutral"),
+  neutral: {
+    DEFAULT: rgbVar("bg-neutral"),
+    ...ramp(primitives.neutral)
+  },
   brand: rgbVar("bg-brand"),
   "brand-hover": rgbVar("bg-brand-hover"),
   "brand-subtle": rgbVar("bg-brand-subtle"),

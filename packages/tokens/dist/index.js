@@ -2,7 +2,7 @@ import {
   preset,
   primitives,
   tailwind_preset_default
-} from "./chunk-N4QAY2FZ.js";
+} from "./chunk-LWLS576L.js";
 export {
   preset,
   primitives,

@@ -287,8 +287,8 @@ export function Dropdown({
           disabled
             ? "border-black/10 bg-[#EBEBEB]"
             : error
-              ? "border-red-500 bg-[#F5F5F5] focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]"
-              : "border-black/10 bg-[#F5F5F5] focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
+              ? "border-red-500 bg-white focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]"
+              : "border-black/10 bg-white focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
         )}
       >
         {filterable ? (

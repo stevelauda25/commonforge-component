@@ -39,7 +39,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div
         className={cn(
-          "flex min-h-[136px] w-full flex-col rounded-[6px] border-[0.5px] bg-[#F5F5F5] transition-shadow focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
+          "flex min-h-[136px] w-full flex-col rounded-[6px] border-[0.5px] bg-white transition-shadow focus-within:border-black focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.1)]",
           containerPad,
           error ? "border-red-500" : "border-black/10",
           disabled && "border-black/10 bg-[#EBEBEB] focus-within:shadow-none",
