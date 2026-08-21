@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { Menu, Github } from 'lucide-react';
 import { Button } from '@commonforge/ui';
-import { ThemeToggle } from './ThemeToggle.js';
 
 interface Props {
   onMenuClick: () => void;
@@ -9,7 +8,7 @@ interface Props {
 
 export function Topbar({ onMenuClick }: Props) {
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-default bg-canvas/80 px-6 backdrop-blur">
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-default bg-canvas/90 px-6 backdrop-blur">
       <div className="flex items-center gap-3">
         <Button
           variant="outline"
@@ -27,7 +26,17 @@ export function Topbar({ onMenuClick }: Props) {
           </span>
         </Link>
       </div>
-      <ThemeToggle />
+      <div className="flex items-center gap-3">
+        <a
+          href="https://github.com/stevelauda25/commonforge-component"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-default bg-surface px-2.5 py-1 text-xs font-medium text-subtle transition-colors hover:border-strong hover:text-default"
+        >
+          <Github className="h-3.5 w-3.5" />
+          <span>GitHub</span>
+        </a>
+      </div>
     </header>
   );
 }
